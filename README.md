@@ -1,4 +1,4 @@
-# annic
+# annix
 
 A new Flutter project.
 

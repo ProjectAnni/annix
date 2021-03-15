@@ -1,8 +1,7 @@
-import 'package:annic/widgets/drawer.dart';
-import 'package:annic/widgets/repeat_button.dart';
-import 'package:annic/widgets/square_icon_button.dart';
+import 'package:annix/widgets/drawer.dart';
+import 'package:annix/widgets/repeat_button.dart';
+import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,7 +13,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Annic"),
+        title: Text("Annix"),
       ),
       // On wide-screen devices we should apply this style
       // https://github.com/flutter/flutter/issues/50276

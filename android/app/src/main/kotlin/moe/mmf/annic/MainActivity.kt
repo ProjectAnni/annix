@@ -1,4 +1,4 @@
-package moe.mmf.annic
+package moe.mmf.annix
 
 import io.flutter.embedding.android.FlutterActivity
 

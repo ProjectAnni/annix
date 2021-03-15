@@ -1,4 +1,4 @@
-import 'package:annic/services/platform.dart';
+import 'package:annix/services/platform.dart';
 import 'package:audio_service/audio_service.dart';
 
 class AnniAudioPlayer {

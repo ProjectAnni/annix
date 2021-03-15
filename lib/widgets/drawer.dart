@@ -19,7 +19,7 @@ class AnniDrawer extends StatelessWidget {
         child: Column(
           children: [
             DrawerHeader(
-              child: Text('Annic'),
+              child: Text('Annix'),
             ),
             ListTile(
               title: Text('Home'),

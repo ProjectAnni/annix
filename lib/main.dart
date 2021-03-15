@@ -1,6 +1,6 @@
-import 'package:annic/app.dart';
+import 'package:annix/app.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(Annic());
+  runApp(Annix());
 }

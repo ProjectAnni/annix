@@ -1,12 +1,12 @@
-import 'package:annic/pages/home.dart';
-import 'package:annic/pages/login.dart';
+import 'package:annix/pages/home.dart';
+import 'package:annix/pages/login.dart';
 import 'package:flutter/material.dart';
 
-class Annic extends StatelessWidget {
+class Annix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Annic',
+      title: 'Annix',
       theme: ThemeData(
         primarySwatch: Colors.teal,
         // brightness: Brightness.dark,
