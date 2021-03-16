@@ -1,7 +1,9 @@
+import 'package:annix/models/playlist.dart';
 import 'package:annix/widgets/drawer.dart';
 import 'package:annix/widgets/repeat_button.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -59,16 +61,24 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       // Alignment: right
-                      Row(
-                        children: [
-                          RepeatButton(onRepeatModeChange: (mode) {
-                            // TODO: change play mode
-                          }),
-                          SquareIconButton(
-                            child: Icon(Icons.play_arrow_rounded, size: 32),
-                            onPressed: () {},
-                          ),
-                        ],
+                      Consumer<ActivePlaylist>(
+                        builder: (context, playlist, child) {
+                          return Row(
+                            children: [
+                              RepeatButton(
+                                initial: playlist.mode,
+                                onRepeatModeChange: (mode) {
+                                  // TODO: do not listen here
+                                  playlist.setMode(mode);
+                                },
+                              ),
+                              SquareIconButton(
+                                child: Icon(Icons.play_arrow_rounded, size: 32),
+                                onPressed: () {},
+                              ),
+                            ],
+                          );
+                        },
                       )
                     ],
                   ),
