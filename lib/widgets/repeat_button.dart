@@ -8,7 +8,11 @@ class RepeatButton extends StatefulWidget {
   final RepeatFunction? onRepeatModeChange;
   final RepeatMode? initial;
 
-  RepeatButton({@required this.onRepeatModeChange, this.initial});
+  RepeatButton({
+    Key? key,
+    this.initial,
+    @required this.onRepeatModeChange,
+  }) : super(key: key);
 
   @override
   _RepeatButtonState createState() => _RepeatButtonState();

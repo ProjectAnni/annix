@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AnniDrawer extends StatelessWidget {
+  AnniDrawer({Key? key}) : super(key: key);
+
   static String _currentRoute = '/';
 
   static void _route(BuildContext context, String route) {

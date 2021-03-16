@@ -5,7 +5,11 @@ class SquareIconButton extends StatelessWidget {
 
   final VoidCallback? onPressed;
 
-  SquareIconButton({@required this.child, @required this.onPressed});
+  SquareIconButton({
+    Key? key,
+    @required this.child,
+    @required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
