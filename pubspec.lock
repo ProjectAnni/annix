@@ -71,6 +71,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  dart_vlc:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "387dc12c0292d5e41c756338957eb70b2e2e511d"
+      resolved-ref: "387dc12c0292d5e41c756338957eb70b2e2e511d"
+      url: "git@github.com:Yesterday17/dart_vlc.git"
+    source: git
+    version: "0.0.3"
   dio:
     dependency: "direct main"
     description:
@@ -104,13 +113,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_audio_desktop:
-    dependency: "direct main"
-    description:
-      path: "packages/flutter_audio_desktop"
-      relative: true
-    source: path
-    version: "0.1.0"
   flutter_cache_manager:
     dependency: transitive
     description:

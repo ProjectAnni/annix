@@ -1,9 +1,6 @@
-import 'package:annix/models/playlist.dart';
+import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/drawer.dart';
-import 'package:annix/widgets/repeat_button.dart';
-import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,58 +28,7 @@ class _HomePageState extends State<HomePage> {
               child: Material(
                 color: Theme.of(context).primaryColor.withOpacity(0.9),
                 elevation: 8.0,
-                child: SizedBox(
-                  height: 64,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Alignment: left
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: SizedBox(
-                              width: 56,
-                              height: 56,
-                              // TODO: cover
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Music Title'),
-                              Text('Artist', textScaleFactor: 0.8)
-                            ],
-                          )
-                        ],
-                      ),
-                      // Alignment: right
-                      Consumer<ActivePlaylist>(
-                        builder: (context, playlist, child) {
-                          return Row(
-                            children: [
-                              RepeatButton(
-                                initial: playlist.mode,
-                                onRepeatModeChange: (mode) {
-                                  // TODO: do not listen here
-                                  playlist.setMode(mode);
-                                },
-                              ),
-                              SquareIconButton(
-                                child: Icon(Icons.play_arrow_rounded, size: 32),
-                                onPressed: () {},
-                              ),
-                            ],
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
+                child: BottomPlayBar(),
               ),
             ),
           )

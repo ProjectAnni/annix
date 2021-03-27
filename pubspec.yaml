@@ -15,8 +15,10 @@ dependencies:
   shared_preferences: ^2.0.4
   archive: ^3.1.2
   dio: ^4.0.0-beta7
-  flutter_audio_desktop:
-    path: packages/flutter_audio_desktop
+  dart_vlc:
+    git:
+      url: git@github.com:Yesterday17/dart_vlc.git
+      ref: 387dc12c0292d5e41c756338957eb70b2e2e511d
 
 dev_dependencies:
   flutter_test:
