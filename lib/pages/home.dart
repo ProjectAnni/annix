@@ -25,11 +25,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Material(
-                color: Theme.of(context).primaryColor.withOpacity(0.9),
-                elevation: 8.0,
-                child: BottomPlayBar(),
-              ),
+              child: BottomPlayBar(),
             ),
           )
         ],

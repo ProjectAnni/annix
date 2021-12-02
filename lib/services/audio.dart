@@ -1,66 +1,65 @@
-import 'dart:io';
+import 'package:annix/services/global.dart';
+import 'package:flutter/foundation.dart';
+import 'package:just_audio/just_audio.dart';
 
-import 'package:annix/services/platform.dart';
-import 'package:audio_service/audio_service.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:dart_vlc/dart_vlc.dart';
+class AnniPositionState {
+  const AnniPositionState({
+    required this.progress,
+    required this.buffered,
+    this.total,
+  });
 
-class AnniAudioPlayer {
-  late final Future<Player> _playerFuture;
-  late Player _player;
-  static int _playerId = 0;
-  static AnniAudioPlayer? _instance;
+  final Duration progress;
+  final Duration buffered;
+  final Duration? total;
+}
 
-  static Future<AnniAudioPlayer> instance() async {
-    if (_instance == null) {
-      _instance = AnniAudioPlayer._();
-      await _instance!._prepare();
-    }
-    return _instance!;
+class AnniAudioService {
+  AudioPlayer player = AudioPlayer();
+  ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
+    useLazyPreparation: true,
+    children: [Global.annil.getAudio(catalog: "SMCL-647", trackId: 1)],
+  );
+
+  get isPlaying => player.playing;
+  ValueNotifier<AnniPositionState> positionNotifier =
+      ValueNotifier<AnniPositionState>(
+    const AnniPositionState(
+      progress: Duration.zero,
+      buffered: Duration.zero,
+      total: Duration.zero,
+    ),
+  );
+
+  // Constructor
+  AnniAudioService() {
+    this.player.positionStream.listen((progress) {
+      positionNotifier.value = AnniPositionState(
+        progress: progress,
+        buffered: positionNotifier.value.buffered,
+        total: positionNotifier.value.total,
+      );
+    });
+
+    this.player.bufferedPositionStream.listen((buffered) {
+      positionNotifier.value = AnniPositionState(
+        progress: positionNotifier.value.progress,
+        buffered: buffered,
+        total: positionNotifier.value.total,
+      );
+    });
+
+    this.player.durationStream.listen((total) {
+      positionNotifier.value = AnniPositionState(
+        progress: positionNotifier.value.progress,
+        buffered: positionNotifier.value.buffered,
+        total: total,
+      );
+    });
   }
 
-  AnniAudioPlayer._() {
-    if (AnniPlatform.isSupportedDesktop) {
-      _playerFuture =
-          Player.create(id: _playerId++).then((value) => _player = value);
-    } else if (AnniPlatform.isSupportedMobile || AnniPlatform.isWeb) {
-      //
-    }
-  }
-
-  _prepare() async {
-    if (AnniPlatform.isSupportedDesktop) {
-      await _playerFuture;
-      _player.add(await Media.file(File(
-          "/home/yesterday17/音乐/[A] 夏川椎菜/[200909][SMCL-647] アンチテーゼ/01. アンチテーゼ.flac")));
-    } else if (AnniPlatform.isSupportedMobile || AnniPlatform.isWeb) {
-      //
-    }
-  }
-
-  get isPlaying => _player.playback.isPlaying;
-
-  play() {
-    if (AnniPlatform.isSupportedDesktop) {
-      _player.play();
-    } else if (AnniPlatform.isSupportedMobile || AnniPlatform.isWeb) {
-      AudioService.play();
-    }
-  }
-
-  pause() {
-    if (AnniPlatform.isSupportedDesktop) {
-      _player.pause();
-    } else if (AnniPlatform.isSupportedMobile || AnniPlatform.isWeb) {
-      AudioService.pause();
-    }
-  }
-
-  stop() {
-    if (AnniPlatform.isSupportedDesktop) {
-      _player.stop();
-    } else if (AnniPlatform.isSupportedMobile || AnniPlatform.isWeb) {
-      AudioService.stop();
-    }
+  // Initialize after construction, including async parts
+  Future<void> init() async {
+    await this.player.setAudioSource(this.playlist, preload: false);
   }
 }

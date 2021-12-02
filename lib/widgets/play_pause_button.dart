@@ -16,16 +16,16 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
   Widget build(BuildContext context) {
     return SquareIconButton(
       child: Icon(
-          Global.player.isPlaying
+          Global.audioService.isPlaying
               ? Icons.pause_rounded
               : Icons.play_arrow_rounded,
           size: widget.size),
       onPressed: () async {
         setState(() {
-          if (Global.player.isPlaying) {
-            Global.player.pause();
+          if (Global.audioService.isPlaying) {
+            Global.audioService.player.pause();
           } else {
-            Global.player.play();
+            Global.audioService.player.play();
           }
         });
       },

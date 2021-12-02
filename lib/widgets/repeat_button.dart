@@ -1,6 +1,12 @@
-import 'package:annix/models/playlist.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
+
+enum RepeatMode {
+  Normal,
+  Random,
+  LoopOne,
+  Loop,
+}
 
 typedef RepeatFunction = void Function(RepeatMode mode);
 
