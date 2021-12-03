@@ -21,6 +21,10 @@ dependencies:
   just_audio_libwinmedia: ^0.0.4
   audio_video_progress_bar: ^0.10.0
 
+  toml: ^0.12.0
+  json_serializable: ^6.1.1
+  sqflite_common_ffi: ^2.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

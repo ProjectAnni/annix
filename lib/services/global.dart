@@ -1,12 +1,15 @@
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class Global {
   static late SharedPreferences _preferences;
 
   static late AnnilClient annil;
   static late AnniAudioService audioService;
+
+  static bool get needSetup => !(_preferences.getBool("initialized") ?? false);
 
   static Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
@@ -18,6 +21,10 @@ class Global {
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjAsInR5cGUiOiJ1c2VyIiwidXNlcm5hbWUiOiJ0ZXN0IiwiYWxsb3dTaGFyZSI6dHJ1ZX0.7CH27OBvUnJhKxBdtZbJSXA-JIwQ4MWqI5JsZ46NoKk',
     );
 
+    // Database
+    sqfliteFfiInit();
+
+    // Audio Service
     audioService = AnniAudioService();
     await audioService.init();
   }
