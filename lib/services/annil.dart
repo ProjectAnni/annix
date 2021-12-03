@@ -59,19 +59,15 @@ class AnnilClient {
 }
 
 class AnnilAudioSource extends LockCachingAudioSource {
-  final String baseUri;
-  final String authorization;
-
   final String catalog;
   final int trackId;
-  final PreferBitrate preferBitrate;
 
   AnnilAudioSource({
-    required this.baseUri,
-    required this.authorization,
+    required String baseUri,
+    required String authorization,
     required this.catalog,
     required this.trackId,
-    this.preferBitrate = PreferBitrate.Loseless,
+    PreferBitrate preferBitrate = PreferBitrate.Loseless,
   }) : super(
           Uri.parse(
             '$baseUri/$catalog/$trackId?prefer_bitrate=${preferBitrate.toBitrateString()}',
