@@ -1,3 +1,4 @@
+import 'package:annix/metadata/metadata_source.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,8 @@ class Global {
 
   static late AnnilClient annil;
   static late AnniAudioService audioService;
+
+  static late BaseMetadataSource metadataSource;
 
   static bool get needSetup => !(_preferences.getBool("initialized") ?? false);
 

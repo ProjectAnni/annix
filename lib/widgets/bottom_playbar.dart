@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
+import 'package:annix/metadata/metadata.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/play_pause_button.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BottomPlayBar extends StatefulWidget {
   @override
@@ -26,24 +30,13 @@ class _BottomPlayBarState extends State<BottomPlayBar> {
                 children: [
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          // TODO: cover
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(color: Colors.white),
-                          ),
-                        ),
+                      FractionallySizedBox(
+                        heightFactor: 0.9,
+                        child: CurrentMusicCover(),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Music Title'),
-                          Text('Artist', textScaleFactor: 0.8),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: CurrentMusicInfo(),
                       ),
                     ],
                   ),
@@ -51,10 +44,10 @@ class _BottomPlayBarState extends State<BottomPlayBar> {
                   Row(
                     children: [
                       Text("TODO"),
+                      // TODO: implement repeat button
                       // RepeatButton(
                       //   initial: playlist.mode,
                       //   onRepeatModeChange: (mode) {
-                      //     // TODO: do not listen here
                       //     playlist.setMode(mode);
                       //   },
                       // ),
@@ -92,6 +85,75 @@ class _BottomPlayBarState extends State<BottomPlayBar> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CurrentMusicInfo extends StatelessWidget {
+  const CurrentMusicInfo({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AnnilPlaylist>(
+      builder: (context, value, child) {
+        return value.playing != null
+            ? FutureBuilder<Track?>(
+                future: Global.metadataSource.getTrack(
+                  catalog: value.playingCatalog!,
+                  trackIndex: value.playingTrackIndex!,
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(snapshot.data?.title ?? "Unknown Title"),
+                        Text(
+                          snapshot.data?.artist ?? "Unknown Artist",
+                          textScaleFactor: 0.8,
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              )
+            : Container();
+      },
+    );
+  }
+}
+
+class CurrentMusicCover extends StatelessWidget {
+  const CurrentMusicCover({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AnnilPlaylist>(
+      builder: (context, value, child) {
+        if (value.playing == null) {
+          // not playing, return empty cover
+          return DecoratedBox(
+            decoration: BoxDecoration(color: Colors.white),
+          );
+        } else {
+          // playing, get cover by catalog
+          return FutureBuilder<Uint8List>(
+            future: Global.annil.getCover(catalog: value.playingCatalog!),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Image.memory(snapshot.data!);
+              } else {
+                return DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.white),
+                );
+              }
+            },
+          );
+        }
+      },
     );
   }
 }

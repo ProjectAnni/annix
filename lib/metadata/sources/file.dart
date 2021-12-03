@@ -21,7 +21,7 @@ class FileMetadataSource extends BaseMetadataSource {
 
   @override
   Future<Album?> getAlbumDetail({required String catalog}) async {
-    final file = File(path.join(localSource, 'albums', '$catalog.toml'));
+    final file = File(path.join(localSource, 'album', '$catalog.toml'));
     if (!await file.exists()) {
       return null;
     }

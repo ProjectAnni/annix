@@ -28,6 +28,8 @@ dependencies:
   stash: ^3.2.2
   stash_memory: ^3.2.1
 
+  file_picker: ^4.2.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

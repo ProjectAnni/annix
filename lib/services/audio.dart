@@ -1,3 +1,4 @@
+import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
@@ -18,7 +19,10 @@ class AnniAudioService {
   AudioPlayer player = AudioPlayer();
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
     useLazyPreparation: true,
-    children: [Global.annil.getAudio(catalog: "SMCL-647", trackId: 1)],
+    children: [
+      Global.annil.getAudio(catalog: "SMCL-647", trackId: 1),
+      Global.annil.getAudio(catalog: "SMCL-647", trackId: 2),
+    ],
   );
 
   get isPlaying => player.playing;
@@ -61,5 +65,26 @@ class AnniAudioService {
   // Initialize after construction, including async parts
   Future<void> init() async {
     await this.player.setAudioSource(this.playlist, preload: false);
+  }
+}
+
+class AnnilPlaylist extends ChangeNotifier {
+  final AnniAudioService _service;
+  AnnilAudioSource? playing;
+
+  String? get playingCatalog => playing?.catalog;
+  int? get playingTrackId => playing?.trackId;
+  int? get playingTrackIndex =>
+      playingTrackId != null ? playingTrackId! - 1 : null;
+
+  AnnilPlaylist({required AnniAudioService service}) : _service = service {
+    _service.player.currentIndexStream.listen((index) {
+      if (index != null) {
+        playing = service.playlist.children[index] as AnnilAudioSource;
+      } else {
+        playing = null;
+      }
+      notifyListeners();
+    });
   }
 }

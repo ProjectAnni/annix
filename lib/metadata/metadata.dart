@@ -1,3 +1,5 @@
+import 'package:toml/toml.dart';
+
 class ReleaseDate {
   final int year;
   final int? month;
@@ -23,10 +25,15 @@ class ReleaseDate {
         month: value['month'],
         day: value['day'],
       );
-    } else {
+    } else if (value is TomlLocalDate) {
       // yyyy-mm-dd
-      // TODO: what's type here?
-      throw UnimplementedError();
+      return ReleaseDate(
+        year: value.date.year,
+        month: value.date.month,
+        day: value.date.day,
+      );
+    } else {
+      throw UnsupportedError("Unsupported release date format");
     }
   }
 
@@ -103,7 +110,7 @@ class Album {
   final String artist;
   final TrackType type;
   final ReleaseDate date;
-  final List<Tag> tags;
+  final List<Tag>? tags;
   final List<Disc> discs;
 
   Album({
@@ -113,7 +120,7 @@ class Album {
     required this.artist,
     required this.type,
     required this.date,
-    required this.tags,
+    this.tags,
     required this.discs,
   }) {
     this.discs.forEach((element) => element.album = this);
@@ -126,8 +133,8 @@ class Album {
     String artist = map['album']['artist'];
     TrackType type = stringToTrackType(map['album']['type']!)!;
     ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
-    List<Tag> tags = (map['album']['tags'] as List<dynamic>)
-        .map((e) => Tag.fromDynamic(e))
+    List<Tag>? tags = (map['album']['tags'] as List<dynamic>?)
+        ?.map((e) => Tag.fromDynamic(e))
         .toList();
     List<Disc> discs = (map['discs'] as List<dynamic>)
         .map((e) => Disc.fromMap(e as Map<String, dynamic>))
@@ -151,7 +158,7 @@ class Disc {
   final String catalog;
   final String? _artist;
   final TrackType? _type;
-  final List<Tag> tags;
+  final List<Tag>? tags;
   final List<Track> tracks;
 
   Disc({
@@ -159,7 +166,7 @@ class Disc {
     required this.catalog,
     String? artist,
     TrackType? type,
-    this.tags = const [],
+    this.tags,
     required this.tracks,
   })  : _title = title,
         _artist = artist,
@@ -178,10 +185,11 @@ class Disc {
     String catalog = map['catalog'];
     String? artist = map['artist'];
     TrackType? type = stringToTrackType(map['type']);
-    List<Tag> tags =
-        (map['tags'] as List<dynamic>).map((e) => Tag.fromDynamic(e)).toList();
+    List<Tag>? tags = (map['tags'] as List<dynamic>?)
+        ?.map((e) => Tag.fromDynamic(e))
+        .toList();
 
-    List<Track> tracks = (map['discs'] as List<Map<String, dynamic>>)
+    List<Track> tracks = (map['tracks'] as List<Map<String, dynamic>>)
         .map((e) => Track.fromMap(e))
         .toList();
     return Disc(
@@ -200,7 +208,7 @@ class Track {
   final String title;
   final String? _artist;
   final TrackType? _type;
-  final List<Tag> tags;
+  final List<Tag>? tags;
 
   Track({
     required this.title,
@@ -220,8 +228,9 @@ class Track {
     String artist = map['artist'];
 
     TrackType? type = stringToTrackType(map['type']);
-    List<Tag> tags =
-        (map['tags'] as List<dynamic>).map((e) => Tag.fromDynamic(e)).toList();
+    List<Tag>? tags = (map['tags'] as List<dynamic>?)
+        ?.map((e) => Tag.fromDynamic(e))
+        .toList();
     return Track(title: title, artist: artist, type: type, tags: tags);
   }
 }
