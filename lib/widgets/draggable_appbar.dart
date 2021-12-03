@@ -1,4 +1,4 @@
-import 'package:annix/services/window.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
 class DraggableAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -16,22 +16,8 @@ class DraggableAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _DraggableAppBarState extends State<DraggableAppBar> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return MoveWindow(
       child: widget.appBar,
-      onPanStart: onPanStart,
-      onPanUpdate: onPanUpdate,
-    );
-  }
-
-  Offset? startPosition;
-  void onPanStart(DragStartDetails details) async {
-    startPosition = details.globalPosition;
-  }
-
-  void onPanUpdate(DragUpdateDetails details) async {
-    var now = details.globalPosition;
-    await AnnilWindow.updatePositionDelta(
-      Offset(now.dx - startPosition!.dx, now.dy - startPosition!.dy),
     );
   }
 }
