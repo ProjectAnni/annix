@@ -176,6 +176,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.4"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -532,6 +539,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.0"
+  stash:
+    dependency: "direct main"
+    description:
+      name: stash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.2"
+  stash_memory:
+    dependency: "direct main"
+    description:
+      name: stash_memory
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.1"
   stream_channel:
     dependency: transitive
     description:
@@ -587,7 +608,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.5"
   vector_math:
     dependency: transitive
     description:

@@ -25,6 +25,9 @@ dependencies:
   json_serializable: ^6.1.1
   sqflite_common_ffi: ^2.1.0
 
+  stash: ^3.2.2
+  stash_memory: ^3.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

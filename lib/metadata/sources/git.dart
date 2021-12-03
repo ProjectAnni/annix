@@ -1,20 +1,21 @@
 import 'dart:io';
 
-import 'package:annix/metadata/metadata_source.dart';
+import 'package:annix/metadata/sources/file.dart';
 
-class GitMetadataSource extends BaseMetadataSource {
+class GitMetadataSource extends FileMetadataSource {
   String? remoteSource;
-  late String localSource;
 
-  GitMetadataSource._({this.remoteSource, required this.localSource});
+  GitMetadataSource._({this.remoteSource, required String localSource})
+      : super(localSource: localSource);
 
   static GitMetadataSource local(String localSource) {
     return GitMetadataSource._(localSource: localSource);
   }
 
   static GitMetadataSource remote(String remoteSource) {
-    var localSource  = '/tmp/metadata';
-    return GitMetadataSource._(localSource: localSource, remoteSource: remoteSource)
+    var localSource = '/tmp/metadata';
+    return GitMetadataSource._(
+        localSource: localSource, remoteSource: remoteSource);
   }
 
   @override
@@ -23,6 +24,7 @@ class GitMetadataSource extends BaseMetadataSource {
       // local source does not exist, try to clone remoteSource to local
       if (remoteSource != null) {
         // TODO: clone repository
+        throw UnimplementedError();
       } else {
         // remote source is null, this is a local git source
         // throw DirectoryNotFound exception
@@ -40,6 +42,6 @@ class GitMetadataSource extends BaseMetadataSource {
   @override
   Future<bool> doUpdate() async {
     // TODO: git pull
-    return false;
+    throw UnimplementedError();
   }
 }

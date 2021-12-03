@@ -2,9 +2,11 @@ import 'package:annix/services/annil.dart';
 import 'package:annix/services/audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:stash_memory/stash_memory.dart';
 
 class Global {
   static late SharedPreferences _preferences;
+  static final cacheStore = newMemoryStore();
 
   static late AnnilClient annil;
   static late AnniAudioService audioService;

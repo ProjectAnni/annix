@@ -1,3 +1,8 @@
+import 'package:annix/metadata/metadata.dart';
+import 'package:annix/services/global.dart';
+import 'package:stash/stash_api.dart';
+import 'package:stash_memory/stash_memory.dart';
+
 /// MetadataSource is the source of local metadata need by the whole application.
 ///
 /// It can be folder with structure defined in [Anni Metadata Repository][metadata-repository], or pre-compiled sqlite database file.
@@ -15,7 +20,12 @@ abstract class BaseMetadataSource {
   /// This function returns whether an update is done actually.
   Future<bool> update({force = false}) async {
     if (force || await canUpdate()) {
-      return await doUpdate();
+      bool updated = await doUpdate();
+      if (updated) {
+        // metadata repository updated, invalidate cache
+        await _albumCache.clear();
+      }
+      return updated;
     }
     return false;
   }
@@ -28,6 +38,45 @@ abstract class BaseMetadataSource {
   /// The actual update part. Override this function with actual implementation.
   Future<bool> doUpdate() async {
     return false;
+  }
+
+  /// Private album object cache for album object reading
+  static final _albumCache = Global.cacheStore.cache(
+    cacheName: 'album',
+    maxEntries: 64,
+    evictionPolicy: LruEvictionPolicy(),
+  );
+
+  /// Get album information
+  ///
+  /// DO NOT OVERRIDE THIS METHOD
+  Future<Album?> getAlbum({required String catalog}) async {
+    if (!await _albumCache.containsKey(catalog)) {
+      // album not in cache, load it from source
+      Album? album = await getAlbumDetail(catalog: catalog);
+      if (album == null) {
+        // album not found
+        return null;
+      } else {
+        await _albumCache.put(catalog, album);
+      }
+    }
+    return await _albumCache.get(catalog);
+  }
+
+  /// Actual method to get album detail from metadata source
+  /// Override this function to grant ability to get album detail
+  ///
+  /// Return null if album is not found
+  Future<Album?> getAlbumDetail({required String catalog});
+
+  /// Get track information
+  ///
+  /// DO NOT OVERRIDE THIS METHOD
+  Future<Track?> getTrack(
+      {required String catalog, discIndex = 0, required int trackIndex}) async {
+    Album? album = await getAlbum(catalog: catalog);
+    return album?.discs[discIndex].tracks[trackIndex];
   }
 }
 
