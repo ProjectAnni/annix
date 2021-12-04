@@ -29,7 +29,7 @@ class _BottomPlayBarState extends State<BottomPlayBar> {
             Row(
               children: [
                 AspectRatio(
-                  aspectRatio: 1.5,
+                  aspectRatio: 1.4,
                   child: Expanded(
                     child: Container(),
                   ),
@@ -114,7 +114,7 @@ class CurrentMusicInfo extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Container(
-                      constraints: BoxConstraints(maxWidth: 200),
+                      constraints: BoxConstraints(maxWidth: 300),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
