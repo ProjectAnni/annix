@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                           return null;
                         }
 
-                        var catalog = Global.catalogs[index];
+                        var catalog = Global.catalogs.keys.elementAt(index);
                         return PlayableGrid(
                           id: catalog,
                           cover: Global.annil.getCover(
@@ -51,15 +51,22 @@ class _HomePageState extends State<HomePage> {
                           playlistCallback: (catalog) async {
                             var album = await Global.metadataSource
                                 .getAlbum(catalog: catalog);
-                            var i = 0;
-                            return album?.discs[0].tracks
-                                .map<Song>(
-                                  (e) => Song(
-                                    catalog: catalog,
-                                    trackId: ++i,
-                                  ),
-                                )
-                                .toList();
+                            if (album == null) {
+                              return null;
+                            } else {
+                              print(catalog);
+                              List<Song> songs = [];
+                              album.discs.forEach((disc) {
+                                var trackId = 1;
+                                disc.tracks.forEach((element) {
+                                  songs.add(Song(
+                                    catalog: disc.catalog,
+                                    trackId: trackId++,
+                                  ));
+                                });
+                              });
+                              return songs;
+                            }
                           },
                         );
                       },

@@ -4,6 +4,7 @@ import 'package:annix/models/song.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
+import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
@@ -51,8 +52,9 @@ class _PlayableGridState extends State<PlayableGrid> {
                 if (snapshot.hasData) {
                   return Image.memory(
                     snapshot.data!,
-                    filterQuality: FilterQuality.high,
-                    isAntiAlias: true,
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.scaleDown,
                   );
                 } else {
                   return CircularProgressIndicator();
@@ -64,31 +66,33 @@ class _PlayableGridState extends State<PlayableGrid> {
           AnniPlatform.isMobile || hover
               ? Align(
                   alignment: Alignment.bottomRight,
-                  child: IconButton(
-                    icon: Icon(Icons.play_arrow),
-                    padding: EdgeInsets.all(16),
-                    onPressed: () async {
-                      // Play current playlist instead of the current one
-                      await Global.audioService.pause();
-
-                      var songs = await widget.playlistCallback(widget.id);
-                      if (songs != null) {
-                        Global.audioService.playlist = ConcatenatingAudioSource(
-                          children: songs
-                              .map<AudioSource>(
-                                (s) => Global.annil.getAudio(
-                                  catalog: s.catalog,
-                                  trackId: s.trackId,
-                                ),
-                              )
-                              .toList(),
-                        );
-                        await Global.audioService.init(force: true);
-                        Provider.of<AnnilPlaylist>(context, listen: false)
-                            .triggerChange();
-                        await Global.audioService.play();
-                      }
-                    },
+                  child: SizedBox.square(
+                    dimension: 48,
+                    child: SquareIconButton(
+                      child: Icon(Icons.play_circle),
+                      onPressed: () async {
+                        // Play current playlist instead of the current one
+                        var songs = await widget.playlistCallback(widget.id);
+                        if (songs != null) {
+                          await Global.audioService.pause();
+                          Global.audioService.playlist =
+                              ConcatenatingAudioSource(
+                            children: songs
+                                .map<AudioSource>(
+                                  (s) => Global.annil.getAudio(
+                                    catalog: s.catalog,
+                                    trackId: s.trackId,
+                                  ),
+                                )
+                                .toList(),
+                          );
+                          await Global.audioService.init(force: true);
+                          Provider.of<AnnilPlaylist>(context, listen: false)
+                              .resetPlaylist();
+                          await Global.audioService.play();
+                        }
+                      },
+                    ),
                   ),
                 )
               : Container(),

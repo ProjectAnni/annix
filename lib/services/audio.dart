@@ -96,7 +96,10 @@ class AnnilPlaylist extends ChangeNotifier {
     });
   }
 
-  void triggerChange() {
+  void resetPlaylist() {
+    playing = _service.playlist.children.length > 0
+        ? _service.playlist.children[0] as AnnilAudioSource
+        : null;
     notifyListeners();
   }
 }

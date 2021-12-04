@@ -13,7 +13,7 @@ class Global {
   static late AnniAudioService audioService = AnniAudioService();
 
   static late BaseMetadataSource metadataSource;
-  static late List<String> catalogs;
+  static late Map<String, List<String>> catalogs;
 
   static bool get needSetup => !(_preferences.getBool("initialized") ?? false);
 

@@ -29,18 +29,21 @@ class AnnilClient {
     return resp.data;
   }
 
-  Future<List<String>> getAlbums() async {
-    List<dynamic> result = await _request(
+  Future<Map<String, List<String>>> getAlbums() async {
+    Map<String, dynamic> result = await _request(
       path: 'albums',
       responseType: ResponseType.json,
     );
-    return result.map((e) => e.toString()).toList();
+    return result.map(
+      (k, v) =>
+          MapEntry(k, (v as List<dynamic>).map((e) => e.toString()).toList()),
+    );
   }
 
   AudioSource getAudio({
     required String catalog,
     required int trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Loseless,
+    PreferBitrate preferBitrate = PreferBitrate.Lossless,
   }) {
     return AnnilAudioSource(
       baseUri: baseUrl,
@@ -72,7 +75,7 @@ class AnnilAudioSource extends LockCachingAudioSource {
     required String authorization,
     required this.catalog,
     required this.trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Loseless,
+    PreferBitrate preferBitrate = PreferBitrate.Lossless,
   }) : super(
           Uri.parse(
             '$baseUri/$catalog/$trackId?auth=$authorization&prefer_bitrate=${preferBitrate.toBitrateString()}',
@@ -84,7 +87,7 @@ enum PreferBitrate {
   Low,
   Medium,
   High,
-  Loseless,
+  Lossless,
 }
 
 extension PreferBitrateToString on PreferBitrate {
@@ -96,8 +99,8 @@ extension PreferBitrateToString on PreferBitrate {
         return "medium";
       case PreferBitrate.High:
         return "high";
-      case PreferBitrate.Loseless:
-        return "loseless";
+      case PreferBitrate.Lossless:
+        return "lossless";
     }
   }
 }
