@@ -10,9 +10,10 @@ class Global {
   static final cacheStore = newMemoryStore();
 
   static late AnnilClient annil;
-  static late AnniAudioService audioService;
+  static late AnniAudioService audioService = AnniAudioService();
 
   static late BaseMetadataSource metadataSource;
+  static late List<String> catalogs;
 
   static bool get needSetup => !(_preferences.getBool("initialized") ?? false);
 
@@ -25,12 +26,9 @@ class Global {
       authorization:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjAsInR5cGUiOiJ1c2VyIiwidXNlcm5hbWUiOiJ0ZXN0IiwiYWxsb3dTaGFyZSI6dHJ1ZX0.7CH27OBvUnJhKxBdtZbJSXA-JIwQ4MWqI5JsZ46NoKk',
     );
+    catalogs = await annil.getAlbums();
 
     // Database
     sqfliteFfiInit();
-
-    // Audio Service
-    audioService = AnniAudioService();
-    await audioService.init();
   }
 }

@@ -1,5 +1,4 @@
 import 'package:annix/services/annil.dart';
-import 'package:annix/services/global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -18,14 +17,10 @@ class AnniPositionState {
 class AnniAudioService {
   AudioPlayer player = AudioPlayer();
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
-    useLazyPreparation: true,
-    children: [
-      Global.annil.getAudio(catalog: "SMCL-647", trackId: 1),
-      Global.annil.getAudio(catalog: "SMCL-647", trackId: 2),
-    ],
+    useLazyPreparation: false,
+    children: [],
   );
 
-  get isPlaying => player.playing;
   ValueNotifier<AnniPositionState> positionNotifier =
       ValueNotifier<AnniPositionState>(
     const AnniPositionState(
@@ -62,9 +57,22 @@ class AnniAudioService {
     });
   }
 
+  bool initialized = false;
   // Initialize after construction, including async parts
   Future<void> init() async {
-    await this.player.setAudioSource(this.playlist, preload: false);
+    if (!initialized) {
+      await this.player.setAudioSource(this.playlist);
+      initialized = true;
+    }
+  }
+
+  Future<void> play() async {
+    await this.init();
+    await this.player.play();
+  }
+
+  Future<void> pause() async {
+    await this.player.pause();
   }
 }
 
@@ -79,11 +87,26 @@ class AnnilPlaylist extends ChangeNotifier {
 
   AnnilPlaylist({required AnniAudioService service}) : _service = service {
     _service.player.currentIndexStream.listen((index) {
-      if (index != null) {
+      if (index != null && service.playlist.length > index) {
         playing = service.playlist.children[index] as AnnilAudioSource;
       } else {
         playing = null;
       }
+      notifyListeners();
+    });
+  }
+}
+
+class AnnilPlayState extends ChangeNotifier {
+  final AnniAudioService _service;
+
+  PlayerState state;
+
+  AnnilPlayState({required AnniAudioService service})
+      : _service = service,
+        state = service.player.playerState {
+    _service.player.playerStateStream.listen((state) {
+      this.state = state;
       notifyListeners();
     });
   }

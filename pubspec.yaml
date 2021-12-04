@@ -18,7 +18,10 @@ dependencies:
   dio: ^4.0.4
 
   just_audio: ^0.9.18
-  just_audio_libwinmedia: ^0.0.4
+  just_audio_libwinmedia:
+    git:
+      url: https://github.com/ProjectAnni/just_audio_libwinmedia.git
+      ref: fork
   audio_video_progress_bar: ^0.10.0
 
   toml: ^0.12.0

@@ -30,13 +30,14 @@ class AnnilClient {
   }
 
   Future<List<String>> getAlbums() async {
-    return await _request(
+    List<dynamic> result = await _request(
       path: 'albums',
       responseType: ResponseType.json,
     );
+    return result.map((e) => e.toString()).toList();
   }
 
-  AnnilAudioSource getAudio({
+  AudioSource getAudio({
     required String catalog,
     required int trackId,
     PreferBitrate preferBitrate = PreferBitrate.Loseless,
@@ -56,6 +57,10 @@ class AnnilClient {
       responseType: ResponseType.bytes,
     );
   }
+
+  String getCoverUrl({required String catalog}) {
+    return '$baseUrl/$catalog/cover?auth=$authorization';
+  }
 }
 
 class AnnilAudioSource extends LockCachingAudioSource {
@@ -70,11 +75,8 @@ class AnnilAudioSource extends LockCachingAudioSource {
     PreferBitrate preferBitrate = PreferBitrate.Loseless,
   }) : super(
           Uri.parse(
-            '$baseUri/$catalog/$trackId?prefer_bitrate=${preferBitrate.toBitrateString()}',
+            '$baseUri/$catalog/$trackId?auth=$authorization&prefer_bitrate=${preferBitrate.toBitrateString()}',
           ),
-          headers: {
-            'Authorization': authorization,
-          },
         );
 }
 

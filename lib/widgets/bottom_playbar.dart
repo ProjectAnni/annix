@@ -61,6 +61,7 @@ class _BottomPlayBarState extends State<BottomPlayBar> {
             valueListenable: Global.audioService.positionNotifier,
             builder: (context, value, child) {
               var theme = Theme.of(context);
+              print({value.buffered, value.progress, value.total});
               return ProgressBar(
                 progress: value.progress,
                 buffered: value.buffered,

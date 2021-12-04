@@ -19,6 +19,9 @@ class Annix extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AnnilPlaylist(service: Global.audioService),
         ),
+        ChangeNotifierProvider(
+          create: (_) => AnnilPlayState(service: Global.audioService),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
