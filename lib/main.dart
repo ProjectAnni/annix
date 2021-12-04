@@ -9,7 +9,7 @@ Future<void> main() async {
   runApp(Annix());
 
   doWhenWindowReady(() {
-    const initialSize = Size(1280, 720);
+    const initialSize = Size(1600, 900);
     appWindow.minSize = initialSize;
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
