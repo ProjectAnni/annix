@@ -45,7 +45,8 @@ class _PlayableGridState extends State<PlayableGrid> {
           });
         },
         child: Stack(children: [
-          Center(
+          AspectRatio(
+            aspectRatio: 1,
             child: FutureBuilder<Uint8List>(
               future: widget.cover,
               builder: (context, snapshot) {
@@ -56,7 +57,12 @@ class _PlayableGridState extends State<PlayableGrid> {
                     filterQuality: FilterQuality.medium,
                   );
                 } else {
-                  return CircularProgressIndicator();
+                  return SizedBox.square(
+                    dimension: 64,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 }
               },
             ),
