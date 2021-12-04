@@ -103,19 +103,24 @@ class CurrentMusicInfo extends StatelessWidget {
                 ),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          snapshot.data?.title ?? "Unknown Title",
-                          textScaleFactor: 1.2,
-                        ),
-                        Text(
-                          snapshot.data?.artist ?? "Unknown Artist",
-                          textScaleFactor: 1,
-                        ),
-                      ],
+                    return Container(
+                      constraints: BoxConstraints(maxWidth: 200),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            snapshot.data?.title ?? "Unknown Title",
+                            textScaleFactor: 1.2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            snapshot.data?.artist ?? "Unknown Artist",
+                            textScaleFactor: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     );
                   } else {
                     return Container();
