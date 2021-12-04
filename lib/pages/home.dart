@@ -1,9 +1,10 @@
+import 'package:annix/models/song.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/navigator.dart';
+import 'package:annix/widgets/playable_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -42,35 +43,24 @@ class _HomePageState extends State<HomePage> {
                         }
 
                         var catalog = Global.catalogs[index];
-                        return GridTile(
-                          child: InkWell(
-                            onDoubleTap: () async {
-                              var album = await Global.metadataSource
-                                  .getAlbum(catalog: catalog);
-                              if (album != null) {
-                                var i = 0;
-                                Global.audioService.playlist.addAll(
-                                  album.discs[0].tracks
-                                      .map<AudioSource>(
-                                        (e) => Global.annil.getAudio(
-                                          catalog: catalog,
-                                          trackId: ++i,
-                                        ),
-                                      )
-                                      .toList(),
-                                );
-                              }
-                            },
-                            child: Image.network(
-                              Global.annil.getCoverUrl(
-                                catalog: catalog,
-                              ),
-                              filterQuality: FilterQuality.high,
-                              height: 200,
-                              width: 200,
-                              isAntiAlias: true,
-                            ),
+                        return PlayableGrid(
+                          id: catalog,
+                          cover: Global.annil.getCover(
+                            catalog: catalog,
                           ),
+                          playlistCallback: (catalog) async {
+                            var album = await Global.metadataSource
+                                .getAlbum(catalog: catalog);
+                            var i = 0;
+                            return album?.discs[0].tracks
+                                .map<Song>(
+                                  (e) => Song(
+                                    catalog: catalog,
+                                    trackId: ++i,
+                                  ),
+                                )
+                                .toList();
+                          },
                         );
                       },
                     ),

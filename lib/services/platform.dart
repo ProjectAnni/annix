@@ -6,11 +6,11 @@ class AnniPlatform {
   static bool get isWeb => kIsWeb;
 
   // Desktop platforms
-  static bool get isSupportedDesktop => Platform.isWindows || Platform.isLinux;
+  static bool get isDesktop =>
+      Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
   // Mobile platforms
-  static bool get isSupportedMobile =>
-      Platform.isAndroid || Platform.isIOS || Platform.isMacOS;
+  static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 
   // Only Fuchsia is not supported for now
   static bool get isSupported => !Platform.isFuchsia;

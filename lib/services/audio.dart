@@ -59,8 +59,8 @@ class AnniAudioService {
 
   bool initialized = false;
   // Initialize after construction, including async parts
-  Future<void> init() async {
-    if (!initialized) {
+  Future<void> init({force = false}) async {
+    if (!initialized || force) {
       await this.player.setAudioSource(this.playlist);
       initialized = true;
     }
@@ -94,6 +94,10 @@ class AnnilPlaylist extends ChangeNotifier {
       }
       notifyListeners();
     });
+  }
+
+  void triggerChange() {
+    notifyListeners();
   }
 }
 

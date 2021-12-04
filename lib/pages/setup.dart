@@ -27,7 +27,7 @@ class _AnnixSetupState extends State<AnnixSetup> {
             Global.metadataSource = FileMetadataSource(
                 localSource: _metaFormKey.currentState!.path!);
             // TODO: Go to next step instead of finish
-            Navigator.of(context).pushNamed('/home_desktop');
+            Navigator.of(context).pushReplacementNamed('/home_desktop');
             // setState(() {
             //   _currentStep++;
             // });
