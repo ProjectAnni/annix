@@ -1,4 +1,5 @@
 import 'package:annix/services/annil.dart';
+import 'package:annix/widgets/repeat_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -74,6 +75,9 @@ class AnniAudioService {
   Future<void> pause() async {
     await this.player.pause();
   }
+
+  // TODO: apply repeat mode
+  RepeatMode repeatMode = RepeatMode.Normal;
 }
 
 class AnnilPlaylist extends ChangeNotifier {
