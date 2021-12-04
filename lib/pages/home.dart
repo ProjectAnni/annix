@@ -4,6 +4,8 @@ import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/navigator.dart';
 import 'package:annix/widgets/playable_grid.dart';
+import 'package:annix/widgets/square_icon_button.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +20,29 @@ class _HomePageState extends State<HomePage> {
       appBar: DraggableAppBar(
         appBar: AppBar(
           title: Text("Annix"),
+          actions: [
+            SquareIconButton(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Icon(
+                    Icons.minimize,
+                  )
+                ],
+              ),
+              onPressed: () {
+                appWindow.minimize();
+              },
+            ),
+            SquareIconButton(
+              child: Icon(Icons.close),
+              onPressed: () {
+                appWindow.close();
+              },
+            )
+          ],
         ),
       ),
       body: Row(
