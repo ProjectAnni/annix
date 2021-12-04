@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:annix/services/audio_source.dart';
 import 'package:dio/dio.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -66,7 +67,7 @@ class AnnilClient {
   }
 }
 
-class AnnilAudioSource extends LockCachingAudioSource {
+class AnnilAudioSource extends ModifiedLockCachingAudioSource {
   final String catalog;
   final int trackId;
 

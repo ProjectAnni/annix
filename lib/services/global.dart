@@ -17,6 +17,8 @@ class Global {
 
   static bool get needSetup => !(_preferences.getBool("initialized") ?? false);
 
+  static Map<String, Duration?> durations = new Map();
+
   static Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
 

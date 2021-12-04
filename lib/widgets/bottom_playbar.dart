@@ -52,29 +52,39 @@ class _BottomPlayBarState extends State<BottomPlayBar> {
             ),
             SizedBox(
               width: 600,
-              child: ValueListenableBuilder<AnniPositionState>(
-                valueListenable: Global.audioService.positionNotifier,
-                builder: (context, value, child) {
-                  var theme = Theme.of(context);
-                  print([value.progress, value.total]);
-                  return ProgressBar(
-                    progress: value.progress,
-                    buffered: value.buffered,
-                    total: value.total ?? Duration.zero,
+              child: Consumer<AnnilPlaylist>(
+                builder: (context, playlist, child) {
+                  return ValueListenableBuilder<AnniPositionState>(
+                    valueListenable: Global.audioService.positionNotifier,
+                    builder: (context, value, child) {
+                      var theme = Theme.of(context);
+                      var total = value.total;
+                      if (total == null || total == Duration.zero) {
+                        total = Global.durations[
+                                '${playlist.playingCatalog}/${playlist.playingTrackId}'] ??
+                            Duration.zero;
+                      }
+                      print([value.progress, total]);
+                      return ProgressBar(
+                        progress: value.progress,
+                        buffered: value.buffered,
+                        total: total,
 
-                    // not played color
-                    baseBarColor: theme.colorScheme.background,
-                    // played color
-                    progressBarColor: theme.colorScheme.primary,
-                    // hide time played
-                    timeLabelLocation: TimeLabelLocation.sides,
-                    barHeight: 2.0,
-                    thumbRadius: 6,
-                    thumbGlowRadius: 12,
-                    thumbColor: theme.colorScheme.secondary,
-                    thumbCanPaintOutsideBar: false,
-                    onSeek: (duration) {
-                      Global.audioService.player.seek(duration);
+                        // not played color
+                        baseBarColor: theme.colorScheme.background,
+                        // played color
+                        progressBarColor: theme.colorScheme.primary,
+                        // hide time played
+                        timeLabelLocation: TimeLabelLocation.sides,
+                        barHeight: 2.0,
+                        thumbRadius: 6,
+                        thumbGlowRadius: 12,
+                        thumbColor: theme.colorScheme.secondary,
+                        thumbCanPaintOutsideBar: false,
+                        onSeek: (duration) {
+                          Global.audioService.player.seek(duration);
+                        },
+                      );
                     },
                   );
                 },
