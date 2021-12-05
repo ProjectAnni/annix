@@ -1,8 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -56,14 +56,22 @@ class AnnilClient {
     );
   }
 
-  Future<Uint8List> getCover({required String catalog}) async {
-    return await _request(
-      path: '$catalog/cover',
-      responseType: ResponseType.bytes,
+  CachedNetworkImage cover({required String catalog}) {
+    return CachedNetworkImage(
+      imageUrl: _getCoverUrl(catalog: catalog),
+      placeholder: (context, url) => SizedBox.square(
+        dimension: 64,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+      fit: BoxFit.scaleDown,
+      filterQuality: FilterQuality.medium,
     );
   }
 
-  String getCoverUrl({required String catalog}) {
+  String _getCoverUrl({required String catalog}) {
     return '$baseUrl/$catalog/cover?auth=$authorization';
   }
 }
@@ -105,7 +113,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         title: track?.title ?? "Unknown Title",
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
-        artUri: Uri.parse(annil.getCoverUrl(catalog: catalog)),
+        artUri: Uri.parse(annil._getCoverUrl(catalog: catalog)),
       ),
     );
   }

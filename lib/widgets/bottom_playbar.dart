@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/play_pause_button.dart';
@@ -203,20 +201,7 @@ class CurrentMusicCover extends StatelessWidget {
             return Container();
           } else {
             // playing, get cover by catalog
-            return FutureBuilder<Uint8List>(
-              future: Global.annil.getCover(catalog: value.playingCatalog!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Image.memory(
-                    snapshot.data!,
-                    fit: BoxFit.scaleDown,
-                    filterQuality: FilterQuality.medium,
-                  );
-                } else {
-                  return Container();
-                }
-              },
-            );
+            return Global.annil.cover(catalog: value.playingCatalog!);
           }
         },
       ),

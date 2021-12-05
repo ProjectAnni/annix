@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:annix/models/song.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
@@ -13,7 +11,7 @@ typedef PlaylistCallback = Future<List<Song>?> Function(String catalog);
 
 class PlayableGrid extends StatefulWidget {
   final String id;
-  final Future<Uint8List> cover;
+  final Widget cover;
   final PlaylistCallback playlistCallback;
 
   const PlayableGrid(
@@ -47,25 +45,7 @@ class _PlayableGridState extends State<PlayableGrid> {
         child: Stack(children: [
           AspectRatio(
             aspectRatio: 1,
-            child: FutureBuilder<Uint8List>(
-              future: widget.cover,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Image.memory(
-                    snapshot.data!,
-                    fit: BoxFit.scaleDown,
-                    filterQuality: FilterQuality.medium,
-                  );
-                } else {
-                  return SizedBox.square(
-                    dimension: 64,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-              },
-            ),
+            child: widget.cover,
           ),
           // Display on hover / on mobile
           AnniPlatform.isMobile || hover

@@ -74,7 +74,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                         var catalog = Global.catalogs.keys.elementAt(index);
                         return PlayableGrid(
                           id: catalog,
-                          cover: Global.annil.getCover(
+                          cover: Global.annil.cover(
                             catalog: catalog,
                           ),
                           playlistCallback: (catalog) async {
