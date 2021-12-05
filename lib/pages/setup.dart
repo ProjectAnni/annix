@@ -1,6 +1,7 @@
 import 'package:annix/metadata/metadata_source.dart';
 import 'package:annix/metadata/sources/file.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,9 @@ class _AnnixSetupState extends State<AnnixSetup> {
       ),
       body: Stepper(
         currentStep: _currentStep,
-        type: StepperType.horizontal,
+        type: AnniPlatform.isDesktop
+            ? StepperType.horizontal
+            : StepperType.vertical,
         controlsBuilder: (context, details) => Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Row(
@@ -135,40 +138,36 @@ class _MetadataFormState extends State<MetadataForm> {
     return Column(
       children: [
         ListTile(
-          title: Text('Metadata Repository Type'),
-          trailing: FractionallySizedBox(
-            widthFactor: 0.4,
-            child: DropdownButton<MetadataSoruceType>(
-              value: metadataSoruceType,
-              onChanged: (value) => metadataSoruceType = value!,
-              isExpanded: true,
-              items: [
-                DropdownMenuItem(
-                  child: Text('Git'),
-                  value: MetadataSoruceType.GitRemote,
-                  enabled: false,
-                ),
-                DropdownMenuItem(
-                  child: Text('Zip'),
-                  value: MetadataSoruceType.Zip,
-                  enabled: false,
-                ),
-                DropdownMenuItem(
-                  child: Text('Database'),
-                  value: MetadataSoruceType.Database,
-                  enabled: false,
-                ),
-                DropdownMenuItem(
-                  child: Text('Git(Local)'),
-                  value: MetadataSoruceType.GitLocal,
-                  enabled: false,
-                ),
-                DropdownMenuItem(
-                  child: Text('Folder(Local)'),
-                  value: MetadataSoruceType.Folder,
-                ),
-              ],
-            ),
+          title: Text('Repo Type'),
+          trailing: DropdownButton<MetadataSoruceType>(
+            value: metadataSoruceType,
+            onChanged: (value) => metadataSoruceType = value!,
+            items: [
+              DropdownMenuItem(
+                child: Text('Git'),
+                value: MetadataSoruceType.GitRemote,
+                enabled: false,
+              ),
+              DropdownMenuItem(
+                child: Text('Zip'),
+                value: MetadataSoruceType.Zip,
+                enabled: false,
+              ),
+              DropdownMenuItem(
+                child: Text('Database'),
+                value: MetadataSoruceType.Database,
+                enabled: false,
+              ),
+              DropdownMenuItem(
+                child: Text('Git(Local)'),
+                value: MetadataSoruceType.GitLocal,
+                enabled: false,
+              ),
+              DropdownMenuItem(
+                child: Text('Folder(Local)'),
+                value: MetadataSoruceType.Folder,
+              ),
+            ],
           ),
         ),
         // for local metadata source, use path picker

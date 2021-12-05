@@ -1,5 +1,6 @@
 import 'package:annix/models/song.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/navigator.dart';
@@ -8,41 +9,44 @@ import 'package:annix/widgets/square_icon_button.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class HomePageDesktop extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageDesktopState createState() => _HomePageDesktopState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageDesktopState extends State<HomePageDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DraggableAppBar(
         appBar: AppBar(
           title: Text("Annix"),
-          actions: [
-            SquareIconButton(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 8,
+          actions: AnniPlatform.isDesktop
+              ? [
+                  SquareIconButton(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Icon(
+                          Icons.minimize,
+                        )
+                      ],
+                    ),
+                    onPressed: () {
+                      appWindow.minimize();
+                    },
                   ),
-                  Icon(
-                    Icons.minimize,
+                  // TODO: Window <-> Full
+                  SquareIconButton(
+                    child: Icon(Icons.close),
+                    onPressed: () {
+                      appWindow.close();
+                    },
                   )
-                ],
-              ),
-              onPressed: () {
-                appWindow.minimize();
-              },
-            ),
-            SquareIconButton(
-              child: Icon(Icons.close),
-              onPressed: () {
-                appWindow.close();
-              },
-            )
-          ],
+                ]
+              : [],
         ),
       ),
       body: Row(
@@ -57,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                   child: GridView.custom(
                     padding: EdgeInsets.all(32.0),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
+                      crossAxisCount: AnniPlatform.isDesktop ? 4 : 2,
                       mainAxisSpacing: 32,
                       crossAxisSpacing: 32,
                     ),
@@ -103,7 +107,9 @@ class _HomePageState extends State<HomePage> {
                 // https://github.com/flutter/flutter/issues/46061
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: BottomPlayBar(),
+                  child: AnniPlatform.isDesktop
+                      ? BottomPlayBarDesktop()
+                      : BottomPlayerMobile(),
                 ),
               ],
             ),

@@ -1,4 +1,4 @@
-import 'package:annix/pages/home.dart';
+import 'package:annix/pages/home_desktop.dart';
 import 'package:annix/pages/setup.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
@@ -6,6 +6,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// TODO: https://docs.flutter.dev/cookbook/effects/nested-nav
 class Annix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class Annix extends StatelessWidget {
           '/home_desktop': (context) => WindowBorder(
                 color: Color(0xFF805306),
                 width: 4,
-                child: HomePage(),
+                child: HomePageDesktop(),
               ),
           '/setup': (context) => AnnixSetup(),
         },
