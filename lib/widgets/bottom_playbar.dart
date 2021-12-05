@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:annix/metadata/metadata.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/play_pause_button.dart';
@@ -8,6 +7,7 @@ import 'package:annix/widgets/repeat_button.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 
 class BottomPlayBarDesktop extends StatefulWidget {
@@ -18,40 +18,31 @@ class BottomPlayBarDesktop extends StatefulWidget {
 class _BottomPlayBarDesktopState extends State<BottomPlayBarDesktop> {
   Widget _currentMusicInfo() {
     return Consumer<AnnilPlaylist>(
-      builder: (context, value, child) {
-        return value.playing != null
-            ? FutureBuilder<Track?>(
-                future: Global.metadataSource.getTrack(
-                  catalog: value.playingCatalog!,
-                  trackIndex: value.playingTrackIndex!,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                      constraints: BoxConstraints(maxWidth: 300),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            snapshot.data?.title ?? "Unknown Title",
-                            textScaleFactor: 1.2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            snapshot.data?.artist ?? "Unknown Artist",
-                            textScaleFactor: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              )
-            : Container();
+      builder: (context, playlist, child) {
+        if (playlist.playing == null) {
+          return Container();
+        }
+
+        MediaItem item = playlist.playing!.tag;
+        return Container(
+          constraints: BoxConstraints(maxWidth: 300),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.title,
+                textScaleFactor: 1.2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                item.artist ?? "Unknown Artist",
+                textScaleFactor: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -148,28 +139,19 @@ class BottomPlayerMobile extends StatefulWidget {
 class _BottomPlayerMobileState extends State<BottomPlayerMobile> {
   Widget _currentMusicInfo() {
     return Consumer<AnnilPlaylist>(
-      builder: (context, value, child) {
-        return value.playing != null
-            ? FutureBuilder<Track?>(
-                future: Global.metadataSource.getTrack(
-                  catalog: value.playingCatalog!,
-                  trackIndex: value.playingTrackIndex!,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                      constraints: BoxConstraints(maxWidth: 300),
-                      child: Text(
-                        snapshot.data?.title ?? "Unknown Title",
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              )
-            : Container();
+      builder: (context, playlist, child) {
+        if (playlist.playing == null) {
+          return Container();
+        }
+
+        MediaItem item = playlist.playing!.tag;
+        return Container(
+          constraints: BoxConstraints(maxWidth: 300),
+          child: Text(
+            item.title,
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
       },
     );
   }

@@ -89,7 +89,10 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                                 var trackId = 1;
                                 disc.tracks.forEach((element) {
                                   songs.add(Song(
-                                    catalog: disc.catalog,
+                                    catalog: album.catalog,
+                                    discCatalog: album.discs.length > 1
+                                        ? disc.catalog
+                                        : null,
                                     trackId: trackId++,
                                   ));
                                 });

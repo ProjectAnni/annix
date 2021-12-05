@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:annix/services/audio_source.dart';
+import 'package:annix/services/global.dart';
 import 'package:dio/dio.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 class AnnilClient {
   final Dio client = Dio();
@@ -41,14 +43,13 @@ class AnnilClient {
     );
   }
 
-  AudioSource getAudio({
+  Future<AudioSource> getAudio({
     required String catalog,
     required int trackId,
     PreferBitrate preferBitrate = PreferBitrate.Lossless,
   }) {
-    return AnnilAudioSource(
-      baseUri: baseUrl,
-      authorization: authorization,
+    return AnnilAudioSource.create(
+      annil: this,
       catalog: catalog,
       trackId: trackId,
       preferBitrate: preferBitrate,
@@ -71,17 +72,43 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
   final String catalog;
   final int trackId;
 
-  AnnilAudioSource({
+  AnnilAudioSource._({
     required String baseUri,
     required String authorization,
     required this.catalog,
     required this.trackId,
     PreferBitrate preferBitrate = PreferBitrate.Lossless,
+    required MediaItem tag,
   }) : super(
           Uri.parse(
             '$baseUri/$catalog/$trackId?auth=$authorization&prefer_bitrate=${preferBitrate.toBitrateString()}',
           ),
+          tag: tag,
         );
+
+  static Future<AnnilAudioSource> create({
+    required AnnilClient annil,
+    required String catalog,
+    required int trackId,
+    PreferBitrate preferBitrate = PreferBitrate.Lossless,
+  }) async {
+    var track = await Global.metadataSource
+        .getTrack(catalog: catalog, trackIndex: trackId - 1);
+    return AnnilAudioSource._(
+      baseUri: annil.baseUrl,
+      authorization: annil.authorization,
+      catalog: catalog,
+      trackId: trackId,
+      preferBitrate: preferBitrate,
+      tag: MediaItem(
+        id: '$catalog/$trackId',
+        title: track?.title ?? "Unknown Title",
+        album: track?.disc.album.title ?? "Unknown Album",
+        artist: track?.artist,
+        artUri: Uri.parse(annil.getCoverUrl(catalog: catalog)),
+      ),
+    );
+  }
 }
 
 enum PreferBitrate {

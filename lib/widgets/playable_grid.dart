@@ -82,14 +82,13 @@ class _PlayableGridState extends State<PlayableGrid> {
                           await Global.audioService.pause();
                           Global.audioService.playlist =
                               ConcatenatingAudioSource(
-                            children: songs
-                                .map<AudioSource>(
-                                  (s) => Global.annil.getAudio(
-                                    catalog: s.catalog,
-                                    trackId: s.trackId,
-                                  ),
-                                )
-                                .toList(),
+                            children: await Future.wait(
+                                songs.map<Future<AudioSource>>(
+                              (s) => Global.annil.getAudio(
+                                catalog: s.discCatalog ?? s.catalog,
+                                trackId: s.trackId,
+                              ),
+                            )),
                           );
                           await Global.audioService.init(force: true);
                           Provider.of<AnnilPlaylist>(context, listen: false)

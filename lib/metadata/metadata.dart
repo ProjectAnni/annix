@@ -153,7 +153,7 @@ class Album {
 }
 
 class Disc {
-  late final Album _album;
+  late final Album album;
   final String? _title;
   final String catalog;
   final String? _artist;
@@ -174,11 +174,9 @@ class Disc {
     this.tracks.forEach((element) => element.disc = this);
   }
 
-  set album(Album album) => _album = album;
-
-  String get title => _title ?? _album.title;
-  String get artist => _artist ?? _album.artist;
-  TrackType get type => _type ?? _album.type;
+  String get title => _title ?? album.title;
+  String get artist => _artist ?? album.artist;
+  TrackType get type => _type ?? album.type;
 
   static Disc fromMap(Map<String, dynamic> map) {
     String? title = map['title'];
@@ -204,7 +202,7 @@ class Disc {
 }
 
 class Track {
-  late final Disc _disc;
+  late final Disc disc;
   final String title;
   final String? _artist;
   final TrackType? _type;
@@ -218,10 +216,8 @@ class Track {
   })  : _artist = artist,
         _type = type;
 
-  set disc(Disc disc) => _disc = disc;
-
-  String get artist => _artist ?? _disc.artist;
-  TrackType get type => _type ?? _disc.type;
+  String get artist => _artist ?? disc.artist;
+  TrackType get type => _type ?? disc.type;
 
   static Track fromMap(Map<String, dynamic> map) {
     String title = map['title'];
