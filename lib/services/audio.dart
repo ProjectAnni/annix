@@ -62,7 +62,11 @@ class AnniAudioService {
   // Initialize after construction, including async parts
   Future<void> init({force = false}) async {
     if (!initialized || force) {
-      await this.player.setAudioSource(this.playlist);
+      try {
+        await this.player.setAudioSource(this.playlist);
+      } catch (e) {
+        print(e);
+      }
       initialized = true;
     }
   }

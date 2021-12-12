@@ -30,7 +30,7 @@ class FileMetadataSource extends BaseMetadataSource {
       final toml = TomlDocument.parse(await file.readAsString());
       return Album.fromMap(toml.toMap());
     } on TomlParserException catch (e) {
-      print(e.message);
+      print(e);
       return null;
     } catch (e) {
       print(e);

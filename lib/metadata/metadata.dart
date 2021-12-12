@@ -221,7 +221,7 @@ class Track {
 
   static Track fromMap(Map<String, dynamic> map) {
     String title = map['title'];
-    String artist = map['artist'];
+    String? artist = map['artist'];
 
     TrackType? type = stringToTrackType(map['type']);
     List<Tag>? tags = (map['tags'] as List<dynamic>?)
