@@ -54,5 +54,15 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Allow Dart to connect and debug the application.</string>
+	<key>UIBackgroundModes</key>
+    <array>
+	    <string>audio</string>
+        <string>fetch</string>
+        <string>remote-notification</string>
+    </array>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+	<key>UISupportsDocumentBrowser</key>
+    <true/>
 </dict>
 </plist>
