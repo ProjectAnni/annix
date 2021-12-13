@@ -80,8 +80,27 @@ class AnniAudioService {
     await this.player.pause();
   }
 
-  // TODO: apply repeat mode
-  RepeatMode repeatMode = RepeatMode.Normal;
+  RepeatMode _repeatMode = RepeatMode.Normal;
+  RepeatMode get repeatMode => _repeatMode;
+  set repeatMode(RepeatMode mode) {
+    switch (mode) {
+      case RepeatMode.Normal:
+        player.setLoopMode(LoopMode.off);
+        player.setShuffleModeEnabled(false);
+        break;
+      case RepeatMode.Loop:
+        player.setLoopMode(LoopMode.all);
+        break;
+      case RepeatMode.LoopOne:
+        player.setLoopMode(LoopMode.one);
+        break;
+      case RepeatMode.Random:
+        player.setLoopMode(LoopMode.all);
+        player.setShuffleModeEnabled(true);
+        break;
+    }
+    _repeatMode = mode;
+  }
 }
 
 class AnnilPlaylist extends ChangeNotifier {
