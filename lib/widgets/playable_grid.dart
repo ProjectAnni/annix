@@ -75,6 +75,7 @@ class _PlayableGridState extends State<PlayableGrid> {
                           await Global.audioService.pause();
                           Global.audioService.playlist =
                               ConcatenatingAudioSource(
+                            useLazyPreparation: true,
                             children: await Future.wait(
                                 songs.map<Future<AudioSource>>(
                               (s) => Global.annil.getAudio(
