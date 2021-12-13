@@ -4,6 +4,7 @@ import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 
 // TODO: https://docs.flutter.dev/cookbook/effects/nested-nav
@@ -24,13 +25,13 @@ class Annix extends StatelessWidget {
           create: (_) => AnnilPlayState(service: Global.audioService),
         )
       ],
-      child: MaterialApp(
+      child: PlatformApp(
         debugShowCheckedModeBanner: false,
         title: 'Annix',
-        theme: ThemeData(
-          // primarySwatch: Colors.teal,
-          brightness: Brightness.dark,
-        ),
+        // theme: ThemeData(
+        //   // primarySwatch: Colors.teal,
+        //   brightness: Brightness.dark,
+        // ),
         initialRoute: initialRoute,
         routes: {
           '/home_desktop': (context) => WindowBorder(
@@ -39,6 +40,7 @@ class Annix extends StatelessWidget {
                 child: HomePageDesktop(),
               ),
           '/setup': (context) => AnnixSetup(),
+          '/': (context) => Container(),
         },
       ),
     );

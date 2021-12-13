@@ -204,6 +204,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  cupertino_icons:
+    dependency: transitive
+    description:
+      name: cupertino_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
+  cupertino_stepper:
+    dependency: "direct main"
+    description:
+      name: cupertino_stepper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   dart_style:
     dependency: transitive
     description:
@@ -272,6 +286,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_platform_widgets:
+    dependency: "direct main"
+    description:
+      name: flutter_platform_widgets
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.11.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

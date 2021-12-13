@@ -2,7 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
 class DraggableAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final AppBar appBar;
+  final Widget appBar;
 
   const DraggableAppBar({Key? key, required this.appBar}) : super(key: key);
 

@@ -3,8 +3,11 @@ import 'package:annix/metadata/sources/file.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
+import 'package:annix/widgets/platform_stepper.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class AnnixSetup extends StatefulWidget {
   const AnnixSetup({Key? key}) : super(key: key);
@@ -52,11 +55,11 @@ class _AnnixSetupState extends State<AnnixSetup> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DraggableAppBar(
-        appBar: AppBar(
+        appBar: PlatformAppBar(
           title: Text("Annix Setup"),
         ),
       ),
-      body: Stepper(
+      body: PlatformStepper(
         currentStep: _currentStep,
         type: AnniPlatform.isDesktop
             ? StepperType.horizontal
@@ -66,14 +69,14 @@ class _AnnixSetupState extends State<AnnixSetup> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              TextButton(
+              PlatformTextButton(
                 onPressed: onPrev,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: const Text('BACK'),
                 ),
               ),
-              TextButton(
+              PlatformTextButton(
                 onPressed: onNext,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -139,42 +142,111 @@ class _MetadataFormState extends State<MetadataForm> {
       children: [
         ListTile(
           title: Text('Repo Type'),
-          trailing: DropdownButton<MetadataSoruceType>(
-            value: metadataSoruceType,
-            onChanged: (value) => metadataSoruceType = value!,
-            items: [
-              DropdownMenuItem(
-                child: Text('Git'),
-                value: MetadataSoruceType.GitRemote,
-                enabled: false,
-              ),
-              DropdownMenuItem(
-                child: Text('Zip'),
-                value: MetadataSoruceType.Zip,
-                enabled: false,
-              ),
-              DropdownMenuItem(
-                child: Text('Database'),
-                value: MetadataSoruceType.Database,
-                enabled: false,
-              ),
-              DropdownMenuItem(
-                child: Text('Git(Local)'),
-                value: MetadataSoruceType.GitLocal,
-                enabled: false,
-              ),
-              DropdownMenuItem(
-                child: Text('Folder(Local)'),
-                value: MetadataSoruceType.Folder,
-              ),
-            ],
+          trailing: PlatformWidget(
+            material: (context, platform) => DropdownButton<MetadataSoruceType>(
+              value: metadataSoruceType,
+              onChanged: (value) => metadataSoruceType = value!,
+              items: [
+                DropdownMenuItem(
+                  child: Text('Git'),
+                  value: MetadataSoruceType.GitRemote,
+                  enabled: false,
+                ),
+                DropdownMenuItem(
+                  child: Text('Zip'),
+                  value: MetadataSoruceType.Zip,
+                  enabled: false,
+                ),
+                DropdownMenuItem(
+                  child: Text('Database'),
+                  value: MetadataSoruceType.Database,
+                  enabled: false,
+                ),
+                // Local target is only supported for Desktop
+                ...(AnniPlatform.isDesktop
+                    ? [
+                        DropdownMenuItem(
+                          child: Text('Git(Local)'),
+                          value: MetadataSoruceType.GitLocal,
+                          enabled: false,
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Folder(Local)'),
+                          value: MetadataSoruceType.Folder,
+                        ),
+                      ]
+                    : []),
+              ],
+            ),
+            cupertino: (context, platform) => CupertinoButton(
+                child: Text(metadataSoruceType.toString()),
+                onPressed: () {
+                  showCupertinoModalPopup<void>(
+                    context: context,
+                    builder: (BuildContext context) => CupertinoActionSheet(
+                      actions: <CupertinoActionSheetAction>[
+                        CupertinoActionSheetAction(
+                          child: const Text('Git'),
+                          onPressed: () {
+                            setState(() {
+                              metadataSoruceType = MetadataSoruceType.GitRemote;
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        CupertinoActionSheetAction(
+                          child: const Text('Zip'),
+                          onPressed: () {
+                            setState(() {
+                              metadataSoruceType = MetadataSoruceType.Zip;
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        CupertinoActionSheetAction(
+                          child: const Text('Database'),
+                          onPressed: () {
+                            setState(() {
+                              metadataSoruceType = MetadataSoruceType.Database;
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ...(AnniPlatform.isDesktop
+                            ? [
+                                CupertinoActionSheetAction(
+                                  child: const Text('Git(Local)'),
+                                  onPressed: () {
+                                    setState(() {
+                                      metadataSoruceType =
+                                          MetadataSoruceType.GitLocal;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                CupertinoActionSheetAction(
+                                  child: const Text('Local Folder'),
+                                  onPressed: () {
+                                    setState(() {
+                                      metadataSoruceType =
+                                          MetadataSoruceType.Folder;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ]
+                            : []),
+                      ],
+                    ),
+                  );
+                }),
           ),
         ),
         // for local metadata source, use path picker
         isLocalMetadataSource
             ? ListTile(
                 title: Text('Path'),
-                trailing: TextButton(
+                trailing: PlatformTextButton(
                   child: Text(path ?? "[Not Selected]"),
                   onPressed: () async {
                     String? selectedDirectory =
@@ -190,7 +262,7 @@ class _MetadataFormState extends State<MetadataForm> {
                 title: Text('URL'),
                 trailing: FractionallySizedBox(
                   widthFactor: 0.4,
-                  child: TextField(
+                  child: PlatformTextField(
                     controller: urlController,
                   ),
                 ),

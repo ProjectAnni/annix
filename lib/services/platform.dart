@@ -14,4 +14,6 @@ class AnniPlatform {
 
   // Only Fuchsia is not supported for now
   static bool get isSupported => !Platform.isFuchsia;
+
+  static bool get isMacOS => Platform.isMacOS;
 }
