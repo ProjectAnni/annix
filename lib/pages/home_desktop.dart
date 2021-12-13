@@ -1,10 +1,7 @@
-import 'package:annix/models/song.dart';
-import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/navigator.dart';
-import 'package:annix/widgets/playable_grid.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart' show Icons;
@@ -12,6 +9,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class HomePageDesktop extends StatefulWidget {
+  final Widget child;
+
+  const HomePageDesktop({Key? key, required this.child}) : super(key: key);
+
   @override
   _HomePageDesktopState createState() => _HomePageDesktopState();
 }
@@ -60,52 +61,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
             child: Column(
               children: [
                 Expanded(
-                  child: GridView.custom(
-                    padding: EdgeInsets.all(32.0),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: AnniPlatform.isDesktop ? 4 : 2,
-                      mainAxisSpacing: 32,
-                      crossAxisSpacing: 32,
-                    ),
-                    childrenDelegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index == Global.catalogs.length) {
-                          return null;
-                        }
-
-                        var catalog = Global.catalogs.keys.elementAt(index);
-                        return PlayableGrid(
-                          id: catalog,
-                          cover: Global.annil.cover(
-                            catalog: catalog,
-                          ),
-                          playlistCallback: (catalog) async {
-                            var album = await Global.metadataSource
-                                .getAlbum(catalog: catalog);
-                            if (album == null) {
-                              return null;
-                            } else {
-                              print(catalog);
-                              List<Song> songs = [];
-                              album.discs.forEach((disc) {
-                                var trackId = 1;
-                                disc.tracks.forEach((element) {
-                                  songs.add(Song(
-                                    catalog: album.catalog,
-                                    discCatalog: album.discs.length > 1
-                                        ? disc.catalog
-                                        : null,
-                                    trackId: trackId++,
-                                  ));
-                                });
-                              });
-                              return songs;
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                  child: widget.child,
                 ),
                 // bottom play bar
                 // Use persistentFooterButtons if this issue has been resolved
