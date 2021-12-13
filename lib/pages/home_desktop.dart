@@ -1,3 +1,6 @@
+import 'package:annix/pages/album_list.dart';
+import 'package:annix/pages/playlist.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
@@ -9,9 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class HomePageDesktop extends StatefulWidget {
-  final Widget child;
-
-  const HomePageDesktop({Key? key, required this.child}) : super(key: key);
+  const HomePageDesktop({Key? key}) : super(key: key);
 
   @override
   _HomePageDesktopState createState() => _HomePageDesktopState();
@@ -61,7 +62,37 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
             child: Column(
               children: [
                 Expanded(
-                  child: widget.child,
+                  child: Navigator(
+                    key: Global.view,
+                    initialRoute: '/albums',
+                    onGenerateRoute: (settings) {
+                      late Widget page;
+                      var name = settings.name;
+                      if (name == '/') {
+                        name = '/albums';
+                      }
+
+                      switch (name) {
+                        case '/welcome':
+                          page = Text('Welcome');
+                          break;
+                        case '/albums':
+                          page = AlbumList();
+                          break;
+                        case '/playlist':
+                          page = AnnixPlaylist();
+                          break;
+                        default:
+                          page = Text('Unknown');
+                      }
+
+                      return platformPageRoute<Widget>(
+                        context: context,
+                        builder: (context) => page,
+                        settings: settings,
+                      );
+                    },
+                  ),
                 ),
                 // bottom play bar
                 // Use persistentFooterButtons if this issue has been resolved

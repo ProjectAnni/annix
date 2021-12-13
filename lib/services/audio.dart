@@ -88,6 +88,8 @@ class AnnilPlaylist extends ChangeNotifier {
   final AnniAudioService _service;
   AnnilAudioSource? playing;
 
+  ConcatenatingAudioSource get playlist => _service.playlist;
+
   String? get playingCatalog => playing?.catalog;
   int? get playingTrackId => playing?.trackId;
   int? get playingTrackIndex =>

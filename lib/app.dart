@@ -1,4 +1,3 @@
-import 'package:annix/pages/album_list.dart';
 import 'package:annix/pages/home_desktop.dart';
 import 'package:annix/pages/setup.dart';
 import 'package:annix/services/audio.dart';
@@ -68,31 +67,20 @@ class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
               late Widget page;
               print(settings);
 
-              var initialRoute = '/home/welcome';
+              var initialRoute = '/home';
               if (Global.needSetup) {
                 initialRoute = '/setup';
               }
 
-              var route = settings.name!;
+              var route = settings.name;
               if (route == '/') {
                 route = initialRoute;
               }
 
               if (route == '/setup') {
                 page = AnnixSetup();
-              } else if (route.startsWith('/home')) {
-                switch (route.substring('/home'.length)) {
-                  case '/welcome':
-                    page = HomePageDesktop(child: Text('Welcome'));
-                    break;
-                  case '/albums':
-                    page = HomePageDesktop(
-                      child: AlbumList(),
-                    );
-                    break;
-                  default:
-                    throw Exception('Unknown route: ${settings.name}');
-                }
+              } else if (route == '/home') {
+                page = HomePageDesktop();
               } else {
                 throw Exception('Unknown route: ${settings.name}');
               }

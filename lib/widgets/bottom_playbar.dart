@@ -60,9 +60,6 @@ class _BottomPlayBarDesktopState extends State<BottomPlayBarDesktop> {
               children: [
                 AspectRatio(
                   aspectRatio: 1.4,
-                  child: Expanded(
-                    child: Container(),
-                  ),
                 ),
                 FractionallySizedBox(
                   heightFactor: 0.9,
@@ -74,9 +71,6 @@ class _BottomPlayBarDesktopState extends State<BottomPlayBarDesktop> {
                 ),
                 AspectRatio(
                   aspectRatio: 0.2,
-                  child: Expanded(
-                    child: Container(),
-                  ),
                 ),
               ],
             ),
@@ -210,8 +204,15 @@ class CurrentMusicCover extends StatelessWidget {
   }
 }
 
-class DesktopPlayController extends StatelessWidget {
+class DesktopPlayController extends StatefulWidget {
   const DesktopPlayController({Key? key}) : super(key: key);
+
+  @override
+  _DesktopPlayControllerState createState() => _DesktopPlayControllerState();
+}
+
+class _DesktopPlayControllerState extends State<DesktopPlayController> {
+  String? last;
 
   @override
   Widget build(BuildContext context) {
@@ -251,10 +252,26 @@ class DesktopPlayController extends StatelessWidget {
         FractionallySizedBox(
           heightFactor: 0.6,
           child: SquareIconButton(
-            child: false /* TODO: expanded */ ? Icon(Icons.expand_more)
+            child: last != null
+                ? Icon(Icons.expand_more)
                 : Icon(Icons.expand_less),
             onPressed: () {
-              // TODO: Change route
+              NavigatorState navigator =
+                  Global.view.currentState! as NavigatorState;
+              if (last == null) {
+                // to expand
+                setState(() {
+                  // TODO: use correct last route
+                  last = '/albums';
+                });
+                navigator.pushReplacementNamed('/playlist');
+              } else {
+                // to collapse
+                setState(() {
+                  navigator.pushReplacementNamed(last!);
+                });
+                last = null;
+              }
             },
           ),
         ),
