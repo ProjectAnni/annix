@@ -18,7 +18,7 @@ class AnniPositionState {
 class AnniAudioService {
   AudioPlayer player = AudioPlayer();
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
-    useLazyPreparation: false,
+    useLazyPreparation: true,
     children: [],
   );
 

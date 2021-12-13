@@ -7,18 +7,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 
-// TODO: https://docs.flutter.dev/cookbook/effects/nested-nav
-class Annix extends StatelessWidget {
+class AnnixApp extends StatefulWidget {
+  const AnnixApp({Key? key}) : super(key: key);
+
+  @override
+  _AnnixAppState createState() => _AnnixAppState();
+}
+
+class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
+  Brightness? _brightness;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addObserver(this);
+    _brightness = WidgetsBinding.instance?.window.platformBrightness;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (mounted) {
+      setState(() {
+        _brightness = WidgetsBinding.instance?.window.platformBrightness;
+      });
+    }
+
+    super.didChangePlatformBrightness();
+  }
+
+  get materialTheme => ThemeData(brightness: _brightness);
+  get cupertinoTheme => CupertinoThemeData(brightness: _brightness);
+
   @override
   Widget build(BuildContext context) {
-    var materialTheme = ThemeData(
-      // primarySwatch: Colors.teal,
-      brightness: Brightness.dark,
-    );
-    var cupertinoTheme = CupertinoThemeData(
-      brightness: Brightness.dark,
-    );
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -56,10 +83,8 @@ class Annix extends StatelessWidget {
                 throw Exception('Unknown route: ${settings.name}');
               }
 
-              return MaterialPageRoute<dynamic>(
-                builder: (context) {
-                  return page;
-                },
+              return MaterialPageRoute<Widget>(
+                builder: (context) => page,
                 settings: settings,
               );
             },

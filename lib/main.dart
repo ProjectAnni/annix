@@ -24,5 +24,5 @@ Future<void> main() async {
   }
 
   await Global.init();
-  runApp(Annix());
+  runApp(AnnixApp());
 }
