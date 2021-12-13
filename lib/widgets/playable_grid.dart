@@ -4,7 +4,7 @@ import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Icons, GridTile;
+import 'package:flutter/material.dart' show Icons, GridTile, Colors;
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +49,17 @@ class _PlayableGridState extends State<PlayableGrid> {
             aspectRatio: 1,
             child: widget.cover,
           ),
+          AnniPlatform.isDesktop
+              ? Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration:
+                        BoxDecoration(color: Colors.black.withAlpha(100)),
+                    child: Text(widget.id),
+                  ),
+                )
+              : Container(),
           // Display on hover / on mobile
           AnniPlatform.isMobile || hover
               ? Align(
