@@ -23,41 +23,47 @@ class AnnixPlaylist extends StatelessWidget {
               (e) {
                 var audio = e as AnnilAudioSource;
                 MediaItem info = audio.tag;
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            // TODO: better way to show active song
-                            children: [
-                              Text(
-                                info.title,
-                                style: TextStyle(
-                                  color: audio == active
-                                      ? CupertinoTheme.of(context).primaryColor
-                                      : null,
+                return GestureDetector(
+                  onTap: () {
+                    playlist.goto(audio);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              // TODO: better way to show active song
+                              children: [
+                                Text(
+                                  info.title,
+                                  style: TextStyle(
+                                    color: audio == active
+                                        ? CupertinoTheme.of(context)
+                                            .primaryColor
+                                        : null,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Text(
-                          info.artist ?? '',
-                          style: TextStyle(
-                            fontSize: 0.8 *
-                                (CupertinoTheme.of(context)
-                                        .textTheme
-                                        .textStyle
-                                        .fontSize ??
-                                    0),
-                            color: audio == active
-                                ? CupertinoTheme.of(context).primaryColor
-                                : null,
+                          Text(
+                            info.artist ?? '',
+                            style: TextStyle(
+                              fontSize: 0.8 *
+                                  (CupertinoTheme.of(context)
+                                          .textTheme
+                                          .textStyle
+                                          .fontSize ??
+                                      0),
+                              color: audio == active
+                                  ? CupertinoTheme.of(context).primaryColor
+                                  : null,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

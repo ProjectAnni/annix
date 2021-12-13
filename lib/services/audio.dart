@@ -112,6 +112,13 @@ class AnnilPlaylist extends ChangeNotifier {
         : null;
     notifyListeners();
   }
+
+  Future<void> goto(AudioSource audio) async {
+    var index = playlist.children.indexOf(audio);
+    if (index != -1) {
+      return await _service.player.seek(Duration.zero, index: index);
+    }
+  }
 }
 
 class AnnilPlayState extends ChangeNotifier {
