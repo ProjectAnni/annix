@@ -1,5 +1,6 @@
 import 'package:cupertino_stepper/cupertino_stepper.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Stepper;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class PlatformStepper extends StatelessWidget {

@@ -1,4 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'
+    show
+        NavigationRail,
+        NavigationRailLabelType,
+        NavigationRailDestination,
+        Icons;
+import 'package:flutter/widgets.dart';
 
 class AnnilNavigator extends StatefulWidget {
   const AnnilNavigator({Key? key}) : super(key: key);

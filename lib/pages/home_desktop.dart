@@ -7,7 +7,8 @@ import 'package:annix/widgets/navigator.dart';
 import 'package:annix/widgets/playable_grid.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Icons;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class HomePageDesktop extends StatefulWidget {

@@ -3,7 +3,8 @@ import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/square_icon_button.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show Icons, GridTile;
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,7 @@ class _PlayableGridState extends State<PlayableGrid> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: use somewhat more native-look than GridTile
     return GridTile(
       child: MouseRegion(
         onEnter: (_) {

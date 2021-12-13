@@ -5,8 +5,14 @@ import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/platform_stepper.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart'
+    show
+        CupertinoActionSheetAction,
+        showCupertinoModalPopup,
+        CupertinoActionSheet;
+import 'package:flutter/material.dart'
+    show Step, StepperType, DropdownButton, DropdownMenuItem;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class AnnixSetup extends StatefulWidget {
@@ -68,14 +74,14 @@ class _AnnixSetupState extends State<AnnixSetup> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              TextButton(
+              PlatformTextButton(
                 onPressed: onPrev,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: const Text('BACK'),
                 ),
               ),
-              TextButton(
+              PlatformTextButton(
                 onPressed: onNext,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -142,6 +148,7 @@ class _MetadataFormState extends State<MetadataForm> {
         SimpleRow(
           left: Text('Repo Type'),
           right: PlatformWidget(
+            // TODO: wrap as a widget
             material: (context, platform) => DropdownButton<MetadataSoruceType>(
               value: metadataSoruceType,
               onChanged: (value) => metadataSoruceType = value!,
@@ -177,7 +184,7 @@ class _MetadataFormState extends State<MetadataForm> {
                     : []),
               ],
             ),
-            cupertino: (context, platform) => CupertinoButton(
+            cupertino: (context, platform) => PlatformTextButton(
                 child: Text(metadataSoruceType.toString()),
                 onPressed: () {
                   showCupertinoModalPopup<void>(

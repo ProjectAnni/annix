@@ -2,8 +2,10 @@ import 'package:annix/pages/home_desktop.dart';
 import 'package:annix/pages/setup.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart' show CupertinoThemeData;
+import 'package:flutter/material.dart' show Theme, ThemeData;
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -83,7 +85,8 @@ class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
                 throw Exception('Unknown route: ${settings.name}');
               }
 
-              return MaterialPageRoute<Widget>(
+              return platformPageRoute<Widget>(
+                context: context,
                 builder: (context) => page,
                 settings: settings,
               );

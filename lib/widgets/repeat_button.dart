@@ -1,5 +1,6 @@
 import 'package:annix/widgets/square_icon_button.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show Icons;
 
 enum RepeatMode {
   Normal,

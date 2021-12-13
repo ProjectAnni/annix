@@ -1,7 +1,8 @@
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/square_icon_button.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show Icons;
 import 'package:provider/provider.dart';
 
 class PlayPauseButton extends StatefulWidget {
