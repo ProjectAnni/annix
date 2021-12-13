@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class SquareIconButton extends StatelessWidget {
   final Widget? child;
@@ -15,10 +16,16 @@ class SquareIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.0,
-      child: RawMaterialButton(
-        shape: BeveledRectangleBorder(),
-        child: child,
-        onPressed: onPressed,
+      child: PlatformWidget(
+        material: (context, platform) => RawMaterialButton(
+          shape: BeveledRectangleBorder(),
+          child: child,
+          onPressed: onPressed,
+        ),
+        cupertino: (context, platform) => PlatformIconButton(
+          icon: child,
+          onPressed: onPressed,
+        ),
       ),
     );
   }

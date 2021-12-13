@@ -4,6 +4,7 @@ import 'package:annix/widgets/play_pause_button.dart';
 import 'package:annix/widgets/repeat_button.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +81,7 @@ class _BottomPlayBarDesktopState extends State<BottomPlayBarDesktop> {
               ],
             ),
             SizedBox(
-              width: 550,
+              width: 300,
               child: Consumer<AnnilPlaylist>(
                 builder: (context, playlist, child) {
                   return ValueListenableBuilder<AnniPositionState>(

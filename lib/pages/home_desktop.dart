@@ -8,6 +8,7 @@ import 'package:annix/widgets/playable_grid.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class HomePageDesktop extends StatefulWidget {
   @override
@@ -17,43 +18,43 @@ class HomePageDesktop extends StatefulWidget {
 class _HomePageDesktopState extends State<HomePageDesktop> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PlatformScaffold(
+      iosContentPadding: true,
       appBar: DraggableAppBar(
-        appBar: AppBar(
-          title: Text("Annix"),
-          actions: AnniPlatform.isDesktop
-              ? [
-                  SquareIconButton(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Icon(
-                          Icons.minimize,
-                        )
-                      ],
-                    ),
-                    onPressed: () {
-                      appWindow.minimize();
-                    },
+        title: Text("Annix"),
+        trailingActions: AnniPlatform.isDesktop && !AnniPlatform.isMacOS
+            ? [
+                SquareIconButton(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Icon(
+                        Icons.minimize,
+                      )
+                    ],
                   ),
-                  // TODO: Window <-> Full
-                  SquareIconButton(
-                    child: Icon(Icons.close),
-                    onPressed: () {
-                      appWindow.close();
-                    },
-                  )
-                ]
-              : [],
-        ),
+                  onPressed: () {
+                    appWindow.minimize();
+                  },
+                ),
+                // TODO: Window <-> Full
+                SquareIconButton(
+                  child: Icon(Icons.close),
+                  onPressed: () {
+                    appWindow.close();
+                  },
+                )
+              ]
+            : [],
       ),
       body: Row(
         children: [
           // TODO: This is Desktop layout, we need another mobile layout
-          AnnilNavigator(),
-          const VerticalDivider(thickness: 1, width: 1),
+          // TODO: Design a better way to navigate
+          // AnnilNavigator(),
+          // const VerticalDivider(thickness: 1, width: 1),
           Expanded(
             child: Column(
               children: [

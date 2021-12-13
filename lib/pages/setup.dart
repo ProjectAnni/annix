@@ -53,11 +53,10 @@ class _AnnixSetupState extends State<AnnixSetup> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PlatformScaffold(
+      iosContentPadding: true,
       appBar: DraggableAppBar(
-        appBar: PlatformAppBar(
-          title: Text("Annix Setup"),
-        ),
+        title: Text("Annix Setup"),
       ),
       body: PlatformStepper(
         currentStep: _currentStep,
@@ -69,14 +68,14 @@ class _AnnixSetupState extends State<AnnixSetup> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              PlatformTextButton(
+              TextButton(
                 onPressed: onPrev,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: const Text('BACK'),
                 ),
               ),
-              PlatformTextButton(
+              TextButton(
                 onPressed: onNext,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -140,9 +139,9 @@ class _MetadataFormState extends State<MetadataForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          title: Text('Repo Type'),
-          trailing: PlatformWidget(
+        SimpleRow(
+          left: Text('Repo Type'),
+          right: PlatformWidget(
             material: (context, platform) => DropdownButton<MetadataSoruceType>(
               value: metadataSoruceType,
               onChanged: (value) => metadataSoruceType = value!,
@@ -244,9 +243,9 @@ class _MetadataFormState extends State<MetadataForm> {
         ),
         // for local metadata source, use path picker
         isLocalMetadataSource
-            ? ListTile(
-                title: Text('Path'),
-                trailing: PlatformTextButton(
+            ? SimpleRow(
+                left: Text('Path'),
+                right: PlatformTextButton(
                   child: Text(path ?? "[Not Selected]"),
                   onPressed: () async {
                     String? selectedDirectory =
@@ -258,9 +257,9 @@ class _MetadataFormState extends State<MetadataForm> {
                 ),
               )
             // else, input repo url
-            : ListTile(
-                title: Text('URL'),
-                trailing: FractionallySizedBox(
+            : SimpleRow(
+                left: Text('URL'),
+                right: FractionallySizedBox(
                   widthFactor: 0.4,
                   child: PlatformTextField(
                     controller: urlController,
@@ -268,6 +267,21 @@ class _MetadataFormState extends State<MetadataForm> {
                 ),
               ),
       ],
+    );
+  }
+}
+
+class SimpleRow extends StatelessWidget {
+  final Widget left;
+  final Widget right;
+  const SimpleRow({Key? key, required this.left, required this.right})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [this.left, this.right],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:annix/services/global.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -62,7 +63,7 @@ class AnnilClient {
       placeholder: (context, url) => SizedBox.square(
         dimension: 64,
         child: Center(
-          child: CircularProgressIndicator(),
+          child: PlatformCircularProgressIndicator(),
         ),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
