@@ -13,3 +13,10 @@ SiteInfo _$SiteInfoFromJson(Map<String, dynamic> json) => SiteInfo(
       features:
           (json['features'] as List<dynamic>).map((e) => e as String).toList(),
     );
+
+UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => UserInfo(
+      userId: json['user_id'] as String,
+      email: json['email'] as String,
+      nickname: json['nickname'] as String,
+      avatar: json['avatar'] as String,
+    );

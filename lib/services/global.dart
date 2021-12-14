@@ -7,7 +7,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:stash_memory/stash_memory.dart';
 
 class Global {
-  static late SharedPreferences _preferences;
+  static late SharedPreferences preferences;
   static final cacheStore = newMemoryStore();
 
   static late AnnilClient annil;
@@ -16,14 +16,14 @@ class Global {
   static late BaseMetadataSource metadataSource;
   static late Map<String, List<String>> catalogs;
 
-  static bool get needSetup => !(_preferences.getBool("initialized") ?? false);
+  static bool get needSetup => !(preferences.getBool("initialized") ?? false);
 
   static Map<String, Duration?> durations = new Map();
 
   static GlobalKey view = GlobalKey();
 
   static Future<void> init() async {
-    _preferences = await SharedPreferences.getInstance();
+    preferences = await SharedPreferences.getInstance();
 
     annil = AnnilClient(
       // TODO: let user input annil config
