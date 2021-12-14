@@ -12,6 +12,9 @@ dependencies:
   
   flutter_platform_widgets: ^1.11.1
   cupertino_stepper: ^0.2.1
+  marquee:
+    git:
+      url: https://github.com/ProjectAnni/marquee.git
 
   provider: ^6.0.1
   shared_preferences: ^2.0.9

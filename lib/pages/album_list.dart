@@ -10,11 +10,12 @@ class AlbumList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.custom(
-      padding: EdgeInsets.all(32.0),
+      padding: EdgeInsets.all(24.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: AnniPlatform.isDesktop ? 4 : 2,
-        mainAxisSpacing: 32,
+        mainAxisSpacing: 8,
         crossAxisSpacing: 32,
+        childAspectRatio: 1 / 1.13,
       ),
       childrenDelegate: SliverChildBuilderDelegate(
         (context, index) {
