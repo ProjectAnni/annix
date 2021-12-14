@@ -1,3 +1,4 @@
+import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Icons;
@@ -34,44 +35,42 @@ class _RepeatButtonState extends State<RepeatButton> {
     mode = widget.initial ?? RepeatMode.Normal;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final IconData icon;
+  IconData _currentIcon(BuildContext context) {
     switch (mode) {
       case RepeatMode.Normal:
-        icon = Icons.trending_neutral_rounded;
-        break;
+        return Icons.trending_neutral_rounded;
       case RepeatMode.Random:
-        icon = Icons.shuffle;
-        break;
+        return context.icons.shuffle;
       case RepeatMode.LoopOne:
-        icon = Icons.repeat_one_rounded;
-        break;
+        return context.icons.repeat_one;
       case RepeatMode.Loop:
-        icon = Icons.repeat_rounded;
-        break;
+        return context.icons.repeat;
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return SquareIconButton(
-        child: Icon(icon),
-        onPressed: () {
-          setState(() {
-            switch (mode) {
-              case RepeatMode.Normal:
-                mode = RepeatMode.Loop;
-                break;
-              case RepeatMode.Loop:
-                mode = RepeatMode.LoopOne;
-                break;
-              case RepeatMode.LoopOne:
-                mode = RepeatMode.Random;
-                break;
-              case RepeatMode.Random:
-                mode = RepeatMode.Normal;
-                break;
-            }
-          });
-          widget.onRepeatModeChange!(mode);
+      child: Icon(_currentIcon(context)),
+      onPressed: () {
+        setState(() {
+          switch (mode) {
+            case RepeatMode.Normal:
+              mode = RepeatMode.Loop;
+              break;
+            case RepeatMode.Loop:
+              mode = RepeatMode.LoopOne;
+              break;
+            case RepeatMode.LoopOne:
+              mode = RepeatMode.Random;
+              break;
+            case RepeatMode.Random:
+              mode = RepeatMode.Normal;
+              break;
+          }
         });
+        widget.onRepeatModeChange!(mode);
+      },
+    );
   }
 }

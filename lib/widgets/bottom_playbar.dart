@@ -1,13 +1,15 @@
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/play_pause_button.dart';
 import 'package:annix/widgets/repeat_button.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart' show CupertinoTheme;
-import 'package:flutter/material.dart' show Theme, Material, Icons;
+import 'package:flutter/material.dart' show Theme, Material;
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
+    show PlatformWidget;
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 
@@ -249,7 +251,7 @@ class _DesktopPlayControllerState extends State<DesktopPlayController> {
         FractionallySizedBox(
           heightFactor: 0.6,
           child: SquareIconButton(
-            child: Icon(Icons.skip_previous),
+            child: Icon(context.icons.previous),
             onPressed: () {
               Global.audioService.player.seekToPrevious();
             },
@@ -262,7 +264,7 @@ class _DesktopPlayControllerState extends State<DesktopPlayController> {
         FractionallySizedBox(
           heightFactor: 0.6,
           child: SquareIconButton(
-            child: Icon(Icons.skip_next),
+            child: Icon(context.icons.next),
             onPressed: () {
               Global.audioService.player.seekToNext();
             },
@@ -272,8 +274,8 @@ class _DesktopPlayControllerState extends State<DesktopPlayController> {
           heightFactor: 0.6,
           child: SquareIconButton(
             child: last != null
-                ? Icon(Icons.expand_more)
-                : Icon(Icons.expand_less),
+                ? Icon(context.icons.expand_down)
+                : Icon(context.icons.expand_up),
             onPressed: () {
               NavigatorState navigator =
                   Global.view.currentState! as NavigatorState;

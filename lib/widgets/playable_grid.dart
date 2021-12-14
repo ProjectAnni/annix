@@ -2,9 +2,10 @@ import 'package:annix/models/song.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
+import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Icons, GridTile, Colors;
+import 'package:flutter/material.dart' show GridTile, Colors;
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +68,7 @@ class _PlayableGridState extends State<PlayableGrid> {
                   child: SizedBox.square(
                     dimension: 48,
                     child: SquareIconButton(
-                      child: Icon(Icons.play_circle),
+                      child: Icon(context.icons.play_circle),
                       onPressed: () async {
                         // Play current playlist instead of the current one
                         var songs = await widget.playlistCallback(widget.id);
