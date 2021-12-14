@@ -79,6 +79,7 @@ class _PlayableGridState extends State<PlayableGrid> {
                                 )),
                               );
                               await Global.audioService.init(force: true);
+                              // FIXME: why null here???
                               Provider.of<AnnilPlaylist>(context, listen: false)
                                   .resetPlaylist();
                               await Global.audioService.play();

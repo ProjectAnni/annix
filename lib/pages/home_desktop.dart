@@ -42,11 +42,10 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                     appWindow.minimize();
                   },
                 ),
-                // TODO: Window <-> Full
                 SquareIconButton(
                   child: Icon(Icons.close),
                   onPressed: () {
-                    appWindow.close();
+                    appWindow.maximizeOrRestore();
                   },
                 )
               ]
