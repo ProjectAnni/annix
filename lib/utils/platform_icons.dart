@@ -71,4 +71,8 @@ class PlatformIcons {
   IconData get error => isMaterial(context)
       ? Icons.error_rounded
       : CupertinoIcons.exclamationmark_circle_fill;
+
+  /// Icons: Icons.person : CupertinoIcons.person_fill
+  IconData get person =>
+      isMaterial(context) ? Icons.person_rounded : CupertinoIcons.person_fill;
 }

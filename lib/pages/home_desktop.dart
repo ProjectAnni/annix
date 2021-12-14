@@ -2,6 +2,7 @@ import 'package:annix/pages/album_list.dart';
 import 'package:annix/pages/playlist.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
+import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/navigator.dart';
@@ -9,7 +10,8 @@ import 'package:annix/widgets/square_icon_button.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart' show Icons;
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
+    show PlatformScaffold, platformPageRoute;
 
 class HomePageDesktop extends StatefulWidget {
   const HomePageDesktop({Key? key}) : super(key: key);
@@ -25,31 +27,41 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
       iosContentPadding: true,
       appBar: DraggableAppBar(
         title: Text("Annix"),
-        trailingActions: AnniPlatform.isDesktop && !AnniPlatform.isMacOS
-            ? [
-                SquareIconButton(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Icon(
-                        Icons.minimize,
-                      )
-                    ],
+        trailingActions: [
+          SquareIconButton(
+            child: Icon(context.icons.person),
+            onPressed: () {
+              NavigatorState navigator =
+                  Global.view.currentState! as NavigatorState;
+              navigator.pushReplacementNamed('/user');
+            },
+          ),
+          ...(AnniPlatform.isDesktop && !AnniPlatform.isMacOS
+              ? [
+                  SquareIconButton(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Icon(
+                          Icons.minimize,
+                        )
+                      ],
+                    ),
+                    onPressed: () {
+                      appWindow.minimize();
+                    },
                   ),
-                  onPressed: () {
-                    appWindow.minimize();
-                  },
-                ),
-                SquareIconButton(
-                  child: Icon(Icons.close),
-                  onPressed: () {
-                    appWindow.maximizeOrRestore();
-                  },
-                )
-              ]
-            : [],
+                  SquareIconButton(
+                    child: Icon(Icons.close),
+                    onPressed: () {
+                      appWindow.close();
+                    },
+                  ),
+                ]
+              : [])
+        ],
       ),
       body: Row(
         children: [
@@ -72,14 +84,14 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                       }
 
                       switch (name) {
-                        case '/welcome':
-                          page = Text('Welcome');
-                          break;
                         case '/albums':
                           page = AlbumList();
                           break;
                         case '/playlist':
                           page = AnnixPlaylist();
+                          break;
+                        case '/user':
+                          page = Text('User');
                           break;
                         default:
                           page = Text('Unknown');
