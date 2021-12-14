@@ -611,7 +611,7 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
         stream: cacheFile.openRead(start, end),
       );
     }
-    print({start, end});
+    print([start, end]);
     final byteRangeRequest = _StreamingByteRangeRequest(start, end);
     _requests.add(byteRangeRequest);
     _response ??= _fetch().catchError((dynamic error, StackTrace? stackTrace) {
