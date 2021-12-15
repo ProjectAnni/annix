@@ -4,6 +4,7 @@ import 'package:annix/utils/hash.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AnnivClient {
   final Dio client;
@@ -51,36 +52,35 @@ class AnnivClient {
     ));
   }
 
+  static Future<PersistCookieJar> get _cookieJar async {
+    final dir = await getApplicationDocumentsDirectory();
+    return PersistCookieJar(storage: FileStorage(dir.path));
+  }
+
   static Future<AnnivClient> create({
     required String url,
     required String email,
     required String password,
   }) async {
-    // FIXME: path to persistent cookie file
-    final cookieJar = PersistCookieJar();
-    final client = AnnivClient._(
-      url: url,
-      cookieJar: cookieJar,
-    );
+    final client = AnnivClient._(url: url, cookieJar: await _cookieJar);
     await client.login(email: email, password: password);
+    await client._save();
     return client;
   }
 
   /// Load anniv url from shared preferences & load cookies
+  /// If no url is found or not login, return null
   static Future<AnnivClient?> load() async {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      // try to login
-      final client = AnnivClient._(
-        url: annivUrl,
-        cookieJar: PersistCookieJar(),
-      );
+      final client = AnnivClient._(url: annivUrl, cookieJar: await _cookieJar);
       try {
         // TODO: save user info & site info
-        await client.getUserInfo();
+        // try validate login
         await client.getSiteInfo();
+        await client.getUserInfo();
         return client;
       } catch (e) {
         // failed to get user info
@@ -90,7 +90,7 @@ class AnnivClient {
   }
 
   /// Save anniv url to shared preferences
-  Future<void> save() async {
+  Future<void> _save() async {
     await Global.preferences.setString('anniv_url', client.options.baseUrl);
   }
 
