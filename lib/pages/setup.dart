@@ -1,5 +1,5 @@
 import 'package:annix/metadata/metadata_source.dart';
-import 'package:annix/metadata/sources/file.dart';
+import 'package:annix/metadata/metadata_source_sqlite.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
@@ -31,11 +31,12 @@ class _AnnixSetupState extends State<AnnixSetup> {
     if (_currentStep == 0) {
       // Metadata Form
       switch (_metaFormKey.currentState!.metadataSoruceType) {
-        case MetadataSoruceType.Folder:
+        case MetadataSoruceType.LocalDatabase:
           if (_metaFormKey.currentState!.path != null) {
             // TODO: save to shared_preferences
-            Global.metadataSource = FileMetadataSource(
-                localSource: _metaFormKey.currentState!.path!);
+            Global.metadataSource =
+                SqliteMetadataSource(dbPath: _metaFormKey.currentState!.path!);
+            await Global.metadataSource.prepare();
             // TODO: Go to next step instead of finish
             Navigator.of(context).pushReplacementNamed('/home');
             // setState(() {
@@ -127,14 +128,13 @@ class MetadataForm extends StatefulWidget {
 }
 
 class _MetadataFormState extends State<MetadataForm> {
-  MetadataSoruceType metadataSoruceType = MetadataSoruceType.Folder;
+  MetadataSoruceType metadataSoruceType = MetadataSoruceType.LocalDatabase;
   String? path;
   final urlController = TextEditingController();
 
   bool get isLocalMetadataSource {
     switch (metadataSoruceType) {
-      case MetadataSoruceType.GitLocal:
-      case MetadataSoruceType.Folder:
+      case MetadataSoruceType.LocalDatabase:
         return true;
       default:
         return false;
@@ -154,31 +154,21 @@ class _MetadataFormState extends State<MetadataForm> {
               onChanged: (value) => metadataSoruceType = value!,
               items: [
                 DropdownMenuItem(
-                  child: Text('Git'),
-                  value: MetadataSoruceType.GitRemote,
+                  child: Text('Anniv'),
+                  value: MetadataSoruceType.Anniv,
                   enabled: false,
                 ),
                 DropdownMenuItem(
-                  child: Text('Zip'),
-                  value: MetadataSoruceType.Zip,
-                  enabled: false,
-                ),
-                DropdownMenuItem(
-                  child: Text('Database'),
-                  value: MetadataSoruceType.Database,
+                  child: Text('Remote Database'),
+                  value: MetadataSoruceType.RemoteDatabase,
                   enabled: false,
                 ),
                 // Local target is only supported for Desktop
                 ...(AnniPlatform.isDesktop
                     ? [
                         DropdownMenuItem(
-                          child: Text('Git(Local)'),
-                          value: MetadataSoruceType.GitLocal,
-                          enabled: false,
-                        ),
-                        DropdownMenuItem(
-                          child: Text('Folder(Local)'),
-                          value: MetadataSoruceType.Folder,
+                          child: Text('Local Database'),
+                          value: MetadataSoruceType.LocalDatabase,
                         ),
                       ]
                     : []),
@@ -192,28 +182,20 @@ class _MetadataFormState extends State<MetadataForm> {
                     builder: (BuildContext context) => CupertinoActionSheet(
                       actions: <CupertinoActionSheetAction>[
                         CupertinoActionSheetAction(
-                          child: const Text('Git'),
+                          child: const Text('Anniv'),
                           onPressed: () {
                             setState(() {
-                              metadataSoruceType = MetadataSoruceType.GitRemote;
+                              metadataSoruceType = MetadataSoruceType.Anniv;
                             });
                             Navigator.pop(context);
                           },
                         ),
                         CupertinoActionSheetAction(
-                          child: const Text('Zip'),
+                          child: const Text('Remote Database'),
                           onPressed: () {
                             setState(() {
-                              metadataSoruceType = MetadataSoruceType.Zip;
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        CupertinoActionSheetAction(
-                          child: const Text('Database'),
-                          onPressed: () {
-                            setState(() {
-                              metadataSoruceType = MetadataSoruceType.Database;
+                              metadataSoruceType =
+                                  MetadataSoruceType.RemoteDatabase;
                             });
                             Navigator.pop(context);
                           },
@@ -221,21 +203,11 @@ class _MetadataFormState extends State<MetadataForm> {
                         ...(AnniPlatform.isDesktop
                             ? [
                                 CupertinoActionSheetAction(
-                                  child: const Text('Git(Local)'),
+                                  child: const Text('Local Database'),
                                   onPressed: () {
                                     setState(() {
                                       metadataSoruceType =
-                                          MetadataSoruceType.GitLocal;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                CupertinoActionSheetAction(
-                                  child: const Text('Local Folder'),
-                                  onPressed: () {
-                                    setState(() {
-                                      metadataSoruceType =
-                                          MetadataSoruceType.Folder;
+                                          MetadataSoruceType.LocalDatabase;
                                     });
                                     Navigator.pop(context);
                                   },
@@ -255,10 +227,17 @@ class _MetadataFormState extends State<MetadataForm> {
                 right: PlatformTextButton(
                   child: Text(path ?? "[Not Selected]"),
                   onPressed: () async {
-                    String? selectedDirectory =
-                        await FilePicker.platform.getDirectoryPath();
+                    FilePickerResult? selected =
+                        await FilePicker.platform.pickFiles(
+                      allowMultiple: false,
+                      allowedExtensions: const ['db'],
+                    );
                     setState(() {
-                      path = selectedDirectory;
+                      if (selected?.paths.length == 1) {
+                        path = selected?.paths[0];
+                      } else {
+                        path = null;
+                      }
                     });
                   },
                 ),
@@ -266,8 +245,8 @@ class _MetadataFormState extends State<MetadataForm> {
             // else, input repo url
             : SimpleRow(
                 left: Text('URL'),
-                right: FractionallySizedBox(
-                  widthFactor: 0.4,
+                right: SizedBox(
+                  width: 300,
                   child: PlatformTextField(
                     controller: urlController,
                   ),

@@ -1,14 +1,14 @@
 class Song {
-  final String catalog;
-  final String? discCatalog;
+  final String albumId;
+  final int discId;
   final int trackId;
 
-  Song({required this.catalog, required this.trackId, this.discCatalog});
+  Song({required this.albumId, required this.discId, required this.trackId});
 
   Song.fromJson(List<dynamic> json)
-      : catalog = json[0],
-        discCatalog = json[1],
+      : albumId = json[0],
+        discId = json[1],
         trackId = json[2];
 
-  List<dynamic> toJson() => [catalog, discCatalog, trackId];
+  List<dynamic> toJson() => [albumId, discId, trackId];
 }

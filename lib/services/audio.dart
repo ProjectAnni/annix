@@ -109,10 +109,9 @@ class AnnilPlaylist extends ChangeNotifier {
 
   ConcatenatingAudioSource get playlist => _service.playlist;
 
-  String? get playingCatalog => playing?.catalog;
+  String? get getPlayingAlbumId => playing?.albumId;
+  int? get playingDiscID => playing?.discId;
   int? get playingTrackId => playing?.trackId;
-  int? get playingTrackIndex =>
-      playingTrackId != null ? playingTrackId! - 1 : null;
 
   AnnilPlaylist({required AnniAudioService service}) : _service = service {
     _service.player.currentIndexStream.listen((index) {

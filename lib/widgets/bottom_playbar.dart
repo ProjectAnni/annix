@@ -109,7 +109,7 @@ class _BottomPlayBarDesktopState extends State<BottomPlayBarDesktop> {
                   var total = value.total;
                   if (total == null || total == Duration.zero) {
                     total = Global.durations[
-                            '${playlist.playingCatalog}/${playlist.playingTrackId}'] ??
+                            '${playlist.getPlayingAlbumId}/${playlist.playingDiscID}/${playlist.playingTrackId}'] ??
                         Duration.zero;
                   }
                   return ProgressBar(
@@ -216,8 +216,8 @@ class CurrentMusicCover extends StatelessWidget {
             // not playing, return empty cover
             return Container();
           } else {
-            // playing, get cover by catalog
-            return Global.annil.cover(catalog: value.playingCatalog!);
+            // playing, get cover by album_id
+            return Global.annil.cover(albumId: value.getPlayingAlbumId!);
           }
         },
       ),

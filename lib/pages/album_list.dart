@@ -19,33 +19,32 @@ class AlbumList extends StatelessWidget {
       ),
       childrenDelegate: SliverChildBuilderDelegate(
         (context, index) {
-          if (index == Global.catalogs.length) {
+          if (index == Global.albumIds.length) {
             return null;
           }
 
-          var catalog = Global.catalogs.keys.elementAt(index);
+          var albumId = Global.albumIds[index];
           return PlayableGrid(
-            id: catalog,
-            cover: Global.annil.cover(
-              catalog: catalog,
-            ),
-            playlistCallback: (catalog) async {
+            id: albumId,
+            cover: Global.annil.cover(albumId: albumId),
+            playlistCallback: (theAlbumId) async {
               var album =
-                  await Global.metadataSource.getAlbum(catalog: catalog);
+                  await Global.metadataSource.getAlbum(albumId: theAlbumId);
               if (album == null) {
                 return null;
               } else {
-                print(catalog);
                 List<Song> songs = [];
+                var discId = 1;
                 album.discs.forEach((disc) {
                   var trackId = 1;
                   disc.tracks.forEach((element) {
                     songs.add(Song(
-                      catalog: album.catalog,
-                      discCatalog: album.discs.length > 1 ? disc.catalog : null,
+                      albumId: album.albumId,
+                      discId: discId,
                       trackId: trackId++,
                     ));
                   });
+                  discId++;
                 });
                 return songs;
               }

@@ -1,4 +1,4 @@
-import 'package:annix/metadata/metadata.dart';
+import 'package:annix/models/metadata.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
@@ -10,7 +10,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 
-typedef PlaylistCallback = Future<List<Song>?> Function(String catalog);
+typedef PlaylistCallback = Future<List<Song>?> Function(String id);
 
 class PlayableGrid extends StatefulWidget {
   final String id;
@@ -73,7 +73,8 @@ class _PlayableGridState extends State<PlayableGrid> {
                                 children: await Future.wait(
                                     songs.map<Future<AudioSource>>(
                                   (s) => Global.annil.getAudio(
-                                    catalog: s.discCatalog ?? s.catalog,
+                                    albumId: s.albumId,
+                                    discId: s.discId,
                                     trackId: s.trackId,
                                   ),
                                 )),
@@ -95,7 +96,7 @@ class _PlayableGridState extends State<PlayableGrid> {
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: FutureBuilder<Album?>(
-            future: Global.metadataSource.getAlbum(catalog: widget.id),
+            future: Global.metadataSource.getAlbum(albumId: widget.id),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Marquee(

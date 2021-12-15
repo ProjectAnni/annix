@@ -82,10 +82,8 @@ class Tag {
 
 enum TrackType { Normal, Instrumental, Absoltue, Drama, Radio, Vocal, Unknown }
 
-TrackType? stringToTrackType(String? value) {
+TrackType stringToTrackType(String value) {
   switch (value) {
-    case null:
-      return null;
     case "normal":
       return TrackType.Normal;
     case "instrumental":
@@ -104,6 +102,7 @@ TrackType? stringToTrackType(String? value) {
 }
 
 class Album {
+  final String albumId;
   final String title;
   final String? edition;
   final String catalog;
@@ -114,6 +113,7 @@ class Album {
   final List<Disc> discs;
 
   Album({
+    required this.albumId,
     required this.title,
     this.edition,
     required this.catalog,
@@ -127,11 +127,12 @@ class Album {
   }
 
   static Album fromMap(Map<String, dynamic> map) {
+    String albumId = map['album']['album_id'];
     String title = map['album']['title'];
     String? edition = map['album']['edition'];
     String catalog = map['album']['catalog'];
     String artist = map['album']['artist'];
-    TrackType type = stringToTrackType(map['album']['type']!)!;
+    TrackType type = stringToTrackType(map['album']['type']!);
     ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
     List<Tag>? tags = (map['album']['tags'] as List<dynamic>?)
         ?.map((e) => Tag.fromDynamic(e))
@@ -140,6 +141,7 @@ class Album {
         .map((e) => Disc.fromMap(e as Map<String, dynamic>))
         .toList();
     return Album(
+      albumId: albumId,
       title: title,
       edition: edition,
       catalog: catalog,

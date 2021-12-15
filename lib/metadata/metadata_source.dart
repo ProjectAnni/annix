@@ -1,4 +1,4 @@
-import 'package:annix/metadata/metadata.dart';
+import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_memory/stash_memory.dart';
@@ -50,49 +50,46 @@ abstract class BaseMetadataSource {
   /// Get album information
   ///
   /// DO NOT OVERRIDE THIS METHOD
-  Future<Album?> getAlbum({required String catalog}) async {
-    if (!await _albumCache.containsKey(catalog)) {
+  Future<Album?> getAlbum({required String albumId}) async {
+    if (!await _albumCache.containsKey(albumId)) {
       // album not in cache, load it from source
-      Album? album = await getAlbumDetail(catalog: catalog);
+      Album? album = await getAlbumDetail(albumId: albumId);
       if (album == null) {
         // album not found
         return null;
       } else {
-        await _albumCache.put(catalog, album);
+        await _albumCache.put(albumId, album);
       }
     }
-    return await _albumCache.get(catalog);
+    return await _albumCache.get(albumId);
   }
 
   /// Actual method to get album detail from metadata source
   /// Override this function to grant ability to get album detail
   ///
   /// Return null if album is not found
-  Future<Album?> getAlbumDetail({required String catalog});
+  Future<Album?> getAlbumDetail({required String albumId});
 
   /// Get track information
   ///
   /// DO NOT OVERRIDE THIS METHOD
-  Future<Track?> getTrack(
-      {required String catalog, discIndex = 0, required int trackIndex}) async {
-    Album? album = await getAlbum(catalog: catalog);
-    return album?.discs[discIndex].tracks[trackIndex];
+  Future<Track?> getTrack({
+    required String albumId,
+    required int discId,
+    required int trackId,
+  }) async {
+    Album? album = await getAlbum(albumId: albumId);
+    return album?.discs[discId - 1].tracks[trackId - 1];
   }
 }
 
 enum MetadataSoruceType {
-  /// Remote git repository
-  GitRemote,
+  /// Prebuilt Database file at local
+  LocalDatabase,
 
-  /// Local git repository
-  GitLocal,
+  /// Prebuilt Database file from remote
+  RemoteDatabase,
 
-  /// Downloadable remote zip file
-  Zip,
-
-  /// Prebuilt Database file
-  Database,
-
-  /// Local folder
-  Folder,
+  /// Get metadata from Anniv
+  Anniv,
 }
