@@ -235,6 +235,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:annix/services/global.dart';
+import 'package:annix/services/platform.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
@@ -444,12 +445,17 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     // TODO: Should close sink after done, but it throws an error.
     // ignore: close_sinks
     final sink = (await _partialCacheFile).openWrite();
-    final sourceLength =
-        response.contentLength == -1 ? originalSize : response.contentLength;
+    final sourceLength = response.contentLength == -1
+        // Fake Range support on Apple devices
+        ? AnniPlatform.isApple
+            ? originalSize
+            : null
+        : response.contentLength;
     final mimeType = response.headers.contentType.toString();
     final acceptRanges = response.headers.value(HttpHeaders.acceptRangesHeader);
     final originSupportsRangeRequests =
-        acceptRanges != null && acceptRanges != 'none';
+        // Fake Range support on Apple devices
+        AnniPlatform.isApple || acceptRanges != null && acceptRanges != 'none';
     final mimeFile = await _mimeFile;
     await mimeFile.writeAsString(mimeType);
     final inProgressResponses = <_InProgressCacheResponse>[];
@@ -506,8 +512,17 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
       // Process any requests that start within the cache.
       for (var request in readyRequests) {
         _requests.remove(request);
-        final effectiveStart = request.start ?? 0;
-        final effectiveEnd = request.end ?? sourceLength;
+        int? start, end;
+        if (originSupportsRangeRequests) {
+          start = request.start;
+          end = request.end;
+        } else {
+          // If the origin doesn't support range requests, the proxy should also
+          // ignore range requests and instead serve a complete 200 response
+          // which the client (AV or exo player) should know how to deal with.
+        }
+        final effectiveStart = start ?? 0;
+        final effectiveEnd = end ?? sourceLength;
         Stream<List<int>> responseStream;
         if (effectiveEnd != null && effectiveEnd <= _progress) {
           responseStream =
@@ -524,11 +539,11 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
           ]);
         }
         request.complete(StreamAudioResponse(
-          rangeRequestsSupported: true,
+          rangeRequestsSupported: originSupportsRangeRequests,
           sourceLength: request.start != null ? sourceLength : null,
           contentLength:
               effectiveEnd != null ? effectiveEnd - effectiveStart : null,
-          offset: request.start,
+          offset: start,
           contentType: mimeType,
           stream: responseStream,
         ));
@@ -554,7 +569,7 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
             throw Exception('HTTP Status Error: ${response.statusCode}');
           }
           request.complete(StreamAudioResponse(
-            rangeRequestsSupported: true,
+            rangeRequestsSupported: originSupportsRangeRequests,
             sourceLength: sourceLength,
             contentLength: end != null ? end - start : null,
             offset: start,

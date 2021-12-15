@@ -16,4 +16,6 @@ class AnniPlatform {
   static bool get isSupported => !Platform.isFuchsia;
 
   static bool get isMacOS => Platform.isMacOS;
+
+  static bool get isApple => Platform.isMacOS || Platform.isIOS;
 }
