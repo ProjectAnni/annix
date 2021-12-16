@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class AnnixDesktopRouter {
   static GlobalKey _view = GlobalKey();
@@ -7,23 +8,23 @@ class AnnixDesktopRouter {
 
   static NavigatorState get navigator => _view.currentState as NavigatorState;
 
-  static String? _lastRoute;
-  static late String _currentRoute;
+  String? _lastRoute;
+  String _currentRoute;
+  String get currentRoute => _currentRoute;
 
-  static void setInitialRoute(String routeName) {
-    // ignore: unnecessary_null_comparison
-    if (_currentRoute != null) {
-      _currentRoute = routeName;
-    }
-  }
+  AnnixDesktopRouter({String initialRoute = albums})
+      : _currentRoute = initialRoute;
 
-  static Future<void> pushReplacementNamed(String routeName) {
+  static AnnixDesktopRouter of(BuildContext context, {bool listen = true}) =>
+      Provider.of(context, listen: listen);
+
+  Future<void> pushReplacementNamed(String routeName) {
     _lastRoute = _currentRoute;
     _currentRoute = routeName;
     return navigator.pushReplacementNamed(_currentRoute);
   }
 
-  static Future<void> pushReplacementLast() {
+  Future<void> pushReplacementLast() {
     String tmp = _currentRoute;
     _currentRoute = _lastRoute!;
     _lastRoute = tmp;
@@ -32,11 +33,11 @@ class AnnixDesktopRouter {
 
   /// Route: albums
   static const String albums = '/albums';
-  static bool get isAlbumsRoute => _currentRoute == albums;
-  static bool get isAlbumsLastRoute => _lastRoute == albums;
+  bool get isAlbumsRoute => _currentRoute == albums;
+  bool get isAlbumsLastRoute => _lastRoute == albums;
 
   /// Route: playlist
   static const String playlist = '/playlist';
-  static bool get isPlaylistRoute => _currentRoute == playlist;
-  static bool get isPlaylistLastRoute => _lastRoute == playlist;
+  bool get isPlaylistRoute => _currentRoute == playlist;
+  bool get isPlaylistLastRoute => _lastRoute == playlist;
 }

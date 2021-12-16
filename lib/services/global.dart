@@ -26,7 +26,7 @@ class Global {
 
     annil = AnnilClient(
       // TODO: let user input annil config
-      baseUrl: 'http://localhost:3614',
+      baseUrl: 'https://annil.mmf.moe',
       authorization:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjAsInR5cGUiOiJ1c2VyIiwidXNlcm5hbWUiOiJ0ZXN0IiwiYWxsb3dTaGFyZSI6dHJ1ZX0.7CH27OBvUnJhKxBdtZbJSXA-JIwQ4MWqI5JsZ46NoKk',
     );

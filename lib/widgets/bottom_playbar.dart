@@ -236,6 +236,7 @@ class DesktopPlayController extends StatefulWidget {
 class _DesktopPlayControllerState extends State<DesktopPlayController> {
   @override
   Widget build(BuildContext context) {
+    final router = AnnixDesktopRouter.of(context, listen: false);
     return Row(
       children: [
         FractionallySizedBox(
@@ -272,23 +273,19 @@ class _DesktopPlayControllerState extends State<DesktopPlayController> {
         FractionallySizedBox(
           heightFactor: 0.6,
           child: SquareIconButton(
-            child: AnnixDesktopRouter.isAlbumsRoute
-                ? Icon(context.icons.expand_down)
-                : Icon(context.icons.expand_up),
+            child: router.isAlbumsRoute
+                ? Icon(context.icons.expand_up)
+                : Icon(context.icons.expand_down),
             onPressed: () {
-              if (AnnixDesktopRouter.isAlbumsRoute) {
-                // to expand
-                setState(() {
-                  AnnixDesktopRouter.pushReplacementNamed(
-                    AnnixDesktopRouter.playlist,
-                  );
-                });
-              } else {
-                // to collapse
-                setState(() {
-                  AnnixDesktopRouter.pushReplacementLast();
-                });
-              }
+              setState(() {
+                if (router.isAlbumsRoute) {
+                  // to expand
+                  router.pushReplacementNamed(AnnixDesktopRouter.playlist);
+                } else {
+                  // to collapse
+                  router.pushReplacementLast();
+                }
+              });
             },
           ),
         ),

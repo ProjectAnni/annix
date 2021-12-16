@@ -52,6 +52,7 @@ class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
       providers: [
         ChangeNotifierProvider(
           create: (_) => AnnilPlaylist(service: Global.audioService),
+          lazy: false,
         ),
         ChangeNotifierProvider(
           create: (_) => AnnilPlayState(service: Global.audioService),
@@ -73,7 +74,7 @@ class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
               }
 
               var route = settings.name;
-              if (route == '/') {
+              if (route == null || route == '/') {
                 route = initialRoute;
               }
 

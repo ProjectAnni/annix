@@ -11,7 +11,7 @@ class SqliteMetadataSource extends BaseMetadataSource {
 
   @override
   Future<void> prepare() async {
-    database = await openDatabase(dbPath);
+    database = await openDatabase(dbPath, readOnly: true);
   }
 
   @override
