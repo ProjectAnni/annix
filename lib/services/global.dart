@@ -2,7 +2,6 @@ import 'package:annix/metadata/metadata_source.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/audio.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stash_memory/stash_memory.dart';
 
@@ -21,8 +20,6 @@ class Global {
       !(preferences.getBool("initialized") ?? false) || anniv == null;
 
   static Map<String, Duration?> durations = new Map();
-
-  static GlobalKey view = GlobalKey();
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();

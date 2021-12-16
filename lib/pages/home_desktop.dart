@@ -1,11 +1,10 @@
 import 'package:annix/pages/album_list.dart';
 import 'package:annix/pages/playlist.dart';
-import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
+import 'package:annix/services/route.dart';
 import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/bottom_playbar.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
-import 'package:annix/widgets/navigator.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart' show Icons;
@@ -31,9 +30,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
           SquareIconButton(
             child: Icon(context.icons.person),
             onPressed: () {
-              NavigatorState navigator =
-                  Global.view.currentState! as NavigatorState;
-              navigator.pushReplacementNamed('/user');
+              AnnixDesktopRouter.pushReplacementNamed('/user');
             },
           ),
           ...(AnniPlatform.isDesktop && !AnniPlatform.isMacOS
@@ -74,20 +71,19 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
               children: [
                 Expanded(
                   child: Navigator(
-                    key: Global.view,
-                    initialRoute: '/albums',
+                    key: AnnixDesktopRouter.navigatorKey,
                     onGenerateRoute: (settings) {
                       late Widget page;
                       var name = settings.name;
-                      if (name == '/') {
-                        name = '/albums';
+                      if (name == null || name == '/') {
+                        name = AnnixDesktopRouter.albums;
                       }
 
                       switch (name) {
-                        case '/albums':
+                        case AnnixDesktopRouter.albums:
                           page = AlbumList();
                           break;
-                        case '/playlist':
+                        case AnnixDesktopRouter.playlist:
                           page = AnnixPlaylist();
                           break;
                         case '/user':
@@ -97,6 +93,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                           page = Text('Unknown');
                       }
 
+                      AnnixDesktopRouter.setInitialRoute(name);
                       return platformPageRoute<Widget>(
                         context: context,
                         builder: (context) => page,

@@ -1,5 +1,6 @@
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/services/route.dart';
 import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/play_pause_button.dart';
 import 'package:annix/widgets/repeat_button.dart';
@@ -233,8 +234,6 @@ class DesktopPlayController extends StatefulWidget {
 }
 
 class _DesktopPlayControllerState extends State<DesktopPlayController> {
-  String? last;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -273,25 +272,22 @@ class _DesktopPlayControllerState extends State<DesktopPlayController> {
         FractionallySizedBox(
           heightFactor: 0.6,
           child: SquareIconButton(
-            child: last != null
+            child: AnnixDesktopRouter.isAlbumsRoute
                 ? Icon(context.icons.expand_down)
                 : Icon(context.icons.expand_up),
             onPressed: () {
-              NavigatorState navigator =
-                  Global.view.currentState! as NavigatorState;
-              if (last == null) {
+              if (AnnixDesktopRouter.isAlbumsRoute) {
                 // to expand
                 setState(() {
-                  // TODO: use correct last route
-                  last = '/albums';
+                  AnnixDesktopRouter.pushReplacementNamed(
+                    AnnixDesktopRouter.playlist,
+                  );
                 });
-                navigator.pushReplacementNamed('/playlist');
               } else {
                 // to collapse
                 setState(() {
-                  navigator.pushReplacementNamed(last!);
+                  AnnixDesktopRouter.pushReplacementLast();
                 });
-                last = null;
               }
             },
           ),
