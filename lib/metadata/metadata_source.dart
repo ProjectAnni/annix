@@ -40,6 +40,9 @@ abstract class BaseMetadataSource {
     return false;
   }
 
+  /// Whether a metadata source needs to be cached
+  bool get needPersist;
+
   /// Private album object cache for album object reading
   static final _albumCache = Global.cacheStore.cache(
     cacheName: 'album',

@@ -75,4 +75,7 @@ class SqliteMetadataSource extends BaseMetadataSource {
       return null;
     }
   }
+
+  @override
+  bool get needPersist => false;
 }

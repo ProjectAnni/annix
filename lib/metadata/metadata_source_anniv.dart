@@ -19,4 +19,7 @@ class AnnivMetadataSource extends BaseMetadataSource {
       return result.values.first;
     }
   }
+
+  @override
+  bool get needPersist => true;
 }
