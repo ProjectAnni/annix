@@ -1,3 +1,4 @@
+import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/metadata/metadata_source_sqlite.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
@@ -36,36 +37,39 @@ class _AnnixSetupState extends State<AnnixSetup> {
       // TODO: empty field
       return;
     } else {
-      // initialize Anniv
       try {
-        Global.anniv = await AnnivClient.create(
+        // initialize Anniv
+        final anniv = await AnnivClient.create(
           url: _urlController.text,
           email: _emailController.text,
           password: _passwordController.text,
         );
+        Global.anniv = anniv;
+
+        // initialize metadata source
+        if (_databasePath == null) {
+          // use Anniv as metadata source
+          Global.metadataSource = AnnivMetadataSource(anniv: anniv);
+        } else {
+          // use database as metadata source
+          if (_databasePath!.startsWith('http')) {
+            // TODO: Download from URL
+            throw UnimplementedError();
+          }
+          final metadataSource = SqliteMetadataSource(dbPath: _databasePath!);
+          await metadataSource.prepare();
+          // TODO: validate database
+          // TODO: persist database path
+          Global.metadataSource = metadataSource;
+        }
+        setState(() {
+          Navigator.of(context).pushReplacementNamed('/home');
+        });
       } catch (e) {
         // TODO: failed to login
         print(e);
       }
     }
-
-    // initialize metadata source
-    if (_databasePath == null) {
-      // TODO: use Anniv as metadata source
-      throw UnimplementedError();
-    } else {
-      // use database as metadata source
-      if (_databasePath!.startsWith('http')) {
-        // TODO: Download from URL
-        throw UnimplementedError();
-      }
-      final metadataSource = SqliteMetadataSource(dbPath: _databasePath!);
-      await metadataSource.prepare();
-      Global.metadataSource = metadataSource;
-    }
-    setState(() {
-      Navigator.of(context).pushReplacementNamed('/home');
-    });
   }
 
   @override
