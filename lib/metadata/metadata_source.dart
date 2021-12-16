@@ -82,14 +82,3 @@ abstract class BaseMetadataSource {
     return album?.discs[discId - 1].tracks[trackId - 1];
   }
 }
-
-enum MetadataSoruceType {
-  /// Prebuilt Database file at local
-  LocalDatabase,
-
-  /// Prebuilt Database file from remote
-  RemoteDatabase,
-
-  /// Get metadata from Anniv
-  Anniv,
-}

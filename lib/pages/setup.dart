@@ -1,17 +1,10 @@
-import 'package:annix/metadata/metadata_source.dart';
 import 'package:annix/metadata/metadata_source_sqlite.dart';
+import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/services/platform.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
-import 'package:annix/widgets/platform_stepper.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart'
-    show
-        CupertinoActionSheetAction,
-        showCupertinoModalPopup,
-        CupertinoActionSheet;
-import 'package:flutter/material.dart'
-    show Step, StepperType, DropdownButton, DropdownMenuItem;
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
@@ -23,39 +16,56 @@ class AnnixSetup extends StatefulWidget {
 }
 
 class _AnnixSetupState extends State<AnnixSetup> {
-  int _currentStep = 0;
+  bool _useExternalMetadata = false;
+  bool isLocalSource = false;
 
-  GlobalKey<_MetadataFormState> _metaFormKey = GlobalKey();
+  TextEditingController _urlController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  String? _databasePath;
 
-  Future<void> onNext() async {
-    if (_currentStep == 0) {
-      // Metadata Form
-      switch (_metaFormKey.currentState!.metadataSoruceType) {
-        case MetadataSoruceType.LocalDatabase:
-          if (_metaFormKey.currentState!.path != null) {
-            // TODO: save to shared_preferences
-            Global.metadataSource =
-                SqliteMetadataSource(dbPath: _metaFormKey.currentState!.path!);
-            await Global.metadataSource.prepare();
-            // TODO: Go to next step instead of finish
-            Navigator.of(context).pushReplacementNamed('/home');
-            // setState(() {
-            //   _currentStep++;
-            // });
-          }
-          break;
-        default:
-          throw UnimplementedError();
+  void _completeSetup() async {
+    // validate data first
+    if (!_emailController.text.contains('@')) {
+      // TODO: invalid email
+      print("invalid email");
+      return;
+    } else if (_urlController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      print("empty field");
+      // TODO: empty field
+      return;
+    } else {
+      // initialize Anniv
+      try {
+        Global.anniv = await AnnivClient.create(
+          url: _urlController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+      } catch (e) {
+        // TODO: failed to login
+        print(e);
       }
     }
-  }
 
-  Future<void> onPrev() async {
-    if (_currentStep > 0) {
-      setState(() {
-        _currentStep--;
-      });
+    // initialize metadata source
+    if (_databasePath == null) {
+      // TODO: use Anniv as metadata source
+      throw UnimplementedError();
+    } else {
+      // use database as metadata source
+      if (_databasePath!.startsWith('http')) {
+        // TODO: Download from URL
+        throw UnimplementedError();
+      }
+      final metadataSource = SqliteMetadataSource(dbPath: _databasePath!);
+      await metadataSource.prepare();
+      Global.metadataSource = metadataSource;
     }
+    setState(() {
+      Navigator.of(context).pushReplacementNamed('/home');
+    });
   }
 
   @override
@@ -64,195 +74,102 @@ class _AnnixSetupState extends State<AnnixSetup> {
       iosContentPadding: true,
       appBar: DraggableAppBar(
         title: Text("Annix Setup"),
-      ),
-      body: PlatformStepper(
-        currentStep: _currentStep,
-        type: AnniPlatform.isDesktop
-            ? StepperType.horizontal
-            : StepperType.vertical,
-        controlsBuilder: (context, details) => Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              PlatformTextButton(
-                onPressed: onPrev,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text('BACK'),
-                ),
-              ),
-              PlatformTextButton(
-                onPressed: onNext,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text('NEXT'),
-                ),
-              ),
-            ],
-          ),
-        ),
-        steps: <Step>[
-          Step(
-            title: const Text("Metadata"),
-            content: MetadataForm(
-              key: _metaFormKey,
-            ),
-          ),
-          Step(
-            title: const Text("Annil"),
-            // TODO: setup annil
-            content: Text("Setup annil here."),
-          ),
-          Step(
-            title: const Text("Anniv"),
-            // TODO: setup anniv
-            content: Text("Setup anniv here."),
-          ),
-          Step(
-            title: const Text("Finish"),
-            // TODO: finish
-            content: Text("You've done everything."),
-          ),
+        trailingActions: [
+          PlatformIconButton(
+            icon: Icon(context.platformIcons.checkMark),
+            padding: EdgeInsets.zero,
+            onPressed: _completeSetup,
+          )
         ],
       ),
-    );
-  }
-}
-
-class MetadataForm extends StatefulWidget {
-  const MetadataForm({Key? key}) : super(key: key);
-
-  @override
-  _MetadataFormState createState() => _MetadataFormState();
-}
-
-class _MetadataFormState extends State<MetadataForm> {
-  MetadataSoruceType metadataSoruceType = MetadataSoruceType.LocalDatabase;
-  String? path;
-  final urlController = TextEditingController();
-
-  bool get isLocalMetadataSource {
-    switch (metadataSoruceType) {
-      case MetadataSoruceType.LocalDatabase:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SimpleRow(
-          left: Text('Repo Type'),
-          right: PlatformWidget(
-            // TODO: wrap as a widget
-            material: (context, platform) => DropdownButton<MetadataSoruceType>(
-              value: metadataSoruceType,
-              onChanged: (value) => metadataSoruceType = value!,
-              items: [
-                DropdownMenuItem(
-                  child: Text('Anniv'),
-                  value: MetadataSoruceType.Anniv,
-                  enabled: false,
-                ),
-                DropdownMenuItem(
-                  child: Text('Remote Database'),
-                  value: MetadataSoruceType.RemoteDatabase,
-                  enabled: false,
-                ),
-                // Local target is only supported for Desktop
-                ...(AnniPlatform.isDesktop
-                    ? [
-                        DropdownMenuItem(
-                          child: Text('Local Database'),
-                          value: MetadataSoruceType.LocalDatabase,
-                        ),
-                      ]
-                    : []),
-              ],
+      body: Column(
+        children: [
+          SimpleRow(
+            left: Text('Anniv Server URL'),
+            right: PlatformTextField(
+              hintText: 'URL',
+              controller: _urlController,
             ),
-            cupertino: (context, platform) => PlatformTextButton(
-                child: Text(metadataSoruceType.toString()),
-                onPressed: () {
-                  showCupertinoModalPopup<void>(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoActionSheet(
-                      actions: <CupertinoActionSheetAction>[
-                        CupertinoActionSheetAction(
-                          child: const Text('Anniv'),
-                          onPressed: () {
-                            setState(() {
-                              metadataSoruceType = MetadataSoruceType.Anniv;
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        CupertinoActionSheetAction(
-                          child: const Text('Remote Database'),
-                          onPressed: () {
-                            setState(() {
-                              metadataSoruceType =
-                                  MetadataSoruceType.RemoteDatabase;
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ...(AnniPlatform.isDesktop
-                            ? [
-                                CupertinoActionSheetAction(
-                                  child: const Text('Local Database'),
-                                  onPressed: () {
-                                    setState(() {
-                                      metadataSoruceType =
-                                          MetadataSoruceType.LocalDatabase;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ]
-                            : []),
-                      ],
-                    ),
-                  );
-                }),
           ),
-        ),
-        // for local metadata source, use path picker
-        isLocalMetadataSource
-            ? SimpleRow(
-                left: Text('Path'),
-                right: PlatformTextButton(
-                  child: Text(path ?? "[Not Selected]"),
-                  onPressed: () async {
-                    FilePickerResult? selected =
-                        await FilePicker.platform.pickFiles(
-                      allowMultiple: false,
-                      allowedExtensions: const ['db'],
-                    );
-                    setState(() {
-                      if (selected?.paths.length == 1) {
-                        path = selected?.paths[0];
-                      } else {
-                        path = null;
-                      }
-                    });
-                  },
-                ),
-              )
-            // else, input repo url
-            : SimpleRow(
-                left: Text('URL'),
-                right: SizedBox(
-                  width: 300,
-                  child: PlatformTextField(
-                    controller: urlController,
+          SimpleRow(
+            left: Text('Email'),
+            right: PlatformTextField(
+              hintText: 'Email',
+              controller: _emailController,
+            ),
+          ),
+          SimpleRow(
+            left: Text('Password'),
+            right: PlatformTextField(
+              hintText: 'Password',
+              obscureText: true,
+              controller: _passwordController,
+            ),
+          ),
+          SimpleRow(
+            padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+            left: Text('Use external metadata source'),
+            right: PlatformSwitch(
+              value: _useExternalMetadata,
+              onChanged: (value) {
+                setState(() {
+                  _useExternalMetadata = value;
+                });
+              },
+            ),
+          ),
+          ...(_useExternalMetadata
+              ? [
+                  SimpleRow(
+                    padding:
+                        EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 8),
+                    left: Text('Local source'),
+                    right: PlatformSwitch(
+                      value: isLocalSource,
+                      onChanged: (value) {
+                        setState(() {
+                          isLocalSource = value;
+                          _databasePath = null;
+                        });
+                      },
+                    ),
                   ),
-                ),
-              ),
-      ],
+                  SimpleRow(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    left: Align(
+                        alignment: Alignment.topLeft, child: Text('URL/Path')),
+                    right: isLocalSource
+                        // select local source
+                        ? PlatformTextButton(
+                            padding: EdgeInsets.zero,
+                            alignment: Alignment.topRight,
+                            child: Text(_databasePath ?? "[Not Selected]"),
+                            onPressed: () async {
+                              FilePickerResult? selected =
+                                  await FilePicker.platform.pickFiles(
+                                allowMultiple: false,
+                                allowedExtensions: const ['db'],
+                              );
+                              setState(() {
+                                if (selected?.paths.length == 1) {
+                                  _databasePath = selected?.paths[0];
+                                } else {
+                                  _databasePath = null;
+                                }
+                              });
+                            },
+                          )
+                        // input remote source
+                        : PlatformTextField(
+                            onChanged: (value) {
+                              _databasePath = value;
+                            },
+                          ),
+                  ),
+                ]
+              : [])
+        ],
+      ),
     );
   }
 }
@@ -260,14 +177,36 @@ class _MetadataFormState extends State<MetadataForm> {
 class SimpleRow extends StatelessWidget {
   final Widget left;
   final Widget right;
-  const SimpleRow({Key? key, required this.left, required this.right})
-      : super(key: key);
+  final CrossAxisAlignment crossAxisAlignment;
+  final EdgeInsets padding;
+
+  const SimpleRow({
+    Key? key,
+    required this.left,
+    required this.right,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.padding = const EdgeInsets.all(8),
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [this.left, this.right],
+    return Padding(
+      padding: padding,
+      child: Row(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: left,
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: right,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

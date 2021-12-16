@@ -20,3 +20,20 @@ UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => UserInfo(
       nickname: json['nickname'] as String,
       avatar: json['avatar'] as String,
     );
+
+AnnilToken _$AnnilTokenFromJson(Map<String, dynamic> json) => AnnilToken(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      url: json['url'] as String,
+      token: json['token'] as String,
+      priority: json['priority'] as int,
+    );
+
+Map<String, dynamic> _$AnnilTokenToJson(AnnilToken instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'url': instance.url,
+      'token': instance.token,
+      'priority': instance.priority,
+    };

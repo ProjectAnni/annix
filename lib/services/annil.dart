@@ -111,7 +111,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required int trackId,
     PreferBitrate preferBitrate = PreferBitrate.Lossless,
   }) async {
-    var track = await Global.metadataSource
+    var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource._(
       baseUri: annil.baseUrl,

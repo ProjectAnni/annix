@@ -3,6 +3,7 @@ import 'package:annix/services/audio.dart';
 import 'package:flutter/cupertino.dart' show CupertinoTheme;
 import 'package:flutter/widgets.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 
 class AnnixPlaylist extends StatelessWidget {
@@ -33,33 +34,36 @@ class AnnixPlaylist extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Row(
-                              // TODO: better way to show active song
-                              children: [
-                                Text(
-                                  info.title,
-                                  style: TextStyle(
-                                    color: audio == active
-                                        ? CupertinoTheme.of(context)
-                                            .primaryColor
-                                        : null,
-                                  ),
-                                ),
-                              ],
+                            flex: 6,
+                            child: Text(
+                              info.title,
+                              style: TextStyle(
+                                color: audio == active
+                                    ? CupertinoTheme.of(context).primaryColor
+                                    : null,
+                              ),
                             ),
                           ),
-                          Text(
-                            info.artist ?? '',
-                            style: TextStyle(
-                              fontSize: 0.8 *
-                                  (CupertinoTheme.of(context)
-                                          .textTheme
-                                          .textStyle
-                                          .fontSize ??
-                                      0),
-                              color: audio == active
-                                  ? CupertinoTheme.of(context).primaryColor
-                                  : null,
+                          Expanded(
+                            flex: 4,
+                            child: Align(
+                              // FIXME: marquee align
+                              child: Marquee(
+                                text: info.artist ?? '',
+                                scrollToEnd: true,
+                                marqueeShortText: false,
+                                style: TextStyle(
+                                  fontSize: 0.8 *
+                                      (CupertinoTheme.of(context)
+                                              .textTheme
+                                              .textStyle
+                                              .fontSize ??
+                                          0),
+                                  color: audio == active
+                                      ? CupertinoTheme.of(context).primaryColor
+                                      : null,
+                                ),
+                              ),
                             ),
                           ),
                         ],

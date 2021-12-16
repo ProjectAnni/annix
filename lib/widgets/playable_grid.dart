@@ -72,7 +72,7 @@ class _PlayableGridState extends State<PlayableGrid> {
                                 useLazyPreparation: true,
                                 children: await Future.wait(
                                     songs.map<Future<AudioSource>>(
-                                  (s) => Global.annil.getAudio(
+                                  (s) => Global.anniv!.annil.getAudio(
                                     albumId: s.albumId,
                                     discId: s.discId,
                                     trackId: s.trackId,
@@ -95,7 +95,7 @@ class _PlayableGridState extends State<PlayableGrid> {
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: FutureBuilder<Album?>(
-            future: Global.metadataSource.getAlbum(albumId: widget.id),
+            future: Global.metadataSource!.getAlbum(albumId: widget.id),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Marquee(
