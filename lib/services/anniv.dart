@@ -1,4 +1,5 @@
 import 'package:annix/models/anniv.dart';
+import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/utils/hash.dart';
@@ -148,5 +149,29 @@ class AnnivClient {
     return (response.data as List<dynamic>)
         .map((e) => AnnilToken.fromJson(e))
         .toList();
+  }
+
+  // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF
+  Future<Map<String, Album>> getAlbumMetadata(List<String> albums) async {
+    final response =
+        await _client.get('/api/meta/album', queryParameters: {'id[]': albums});
+    Map<String, dynamic> responseAlbums = response.data;
+    return responseAlbums
+        .map((key, value) => MapEntry(key, value as Map<String, dynamic>))
+        .map(
+          (albumId, album) => MapEntry(
+            albumId,
+            Album.fromMap({
+              'album': album,
+              'discs': (album['discs'] as List<dynamic>).map((e) {
+                var disc = e as Map<String, dynamic>;
+                e['tracks'] = (disc['tracks'] as List<dynamic>)
+                    .map((e) => e as Map<String, dynamic>)
+                    .toList();
+                return disc;
+              }).toList(),
+            }),
+          ),
+        );
   }
 }
