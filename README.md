@@ -1,16 +1,42 @@
-# annix
+# Annix
 
-A new Flutter project.
+Desktop / Mobile client for Project Anni.
 
-## Getting Started
+## TODOs
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [x] Audio Playback
+- [ ] Annil
+  - [ ] Server info
+  - [x] Album list
+  - [x] Cover
+  - [x] Audio
+  - [ ] Lyric
+  - [ ] Annil selection based on priority
+- [ ] Metadata Sources
+  - [x] Anniv
+  - [x] Local sqlite file
+  - [ ] Remote sqlite file
+  - [ ] Metadata repository
+- [ ] Anniv
+  - [ ] Server Info
+  - [ ] User system
+    - [x] Login
+      - [ ] 2FA
+    - [ ] Register
+    - [ ] Logout
+    - [ ] ~~Revoke account~~ (May not be implemented in Annix)
+  - [ ] Playlist
+    - [ ] List playlist
+    - [ ] Create playlist
+    - [ ] Remove playlist
+    - [ ] Edit playlist
+      - [ ] Append
+      - [ ] Remove
+      - [ ] Reorder
+      - [ ] Replace
+  - [ ] Credentials
+    - [x] Get credentials
+    - [ ] Add credential
+    - [ ] Edit credential
+    - [ ] Delete credential
+  - [ ] Search
