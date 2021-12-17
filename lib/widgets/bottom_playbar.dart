@@ -226,70 +226,64 @@ class CurrentMusicCover extends StatelessWidget {
   }
 }
 
-class DesktopPlayController extends StatefulWidget {
+class DesktopPlayController extends StatelessWidget {
   const DesktopPlayController({Key? key}) : super(key: key);
 
   @override
-  _DesktopPlayControllerState createState() => _DesktopPlayControllerState();
-}
-
-class _DesktopPlayControllerState extends State<DesktopPlayController> {
-  @override
   Widget build(BuildContext context) {
-    final router = AnnixDesktopRouter.of(context, listen: false);
-    return Row(
-      children: [
-        FractionallySizedBox(
-          heightFactor: 0.6,
-          child: RepeatButton(
-            initial: Global.audioService.repeatMode,
-            onRepeatModeChange: (mode) {
-              Global.audioService.repeatMode = mode;
-            },
+    return Consumer<AnnixDesktopRouter>(builder: (context, router, child) {
+      return Row(
+        children: [
+          FractionallySizedBox(
+            heightFactor: 0.6,
+            child: RepeatButton(
+              initial: Global.audioService.repeatMode,
+              onRepeatModeChange: (mode) {
+                Global.audioService.repeatMode = mode;
+              },
+            ),
           ),
-        ),
-        FractionallySizedBox(
-          heightFactor: 0.6,
-          child: SquareIconButton(
-            child: Icon(context.icons.previous),
-            onPressed: () {
-              Global.audioService.player.seekToPrevious();
-            },
+          FractionallySizedBox(
+            heightFactor: 0.6,
+            child: SquareIconButton(
+              child: Icon(context.icons.previous),
+              onPressed: () {
+                Global.audioService.player.seekToPrevious();
+              },
+            ),
           ),
-        ),
-        FractionallySizedBox(
-          heightFactor: 0.8,
-          child: PlayPauseButton(),
-        ),
-        FractionallySizedBox(
-          heightFactor: 0.6,
-          child: SquareIconButton(
-            child: Icon(context.icons.next),
-            onPressed: () {
-              Global.audioService.player.seekToNext();
-            },
+          FractionallySizedBox(
+            heightFactor: 0.8,
+            child: PlayPauseButton(),
           ),
-        ),
-        FractionallySizedBox(
-          heightFactor: 0.6,
-          child: SquareIconButton(
-            child: router.isAlbumsRoute
-                ? Icon(context.icons.expand_up)
-                : Icon(context.icons.expand_down),
-            onPressed: () {
-              setState(() {
-                if (router.isAlbumsRoute) {
+          FractionallySizedBox(
+            heightFactor: 0.6,
+            child: SquareIconButton(
+              child: Icon(context.icons.next),
+              onPressed: () {
+                Global.audioService.player.seekToNext();
+              },
+            ),
+          ),
+          FractionallySizedBox(
+            heightFactor: 0.6,
+            child: SquareIconButton(
+              child: !router.isPlaylistRoute
+                  ? Icon(context.icons.expand_up)
+                  : Icon(context.icons.expand_down),
+              onPressed: () {
+                if (!router.isPlaylistRoute) {
                   // to expand
                   router.pushReplacementNamed(AnnixDesktopRouter.playlist);
                 } else {
                   // to collapse
                   router.pushReplacementLast();
                 }
-              });
-            },
+              },
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

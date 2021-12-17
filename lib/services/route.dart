@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class AnnixDesktopRouter {
+class AnnixDesktopRouter extends ChangeNotifier {
   static GlobalKey _view = GlobalKey();
 
   static GlobalKey get navigatorKey => _view;
@@ -24,6 +24,7 @@ class AnnixDesktopRouter {
     }
     _lastRoute = _currentRoute;
     _currentRoute = routeName;
+    notifyListeners();
     return navigator.pushReplacementNamed(_currentRoute);
   }
 
@@ -31,6 +32,7 @@ class AnnixDesktopRouter {
     String tmp = _currentRoute;
     _currentRoute = _lastRoute!;
     _lastRoute = tmp;
+    notifyListeners();
     return navigator.pushReplacementNamed(_currentRoute);
   }
 

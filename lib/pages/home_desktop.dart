@@ -24,7 +24,7 @@ class HomePageDesktop extends StatefulWidget {
 class _HomePageDesktopState extends State<HomePageDesktop> {
   @override
   Widget build(BuildContext context) {
-    return Provider(
+    return ChangeNotifierProvider(
       create: (_) => AnnixDesktopRouter(),
       builder: (context, child) {
         return PlatformScaffold(
