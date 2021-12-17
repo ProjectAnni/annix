@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/utils/platform_icons.dart';
@@ -8,16 +10,173 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
     show PlatformCircularProgressIndicator;
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:uuid/uuid.dart';
+
+class CombinedAnnilClient extends ChangeNotifier {
+  final Map<String, AnnilClient> _clients = Map();
+  bool get hasClient => _clients.isNotEmpty;
+
+  /// Load state from shared preferences
+  static Future<CombinedAnnilClient> load() async {
+    List<String>? tokens = Global.preferences.getStringList("annil_clients");
+    final combined = CombinedAnnilClient();
+    if (tokens != null) {
+      for (String token in tokens) {
+        final client = AnnilClient.fromJson(jsonDecode(token));
+        combined._clients[client.id] = client;
+      }
+    }
+    return combined;
+  }
+
+  /// Save the current state of the combined client to shared preferences
+  Future<void> save() async {
+    final tokens =
+        _clients.values.map((client) => jsonEncode(client.toJson())).toList();
+    Global.preferences.setStringList("annil_clients", tokens);
+  }
+
+  /// Add a list of clients to the combined client
+  Future<void> addAll(List<AnnilClient> clients) async {
+    _clients.addAll(Map.fromEntries(clients.map((c) => MapEntry(c.id, c))));
+    await save();
+  }
+
+  /// Remove all remote annil sources
+  Future<void> removeRemote() async {
+    _clients.removeWhere((_, client) => !client.local);
+  }
+
+  Future<void> refresh() async {
+    await Future.wait(_clients.values.map((client) => client.getAlbums()));
+    notifyListeners();
+  }
+
+  // TODO: cache this list
+  List<String> get albums {
+    List<String> _albums = [];
+    _clients.values.forEach((client) {
+      _albums.addAll(client.albums);
+    });
+    return _albums.toSet().toList();
+  }
+
+  Future<AudioSource> getAudio({
+    required String albumId,
+    required int discId,
+    required int trackId,
+    PreferBitrate preferBitrate = PreferBitrate.Lossless,
+  }) {
+    // FIXME: choose the correct annil server
+    return AnnilAudioSource.create(
+      annil: _clients.entries.first.value,
+      albumId: albumId,
+      discId: discId,
+      trackId: trackId,
+      preferBitrate: preferBitrate,
+    );
+  }
+
+  Widget cover({required String albumId, int? discId}) {
+    return Builder(
+      builder: (context) {
+        return CachedNetworkImage(
+          // FIXME: choose the correct annil server
+          imageUrl: _clients.entries.first.value
+              .getCoverUrl(albumId: albumId, discId: discId),
+          placeholder: (context, url) => SizedBox.square(
+            dimension: 64,
+            child: Center(
+              child: PlatformCircularProgressIndicator(),
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(context.icons.error),
+          fit: BoxFit.scaleDown,
+          filterQuality: FilterQuality.medium,
+        );
+      },
+    );
+  }
+}
 
 class AnnilClient {
   final Dio client;
-  final String baseUrl;
-  final String authorization;
+  final String id;
+  final String name;
+  final String url;
+  final String token;
+  final int priority;
+  final bool local;
 
-  AnnilClient({
-    required this.baseUrl,
-    required this.authorization,
-  }) : client = Dio(BaseOptions(baseUrl: baseUrl));
+  // cached album list in client
+  List<String> albums = [];
+
+  AnnilClient._({
+    required this.id,
+    required this.name,
+    required this.url,
+    required this.token,
+    required this.priority,
+    this.local = false,
+  }) : client = Dio(BaseOptions(baseUrl: url));
+
+  factory AnnilClient.remote({
+    required String id,
+    required String name,
+    required String url,
+    required String token,
+    required int priority,
+  }) =>
+      AnnilClient._(
+        id: id,
+        name: name,
+        url: url,
+        token: token,
+        priority: priority,
+        local: false,
+      );
+
+  factory AnnilClient.local({
+    required String name,
+    required String url,
+    required String token,
+    required int priority,
+  }) =>
+      AnnilClient._(
+        id: Uuid().v4(),
+        name: name,
+        url: url,
+        token: token,
+        priority: priority,
+        local: true,
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'url': url,
+      'token': token,
+      'priority': priority,
+      'local': local,
+      'albums': albums,
+    };
+  }
+
+  factory AnnilClient.fromJson(Map<String, dynamic> json) {
+    final client = AnnilClient._(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      url: json['url'] as String,
+      token: json['token'] as String,
+      priority: json['priority'] as int,
+      local: json['local'] as bool,
+    );
+    client.albums = (json['albums'] as List<dynamic>)
+        .map((album) => album as String)
+        .toList();
+    return client;
+  }
 
   Future<dynamic> _request({
     required String path,
@@ -28,7 +187,7 @@ class AnnilClient {
       options: Options(
         responseType: responseType,
         headers: {
-          'Authorization': this.authorization,
+          'Authorization': this.token,
         },
       ),
     );
@@ -38,7 +197,8 @@ class AnnilClient {
   Future<List<String>> getAlbums() async {
     List<dynamic> result =
         await _request(path: '/albums', responseType: ResponseType.json);
-    return result.map((e) => e.toString()).toList();
+    albums = result.map((e) => e.toString()).toList();
+    return List.unmodifiable(albums);
   }
 
   Future<AudioSource> getAudio({
@@ -56,30 +216,11 @@ class AnnilClient {
     );
   }
 
-  Widget cover({required String albumId, int? discId}) {
-    return Builder(
-      builder: (context) {
-        return CachedNetworkImage(
-          imageUrl: _getCoverUrl(albumId: albumId, discId: discId),
-          placeholder: (context, url) => SizedBox.square(
-            dimension: 64,
-            child: Center(
-              child: PlatformCircularProgressIndicator(),
-            ),
-          ),
-          errorWidget: (context, url, error) => Icon(context.icons.error),
-          fit: BoxFit.scaleDown,
-          filterQuality: FilterQuality.medium,
-        );
-      },
-    );
-  }
-
-  String _getCoverUrl({required String albumId, int? discId}) {
+  String getCoverUrl({required String albumId, int? discId}) {
     if (discId == null) {
-      return '$baseUrl/$albumId/cover?auth=$authorization';
+      return '$url/$albumId/cover?auth=$token';
     } else {
-      return '$baseUrl/$albumId/$discId/cover?auth=$authorization';
+      return '$url/$albumId/$discId/cover?auth=$token';
     }
   }
 }
@@ -114,8 +255,8 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource._(
-      baseUri: annil.baseUrl,
-      authorization: annil.authorization,
+      baseUri: annil.url,
+      authorization: annil.token,
       albumId: albumId,
       discId: discId,
       trackId: trackId,
@@ -125,7 +266,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         title: track?.title ?? "Unknown Title",
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
-        artUri: Uri.parse(annil._getCoverUrl(albumId: albumId)),
+        artUri: Uri.parse(annil.getCoverUrl(albumId: albumId)),
       ),
     );
   }

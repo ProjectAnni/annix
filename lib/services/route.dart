@@ -19,6 +19,9 @@ class AnnixDesktopRouter {
       Provider.of(context, listen: listen);
 
   Future<void> pushReplacementNamed(String routeName) {
+    if (routeName == _currentRoute) {
+      return Future.value();
+    }
     _lastRoute = _currentRoute;
     _currentRoute = routeName;
     return navigator.pushReplacementNamed(_currentRoute);
@@ -40,4 +43,9 @@ class AnnixDesktopRouter {
   static const String playlist = '/playlist';
   bool get isPlaylistRoute => _currentRoute == playlist;
   bool get isPlaylistLastRoute => _lastRoute == playlist;
+
+  /// Route: settings
+  static const String settings = '/settings';
+  bool get isPlaylistSettings => _currentRoute == settings;
+  bool get isPlaylistLastSettings => _lastRoute == settings;
 }

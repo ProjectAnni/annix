@@ -218,7 +218,7 @@ class CurrentMusicCover extends StatelessWidget {
             return Container();
           } else {
             // playing, get cover by album_id
-            return Global.anniv!.annil.cover(albumId: value.getPlayingAlbumId!);
+            return Global.annil.cover(albumId: value.getPlayingAlbumId!);
           }
         },
       ),

@@ -50,6 +50,7 @@ class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => Global.annil),
         ChangeNotifierProvider(
           create: (_) => AnnilPlaylist(service: Global.audioService),
           lazy: false,

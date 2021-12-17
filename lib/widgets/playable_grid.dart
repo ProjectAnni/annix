@@ -72,7 +72,7 @@ class _PlayableGridState extends State<PlayableGrid> {
                                 useLazyPreparation: true,
                                 children: await Future.wait(
                                     songs.map<Future<AudioSource>>(
-                                  (s) => Global.anniv!.annil.getAudio(
+                                  (s) => Global.annil.getAudio(
                                     albumId: s.albumId,
                                     discId: s.discId,
                                     trackId: s.trackId,

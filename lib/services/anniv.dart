@@ -11,8 +11,6 @@ import 'package:path_provider/path_provider.dart';
 class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
-  late AnnilClient annil;
-  List<String> albums = [];
 
   AnnivClient._({
     required String url,
@@ -70,10 +68,7 @@ class AnnivClient {
     final client = AnnivClient._(url: url, cookieJar: await _loadCookieJar());
     await client.login(email: email, password: password);
     await client._save();
-    final credentials = await client.getCredentials();
-    client.annil = AnnilClient(
-        baseUrl: credentials[0].url, authorization: credentials[0].token);
-    client.albums = await client.annil.getAlbums();
+    // TODO: initialize albums
     return client;
   }
 
@@ -91,10 +86,7 @@ class AnnivClient {
         // try validate login
         await client.getSiteInfo();
         await client.getUserInfo();
-        final credentials = await client.getCredentials();
-        client.annil = AnnilClient(
-            baseUrl: credentials[0].url, authorization: credentials[0].token);
-        client.albums = await client.annil.getAlbums();
+        await client.setAnnilClients();
         return client;
       } catch (e) {
         // failed to get user info
@@ -149,6 +141,23 @@ class AnnivClient {
     return (response.data as List<dynamic>)
         .map((e) => AnnilToken.fromJson(e))
         .toList();
+  }
+
+  Future<void> setAnnilClients() async {
+    Global.annil.removeRemote();
+    final credentials = await getCredentials();
+
+    final annilClients = credentials
+        .map((c) => AnnilClient.remote(
+              id: c.id,
+              name: c.name,
+              url: c.url,
+              token: c.token,
+              priority: c.priority,
+            ))
+        .toList();
+    await Global.annil.addAll(annilClients);
+    await Global.annil.refresh();
   }
 
   // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF

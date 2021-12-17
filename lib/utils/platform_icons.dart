@@ -75,4 +75,8 @@ class PlatformIcons {
   /// Icons: Icons.person : CupertinoIcons.person_fill
   IconData get person =>
       isMaterial(context) ? Icons.person_rounded : CupertinoIcons.person_fill;
+
+  /// Icons: Icons.settings_rounded : CupertinoIcons.settings
+  IconData get settings =>
+      isMaterial(context) ? Icons.settings_rounded : CupertinoIcons.settings;
 }
