@@ -50,36 +50,6 @@ class ReleaseDate {
   }
 }
 
-class Tag {
-  final String name;
-  final String? edition;
-
-  Tag({required this.name, this.edition});
-
-  static Tag fromDynamic(dynamic value) {
-    if (value is String) {
-      // name:edition
-      var parts = value.split(":");
-      return Tag(
-        // TODO: check whether the split is accurate
-        name: parts[0],
-        edition: parts.length == 1 ? null : parts[1],
-      );
-    } else {
-      // { name = "My Category", edition = "e1" }
-      return Tag(
-        name: value['name'],
-        edition: value['edition'],
-      );
-    }
-  }
-
-  @override
-  String toString() {
-    return name + (edition == null ? "" : ":$edition");
-  }
-}
-
 enum TrackType { Normal, Instrumental, Absoltue, Drama, Radio, Vocal, Unknown }
 
 TrackType stringToTrackType(String value) {
@@ -109,7 +79,7 @@ class Album {
   final String artist;
   final TrackType type;
   final ReleaseDate date;
-  final List<Tag>? tags;
+  final List<String>? tags;
   final List<Disc> discs;
 
   Album({
@@ -134,8 +104,8 @@ class Album {
     String artist = map['album']['artist'];
     TrackType type = stringToTrackType(map['album']['type']!);
     ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
-    List<Tag>? tags = (map['album']['tags'] as List<dynamic>?)
-        ?.map((e) => Tag.fromDynamic(e))
+    List<String>? tags = (map['album']['tags'] as List<dynamic>?)
+        ?.map((e) => e.toString())
         .toList();
     List<Disc> discs = (map['discs'] as List<dynamic>)
         .map((e) => Disc.fromMap(e as Map<String, dynamic>))
@@ -160,7 +130,7 @@ class Disc {
   final String catalog;
   final String? _artist;
   final TrackType? _type;
-  final List<Tag>? tags;
+  final List<String>? tags;
   final List<Track> tracks;
 
   Disc({
@@ -185,9 +155,8 @@ class Disc {
     String catalog = map['catalog'];
     String? artist = map['artist'];
     TrackType? type = stringToTrackType(map['type']);
-    List<Tag>? tags = (map['tags'] as List<dynamic>?)
-        ?.map((e) => Tag.fromDynamic(e))
-        .toList();
+    List<String>? tags =
+        (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
 
     List<Track> tracks = (map['tracks'] as List<Map<String, dynamic>>)
         .map((e) => Track.fromMap(e))
@@ -208,7 +177,7 @@ class Track {
   final String title;
   final String? _artist;
   final TrackType? _type;
-  final List<Tag>? tags;
+  final List<String>? tags;
 
   Track({
     required this.title,
@@ -226,9 +195,8 @@ class Track {
     String? artist = map['artist'];
 
     TrackType? type = stringToTrackType(map['type']);
-    List<Tag>? tags = (map['tags'] as List<dynamic>?)
-        ?.map((e) => Tag.fromDynamic(e))
-        .toList();
+    List<String>? tags =
+        (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
     return Track(title: title, artist: artist, type: type, tags: tags);
   }
 }
