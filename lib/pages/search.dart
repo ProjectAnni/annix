@@ -5,6 +5,7 @@ import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 
 class AnnixSearch extends StatefulWidget {
@@ -51,7 +52,12 @@ class _AnnixSearchState extends State<AnnixSearch> {
                 : _result!.albums!
                     .map((e) => PlatformListTile(
                           title: Text(e.title),
-                          subtitle: Text(e.artist),
+                          subtitle: Marquee(
+                            text: e.artist,
+                            pauseAfterRound: Duration(seconds: 2),
+                            scrollToEnd: true,
+                            marqueeShortText: false,
+                          ),
                           onTap: () async {
                             await Global.audioService.pause();
 
