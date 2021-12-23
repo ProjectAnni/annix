@@ -1,5 +1,6 @@
 import 'package:annix/pages/album_list.dart';
 import 'package:annix/pages/playlist.dart';
+import 'package:annix/pages/search.dart';
 import 'package:annix/pages/settings.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/services/route.dart';
@@ -32,6 +33,13 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
           appBar: DraggableAppBar(
             title: Text("Annix"),
             trailingActions: [
+              SquareIconButton(
+                child: Icon(context.icons.search),
+                onPressed: () {
+                  AnnixDesktopRouter.of(context, listen: false)
+                      .pushReplacementNamed(AnnixDesktopRouter.search);
+                },
+              ),
               SquareIconButton(
                 child: Icon(context.icons.settings),
                 onPressed: () {
@@ -101,6 +109,9 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                               break;
                             case AnnixDesktopRouter.settings:
                               page = AnnixSettings();
+                              break;
+                            case AnnixDesktopRouter.search:
+                              page = AnnixSearch();
                               break;
                             case '/user':
                               page = Text('User');

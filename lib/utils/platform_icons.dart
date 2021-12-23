@@ -79,4 +79,8 @@ class PlatformIcons {
   /// Icons: Icons.settings_rounded : CupertinoIcons.settings
   IconData get settings =>
       isMaterial(context) ? Icons.settings_rounded : CupertinoIcons.settings;
+
+  /// Icons: Icons.search_rounded : CupertinoIcons.search
+  IconData get search =>
+      isMaterial(context) ? Icons.search_rounded : CupertinoIcons.search;
 }

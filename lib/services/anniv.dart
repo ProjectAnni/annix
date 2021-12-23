@@ -185,4 +185,20 @@ class AnnivClient {
           ),
         );
   }
+
+  // https://book.anni.rs/06.anniv/09.search.html
+  Future<SearchResult> search(
+    String keyword, {
+    bool searchAlbums = false,
+    bool searchTracks = false,
+    bool searchPlaylists = false,
+  }) async {
+    final response = await _client.get('/api/search', queryParameters: {
+      'keyword': keyword,
+      'search_albums': searchAlbums,
+      'search_tracks': searchTracks,
+      'search_playlists': searchPlaylists,
+    });
+    return SearchResult.fromJson(response.data);
+  }
 }

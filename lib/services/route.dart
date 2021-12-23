@@ -48,6 +48,11 @@ class AnnixDesktopRouter extends ChangeNotifier {
 
   /// Route: settings
   static const String settings = '/settings';
-  bool get isPlaylistSettings => _currentRoute == settings;
-  bool get isPlaylistLastSettings => _lastRoute == settings;
+  bool get isSettingsRoute => _currentRoute == settings;
+  bool get isSettingsLastRoute => _lastRoute == settings;
+
+  /// Route: search
+  static const String search = '/search';
+  bool get isSearchRoute => _currentRoute == settings;
+  bool get isSearchLastRoute => _lastRoute == settings;
 }
