@@ -1,12 +1,11 @@
 import 'package:annix/models/anniv.dart';
-import 'package:annix/services/audio.dart';
+import 'package:annix/pages/album_info.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/services/route.dart';
 import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
-import 'package:provider/provider.dart';
 
 class AnnixSearch extends StatefulWidget {
   const AnnixSearch({Key? key}) : super(key: key);
@@ -50,36 +49,23 @@ class _AnnixSearchState extends State<AnnixSearch> {
             children: _result == null
                 ? []
                 : _result!.albums!
-                    .map((e) => PlatformListTile(
-                          title: Text(e.title),
-                          subtitle: Marquee(
-                            text: e.artist,
-                            pauseAfterRound: Duration(seconds: 2),
-                            scrollToEnd: true,
-                            marqueeShortText: false,
-                          ),
-                          onTap: () async {
-                            await Global.audioService.pause();
-
-                            var i = 1;
-                            Global.audioService.playlist =
-                                ConcatenatingAudioSource(
-                              useLazyPreparation: true,
-                              children: await Future.wait(
-                                  e.discs[0].tracks.map<Future<AudioSource>>(
-                                (s) => Global.annil.getAudio(
-                                  albumId: e.albumId,
-                                  discId: 1,
-                                  trackId: i++,
-                                ),
-                              )),
-                            );
-                            await Global.audioService.init(force: true);
-                            Provider.of<AnnilPlaylist>(context, listen: false)
-                                .resetPlaylist();
-                            await Global.audioService.play();
-                          },
-                        ))
+                    .map(
+                      (e) => PlatformListTile(
+                        title: Text(e.title),
+                        subtitle: Marquee(
+                          text: e.artist,
+                          pauseAfterRound: Duration(seconds: 2),
+                          scrollToEnd: true,
+                          marqueeShortText: false,
+                        ),
+                        onTap: () async {
+                          AnnixDesktopRouter.navigator.push(platformPageRoute(
+                            context: context,
+                            builder: (context) => AnnixAlbumInfo(albumInfo: e),
+                          ));
+                        },
+                      ),
+                    )
                     .toList(),
           ),
         ),
