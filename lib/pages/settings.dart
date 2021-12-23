@@ -1,6 +1,6 @@
 import 'package:annix/services/global.dart';
+import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class AnnixSettings extends StatefulWidget {
   const AnnixSettings({Key? key}) : super(key: key);
@@ -14,23 +14,21 @@ class _AnnixSettingsState extends State<AnnixSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        PlatformTextButton(
-          child: Text('Initialize Annil Clients'),
-          onPressed: _initializingAnnilClients
-              ? null
-              : () async {
-                  setState(() {
-                    _initializingAnnilClients = true;
-                  });
-                  await Global.anniv!.setAnnilClients();
-                  setState(() {
-                    _initializingAnnilClients = false;
-                  });
-                },
-        ),
-      ],
-    );
+    return PlatformListView(children: [
+      PlatformListTile(
+        title: Text('Initialize Annil Clients'),
+        onTap: () async {
+          if (!_initializingAnnilClients) {
+            setState(() {
+              _initializingAnnilClients = true;
+            });
+            await Global.anniv!.setAnnilClients();
+            setState(() {
+              _initializingAnnilClients = false;
+            });
+          }
+        },
+      )
+    ]);
   }
 }

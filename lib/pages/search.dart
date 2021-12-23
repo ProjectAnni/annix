@@ -6,6 +6,7 @@ import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:marquee/marquee.dart';
+import 'package:annix/utils/platform_icons.dart';
 
 class AnnixSearch extends StatefulWidget {
   const AnnixSearch({Key? key}) : super(key: key);
@@ -31,8 +32,8 @@ class _AnnixSearchState extends State<AnnixSearch> {
                   controller: _controller,
                 ),
               ),
-              PlatformTextButton(
-                child: Text('Search'),
+              PlatformIconButton(
+                icon: Icon(context.icons.search),
                 onPressed: () async {
                   final result = await Global.anniv!.search(_controller.text,
                       searchAlbums: true, searchTracks: true);
