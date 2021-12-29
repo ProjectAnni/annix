@@ -209,9 +209,9 @@ class AnnilClient {
 
   String getCoverUrl({required String albumId, int? discId}) {
     if (discId == null) {
-      return '$url/$albumId/cover?auth=$token';
+      return '$url/$albumId/cover';
     } else {
-      return '$url/$albumId/$discId/cover?auth=$token';
+      return '$url/$albumId/$discId';
     }
   }
 }
