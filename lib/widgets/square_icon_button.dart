@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' show RawMaterialButton;
-import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 

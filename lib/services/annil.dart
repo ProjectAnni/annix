@@ -2,12 +2,9 @@ import 'dart:convert';
 
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/utils/platform_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
-    show PlatformCircularProgressIndicator;
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:uuid/uuid.dart';

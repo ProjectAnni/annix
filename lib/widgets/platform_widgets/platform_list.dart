@@ -1,6 +1,6 @@
 import 'package:annix/widgets/third_party/cupertino_list/list_section.dart';
 import 'package:annix/widgets/third_party/cupertino_list/list_tile.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show ListTile;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
