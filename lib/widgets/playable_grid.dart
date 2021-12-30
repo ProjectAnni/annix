@@ -92,22 +92,24 @@ class _PlayableGridState extends State<PlayableGrid> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: FutureBuilder<Album?>(
-            future: Global.metadataSource!.getAlbum(albumId: widget.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Marquee(
-                  text: ' ${snapshot.data?.title ?? 'Unknown Title'} ',
-                  pauseAfterRound: Duration(seconds: 2),
-                  scrollToEnd: true,
-                  marqueeShortText: false,
-                );
-              } else {
-                return Container();
-              }
-            },
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: FutureBuilder<Album?>(
+              future: Global.metadataSource!.getAlbum(albumId: widget.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Marquee(
+                    text: ' ${snapshot.data?.title ?? 'Unknown Title'} ',
+                    pauseAfterRound: Duration(seconds: 2),
+                    scrollToEnd: true,
+                    marqueeShortText: false,
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
           ),
         ),
       ],

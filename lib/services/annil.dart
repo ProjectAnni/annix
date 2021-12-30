@@ -211,7 +211,7 @@ class AnnilClient {
     if (discId == null) {
       return '$url/$albumId/cover';
     } else {
-      return '$url/$albumId/$discId';
+      return '$url/$albumId/$discId/cover';
     }
   }
 }

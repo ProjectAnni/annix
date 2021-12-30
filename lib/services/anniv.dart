@@ -13,6 +13,8 @@ class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
 
+  Map<String, TrackInfo> favorites = Map();
+
   AnnivClient._({
     required String url,
     required CookieJar cookieJar,
@@ -42,8 +44,7 @@ class AnnivClient {
               requestOptions: response.requestOptions,
               response: response,
               type: DioErrorType.response,
-              // TODO: error message from error code
-              error: resp['message'] ?? 'Unknown error reason',
+              error: resp['message'] ?? 'Error ${resp['status']}',
             ));
           } else {
             dynamic data = resp['data'];
@@ -70,6 +71,9 @@ class AnnivClient {
     final client = AnnivClient._(url: url, cookieJar: await _loadCookieJar());
     await client.login(email: email, password: password);
     await client._save();
+
+    client.favorites = Map.fromEntries((await client.getFavoriteList())
+        .map((e) => MapEntry(e.track.toSlashedString(), e.info)));
     // TODO: initialize albums
     return client;
   }
@@ -200,5 +204,35 @@ class AnnivClient {
       'search_playlists': searchPlaylists,
     });
     return SearchResult.fromJson(response.data);
+  }
+
+  // https://book.anni.rs/06.anniv/10.favorite.html#%E8%8E%B7%E5%8F%96%E5%96%9C%E6%AC%A2%E5%88%97%E8%A1%A8
+  Future<List<TrackInfoWithAlbum>> getFavoriteList() async {
+    final response = await _client.get('/api/favorite/music');
+    return (response.data as List<dynamic>)
+        .map((e) => TrackInfoWithAlbum.fromJson(e))
+        .toList();
+  }
+
+  // https://book.anni.rs/06.anniv/10.favorite.html#%E6%B7%BB%E5%8A%A0%E5%8D%95%E6%9B%B2
+  Future<void> addFavorite(String id) async {
+    TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
+    await _client.put('/api/favorite/music', data: {
+      'album_id': track.albumId,
+      'disc_id': track.discId,
+      'track_id': track.trackId,
+    });
+    // TODO: get track info
+    favorites[id] = TrackInfo(title: "", artist: "", tags: [], type: "");
+  }
+
+  Future<void> removeFavorite(String id) async {
+    TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
+    await _client.delete('/api/favorite/music', data: {
+      'album_id': track.albumId,
+      'disc_id': track.discId,
+      'track_id': track.trackId,
+    });
+    favorites.remove(track);
   }
 }

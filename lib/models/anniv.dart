@@ -2,6 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'anniv.g.dart';
 
+Object? readValueFlatten(Map json, String key) {
+  return json;
+}
+
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class SiteInfo {
   final String siteName;
@@ -110,6 +114,35 @@ class DiscInfo {
       _$DiscInfoFromJson(json);
 }
 
+@JsonSerializable(fieldRename: FieldRename.snake)
+class TrackIdentifier {
+  String albumId;
+  int discId;
+  int trackId;
+
+  TrackIdentifier({
+    required this.albumId,
+    required this.discId,
+    required this.trackId,
+  });
+
+  factory TrackIdentifier.fromJson(Map<String, dynamic> json) =>
+      _$TrackIdentifierFromJson(json);
+
+  factory TrackIdentifier.fromSlashSplitedString(String slashed) {
+    final splited = slashed.split('/');
+    return TrackIdentifier(
+      albumId: splited[0],
+      discId: int.parse(splited[1]),
+      trackId: int.parse(splited[2]),
+    );
+  }
+
+  Map<String, dynamic> toJson() => _$TrackIdentifierToJson(this);
+
+  String toSlashedString() => '$albumId/$discId/$trackId';
+}
+
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class TrackInfo {
   String title;
@@ -129,23 +162,26 @@ class TrackInfo {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class TrackInfoWithAlbum extends TrackInfo {
-  String albumId;
-  int discId;
-  int trackId;
+class TrackInfoWithAlbum {
+  @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
+  TrackIdentifier track;
+
+  @JsonKey(fromJson: _infoFromJson, readValue: readValueFlatten)
+  TrackInfo info;
 
   TrackInfoWithAlbum({
-    required String title,
-    required String artist,
-    required String type,
-    required List<String> tags,
-    required this.albumId,
-    required this.discId,
-    required this.trackId,
-  }) : super(title: title, artist: artist, type: type, tags: tags);
+    required this.track,
+    required this.info,
+  });
 
   factory TrackInfoWithAlbum.fromJson(Map<String, dynamic> json) =>
       _$TrackInfoWithAlbumFromJson(json);
+
+  static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
+      TrackIdentifier.fromJson(json);
+
+  static TrackInfo _infoFromJson(Map<String, dynamic> json) =>
+      TrackInfo.fromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -169,66 +205,61 @@ class PlaylistIntro {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class Playlist extends PlaylistIntro {
+class Playlist {
+  @JsonKey(fromJson: _introFromJson, readValue: readValueFlatten)
+  PlaylistIntro intro;
+
   bool isPublic;
   List<PlaylistSongWithId> songs;
 
   Playlist({
-    required String id,
-    required String name,
-    String? description,
-    required String owner,
-    required Cover cover,
+    required this.intro,
     required this.isPublic,
     required this.songs,
-  }) : super(
-            id: id,
-            name: name,
-            description: description,
-            owner: owner,
-            cover: cover);
+  });
 
   factory Playlist.fromJson(Map<String, dynamic> json) =>
       _$PlaylistFromJson(json);
+
+  static PlaylistIntro _introFromJson(Map<String, dynamic> json) =>
+      PlaylistIntro.fromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class PlaylistSong {
-  String albumId;
-  int discId;
-  int trackId;
+  @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
+  TrackIdentifier track;
+
   String? description;
 
   PlaylistSong({
-    required this.albumId,
-    required this.discId,
-    required this.trackId,
+    required this.track,
     this.description,
   });
 
   factory PlaylistSong.fromJson(Map<String, dynamic> json) =>
       _$PlaylistSongFromJson(json);
+
+  static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
+      TrackIdentifier.fromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class PlaylistSongWithId extends PlaylistSong {
+class PlaylistSongWithId {
   String id;
+  @JsonKey(fromJson: _songFromJson, readValue: readValueFlatten)
+  PlaylistSong song;
 
   PlaylistSongWithId({
     required this.id,
-    required String albumId,
-    required int discId,
-    required int trackId,
-    String? description,
-  }) : super(
-          albumId: albumId,
-          discId: discId,
-          trackId: trackId,
-          description: description,
-        );
+    required this.song,
+  });
 
   factory PlaylistSongWithId.fromJson(Map<String, dynamic> json) =>
       _$PlaylistSongWithIdFromJson(json);
+
+  static PlaylistSong _songFromJson(Map<String, dynamic> json) =>
+      PlaylistSong.fromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

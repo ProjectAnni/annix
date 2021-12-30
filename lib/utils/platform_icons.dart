@@ -83,4 +83,13 @@ class PlatformIcons {
   /// Icons: Icons.search_rounded : CupertinoIcons.search
   IconData get search =>
       isMaterial(context) ? Icons.search_rounded : CupertinoIcons.search;
+
+  /// Icons: Icons.favorite_rounded : CupertinoIcons.heart_fill
+  IconData get heart_filled =>
+      isMaterial(context) ? Icons.favorite_rounded : CupertinoIcons.heart_fill;
+
+  /// Icons: Icons.favorite_outline_rounded : CupertinoIcons.heart
+  IconData get heart_outlined => isMaterial(context)
+      ? Icons.favorite_outline_rounded
+      : CupertinoIcons.heart;
 }

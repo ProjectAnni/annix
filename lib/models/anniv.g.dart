@@ -63,6 +63,20 @@ DiscInfo _$DiscInfoFromJson(Map<String, dynamic> json) => DiscInfo(
           .toList(),
     );
 
+TrackIdentifier _$TrackIdentifierFromJson(Map<String, dynamic> json) =>
+    TrackIdentifier(
+      albumId: json['album_id'] as String,
+      discId: json['disc_id'] as int,
+      trackId: json['track_id'] as int,
+    );
+
+Map<String, dynamic> _$TrackIdentifierToJson(TrackIdentifier instance) =>
+    <String, dynamic>{
+      'album_id': instance.albumId,
+      'disc_id': instance.discId,
+      'track_id': instance.trackId,
+    };
+
 TrackInfo _$TrackInfoFromJson(Map<String, dynamic> json) => TrackInfo(
       title: json['title'] as String,
       artist: json['artist'] as String,
@@ -72,13 +86,10 @@ TrackInfo _$TrackInfoFromJson(Map<String, dynamic> json) => TrackInfo(
 
 TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
     TrackInfoWithAlbum(
-      title: json['title'] as String,
-      artist: json['artist'] as String,
-      type: json['type'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-      albumId: json['album_id'] as String,
-      discId: json['disc_id'] as int,
-      trackId: json['track_id'] as int,
+      track: TrackInfoWithAlbum._trackFromJson(
+          readValueFlatten(json, 'track') as Map<String, dynamic>),
+      info: TrackInfoWithAlbum._infoFromJson(
+          readValueFlatten(json, 'info') as Map<String, dynamic>),
     );
 
 PlaylistIntro _$PlaylistIntroFromJson(Map<String, dynamic> json) =>
@@ -91,11 +102,8 @@ PlaylistIntro _$PlaylistIntroFromJson(Map<String, dynamic> json) =>
     );
 
 Playlist _$PlaylistFromJson(Map<String, dynamic> json) => Playlist(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String?,
-      owner: json['owner'] as String,
-      cover: Cover.fromJson(json['cover'] as Map<String, dynamic>),
+      intro: Playlist._introFromJson(
+          readValueFlatten(json, 'intro') as Map<String, dynamic>),
       isPublic: json['is_public'] as bool,
       songs: (json['songs'] as List<dynamic>)
           .map((e) => PlaylistSongWithId.fromJson(e as Map<String, dynamic>))
@@ -103,19 +111,16 @@ Playlist _$PlaylistFromJson(Map<String, dynamic> json) => Playlist(
     );
 
 PlaylistSong _$PlaylistSongFromJson(Map<String, dynamic> json) => PlaylistSong(
-      albumId: json['album_id'] as String,
-      discId: json['disc_id'] as int,
-      trackId: json['track_id'] as int,
+      track: PlaylistSong._trackFromJson(
+          readValueFlatten(json, 'track') as Map<String, dynamic>),
       description: json['description'] as String?,
     );
 
 PlaylistSongWithId _$PlaylistSongWithIdFromJson(Map<String, dynamic> json) =>
     PlaylistSongWithId(
       id: json['id'] as String,
-      albumId: json['album_id'] as String,
-      discId: json['disc_id'] as int,
-      trackId: json['track_id'] as int,
-      description: json['description'] as String?,
+      song: PlaylistSongWithId._songFromJson(
+          readValueFlatten(json, 'song') as Map<String, dynamic>),
     );
 
 Cover _$CoverFromJson(Map<String, dynamic> json) => Cover(

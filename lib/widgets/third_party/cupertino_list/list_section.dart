@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart'
+    show CupertinoTheme, CupertinoDynamicColor, CupertinoColors;
 import 'package:flutter/widgets.dart';
 
 // Margin on top of the list section. This was eyeballed from iOS 14.4 Simulator
