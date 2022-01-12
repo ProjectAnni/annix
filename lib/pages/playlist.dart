@@ -1,13 +1,11 @@
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/audio.dart';
-import 'package:annix/services/global.dart';
-import 'package:annix/widgets/square_icon_button.dart';
+import 'package:annix/widgets/favorite_button.dart';
 import 'package:flutter/cupertino.dart' show CupertinoTheme;
 import 'package:flutter/widgets.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
-import 'package:annix/utils/platform_icons.dart';
 
 class AnnixPlaylist extends StatelessWidget {
   const AnnixPlaylist({Key? key}) : super(key: key);
@@ -32,18 +30,7 @@ class AnnixPlaylist extends StatelessWidget {
                     SizedBox(
                       width: 32,
                       // TODO: update
-                      child: SquareIconButton(
-                        child: Icon(Global.anniv!.favorites.containsKey(info.id)
-                            ? context.icons.heart_filled
-                            : context.icons.heart_outlined),
-                        onPressed: () async {
-                          if (!Global.anniv!.favorites.containsKey(info.id)) {
-                            await Global.anniv!.addFavorite(info.id);
-                          } else {
-                            await Global.anniv!.removeFavorite(info.id);
-                          }
-                        },
-                      ),
+                      child: FavoriteButton(id: info.id),
                     ),
                     Expanded(
                       child: GestureDetector(

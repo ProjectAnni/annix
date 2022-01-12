@@ -233,6 +233,6 @@ class AnnivClient {
       'disc_id': track.discId,
       'track_id': track.trackId,
     });
-    favorites.remove(track);
+    favorites.remove(id);
   }
 }

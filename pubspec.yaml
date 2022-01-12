@@ -25,7 +25,7 @@ dependencies:
   cookie_jar: ^3.0.1
 
   just_audio: ^0.9.18
-  just_audio_background: ^0.0.1-beta.1
+  just_audio_background: ^0.0.1-beta.3
   just_audio_libwinmedia:
     git:
       url: https://github.com/ProjectAnni/just_audio_libwinmedia.git
