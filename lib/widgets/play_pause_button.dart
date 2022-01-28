@@ -26,7 +26,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
           ),
           onPressed: () async {
             if (value.state.playing) {
-              Global.audioService.player.pause();
+              Global.audioService.pause();
             } else {
               Global.audioService.play();
             }

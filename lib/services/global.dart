@@ -10,7 +10,7 @@ class Global {
   static late SharedPreferences preferences;
   static final cacheStore = newMemoryStore();
 
-  static late AnniAudioService audioService = AnniAudioService();
+  static AnniAudioService audioService = AnniAudioService();
   static AnnivClient? anniv;
   static late CombinedAnnilClient annil;
 

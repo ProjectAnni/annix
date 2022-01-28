@@ -247,8 +247,8 @@ class DesktopPlayController extends StatelessWidget {
             heightFactor: 0.6,
             child: SquareIconButton(
               child: Icon(context.icons.previous),
-              onPressed: () {
-                Global.audioService.player.seekToPrevious();
+              onPressed: () async {
+                await Global.audioService.previous();
               },
             ),
           ),
@@ -260,8 +260,8 @@ class DesktopPlayController extends StatelessWidget {
             heightFactor: 0.6,
             child: SquareIconButton(
               child: Icon(context.icons.next),
-              onPressed: () {
-                Global.audioService.player.seekToNext();
+              onPressed: () async {
+                await Global.audioService.next();
               },
             ),
           ),

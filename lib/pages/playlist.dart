@@ -21,7 +21,7 @@ class AnnixPlaylist extends StatelessWidget {
         var active = playlist.playing;
         return SingleChildScrollView(
           child: Column(
-            children: playlist.playlist.children.map(
+            children: playlist.playlist.map(
               (e) {
                 var audio = e as AnnilAudioSource;
                 MediaItem info = audio.tag;

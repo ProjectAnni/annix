@@ -1,14 +1,12 @@
 import 'package:annix/models/metadata.dart';
 import 'package:annix/models/song.dart';
-import 'package:annix/services/audio.dart';
+import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
 import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/widgets.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
-import 'package:provider/provider.dart';
 
 typedef PlaylistCallback = Future<List<Song>?> Function(String id);
 
@@ -66,22 +64,17 @@ class _PlayableGridState extends State<PlayableGrid> {
                             var songs =
                                 await widget.playlistCallback(widget.id);
                             if (songs != null) {
-                              await Global.audioService.pause();
-                              Global.audioService.playlist =
-                                  ConcatenatingAudioSource(
-                                useLazyPreparation: true,
-                                children: await Future.wait(
-                                    songs.map<Future<AudioSource>>(
-                                  (s) => Global.annil.getAudio(
-                                    albumId: s.albumId,
-                                    discId: s.discId,
-                                    trackId: s.trackId,
+                              await Global.audioService.setPlaylist(
+                                await Future.wait(
+                                  songs.map<Future<AnnilAudioSource>>(
+                                    (s) => Global.annil.getAudio(
+                                      albumId: s.albumId,
+                                      discId: s.discId,
+                                      trackId: s.trackId,
+                                    ),
                                   ),
-                                )),
+                                ),
                               );
-                              await Global.audioService.init(force: true);
-                              Provider.of<AnnilPlaylist>(context, listen: false)
-                                  .resetPlaylist();
                               await Global.audioService.play();
                             }
                           },

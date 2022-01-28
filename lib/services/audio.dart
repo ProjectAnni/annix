@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/repeat_button.dart';
 import 'package:flutter/foundation.dart';
@@ -17,10 +19,14 @@ class AnniPositionState {
 
 class AnniAudioService {
   AudioPlayer player = AudioPlayer();
-  ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
-    useLazyPreparation: true,
-    children: [],
-  );
+
+  List<AnnilAudioSource> playlist = [];
+  int _activeIndex = -1;
+  AnnilAudioSource? get activeAudioSource =>
+      _activeIndex >= 0 && playlist.length > _activeIndex
+          ? playlist[_activeIndex]
+          : null;
+  ValueNotifier<int> playlistChangeNotifier = ValueNotifier<int>(-1);
 
   ValueNotifier<AnniPositionState> positionNotifier =
       ValueNotifier<AnniPositionState>(
@@ -60,24 +66,75 @@ class AnniAudioService {
 
   bool initialized = false;
   // Initialize after construction, including async parts
-  Future<void> init({force = false}) async {
-    if (!initialized || force) {
+  Future<void> init() async {
+    if (this.activeAudioSource != null) {
+      playlistChangeNotifier.value = _activeIndex;
       try {
-        await this.player.setAudioSource(this.playlist);
+        await this.player.setAudioSource(this.activeAudioSource!);
+        if (!initialized) {
+          this.player.playerStateStream.listen((event) {
+            if (event.processingState == ProcessingState.completed) {
+              this.next();
+            }
+          });
+          initialized = true;
+        }
       } catch (e) {
         print(e);
       }
-      initialized = true;
     }
   }
 
-  Future<void> play() async {
+  Future<void> previous() async {
+    if (this._activeIndex > 0 && this.playlist.isNotEmpty) {
+      this._activeIndex--;
+      await this.init();
+    }
+  }
+
+  Future<void> next() async {
+    // TODO: shuffle mode
+    if (this._activeIndex + 1 != this.playlist.length) {
+      this._activeIndex++;
+      await this.init();
+    }
+  }
+
+  Future<void> goto(int index) async {
+    if (index >= 0 && index < this.playlist.length) {
+      this._activeIndex = index;
+      await this.init();
+    }
+  }
+
+  Future<void> setPlaylist(List<AnnilAudioSource> songs) async {
+    await this.clear();
+    this.playlist.addAll(songs);
+    if (this.playlist.isNotEmpty) {
+      this._activeIndex = 0;
+    }
     await this.init();
+  }
+
+  Future<void> play() async {
     await this.player.play();
   }
 
   Future<void> pause() async {
     await this.player.pause();
+  }
+
+  Future<void> clear() async {
+    await this.pause();
+
+    positionNotifier.value = AnniPositionState(
+      progress: Duration.zero,
+      buffered: Duration.zero,
+      total: Duration.zero,
+    );
+
+    this._activeIndex = -1;
+    this.playlist.clear();
   }
 
   RepeatMode _repeatMode = RepeatMode.Normal;
@@ -105,36 +162,24 @@ class AnniAudioService {
 
 class AnnilPlaylist extends ChangeNotifier {
   final AnniAudioService _service;
-  AnnilAudioSource? playing;
+  AnnilAudioSource? get playing => _service.activeAudioSource;
 
-  ConcatenatingAudioSource get playlist => _service.playlist;
+  List<AudioSource> get playlist => _service.playlist;
 
   String? get getPlayingAlbumId => playing?.albumId;
   int? get playingDiscID => playing?.discId;
   int? get playingTrackId => playing?.trackId;
 
   AnnilPlaylist({required AnniAudioService service}) : _service = service {
-    _service.player.currentIndexStream.listen((index) {
-      if (index != null && service.playlist.length > index) {
-        playing = service.playlist.children[index] as AnnilAudioSource;
-      } else {
-        playing = null;
-      }
+    _service.playlistChangeNotifier.addListener(() {
       notifyListeners();
     });
   }
 
-  void resetPlaylist() {
-    playing = _service.playlist.children.length > 0
-        ? _service.playlist.children[0] as AnnilAudioSource
-        : null;
-    notifyListeners();
-  }
-
   Future<void> goto(AudioSource audio) async {
-    var index = playlist.children.indexOf(audio);
+    var index = playlist.indexOf(audio);
     if (index != -1) {
-      return await _service.player.seek(Duration.zero, index: index);
+      await _service.goto(index);
     }
   }
 }

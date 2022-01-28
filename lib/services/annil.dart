@@ -58,7 +58,7 @@ class CombinedAnnilClient extends ChangeNotifier {
     return _albums.toSet().toList();
   }
 
-  Future<AudioSource> getAudio({
+  Future<AnnilAudioSource> getAudio({
     required String albumId,
     required int discId,
     required int trackId,
@@ -241,7 +241,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Lossless,
+    PreferBitrate preferBitrate = PreferBitrate.Medium,
   }) async {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
