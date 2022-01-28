@@ -15,7 +15,14 @@ class PlatformListView extends StatelessWidget {
       material: (context, _) => ListView(
         children: children,
       ),
-      cupertino: (context, _) => CupertinoListSection(children: children),
+      cupertino: (context, _) => SingleChildScrollView(
+        child: CupertinoListSection(
+          topMargin: 0,
+          children: children,
+          additionalDividerMargin: 0,
+          dividerMargin: 0,
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:annix/models/anniv.dart';
+import 'package:annix/models/song.dart';
+import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/route.dart';
 import 'package:annix/widgets/platform_widgets/platform_list.dart';
@@ -61,6 +63,39 @@ class AnnixAlbumInfo extends StatelessWidget {
                         style: TextStyle(fontSize: 24),
                       ),
                       Text(albumInfo.artist),
+                      PlatformTextButton(
+                        padding: EdgeInsets.zero,
+                        child: Text("Play"),
+                        onPressed: () async {
+                          // TODO: reuse
+                          List<Song> songs = [];
+                          var discId = 1;
+                          albumInfo.discs.forEach((disc) {
+                            var trackId = 1;
+                            disc.tracks.forEach((element) {
+                              songs.add(Song(
+                                albumId: albumInfo.albumId,
+                                discId: discId,
+                                trackId: trackId++,
+                              ));
+                            });
+                            discId++;
+                          });
+
+                          await Global.audioService.setPlaylist(
+                            await Future.wait(
+                              songs.map<Future<AnnilAudioSource>>(
+                                (s) => Global.annil.getAudio(
+                                  albumId: s.albumId,
+                                  discId: s.discId,
+                                  trackId: s.trackId,
+                                ),
+                              ),
+                            ),
+                          );
+                          await Global.audioService.play();
+                        },
+                      ),
                     ],
                   ),
                 )

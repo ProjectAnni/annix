@@ -5,7 +5,6 @@ import 'package:annix/services/route.dart';
 import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:marquee/marquee.dart';
 import 'package:annix/utils/platform_icons.dart';
 
 class AnnixSearch extends StatefulWidget {
@@ -53,12 +52,7 @@ class _AnnixSearchState extends State<AnnixSearch> {
                     .map(
                       (e) => PlatformListTile(
                         title: Text(e.title),
-                        subtitle: Marquee(
-                          text: e.artist,
-                          pauseAfterRound: Duration(seconds: 2),
-                          scrollToEnd: true,
-                          marqueeShortText: false,
-                        ),
+                        subtitle: Text(e.artist),
                         onTap: () async {
                           AnnixDesktopRouter.navigator.push(platformPageRoute(
                             context: context,

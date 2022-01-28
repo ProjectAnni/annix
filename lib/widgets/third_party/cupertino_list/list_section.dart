@@ -322,7 +322,7 @@ class CupertinoListSection extends StatelessWidget {
     double? additionalDividerMargin,
     this.topMargin = _kMarginTop,
     bool hasLeading = true,
-  })  : assert((children != null && children.length > 0) || header != null),
+  })  : assert((children != null) || header != null),
         _type = _CupertinoListSectionType.base,
         additionalDividerMargin = additionalDividerMargin ??
             (hasLeading ? _kBaseAdditionalDividerMargin : 0.0),
