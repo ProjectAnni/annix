@@ -7,25 +7,21 @@ import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-typedef PlaylistCallback = Future<List<Song>?> Function(String id);
-
-class PlayableGrid extends StatefulWidget {
-  final String id;
+class AlbumGrid extends StatefulWidget {
+  final String albumId;
   final Widget cover;
-  final PlaylistCallback playlistCallback;
 
-  const PlayableGrid(
-      {Key? key,
-      required this.id,
-      required this.cover,
-      required this.playlistCallback})
-      : super(key: key);
+  const AlbumGrid({
+    Key? key,
+    required this.albumId,
+    required this.cover,
+  }) : super(key: key);
 
   @override
-  _PlayableGridState createState() => _PlayableGridState();
+  _AlbumGridState createState() => _AlbumGridState();
 }
 
-class _PlayableGridState extends State<PlayableGrid> {
+class _AlbumGridState extends State<AlbumGrid> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -38,7 +34,8 @@ class _PlayableGridState extends State<PlayableGrid> {
             Positioned(
               bottom: 0,
               child: FutureBuilder<Album?>(
-                future: Global.metadataSource!.getAlbum(albumId: widget.id),
+                future:
+                    Global.metadataSource!.getAlbum(albumId: widget.albumId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Container(
