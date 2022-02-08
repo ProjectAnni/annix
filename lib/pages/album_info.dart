@@ -31,7 +31,7 @@ class AnnixAlbumInfo extends StatelessWidget {
       var trackId = 1;
       list.addAll(disc.tracks.map((track) => PlatformListTile(
             title: Text('${trackId++}. ${track.title}'),
-            subtitle: Marquee(width: width * 0.8, child: Text(track.artist)),
+            subtitle: Marquee(width: width * 0.97, child: Text(track.artist)),
           )));
       discId++;
     });

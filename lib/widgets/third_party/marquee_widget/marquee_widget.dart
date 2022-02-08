@@ -1,3 +1,5 @@
+// Edited from marquee_widget
+
 /*
 Copyright (c) 2018 Marcel Garus
 
@@ -27,22 +29,20 @@ enum DirectionMarguee { oneDirection, TwoDirection }
 class Marquee extends StatelessWidget {
   final Widget child;
   final Axis direction;
-  final Duration animationDuration, backDuration, pauseDuration;
+  final Duration pauseDuration;
   final DirectionMarguee directionMarguee;
-  final Cubic forwardAnimation;
-  final Cubic backwardAnimation;
+  final Curve forwardAnimation;
+  final Curve backwardAnimation;
   final bool autoRepeat;
   final bool autoSize;
   final double? width;
   Marquee(
       {required this.child,
       this.direction = Axis.horizontal,
-      this.animationDuration = const Duration(milliseconds: 5000),
-      this.backDuration = const Duration(milliseconds: 5000),
       this.pauseDuration = const Duration(milliseconds: 2000),
-      this.directionMarguee = DirectionMarguee.TwoDirection,
-      this.forwardAnimation = Curves.easeIn,
-      this.backwardAnimation = Curves.easeOut,
+      this.directionMarguee = DirectionMarguee.oneDirection,
+      this.forwardAnimation = Curves.linear,
+      this.backwardAnimation = Curves.linear,
       this.autoRepeat = true,
       this.autoSize = false,
       this.width});
@@ -53,12 +53,16 @@ class Marquee extends StatelessWidget {
     do {
       if (_scrollController.hasClients) {
         await Future.delayed(pauseDuration);
-        if (_scrollController.hasClients)
+        if (_scrollController.hasClients) {
           await _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
-            duration: animationDuration,
+            duration: Duration(
+              milliseconds:
+                  _scrollController.position.maxScrollExtent.toInt() * 20,
+            ),
             curve: forwardAnimation,
           );
+        }
         await Future.delayed(pauseDuration);
         if (_scrollController.hasClients)
           switch (directionMarguee) {
@@ -68,7 +72,10 @@ class Marquee extends StatelessWidget {
             case DirectionMarguee.TwoDirection:
               await _scrollController.animateTo(
                 0.0,
-                duration: backDuration,
+                duration: Duration(
+                  milliseconds:
+                      _scrollController.position.maxScrollExtent.toInt() * 20,
+                ),
                 curve: backwardAnimation,
               );
               break;
