@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/repeat_button.dart';
@@ -93,9 +94,24 @@ class AnniAudioService {
   }
 
   Future<void> next() async {
-    // TODO: shuffle mode
-    if (this._activeIndex + 1 != this.playlist.length) {
-      this._activeIndex++;
+    if (this.repeatMode == RepeatMode.LoopOne) {
+      await this.player.seek(null);
+    } else if (this.repeatMode == RepeatMode.Random) {
+      // shuffle
+      var next = Random().nextInt(this.playlist.length);
+      if (next != this._activeIndex) {
+        this._activeIndex = next;
+        await this.init();
+      } else {
+        await this.player.seek(null);
+      }
+    } else {
+      // normal || loop
+      if (this._activeIndex + 1 != this.playlist.length) {
+        this._activeIndex++;
+      } else if (this.repeatMode == RepeatMode.Loop) {
+        this._activeIndex = 0;
+      }
       await this.init();
     }
   }

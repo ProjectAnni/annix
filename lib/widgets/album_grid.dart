@@ -1,5 +1,4 @@
 import 'package:annix/models/metadata.dart';
-import 'package:annix/models/song.dart';
 import 'package:annix/pages/album_info.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/route.dart';
@@ -44,6 +43,10 @@ class _AlbumGridState extends State<AlbumGrid> {
                         padding: const EdgeInsets.all(8.0),
                         child: Marquee(
                           child: GestureDetector(
+                            child: Text(
+                              '${snapshot.data!.title}',
+                              style: TextStyle(backgroundColor: Colors.black),
+                            ),
                             onTap: () {
                               AnnixDesktopRouter.navigator
                                   .push(platformPageRoute(
@@ -53,10 +56,6 @@ class _AlbumGridState extends State<AlbumGrid> {
                                 ),
                               ));
                             },
-                            child: Text(
-                              '${snapshot.data!.title}',
-                              style: TextStyle(backgroundColor: Colors.black),
-                            ),
                           ),
                           pauseDuration: Duration(seconds: 1),
                         ),
