@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
   flutter_platform_widgets: ^1.11.1
   cupertino_stepper: ^0.2.1
   marquee:
@@ -24,8 +24,8 @@ dependencies:
   dio_http2_adapter: ^2.0.0
   cookie_jar: ^3.0.1
 
-  just_audio: ^0.9.18
-  just_audio_background: ^0.0.1-beta.3
+  just_audio: ^0.9.19
+  just_audio_background: ^0.0.1-beta.4
   just_audio_libwinmedia:
     git:
       url: https://github.com/ProjectAnni/just_audio_libwinmedia.git

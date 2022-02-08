@@ -18,7 +18,6 @@ class AlbumList extends StatelessWidget {
           crossAxisCount: AnniPlatform.isDesktop ? 4 : 2,
           mainAxisSpacing: 8,
           crossAxisSpacing: 32,
-          childAspectRatio: 1 / 1.2,
         ),
         childrenDelegate: SliverChildBuilderDelegate(
           (context, index) {

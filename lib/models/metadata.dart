@@ -1,3 +1,4 @@
+import 'package:annix/models/anniv.dart';
 import 'package:toml/toml.dart';
 
 class ReleaseDate {
@@ -122,6 +123,20 @@ class Album {
       discs: discs,
     );
   }
+
+  AlbumInfo toAlbumInfo() {
+    return AlbumInfo(
+      albumId: albumId,
+      title: title,
+      edition: edition,
+      catalog: catalog,
+      artist: artist,
+      type: type.toString(),
+      date: date.toString(),
+      tags: tags ?? [],
+      discs: discs.map((e) => e.toDiscInfo()).toList(),
+    );
+  }
 }
 
 class Disc {
@@ -170,6 +185,17 @@ class Disc {
       tracks: tracks,
     );
   }
+
+  DiscInfo toDiscInfo() {
+    return DiscInfo(
+      title: title,
+      catalog: catalog,
+      artist: artist,
+      type: type.toString(),
+      tags: tags ?? [],
+      tracks: tracks.map((e) => e.toTrackInfo()).toList(),
+    );
+  }
 }
 
 class Track {
@@ -198,5 +224,14 @@ class Track {
     List<String>? tags =
         (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
     return Track(title: title, artist: artist, type: type, tags: tags);
+  }
+
+  TrackInfo toTrackInfo() {
+    return TrackInfo(
+      title: title,
+      artist: artist,
+      type: type.toString(),
+      tags: tags ?? [],
+    );
   }
 }
