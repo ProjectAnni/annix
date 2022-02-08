@@ -4,6 +4,7 @@ import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/route.dart';
 import 'package:annix/widgets/platform_widgets/platform_list.dart';
+import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class AnnixAlbumInfo extends StatelessWidget {
 
   const AnnixAlbumInfo({Key? key, required this.albumInfo}) : super(key: key);
 
-  List<Widget> getAlbumTracks() {
+  List<Widget> getAlbumTracks(double width) {
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -30,7 +31,7 @@ class AnnixAlbumInfo extends StatelessWidget {
       var trackId = 1;
       list.addAll(disc.tracks.map((track) => PlatformListTile(
             title: Text('${trackId++}. ${track.title}'),
-            subtitle: Text(track.artist),
+            subtitle: Marquee(width: width * 0.8, child: Text(track.artist)),
           )));
       discId++;
     });
@@ -103,9 +104,11 @@ class AnnixAlbumInfo extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: PlatformListView(
-              children: getAlbumTracks(),
-            ),
+            child: LayoutBuilder(builder: (context, constriants) {
+              return PlatformListView(
+                children: getAlbumTracks(constriants.maxWidth),
+              );
+            }),
           ),
         ],
       );

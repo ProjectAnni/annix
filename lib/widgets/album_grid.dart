@@ -37,27 +37,26 @@ class _AlbumGridState extends State<AlbumGrid> {
                     Global.metadataSource!.getAlbum(albumId: widget.albumId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Container(
-                      width: constraints.maxWidth,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Marquee(
-                          child: GestureDetector(
+                    return GestureDetector(
+                      onTap: () {
+                        AnnixDesktopRouter.navigator.push(platformPageRoute(
+                          context: context,
+                          builder: (context) => AnnixAlbumInfo(
+                            albumInfo: snapshot.data!.toAlbumInfo(),
+                          ),
+                        ));
+                      },
+                      child: Container(
+                        width: constraints.maxWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Marquee(
                             child: Text(
                               '${snapshot.data!.title}',
                               style: TextStyle(backgroundColor: Colors.black),
                             ),
-                            onTap: () {
-                              AnnixDesktopRouter.navigator
-                                  .push(platformPageRoute(
-                                context: context,
-                                builder: (context) => AnnixAlbumInfo(
-                                  albumInfo: snapshot.data!.toAlbumInfo(),
-                                ),
-                              ));
-                            },
+                            pauseDuration: Duration(seconds: 1),
                           ),
-                          pauseDuration: Duration(seconds: 1),
                         ),
                       ),
                     );

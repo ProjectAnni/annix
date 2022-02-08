@@ -32,6 +32,8 @@ class Marquee extends StatelessWidget {
   final Cubic forwardAnimation;
   final Cubic backwardAnimation;
   final bool autoRepeat;
+  final bool autoSize;
+  final double? width;
   Marquee(
       {required this.child,
       this.direction = Axis.horizontal,
@@ -41,7 +43,9 @@ class Marquee extends StatelessWidget {
       this.directionMarguee = DirectionMarguee.TwoDirection,
       this.forwardAnimation = Curves.easeIn,
       this.backwardAnimation = Curves.easeOut,
-      this.autoRepeat = true});
+      this.autoRepeat = true,
+      this.autoSize = false,
+      this.width});
 
   final ScrollController _scrollController = ScrollController();
 
@@ -80,7 +84,7 @@ class Marquee extends StatelessWidget {
   Widget build(BuildContext context) {
     bool _repeated = true;
     scroll(_repeated);
-    return ScrollConfiguration(
+    var inner = ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: SingleChildScrollView(
         child: child,
@@ -88,5 +92,18 @@ class Marquee extends StatelessWidget {
         controller: _scrollController,
       ),
     );
+    if (!autoSize) {
+      return Container(
+        width: width,
+        child: inner,
+      );
+    } else {
+      return LayoutBuilder(
+        builder: (context, constraints) => Container(
+          width: constraints.maxWidth,
+          child: inner,
+        ),
+      );
+    }
   }
 }
