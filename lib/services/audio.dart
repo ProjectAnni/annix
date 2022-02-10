@@ -95,7 +95,7 @@ class AnniAudioService {
 
   Future<void> next() async {
     if (this.repeatMode == RepeatMode.LoopOne) {
-      await this.player.seek(null);
+      await this.player.seek(Duration());
     } else if (this.repeatMode == RepeatMode.Random) {
       // shuffle
       var next = Random().nextInt(this.playlist.length);
@@ -103,7 +103,7 @@ class AnniAudioService {
         this._activeIndex = next;
         await this.init();
       } else {
-        await this.player.seek(null);
+        await this.player.seek(Duration());
       }
     } else {
       // normal || loop
