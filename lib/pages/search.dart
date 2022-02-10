@@ -18,6 +18,69 @@ class _AnnixSearchState extends State<AnnixSearch> {
   TextEditingController _controller = TextEditingController();
   SearchResult? _result;
 
+  Widget _buildAlbumList() {
+    print(_result?.albums);
+    if (_result?.albums == null || _result?.albums?.isEmpty == true) {
+      return Container();
+    } else {
+      return Expanded(
+        flex: 1,
+        child: PlatformListView(
+          children: _result!.albums!
+              .map(
+                (e) => PlatformListTile(
+                  title: Text(e.title),
+                  subtitle: Text(
+                    e.artist,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () async {
+                    AnnixDesktopRouter.navigator.push(platformPageRoute(
+                      context: context,
+                      builder: (context) => AnnixAlbumInfo(albumInfo: e),
+                    ));
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+  }
+
+  Widget _buildTrackList() {
+    if (_result?.tracks == null || _result?.tracks?.isEmpty == true) {
+      return Container();
+    } else {
+      return Expanded(
+        flex: 1,
+        child: PlatformListView(
+          children: _result!.tracks!
+              .map(
+                (e) => PlatformListTile(
+                  title: Text(e.info.title),
+                  subtitle: Text(
+                    e.info.artist,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () async {
+                    await Global.audioService.setPlaylist([
+                      await Global.annil.getAudio(
+                        albumId: e.track.albumId,
+                        discId: e.track.discId,
+                        trackId: e.track.trackId,
+                      )
+                    ]);
+                    await Global.audioService.play();
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,26 +107,8 @@ class _AnnixSearchState extends State<AnnixSearch> {
             ],
           ),
         ),
-        Expanded(
-          child: PlatformListView(
-            children: _result == null
-                ? []
-                : _result!.albums!
-                    .map(
-                      (e) => PlatformListTile(
-                        title: Text(e.title),
-                        subtitle: Text(e.artist),
-                        onTap: () async {
-                          AnnixDesktopRouter.navigator.push(platformPageRoute(
-                            context: context,
-                            builder: (context) => AnnixAlbumInfo(albumInfo: e),
-                          ));
-                        },
-                      ),
-                    )
-                    .toList(),
-          ),
-        ),
+        _buildAlbumList(),
+        _buildTrackList(),
       ],
     );
   }
