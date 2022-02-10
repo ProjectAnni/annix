@@ -52,8 +52,11 @@ class _AlbumGridState extends State<AlbumGrid> {
                           padding: const EdgeInsets.all(8.0),
                           child: Marquee(
                             child: Text(
-                              '${snapshot.data!.title}',
-                              style: TextStyle(backgroundColor: Colors.black),
+                              '${snapshot.data?.title}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                backgroundColor: Colors.black87,
+                              ),
                             ),
                             pauseDuration: Duration(seconds: 1),
                           ),

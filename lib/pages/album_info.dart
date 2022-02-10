@@ -68,7 +68,6 @@ class AnnixAlbumInfo extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         child: Text("Play"),
                         onPressed: () async {
-                          // TODO: reuse
                           List<Song> songs = [];
                           var discId = 1;
                           albumInfo.discs.forEach((disc) {
