@@ -1,3 +1,4 @@
+import 'package:annix/pages/album_info.dart';
 import 'package:annix/services/audio.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/route.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/cupertino.dart' show CupertinoTheme;
 import 'package:flutter/material.dart' show Theme, Material;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
-    show PlatformWidget;
+    show PlatformWidget, platformPageRoute;
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 
@@ -218,7 +219,18 @@ class CurrentMusicCover extends StatelessWidget {
             return Container();
           } else {
             // playing, get cover by album_id
-            return Global.annil.cover(albumId: value.getPlayingAlbumId!);
+            return GestureDetector(
+              child: Global.annil.cover(albumId: value.getPlayingAlbumId!),
+              onTap: () async {
+                var album = await Global.metadataSource!
+                    .getAlbum(albumId: value.getPlayingAlbumId!);
+                AnnixDesktopRouter.navigator.push(platformPageRoute(
+                  context: context,
+                  builder: (context) =>
+                      AnnixAlbumInfo(albumInfo: album!.toAlbumInfo()),
+                ));
+              },
+            );
           }
         },
       ),
