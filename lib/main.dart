@@ -9,13 +9,15 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (AnniPlatform.isMobile) {
+  if (AnniPlatform.isMobile || AnniPlatform.isMacOS) {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'rs.anni.annix.audio',
       androidNotificationChannelName: 'Annix Audio playback',
       androidNotificationOngoing: true,
     );
-  } else {
+  }
+
+  if (AnniPlatform.isDesktop) {
     doWhenWindowReady(() {
       const initialSize = Size(1280, 720);
       appWindow.minSize = initialSize;
