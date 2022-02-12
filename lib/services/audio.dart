@@ -87,6 +87,7 @@ class AnniAudioService {
   }
 
   Future<void> previous() async {
+    print(['prev', this._activeIndex, this.playlist.length]);
     if (this._activeIndex > 0 && this.playlist.isNotEmpty) {
       this._activeIndex--;
       await this.init();
@@ -94,6 +95,7 @@ class AnniAudioService {
   }
 
   Future<void> next() async {
+    print(['next', this._activeIndex, this.playlist.length]);
     if (this.repeatMode == RepeatMode.LoopOne) {
       await this.player.seek(Duration());
     } else if (this.repeatMode == RepeatMode.Random) {
@@ -111,6 +113,8 @@ class AnniAudioService {
         this._activeIndex++;
       } else if (this.repeatMode == RepeatMode.Loop) {
         this._activeIndex = 0;
+      } else {
+        await this.pause();
       }
       await this.init();
     }
@@ -159,7 +163,7 @@ class AnniAudioService {
     switch (mode) {
       case RepeatMode.Normal:
         player.setLoopMode(LoopMode.off);
-        player.setShuffleModeEnabled(false);
+        // player.setShuffleModeEnabled(false);
         break;
       case RepeatMode.Loop:
         player.setLoopMode(LoopMode.all);
@@ -169,7 +173,7 @@ class AnniAudioService {
         break;
       case RepeatMode.Random:
         player.setLoopMode(LoopMode.all);
-        player.setShuffleModeEnabled(true);
+        // player.setShuffleModeEnabled(true);
         break;
     }
     _repeatMode = mode;

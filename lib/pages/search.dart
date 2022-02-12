@@ -19,7 +19,6 @@ class _AnnixSearchState extends State<AnnixSearch> {
   SearchResult? _result;
 
   Widget _buildAlbumList() {
-    print(_result?.albums);
     if (_result?.albums == null || _result?.albums?.isEmpty == true) {
       return Container();
     } else {
