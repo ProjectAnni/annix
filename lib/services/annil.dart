@@ -75,18 +75,17 @@ class CombinedAnnilClient extends ChangeNotifier {
   }
 
   Widget cover({required String albumId, int? discId}) {
-    return Builder(
-      builder: (context) {
+    for (final client in _clients.values) {
+      if (client.albums.contains(albumId)) {
         return ExtendedImage.network(
-          // FIXME: choose the correct annil server
-          _clients.entries.first.value
-              .getCoverUrl(albumId: albumId, discId: discId),
+          client.getCoverUrl(albumId: albumId, discId: discId),
           cache: true,
           fit: BoxFit.scaleDown,
           filterQuality: FilterQuality.medium,
         );
-      },
-    );
+      }
+    }
+    return Text("No cover");
   }
 }
 

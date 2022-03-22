@@ -1,105 +1,183 @@
-import 'package:annix/pages/home_desktop.dart';
-import 'package:annix/pages/setup.dart';
-import 'package:annix/services/audio.dart';
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/services/global.dart';
-import 'package:flutter/cupertino.dart' show CupertinoThemeData;
-import 'package:flutter/material.dart' show Theme, ThemeData;
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:annix/views/search.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class AnnixApp extends StatefulWidget {
+class AnnixApp extends StatelessWidget {
   const AnnixApp({Key? key}) : super(key: key);
 
   @override
-  _AnnixAppState createState() => _AnnixAppState();
+  Widget build(BuildContext context) {
+    final theme = ThemeData(primarySwatch: Colors.blueGrey);
+    final darkTheme = ThemeData(brightness: Brightness.dark);
+
+    return GetBuilder<GetMaterialController>(
+      init: Get.rootController,
+      initState: (_) {
+        Get.config(
+          enableLog: Get.isLogEnable,
+          defaultTransition: Get.defaultTransition,
+          defaultOpaqueRoute: Get.isOpaqueRouteDefault,
+          defaultPopGesture: Get.isPopGestureEnable,
+          defaultDurationTransition: Get.defaultTransitionDuration,
+        );
+      },
+      builder: (_) {
+        return MaterialApp(
+          theme: _.theme ?? theme,
+          darkTheme: _.darkTheme ?? darkTheme,
+          themeMode: _.themeMode,
+          scaffoldMessengerKey: _.scaffoldMessengerKey,
+          home: AnnixMain(),
+        );
+      },
+    );
+  }
 }
 
-class _AnnixAppState extends State<AnnixApp> with WidgetsBindingObserver {
-  Brightness? _brightness;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance?.addObserver(this);
-    _brightness = WidgetsBinding.instance?.window.platformBrightness;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    if (mounted) {
-      setState(() {
-        _brightness = WidgetsBinding.instance?.window.platformBrightness;
-      });
-    }
-
-    super.didChangePlatformBrightness();
-  }
-
-  get materialTheme => ThemeData(brightness: _brightness);
-  get cupertinoTheme => CupertinoThemeData(brightness: _brightness);
+class AnnixMain extends StatelessWidget {
+  const AnnixMain({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => Global.annil),
-        ChangeNotifierProvider(
-            create: (_) => AnnilPlaylist(service: Global.audioService)),
-        ChangeNotifierProvider(
-          create: (_) => AnnilPlayState(service: Global.audioService),
-        )
-      ],
-      child: Theme(
-        data: materialTheme,
-        child: Center(
-          child: PlatformApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Annix',
-            onGenerateRoute: (settings) {
-              late Widget page;
-              print(settings);
+    final PlayingController playing = Get.put(PlayingController());
 
-              var initialRoute = '/home';
-              if (Global.needSetup) {
-                initialRoute = '/setup';
-              }
-
-              var route = settings.name;
-              if (route == null || route == '/') {
-                route = initialRoute;
-              }
-
-              if (route == '/setup') {
-                page = AnnixSetup();
-              } else if (route == '/home') {
-                page = HomePageDesktop();
-              } else {
-                throw Exception('Unknown route: ${settings.name}');
-              }
-
-              return platformPageRoute<Widget>(
-                context: context,
-                builder: (context) => page,
-                settings: settings,
-              );
-            },
-            material: (_, __) => MaterialAppData(
-              theme: materialTheme,
+    return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Text('Drawer Header'),
             ),
-            cupertino: (_, __) => CupertinoAppData(
-              theme: cupertinoTheme,
-            ),
-          ),
+            ListTile(
+              leading: Icon(Icons.dark_mode),
+              title: Text("Light / Dark Theme"),
+              onTap: () {
+                Get.changeThemeMode(
+                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
+                );
+              },
+            )
+          ],
         ),
       ),
+      body: Navigator(
+        key: Get.key,
+        initialRoute: '/',
+        onGenerateRoute: (settings) {
+          if (settings.name == '/') {
+            return GetPageRoute(page: () => AnnixHome());
+          } else if (settings.name == '/second') {
+            return GetPageRoute(
+              page: () => Center(
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Text("Main"),
+                  ),
+                  body: Center(child: Text("second")),
+                ),
+              ),
+            );
+          } else {
+            return GetPageRoute(page: () => Container());
+          }
+        },
+      ),
+      bottomNavigationBar: BottomPlayer(),
+    );
+  }
+}
+
+class AnnixHome extends StatelessWidget {
+  const AnnixHome({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PlayingController playing = Get.find();
+
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          // toolbarHeight: 48,
+          title: const TabBar(
+            isScrollable: true,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            tabs: [
+              Tab(child: Text("Playlists")),
+              Tab(child: Text("Albums")),
+              Tab(child: Text("Categories")),
+            ],
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                Get.to(
+                  () => SearchScreen(),
+                  transition: Transition.fade,
+                );
+              },
+            ),
+          ],
+        ),
+        body: TabBarView(
+          children: [
+            Builder(builder: (context) {
+              print(1);
+              return Icon(Icons.directions_car);
+            }),
+            Builder(builder: (context) {
+              print(2);
+              return Icon(Icons.directions_transit);
+            }),
+            Builder(builder: (context) {
+              print(3);
+              return Icon(Icons.directions_bike);
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BottomPlayer extends StatelessWidget {
+  const BottomPlayer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PlayingController playing = Get.find();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Obx(() => Global.annil
+            .cover(albumId: playing.state.value.track?.track.albumId ?? "123")),
+        Obx(() => Text("${playing.state.value.track?.info.title}")),
+        Obx(
+          () => playing.state.value.status == PlayingStatus.loading
+              ? CircularProgressIndicator()
+              : IconButton(
+                  icon: Icon(playing.state.value.status == PlayingStatus.playing
+                      ? Icons.pause
+                      : Icons.play_arrow),
+                  onPressed: () async {},
+                ),
+        ),
+      ],
     );
   }
 }
