@@ -100,6 +100,7 @@ class AnnixAlbumInfo extends StatelessWidget {
 
   Widget getCover() {
     return Stack(
+      alignment: Alignment.topCenter,
       children: [
         Global.annil.cover(albumId: albumInfo.albumId),
         Align(
