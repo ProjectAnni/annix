@@ -46,16 +46,19 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TabBar(
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            tabs: [
-              Tab(child: Text("Tracks (${_result?.tracks?.length ?? 0})")),
-              Tab(child: Text("Albums (${_result?.albums?.length ?? 0})")),
-              Tab(
-                  child:
-                      Text("Playlists (${_result?.playlists?.length ?? 0})")),
-            ],
+          Container(
+            color: Theme.of(context).primaryColorDark,
+            child: TabBar(
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              tabs: [
+                Tab(child: Text("Tracks (${_result?.tracks?.length ?? 0})")),
+                Tab(child: Text("Albums (${_result?.albums?.length ?? 0})")),
+                Tab(
+                  child: Text("Playlists (${_result?.playlists?.length ?? 0})"),
+                ),
+              ],
+            ),
           ),
           Expanded(
             flex: 1,
