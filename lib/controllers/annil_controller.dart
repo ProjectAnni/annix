@@ -22,6 +22,7 @@ class AnnilController extends GetxController {
         combined._clients[client.id] = client;
       }
     }
+    await combined.refresh();
     return combined;
   }
 

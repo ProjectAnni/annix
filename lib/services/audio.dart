@@ -179,18 +179,3 @@ class AnniAudioService {
     _repeatMode = mode;
   }
 }
-
-class AnnilPlayState extends ChangeNotifier {
-  final AnniAudioService _service;
-
-  PlayerState state;
-
-  AnnilPlayState({required AnniAudioService service})
-      : _service = service,
-        state = service.player.playerState {
-    _service.player.playerStateStream.listen((state) {
-      this.state = state;
-      notifyListeners();
-    });
-  }
-}

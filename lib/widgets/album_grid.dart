@@ -3,6 +3,7 @@ import 'package:annix/pages/album_info.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AlbumGrid extends StatefulWidget {
   final String albumId;
@@ -37,12 +38,8 @@ class _AlbumGridState extends State<AlbumGrid> {
                   if (snapshot.hasData) {
                     return GestureDetector(
                       onTap: () {
-                        // AnnixDesktopRouter.navigator.push(platformPageRoute(
-                        //   context: context,
-                        //   builder: (context) => AnnixAlbumInfo(
-                        //     albumInfo: snapshot.data!.toAlbumInfo(),
-                        //   ),
-                        // ));
+                        Get.to(() => AnnixAlbumInfo(
+                            albumInfo: snapshot.data!.toAlbumInfo()));
                       },
                       child: Container(
                         width: constraints.maxWidth,

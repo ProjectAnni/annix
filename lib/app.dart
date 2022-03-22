@@ -1,5 +1,7 @@
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/playlist_controller.dart';
+import 'package:annix/pages/album_list.dart';
+import 'package:annix/pages/setup.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/views/search.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
@@ -43,7 +45,7 @@ class AnnixMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(PlayingController());
+    Get.put(PlayingController(service: Global.audioService));
     Get.put(Global.annil);
     Get.put(PlaylistController(service: Global.audioService));
 
@@ -132,13 +134,10 @@ class AnnixHome extends StatelessWidget {
               print(1);
               return Icon(Icons.directions_car);
             }),
-            Builder(builder: (context) {
-              print(2);
-              return Icon(Icons.directions_transit);
-            }),
+            AlbumList(),
             Builder(builder: (context) {
               print(3);
-              return Icon(Icons.directions_bike);
+              return AnnixSetup();
             }),
           ],
         ),
@@ -154,23 +153,36 @@ class BottomPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Obx(() => Global.annil
-            .cover(albumId: playing.state.value.track?.track.albumId ?? "123")),
-        Obx(() => Text("${playing.state.value.track?.info.title}")),
-        Obx(
-          () => playing.state.value.status == PlayingStatus.loading
-              ? CircularProgressIndicator()
-              : IconButton(
-                  icon: Icon(playing.state.value.status == PlayingStatus.playing
-                      ? Icons.pause
-                      : Icons.play_arrow),
-                  onPressed: () async {},
-                ),
-        ),
-      ],
+    return Container(
+      height: 64,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Obx(() => Global.annil.cover(
+                  albumId: playing.state.value.track?.track.albumId ?? "TODO")),
+              Obx(() => Text("${playing.state.value.track?.info.title}")),
+            ],
+          ),
+          Obx(
+            () => playing.status.value == PlayingStatus.loading
+                ? CircularProgressIndicator()
+                : IconButton(
+                    icon: Icon(playing.status.value == PlayingStatus.playing
+                        ? Icons.pause
+                        : Icons.play_arrow),
+                    onPressed: () async {
+                      if (playing.status.value == PlayingStatus.playing) {
+                        playing.service.pause();
+                      } else {
+                        playing.service.play();
+                      }
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
