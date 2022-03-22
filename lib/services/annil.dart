@@ -1,93 +1,11 @@
-import 'dart:convert';
-
+import 'package:annix/models/anniv.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
+import 'package:just_audio_background/just_audio_background.dart'
+    show MediaItem;
 import 'package:uuid/uuid.dart';
-
-class CombinedAnnilClient extends ChangeNotifier {
-  final Map<String, AnnilClient> _clients = Map();
-  bool get hasClient => _clients.isNotEmpty;
-
-  /// Load state from shared preferences
-  static Future<CombinedAnnilClient> load() async {
-    List<String>? tokens = Global.preferences.getStringList("annil_clients");
-    final combined = CombinedAnnilClient();
-    if (tokens != null) {
-      for (String token in tokens) {
-        final client = AnnilClient.fromJson(jsonDecode(token));
-        combined._clients[client.id] = client;
-      }
-    }
-    return combined;
-  }
-
-  /// Save the current state of the combined client to shared preferences
-  Future<void> save() async {
-    final tokens =
-        _clients.values.map((client) => jsonEncode(client.toJson())).toList();
-    Global.preferences.setStringList("annil_clients", tokens);
-  }
-
-  /// Add a list of clients to the combined client
-  Future<void> addAll(List<AnnilClient> clients) async {
-    _clients.addAll(Map.fromEntries(clients.map((c) => MapEntry(c.id, c))));
-    await save();
-  }
-
-  /// Remove all remote annil sources
-  Future<void> removeRemote() async {
-    _clients.removeWhere((_, client) => !client.local);
-  }
-
-  Future<void> refresh() async {
-    await Future.wait(_clients.values.map((client) => client.getAlbums()));
-    notifyListeners();
-  }
-
-  // TODO: cache this list
-  List<String> get albums {
-    List<String> _albums = [];
-    _clients.values.forEach((client) {
-      _albums.addAll(client.albums);
-    });
-    return _albums.toSet().toList();
-  }
-
-  Future<AnnilAudioSource> getAudio({
-    required String albumId,
-    required int discId,
-    required int trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Lossless,
-  }) {
-    // FIXME: choose the correct annil server
-    return AnnilAudioSource.create(
-      annil: _clients.entries.first.value,
-      albumId: albumId,
-      discId: discId,
-      trackId: trackId,
-      preferBitrate: preferBitrate,
-    );
-  }
-
-  Widget cover({required String albumId, int? discId}) {
-    for (final client in _clients.values) {
-      if (client.albums.contains(albumId)) {
-        return ExtendedImage.network(
-          client.getCoverUrl(albumId: albumId, discId: discId),
-          cache: true,
-          fit: BoxFit.scaleDown,
-          filterQuality: FilterQuality.medium,
-        );
-      }
-    }
-    return Text("No cover");
-  }
-}
 
 class AnnilClient {
   final Dio client;
@@ -195,7 +113,7 @@ class AnnilClient {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Lossless,
+    PreferQuality preferBitrate = PreferQuality.Lossless,
   }) {
     return AnnilAudioSource.create(
       annil: this,
@@ -226,11 +144,11 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required this.albumId,
     required this.discId,
     required this.trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Lossless,
+    PreferQuality preferBitrate = PreferQuality.Lossless,
     required MediaItem tag,
   }) : super(
           Uri.parse(
-            '$baseUri/$albumId/$discId/$trackId?auth=$authorization&prefer_bitrate=${preferBitrate.toBitrateString()}',
+            '$baseUri/$albumId/$discId/$trackId?auth=$authorization&prefer_quality=${preferBitrate.toBitrateString()}',
           ),
           tag: tag,
         );
@@ -240,7 +158,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferBitrate preferBitrate = PreferBitrate.Medium,
+    PreferQuality preferBitrate = PreferQuality.Medium,
   }) async {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
@@ -257,28 +175,47 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
         artUri: Uri.parse(annil.getCoverUrl(albumId: albumId)),
+        displayDescription: track?.type.toString() ?? "normal",
+      ),
+    );
+  }
+
+  TrackInfoWithAlbum toTrack() {
+    MediaItem tag = this.tag;
+
+    return TrackInfoWithAlbum(
+      track: TrackIdentifier(
+        albumId: this.albumId,
+        discId: this.discId,
+        trackId: this.trackId,
+      ),
+      info: TrackInfo(
+        title: tag.title,
+        artist: tag.artist!,
+        tags: [],
+        type: tag.displayDescription!,
       ),
     );
   }
 }
 
-enum PreferBitrate {
+enum PreferQuality {
   Low,
   Medium,
   High,
   Lossless,
 }
 
-extension PreferBitrateToString on PreferBitrate {
+extension PreferBitrateToString on PreferQuality {
   String toBitrateString() {
     switch (this) {
-      case PreferBitrate.Low:
+      case PreferQuality.Low:
         return "low";
-      case PreferBitrate.Medium:
+      case PreferQuality.Medium:
         return "medium";
-      case PreferBitrate.High:
+      case PreferQuality.High:
         return "high";
-      case PreferBitrate.Lossless:
+      case PreferQuality.Lossless:
         return "lossless";
     }
   }

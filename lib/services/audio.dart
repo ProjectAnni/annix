@@ -180,30 +180,6 @@ class AnniAudioService {
   }
 }
 
-class AnnilPlaylist extends ChangeNotifier {
-  final AnniAudioService _service;
-  AnnilAudioSource? get playing => _service.activeAudioSource;
-
-  List<AudioSource> get playlist => _service.playlist;
-
-  String? get getPlayingAlbumId => playing?.albumId;
-  int? get playingDiscID => playing?.discId;
-  int? get playingTrackId => playing?.trackId;
-
-  AnnilPlaylist({required AnniAudioService service}) : _service = service {
-    _service.playlistChangeNotifier.addListener(() {
-      notifyListeners();
-    });
-  }
-
-  Future<void> goto(AudioSource audio) async {
-    var index = playlist.indexOf(audio);
-    if (index != -1) {
-      await _service.goto(index);
-    }
-  }
-}
-
 class AnnilPlayState extends ChangeNotifier {
   final AnniAudioService _service;
 

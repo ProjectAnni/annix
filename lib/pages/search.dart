@@ -1,7 +1,6 @@
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/album_info.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/services/route.dart';
 import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -34,10 +33,10 @@ class _AnnixSearchState extends State<AnnixSearch> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   onTap: () async {
-                    AnnixDesktopRouter.navigator.push(platformPageRoute(
-                      context: context,
-                      builder: (context) => AnnixAlbumInfo(albumInfo: e),
-                    ));
+                    // AnnixDesktopRouter.navigator.push(platformPageRoute(
+                    //   context: context,
+                    //   builder: (context) => AnnixAlbumInfo(albumInfo: e),
+                    // ));
                   },
                 ),
               )

@@ -2,12 +2,10 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/services/route.dart';
 import 'package:annix/widgets/platform_widgets/platform_list.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:provider/provider.dart';
 
 class AnnixAlbumInfo extends StatelessWidget {
   final AlbumInfo albumInfo;
@@ -40,77 +38,75 @@ class AnnixAlbumInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AnnixDesktopRouter>(builder: (context, router, child) {
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Global.annil.cover(albumId: albumInfo.albumId),
-                ),
-                Expanded(flex: 1, child: Container()),
-                Expanded(
-                  flex: 7,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlatformText(
-                        albumInfo.title,
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      Text(albumInfo.artist),
-                      PlatformTextButton(
-                        padding: EdgeInsets.zero,
-                        child: Text("Play"),
-                        onPressed: () async {
-                          List<Song> songs = [];
-                          var discId = 1;
-                          albumInfo.discs.forEach((disc) {
-                            var trackId = 1;
-                            disc.tracks.forEach((element) {
-                              songs.add(Song(
-                                albumId: albumInfo.albumId,
-                                discId: discId,
-                                trackId: trackId++,
-                              ));
-                            });
-                            discId++;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Global.annil.cover(albumId: albumInfo.albumId),
+              ),
+              Expanded(flex: 1, child: Container()),
+              Expanded(
+                flex: 7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PlatformText(
+                      albumInfo.title,
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    Text(albumInfo.artist),
+                    PlatformTextButton(
+                      padding: EdgeInsets.zero,
+                      child: Text("Play"),
+                      onPressed: () async {
+                        List<Song> songs = [];
+                        var discId = 1;
+                        albumInfo.discs.forEach((disc) {
+                          var trackId = 1;
+                          disc.tracks.forEach((element) {
+                            songs.add(Song(
+                              albumId: albumInfo.albumId,
+                              discId: discId,
+                              trackId: trackId++,
+                            ));
                           });
+                          discId++;
+                        });
 
-                          await Global.audioService.setPlaylist(
-                            await Future.wait(
-                              songs.map<Future<AnnilAudioSource>>(
-                                (s) => Global.annil.getAudio(
-                                  albumId: s.albumId,
-                                  discId: s.discId,
-                                  trackId: s.trackId,
-                                ),
+                        await Global.audioService.setPlaylist(
+                          await Future.wait(
+                            songs.map<Future<AnnilAudioSource>>(
+                              (s) => Global.annil.getAudio(
+                                albumId: s.albumId,
+                                discId: s.discId,
+                                trackId: s.trackId,
                               ),
                             ),
-                          );
-                          await Global.audioService.play();
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                          ),
+                        );
+                        await Global.audioService.play();
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-          Expanded(
-            child: LayoutBuilder(builder: (context, constriants) {
-              return PlatformListView(
-                children: getAlbumTracks(constriants.maxWidth),
-              );
-            }),
-          ),
-        ],
-      );
-    });
+        ),
+        Expanded(
+          child: LayoutBuilder(builder: (context, constriants) {
+            return PlatformListView(
+              children: getAlbumTracks(constriants.maxWidth),
+            );
+          }),
+        ),
+      ],
+    );
   }
 }

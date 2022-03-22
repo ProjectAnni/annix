@@ -15,17 +15,14 @@ class PlayingState {
 class PlayingController extends GetxController {
   Rx<PlayingState> state = PlayingState().obs;
 
-  updateTrack(TrackInfoWithAlbum track) {
+  updateTrack(TrackInfoWithAlbum? track) {
     this.state.update((state) {
       state?.track = track;
-      state?.status = PlayingStatus.loading;
-    });
-  }
-
-  stop() {
-    this.state.update((state) {
-      state?.track = null;
-      state?.status = PlayingStatus.paused;
+      if (track != null) {
+        state?.status = PlayingStatus.loading;
+      } else {
+        state?.status = PlayingStatus.paused;
+      }
     });
   }
 }

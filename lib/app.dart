@@ -1,4 +1,5 @@
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/views/search.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,9 @@ class AnnixMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.put(PlayingController());
+    Get.put(PlayingController());
+    Get.put(Global.annil);
+    Get.put(PlaylistController(service: Global.audioService));
 
     return Scaffold(
       drawer: Drawer(
@@ -72,17 +75,6 @@ class AnnixMain extends StatelessWidget {
         onGenerateRoute: (settings) {
           if (settings.name == '/') {
             return GetPageRoute(page: () => AnnixHome());
-          } else if (settings.name == '/second') {
-            return GetPageRoute(
-              page: () => Center(
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Text("Main"),
-                  ),
-                  body: Center(child: Text("second")),
-                ),
-              ),
-            );
           } else {
             return GetPageRoute(page: () => Container());
           }
@@ -98,8 +90,6 @@ class AnnixHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
