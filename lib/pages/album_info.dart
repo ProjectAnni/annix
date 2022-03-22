@@ -77,7 +77,10 @@ class AnnixAlbumInfo extends StatelessWidget {
         child: LayoutBuilder(builder: (context, constriants) {
           return ListView(
             children: [
-              getCover(),
+              AspectRatio(
+                aspectRatio: 1,
+                child: getCover(),
+              ),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
