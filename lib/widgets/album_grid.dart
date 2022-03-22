@@ -38,8 +38,11 @@ class _AlbumGridState extends State<AlbumGrid> {
                   if (snapshot.hasData) {
                     return GestureDetector(
                       onTap: () {
-                        Get.to(() => AnnixAlbumInfo(
-                            albumInfo: snapshot.data!.toAlbumInfo()));
+                        Get.to(
+                          () => AnnixAlbumInfo(
+                            albumInfo: snapshot.data!.toAlbumInfo(),
+                          ),
+                        );
                       },
                       child: Container(
                         width: constraints.maxWidth,

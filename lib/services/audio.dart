@@ -147,6 +147,7 @@ class AnniAudioService {
   Future<void> clear() async {
     await this.pause();
 
+    playlistChangeNotifier.value = -1;
     positionNotifier.value = AnniPositionState(
       progress: Duration.zero,
       buffered: Duration.zero,

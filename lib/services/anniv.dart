@@ -22,8 +22,9 @@ class AnnivClient {
   AnnivClient._({
     required String url,
     required CookieJar cookieJar,
-  })  : _client = Dio(BaseOptions(baseUrl: url))
-          ..httpClientAdapter = Http2Adapter(ConnectionManager()),
+  })  : _client =
+            Dio(BaseOptions(baseUrl: url, responseType: ResponseType.json))
+              ..httpClientAdapter = Http2Adapter(ConnectionManager()),
         _cookieJar = cookieJar {
     if (kDebugMode) {
       PluginManager.instance.register(DioInspector(dio: _client));
@@ -32,7 +33,7 @@ class AnnivClient {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        options.responseType = ResponseType.json;
+        options.queryParameters.removeWhere((key, value) => value == false);
         return handler.next(options);
       },
       onResponse: (response, handler) {
