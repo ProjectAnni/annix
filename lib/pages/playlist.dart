@@ -4,7 +4,6 @@ import 'package:annix/widgets/favorite_button.dart';
 import 'package:flutter/cupertino.dart' show CupertinoTheme;
 import 'package:flutter/widgets.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 
 class AnnixPlaylist extends StatelessWidget {
@@ -58,23 +57,24 @@ class AnnixPlaylist extends StatelessWidget {
                                   flex: 4,
                                   child: Align(
                                     // FIXME: marquee align
-                                    child: Marquee(
-                                      text: info.artist ?? '',
-                                      scrollToEnd: true,
-                                      marqueeShortText: false,
-                                      style: TextStyle(
-                                        fontSize: 0.8 *
-                                            (CupertinoTheme.of(context)
-                                                    .textTheme
-                                                    .textStyle
-                                                    .fontSize ??
-                                                0),
-                                        color: audio == active
-                                            ? CupertinoTheme.of(context)
-                                                .primaryColor
-                                            : null,
-                                      ),
-                                    ),
+                                    // child: Marquee(
+                                    //   text: info.artist ?? '',
+                                    //   scrollToEnd: true,
+                                    //   marqueeShortText: false,
+                                    //   style: TextStyle(
+                                    //     fontSize: 0.8 *
+                                    //         (CupertinoTheme.of(context)
+                                    //                 .textTheme
+                                    //                 .textStyle
+                                    //                 .fontSize ??
+                                    //             0),
+                                    //     color: audio == active
+                                    //         ? CupertinoTheme.of(context)
+                                    //             .primaryColor
+                                    //         : null,
+                                    //   ),
+                                    // ),
+                                    child: Text("TODO"),
                                   ),
                                 ),
                               ],
