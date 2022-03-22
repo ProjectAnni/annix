@@ -156,14 +156,20 @@ class BottomPlayer extends StatelessWidget {
     return Container(
       height: 64,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          Row(
-            children: [
-              Obx(() => Global.annil.cover(
-                  albumId: playing.state.value.track?.track.albumId ?? "TODO")),
-              Obx(() => Text("${playing.state.value.track?.info.title}")),
-            ],
+          Obx(
+            () => Global.annil.cover(
+                albumId: playing.state.value.track?.track.albumId ?? "TODO"),
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Obx(
+              () => Text(
+                "${playing.state.value.track?.info.title}",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
           Obx(
             () => playing.status.value == PlayingStatus.loading

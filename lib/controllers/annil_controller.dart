@@ -81,6 +81,7 @@ class AnnilController extends GetxController {
           cache: true,
           fit: BoxFit.scaleDown,
           filterQuality: FilterQuality.medium,
+          imageCacheName: '$albumId/$discId',
         );
       }
     }

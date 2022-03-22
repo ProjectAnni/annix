@@ -12,11 +12,11 @@ class AlbumList extends StatelessWidget {
     AnnilController annil = Get.find();
 
     return GridView.custom(
-      padding: EdgeInsets.all(24.0),
+      padding: EdgeInsets.all(16.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: AnniPlatform.isDesktop ? 5 : 2,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 32,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
       ),
       childrenDelegate: SliverChildBuilderDelegate(
         (context, index) {
