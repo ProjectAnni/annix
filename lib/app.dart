@@ -5,6 +5,7 @@ import 'package:annix/pages/setup.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/views/search.dart';
 import 'package:annix/widgets/draggable_appbar.dart';
+import 'package:annix/widgets/repeat_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -163,41 +164,63 @@ class BottomPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
 
-    return Container(
-      height: 64,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Obx(
-            () => Global.annil.cover(
-                albumId: playing.state.value.track?.track.albumId ?? "TODO"),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Obx(
-              () => Text(
-                "${playing.state.value.track?.info.title}",
-                overflow: TextOverflow.ellipsis,
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        double sensitivity = 360;
+
+        print(details.primaryVelocity);
+        if (details.primaryVelocity! > sensitivity) {
+          // Right Swipe, prev
+          print("Right Swipe, prev");
+          playing.service.previous();
+        } else if (details.primaryVelocity! < -sensitivity) {
+          // Left Swipe, next
+          print("Left Swipe, next");
+          playing.service.next();
+        }
+      },
+      child: Container(
+        height: 64,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Obx(
+              () => Global.annil.cover(
+                  albumId: playing.state.value.track?.track.albumId ?? "TODO"),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Obx(
+                () => Text(
+                  "${playing.state.value.track?.info.title}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
-          ),
-          Obx(
-            () => playing.status.value == PlayingStatus.loading
-                ? CircularProgressIndicator()
-                : IconButton(
-                    icon: Icon(playing.status.value == PlayingStatus.playing
-                        ? Icons.pause
-                        : Icons.play_arrow),
-                    onPressed: () async {
-                      if (playing.status.value == PlayingStatus.playing) {
-                        playing.service.pause();
-                      } else {
-                        playing.service.play();
-                      }
-                    },
-                  ),
-          ),
-        ],
+            RepeatButton(
+              initial: Global.audioService.repeatMode,
+              onRepeatModeChange: (mode) {
+                Global.audioService.repeatMode = mode;
+              },
+            ),
+            Obx(
+              () => playing.status.value == PlayingStatus.loading
+                  ? CircularProgressIndicator()
+                  : IconButton(
+                      icon: Icon(playing.status.value == PlayingStatus.playing
+                          ? Icons.pause
+                          : Icons.play_arrow),
+                      onPressed: () async {
+                        if (playing.status.value == PlayingStatus.playing) {
+                          playing.service.pause();
+                        } else {
+                          playing.service.play();
+                        }
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
