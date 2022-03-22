@@ -72,16 +72,26 @@ class AnnixMain extends StatelessWidget {
           ],
         ),
       ),
-      body: Navigator(
-        key: Get.key,
-        initialRoute: '/',
-        onGenerateRoute: (settings) {
-          if (settings.name == '/') {
-            return GetPageRoute(page: () => AnnixHome());
-          } else {
-            return GetPageRoute(page: () => Container());
+      body: WillPopScope(
+        onWillPop: () async {
+          if (Get.key.currentState?.canPop() ?? false) {
+            Get.back();
+            return false;
           }
+
+          return true;
         },
+        child: Navigator(
+          key: Get.key,
+          initialRoute: '/',
+          onGenerateRoute: (settings) {
+            if (settings.name == '/') {
+              return GetPageRoute(page: () => AnnixHome());
+            } else {
+              return GetPageRoute(page: () => Container());
+            }
+          },
+        ),
       ),
       bottomNavigationBar: BottomPlayer(),
     );
