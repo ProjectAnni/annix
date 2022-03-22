@@ -2,6 +2,7 @@ import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/views/search.dart';
+import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -93,35 +94,37 @@ class AnnixHome extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: AppBar(
-          // toolbarHeight: 48,
-          title: const TabBar(
-            isScrollable: true,
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            tabs: [
-              Tab(child: Text("Playlists")),
-              Tab(child: Text("Albums")),
-              Tab(child: Text("Categories")),
-            ],
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
+        appBar: PreferSizedMoveWindow(
+          child: AppBar(
+            // toolbarHeight: 48,
+            title: const TabBar(
+              isScrollable: true,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              tabs: [
+                Tab(child: Text("Playlists")),
+                Tab(child: Text("Albums")),
+                Tab(child: Text("Categories")),
+              ],
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.menu),
               onPressed: () {
-                Get.to(
-                  () => SearchScreen(),
-                  transition: Transition.fade,
-                );
+                Scaffold.of(context).openDrawer();
               },
             ),
-          ],
+            actions: [
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  Get.to(
+                    () => SearchScreen(),
+                    transition: Transition.fade,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
         body: TabBarView(
           children: [
