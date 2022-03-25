@@ -90,7 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     subtitle: Text(_result!.albums![index].artist),
                     onTap: () {
                       Get.to(
-                        () => AnnixAlbumInfo(
+                        () => AlbumInfoScreen(
                           albumInfo: _result!.albums![index],
                         ),
                       );

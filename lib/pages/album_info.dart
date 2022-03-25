@@ -6,10 +6,10 @@ import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 
-class AnnixAlbumInfo extends StatelessWidget {
+class AlbumInfoScreen extends StatelessWidget {
   final AlbumInfo albumInfo;
 
-  const AnnixAlbumInfo({Key? key, required this.albumInfo}) : super(key: key);
+  const AlbumInfoScreen({Key? key, required this.albumInfo}) : super(key: key);
 
   List<Widget> getAlbumTracks(double width) {
     final List<Widget> list = [];

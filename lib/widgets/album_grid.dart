@@ -39,7 +39,7 @@ class _AlbumGridState extends State<AlbumGrid> {
                     return GestureDetector(
                       onTap: () {
                         Get.to(
-                          () => AnnixAlbumInfo(
+                          () => AlbumInfoScreen(
                             albumInfo: snapshot.data!.toAlbumInfo(),
                           ),
                         );
