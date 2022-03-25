@@ -92,6 +92,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       Get.to(
                         () => AlbumInfoScreen(
                           albumInfo: _result!.albums![index],
+                          // FIXME
+                          tag: 'no-tag',
                         ),
                       );
                     },

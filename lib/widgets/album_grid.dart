@@ -4,16 +4,20 @@ import 'package:annix/services/global.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
 class AlbumGrid extends StatefulWidget {
   final String albumId;
   final Widget cover;
+  final String tag;
 
-  const AlbumGrid({
+  AlbumGrid({
     Key? key,
     required this.albumId,
     required this.cover,
-  }) : super(key: key);
+    String? tag,
+  })  : this.tag = tag ?? Uuid().v4().toString(),
+        super(key: key);
 
   @override
   _AlbumGridState createState() => _AlbumGridState();
@@ -28,7 +32,10 @@ class _AlbumGridState extends State<AlbumGrid> {
         return Stack(
           fit: StackFit.expand,
           children: [
-            widget.cover,
+            Hero(
+              tag: widget.tag,
+              child: widget.cover,
+            ),
             Positioned(
               bottom: 0,
               child: FutureBuilder<Album?>(
@@ -41,6 +48,7 @@ class _AlbumGridState extends State<AlbumGrid> {
                         Get.to(
                           () => AlbumInfoScreen(
                             albumInfo: snapshot.data!.toAlbumInfo(),
+                            tag: widget.tag,
                           ),
                         );
                       },

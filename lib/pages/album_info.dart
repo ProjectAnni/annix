@@ -7,9 +7,11 @@ import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 
 class AlbumInfoScreen extends StatelessWidget {
+  final String tag;
   final AlbumInfo albumInfo;
 
-  const AlbumInfoScreen({Key? key, required this.albumInfo}) : super(key: key);
+  const AlbumInfoScreen({Key? key, required this.albumInfo, required this.tag})
+      : super(key: key);
 
   List<Widget> getAlbumTracks(double width) {
     final List<Widget> list = [];
@@ -100,9 +102,12 @@ class AlbumInfoScreen extends StatelessWidget {
 
   Widget getCover() {
     return Stack(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       children: [
-        Global.annil.cover(albumId: albumInfo.albumId),
+        Hero(
+          tag: this.tag,
+          child: Global.annil.cover(albumId: albumInfo.albumId),
+        ),
         Align(
           alignment: Alignment.bottomRight,
           child: Text(albumInfo.artist),

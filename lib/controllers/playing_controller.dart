@@ -18,6 +18,7 @@ class PlayingController extends GetxController {
 
   PlayingController({required this.service}) {
     service.player.playerStateStream.listen((state) {
+      print(state.processingState);
       switch (state.processingState) {
         case ProcessingState.idle:
           this.status.value = PlayingStatus.paused;
@@ -37,7 +38,6 @@ class PlayingController extends GetxController {
           }
           break;
       }
-      print(this.status.value);
       this.status.refresh();
     });
   }

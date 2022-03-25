@@ -82,16 +82,19 @@ class AnnixMain extends StatelessWidget {
 
           return true;
         },
-        child: Navigator(
-          key: Get.key,
-          initialRoute: '/',
-          onGenerateRoute: (settings) {
-            if (settings.name == '/') {
-              return GetPageRoute(page: () => AnnixHome());
-            } else {
-              return GetPageRoute(page: () => Container());
-            }
-          },
+        child: HeroControllerScope(
+          controller: MaterialApp.createMaterialHeroController(),
+          child: Navigator(
+            key: Get.key,
+            initialRoute: '/',
+            onGenerateRoute: (settings) {
+              if (settings.name == '/') {
+                return GetPageRoute(page: () => AnnixHome());
+              } else {
+                return GetPageRoute(page: () => Container());
+              }
+            },
+          ),
         ),
       ),
       bottomNavigationBar: BottomPlayer(),
