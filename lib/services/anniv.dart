@@ -7,7 +7,11 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'package:flutter_ume/flutter_ume.dart';
+import 'package:flutter_ume_kit_dio/flutter_ume_kit_dio.dart';
 
 class AnnivClient {
   final Dio _client;
@@ -21,6 +25,10 @@ class AnnivClient {
   })  : _client = Dio(BaseOptions(baseUrl: url))
           ..httpClientAdapter = Http2Adapter(ConnectionManager()),
         _cookieJar = cookieJar {
+    if (kDebugMode) {
+      PluginManager.instance.register(DioInspector(dio: _client));
+    }
+
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
