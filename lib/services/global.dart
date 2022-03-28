@@ -1,6 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/metadata/metadata_source.dart';
-import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,18 +15,11 @@ class Global {
 
   static BaseMetadataSource? metadataSource;
 
-  // TODO: offline mode
-  static bool get needSetup => anniv == null || metadataSource == null;
-
   static Map<String, Duration?> durations = new Map();
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
     annil = await AnnilController.load();
-    anniv = await AnnivClient.load();
-
-    if (metadataSource == null && anniv != null) {
-      metadataSource = AnnivMetadataSource(anniv: anniv!);
-    }
+    AnnivClient.load().then((anniv) => Global.anniv = anniv);
   }
 }

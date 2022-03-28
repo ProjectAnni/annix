@@ -37,17 +37,16 @@ class _AnnixSetupState extends State<AnnixSetup> {
     } else {
       try {
         // initialize Anniv
-        final anniv = await AnnivClient.create(
+        Global.anniv = await AnnivClient.create(
           url: _urlController.text,
           email: _emailController.text,
           password: _passwordController.text,
         );
-        Global.anniv = anniv;
 
         // initialize metadata source
         if (_databasePath == null) {
           // use Anniv as metadata source
-          Global.metadataSource = AnnivMetadataSource(anniv: anniv);
+          Global.metadataSource = AnnivMetadataSource();
         } else {
           // use database as metadata source
           if (_databasePath!.startsWith('http')) {

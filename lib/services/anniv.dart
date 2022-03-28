@@ -1,3 +1,4 @@
+import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
@@ -102,6 +103,10 @@ class AnnivClient {
         await client.getSiteInfo();
         await client.getUserInfo();
         await client.setAnnilClients();
+
+        if (Global.metadataSource == null) {
+          Global.metadataSource = AnnivMetadataSource();
+        }
         return client;
       } catch (e) {
         // failed to get user info
