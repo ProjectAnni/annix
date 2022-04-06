@@ -24,17 +24,16 @@ class AnnixApp extends StatelessWidget {
         colorSchemeSeed: Color.fromARGB(255, 184, 253, 127),
       ),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      initialRoute: '/home',
+      initialRoute: '/',
       getPages: [
         GetPage(
-          name: '/home',
-          page: () => AnnixHome(),
+          name: '/',
+          page: () => AnnixMain(),
           binding: HomeBinding(),
         ),
         GetPage(
           name: '/search',
           page: () => SearchScreen(),
-          transitionDuration: Duration(milliseconds: 300),
         ),
       ],
     );
@@ -53,7 +52,7 @@ class HomeController extends GetxController {
 
   var currentIndex = 0.obs;
 
-  final pages = <String>['/home', '/albums', '/settings'];
+  final pages = <String>['/home', '/albums', '/playlists', '/server'];
 
   void changePage(int index) {
     currentIndex.value = index;
@@ -61,15 +60,12 @@ class HomeController extends GetxController {
   }
 
   Route? onGenerateRoute(RouteSettings settings) {
-    print(settings);
     if (settings.name == '/home')
       return GetPageRoute(
         settings: settings,
         page: () => HomeScreen(),
         transition: Transition.fadeIn,
         curve: Curves.easeInQuint,
-        transitionDuration: Duration(milliseconds: 300),
-        // binding: HistoryBinding(),
       );
 
     if (settings.name == '/albums')
@@ -78,24 +74,29 @@ class HomeController extends GetxController {
         page: () => AlbumList(),
         transition: Transition.fadeIn,
         curve: Curves.easeInQuint,
-        transitionDuration: Duration(milliseconds: 300),
       );
 
-    if (settings.name == '/settings')
+    if (settings.name == '/playlists')
       return GetPageRoute(
         settings: settings,
-        page: () => Text('/settings'),
+        page: () => Text('/playlists'),
         transition: Transition.fadeIn,
         curve: Curves.easeInQuint,
-        transitionDuration: Duration(milliseconds: 300),
-        // binding: SettingsBinding(),
+      );
+
+    if (settings.name == '/server')
+      return GetPageRoute(
+        settings: settings,
+        page: () => Text('/server'),
+        transition: Transition.fadeIn,
+        curve: Curves.easeInQuint,
       );
 
     return null;
   }
 }
 
-class AnnixHome extends GetView<HomeController> {
+class AnnixMain extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,7 +129,9 @@ class AnnixHome extends GetView<HomeController> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
-        onPressed: () {},
+        onPressed: () {
+          Get.toNamed('/search');
+        },
       ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
@@ -136,16 +139,20 @@ class AnnixHome extends GetView<HomeController> {
           // backgroundColor: Get.theme.primaryColor.withOpacity(0.6),
           destinations: [
             NavigationDestination(
-              icon: Icon(Icons.person_outlined),
+              icon: Icon(Icons.casino_outlined),
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.album),
+              icon: Icon(Icons.album_outlined),
               label: 'Albums',
             ),
             NavigationDestination(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
+              icon: Icon(Icons.queue_music_outlined),
+              label: 'Playlists',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.dns_outlined),
+              label: 'Server',
             ),
           ],
           selectedIndex: controller.currentIndex.value,
