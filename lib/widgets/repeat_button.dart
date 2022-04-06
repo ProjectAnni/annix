@@ -1,4 +1,3 @@
-import 'package:annix/utils/platform_icons.dart';
 import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Icons;
@@ -38,13 +37,13 @@ class _RepeatButtonState extends State<RepeatButton> {
   IconData _currentIcon(BuildContext context) {
     switch (mode) {
       case RepeatMode.Normal:
-        return Icons.trending_neutral_rounded;
+        return Icons.repeat_on_outlined;
       case RepeatMode.Random:
-        return context.icons.shuffle;
+        return Icons.shuffle_outlined;
       case RepeatMode.LoopOne:
-        return context.icons.repeat_one;
+        return Icons.repeat_one_outlined;
       case RepeatMode.Loop:
-        return context.icons.repeat;
+        return Icons.repeat_outlined;
     }
   }
 

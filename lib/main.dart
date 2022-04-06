@@ -16,7 +16,7 @@ import 'package:flutter_ume_kit_device/flutter_ume_kit_device.dart';
 import 'package:flutter_ume_kit_console/flutter_ume_kit_console.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   if (AnniPlatform.isMobile || AnniPlatform.isMacOS) {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'rs.anni.annix.audio',

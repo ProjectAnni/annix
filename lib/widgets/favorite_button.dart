@@ -1,7 +1,7 @@
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/square_icon_button.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:annix/utils/platform_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class FavoriteButton extends StatefulWidget {
@@ -21,9 +21,11 @@ class FavoriteButtonState extends State<FavoriteButton> {
     return SquareIconButton(
       child: isLoading
           ? PlatformCircularProgressIndicator()
-          : Icon(Global.anniv!.favorites.containsKey(widget.id)
-              ? context.icons.heart_filled
-              : context.icons.heart_outlined),
+          : Icon(
+              Global.anniv!.favorites.containsKey(widget.id)
+                  ? Icons.favorite_outlined
+                  : Icons.favorite_border_outlined,
+            ),
       onPressed: () async {
         if (!Global.anniv!.favorites.containsKey(widget.id)) {
           setState(() {
