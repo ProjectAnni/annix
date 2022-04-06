@@ -47,7 +47,7 @@ class AnnixPlaylist extends StatelessWidget {
                             //     info.title,
                             //     style: TextStyle(
                             //       color: audio == active
-                            //           ? CupertinoTheme.of(context).primaryColor
+                            //           ? Get.theme.primaryColor
                             //           : null,
                             //     ),
                             //   ),
@@ -55,25 +55,7 @@ class AnnixPlaylist extends StatelessWidget {
                             Expanded(
                               flex: 4,
                               child: Align(
-                                // FIXME: marquee align
-                                // child: Marquee(
-                                //   text: info.artist ?? '',
-                                //   scrollToEnd: true,
-                                //   marqueeShortText: false,
-                                //   style: TextStyle(
-                                //     fontSize: 0.8 *
-                                //         (CupertinoTheme.of(context)
-                                //                 .textTheme
-                                //                 .textStyle
-                                //                 .fontSize ??
-                                //             0),
-                                //     color: audio == active
-                                //         ? CupertinoTheme.of(context)
-                                //             .primaryColor
-                                //         : null,
-                                //   ),
-                                // ),
-                                child: Text("TODO"),
+                                child: Text(info.artist ?? ''),
                               ),
                             ),
                           ],

@@ -4,7 +4,6 @@ import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class AnnixSetup extends StatefulWidget {
   const AnnixSetup({Key? key}) : super(key: key);
@@ -74,8 +73,8 @@ class _AnnixSetupState extends State<AnnixSetup> {
       appBar: AppBar(
         title: Text("Annix Setup"),
         actions: [
-          PlatformIconButton(
-            icon: Icon(context.platformIcons.checkMark),
+          IconButton(
+            icon: Icon(Icons.check),
             padding: EdgeInsets.zero,
             onPressed: _completeSetup,
           )
@@ -85,22 +84,19 @@ class _AnnixSetupState extends State<AnnixSetup> {
         children: [
           SimpleRow(
             left: Text('Anniv Server URL'),
-            right: PlatformTextField(
-              hintText: 'URL',
+            right: TextField(
               controller: _urlController,
             ),
           ),
           SimpleRow(
             left: Text('Email'),
-            right: PlatformTextField(
-              hintText: 'Email',
+            right: TextField(
               controller: _emailController,
             ),
           ),
           SimpleRow(
             left: Text('Password'),
-            right: PlatformTextField(
-              hintText: 'Password',
+            right: TextField(
               obscureText: true,
               controller: _passwordController,
             ),
@@ -108,7 +104,7 @@ class _AnnixSetupState extends State<AnnixSetup> {
           SimpleRow(
             padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
             left: Text('Use external metadata source'),
-            right: PlatformSwitch(
+            right: Switch(
               value: _useExternalMetadata,
               onChanged: (value) {
                 setState(() {
@@ -123,7 +119,7 @@ class _AnnixSetupState extends State<AnnixSetup> {
                     padding:
                         EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 8),
                     left: Text('Local source'),
-                    right: PlatformSwitch(
+                    right: Switch(
                       value: isLocalSource,
                       onChanged: (value) {
                         setState(() {
@@ -139,9 +135,7 @@ class _AnnixSetupState extends State<AnnixSetup> {
                         alignment: Alignment.topLeft, child: Text('URL/Path')),
                     right: isLocalSource
                         // select local source
-                        ? PlatformTextButton(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.topRight,
+                        ? TextButton(
                             child: Text(_databasePath ?? "[Not Selected]"),
                             onPressed: () async {
                               FilePickerResult? selected =
@@ -159,7 +153,7 @@ class _AnnixSetupState extends State<AnnixSetup> {
                             },
                           )
                         // input remote source
-                        : PlatformTextField(
+                        : TextField(
                             onChanged: (value) {
                               _databasePath = value;
                             },

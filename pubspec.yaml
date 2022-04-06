@@ -10,9 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_platform_widgets: ^1.11.1
-  cupertino_stepper: ^0.2.1
-
   get: ^4.6.1
   shared_preferences: ^2.0.9
   archive: ^3.1.6
