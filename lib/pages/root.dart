@@ -1,5 +1,7 @@
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
+import 'package:annix/pages/root/playlists.dart';
+import 'package:annix/pages/root/server.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,7 +44,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/playlists')
       return GetPageRoute(
         settings: settings,
-        page: () => Text('/playlists'),
+        page: () => PlaylistsView(),
         transition: Transition.fadeIn,
         curve: Curves.easeInQuint,
       );
@@ -50,7 +52,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/server')
       return GetPageRoute(
         settings: settings,
-        page: () => Text('/server'),
+        page: () => ServerView(),
         transition: Transition.fadeIn,
         curve: Curves.easeInQuint,
       );
@@ -98,8 +100,6 @@ class RootScreen extends GetView<RootScreenController> {
       ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
-          // elevation: 0,
-          // backgroundColor: Get.theme.primaryColor.withOpacity(0.6),
           destinations: [
             NavigationDestination(
               icon: Icon(Icons.casino_outlined),
