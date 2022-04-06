@@ -51,7 +51,7 @@ class ReleaseDate {
   }
 }
 
-enum TrackType { Normal, Instrumental, Absoltue, Drama, Radio, Vocal, Unknown }
+enum TrackType { Normal, Instrumental, Absolute, Drama, Radio, Vocal, Unknown }
 
 TrackType stringToTrackType(String value) {
   switch (value) {
@@ -60,7 +60,7 @@ TrackType stringToTrackType(String value) {
     case "instrumental":
       return TrackType.Instrumental;
     case "absolute":
-      return TrackType.Absoltue;
+      return TrackType.Absolute;
     case "drama":
       return TrackType.Drama;
     case "radio":

@@ -12,7 +12,7 @@ class AlbumInfoScreen extends StatelessWidget {
   const AlbumInfoScreen({Key? key, required this.albumInfo, required this.tag})
       : super(key: key);
 
-  List<Widget> getAlbumTracks(double width) {
+  List<Widget> getAlbumTracks() {
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -23,15 +23,23 @@ class AlbumInfoScreen extends StatelessWidget {
     var discId = 1;
     albumInfo.discs.forEach((disc) {
       if (needDiscId) {
-        list.add(ListTile(title: Text('Disc $discId')));
+        var discTitle = 'Disc $discId';
+        if (disc.title != "") {
+          discTitle += ' - ${disc.title}';
+        }
+        list.add(ListTile(title: Marquee(child: Text(discTitle))));
       }
 
       var trackId = 1;
-      list.addAll(disc.tracks.map((track) => ListTile(
-            title: Text('${trackId++}. ${track.title}'),
-            subtitle: Marquee(width: width * 0.97, child: Text(track.artist)),
-            visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-          )));
+      list.addAll(
+        disc.tracks.map(
+          (track) => ListTile(
+            leading: Text("${trackId++}"),
+            title: Text('${track.title}'),
+            subtitle: Marquee(child: Text(track.artist)),
+          ),
+        ),
+      );
       discId++;
     });
     return list;
@@ -68,48 +76,53 @@ class AlbumInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var tracks = getAlbumTracks();
+
     return Scaffold(
-      appBar: AppBar(
-        title: Marquee(child: Text(albumInfo.title)),
-      ),
-      body: Container(
-        child: LayoutBuilder(builder: (context, constriants) {
-          return ListView(
-            children: [
-              AspectRatio(
-                aspectRatio: 1,
-                child: getCover(),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  child: Text("Play"),
-                  onPressed: playAlbum,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar(
+                pinned: true,
+                snap: true,
+                floating: true,
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  expandedTitleScale: 1.2,
+                  title: Marquee(child: Text(albumInfo.title)),
+                  background: Hero(
+                    tag: this.tag,
+                    child: Global.annil.cover(
+                        albumId: albumInfo.albumId, fit: BoxFit.fitWidth),
+                  ),
                 ),
               ),
-              ...getAlbumTracks(constriants.maxWidth),
-              // suffix white space
-              SizedBox(height: 64),
+            )
+          ];
+        },
+        body: Builder(builder: (context) {
+          return CustomScrollView(
+            slivers: [
+              SliverOverlapInjector(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => tracks[index],
+                  childCount: tracks.length,
+                ),
+              ),
             ],
           );
         }),
       ),
-    );
-  }
-
-  Widget getCover() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Hero(
-          tag: this.tag,
-          child: Global.annil.cover(albumId: albumInfo.albumId),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Text(albumInfo.artist),
-        ),
-      ],
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.play_arrow),
+        onPressed: playAlbum,
+      ),
     );
   }
 }
