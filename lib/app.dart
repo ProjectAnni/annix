@@ -14,43 +14,97 @@ class AnnixApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeData(primarySwatch: Colors.blueGrey);
-    final darkTheme = ThemeData(brightness: Brightness.dark);
-
-    return GetBuilder<GetMaterialController>(
-      init: Get.rootController,
-      initState: (_) {
-        Get.config(
-          enableLog: Get.isLogEnable,
-          defaultTransition: Get.defaultTransition,
-          defaultOpaqueRoute: Get.isOpaqueRouteDefault,
-          defaultPopGesture: Get.isPopGestureEnable,
-          defaultDurationTransition: Get.defaultTransitionDuration,
-        );
-      },
-      builder: (_) {
-        return MaterialApp(
-          theme: _.theme ?? theme,
-          darkTheme: _.darkTheme ?? darkTheme,
-          themeMode: _.themeMode,
-          scaffoldMessengerKey: _.scaffoldMessengerKey,
-          home: AnnixMain(),
-        );
-      },
-    );
-  }
-}
-
-class AnnixMain extends StatelessWidget {
-  const AnnixMain({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     Get.put(PlayingController(service: Global.audioService));
     Get.put(Global.annil);
     Get.put(PlaylistController(service: Global.audioService));
 
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.teal),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      initialRoute: '/home',
+      getPages: [
+        GetPage(
+          name: '/home',
+          page: () => AnnixHome(),
+          binding: HomeBinding(),
+        ),
+      ],
+    );
+  }
+}
+
+class HomeBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => HomeController());
+  }
+}
+
+class HomeController extends GetxController {
+  static HomeController get to => Get.find();
+
+  var currentIndex = 0.obs;
+
+  final pages = <String>['/home', '/albums', '/settings'];
+
+  void changePage(int index) {
+    currentIndex.value = index;
+    Get.toNamed(pages[index], id: 1);
+  }
+
+  Route? onGenerateRoute(RouteSettings settings) {
+    if (settings.name == '/albums')
+      return GetPageRoute(
+        settings: settings,
+        page: () => AlbumList(),
+        transition: Transition.fadeIn,
+        curve: Curves.easeInQuint,
+        transitionDuration: Duration(milliseconds: 300),
+      );
+
+    if (settings.name == '/home')
+      return GetPageRoute(
+        settings: settings,
+        page: () => Text('/home'),
+        transition: Transition.fadeIn,
+        curve: Curves.easeInQuint,
+        transitionDuration: Duration(milliseconds: 300),
+        // binding: HistoryBinding(),
+      );
+
+    if (settings.name == '/settings')
+      return GetPageRoute(
+        settings: settings,
+        page: () => Text('/settings'),
+        transition: Transition.fadeIn,
+        curve: Curves.easeInQuint,
+        transitionDuration: Duration(milliseconds: 300),
+        // binding: SettingsBinding(),
+      );
+
+    return null;
+  }
+}
+
+class AnnixHome extends GetView<HomeController> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // toolbarHeight: 48,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Get.to(
+                () => SearchScreen(),
+                transition: Transition.fade,
+              );
+            },
+          ),
+        ],
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -73,87 +127,33 @@ class AnnixMain extends StatelessWidget {
           ],
         ),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          if (Get.key.currentState?.canPop() ?? false) {
-            Get.back();
-            return false;
-          }
-
-          return true;
-        },
-        child: HeroControllerScope(
-          controller: MaterialApp.createMaterialHeroController(),
-          child: Navigator(
-            key: Get.key,
-            initialRoute: '/',
-            onGenerateRoute: (settings) {
-              if (settings.name == '/') {
-                return GetPageRoute(page: () => AnnixHome());
-              } else {
-                return GetPageRoute(page: () => Container());
-              }
-            },
-          ),
-        ),
+      body: Navigator(
+        key: Get.nestedKey(1),
+        initialRoute: '/home',
+        onGenerateRoute: controller.onGenerateRoute,
       ),
-      bottomNavigationBar: BottomPlayer(),
-    );
-  }
-}
-
-class AnnixHome extends StatelessWidget {
-  const AnnixHome({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: PreferSizedMoveWindow(
-          child: AppBar(
-            // toolbarHeight: 48,
-            title: const TabBar(
-              isScrollable: true,
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              tabs: [
-                Tab(child: Text("Playlists")),
-                Tab(child: Text("Albums")),
-                Tab(child: Text("Categories")),
-              ],
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          elevation: 0,
+          backgroundColor: Get.theme.primaryColor.withOpacity(0.6),
+          selectedFontSize: 16,
+          unselectedFontSize: 14,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: SizedBox(height: 32, child: Icon(Icons.person_outlined)),
+              label: 'Home',
             ),
-            leading: IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+            BottomNavigationBarItem(
+              icon: SizedBox(height: 32, child: Icon(Icons.album)),
+              label: 'Albums',
             ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  Get.to(
-                    () => SearchScreen(),
-                    transition: Transition.fade,
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            Builder(builder: (context) {
-              print(1);
-              return Icon(Icons.directions_car);
-            }),
-            AlbumList(),
-            Builder(builder: (context) {
-              print(3);
-              return AnnixSetup();
-            }),
+            BottomNavigationBarItem(
+              icon: SizedBox(height: 32, child: Icon(Icons.settings)),
+              label: 'Settings',
+            ),
           ],
+          currentIndex: controller.currentIndex.value,
+          onTap: controller.changePage,
         ),
       ),
     );

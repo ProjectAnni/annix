@@ -9,12 +9,13 @@ class _MoveWindow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onPanStart: (details) {
-          appWindow.startDragging();
-        },
-        onDoubleTap: () => appWindow.maximizeOrRestore(),
-        child: this.child ?? Container());
+      behavior: HitTestBehavior.translucent,
+      onPanStart: (details) {
+        appWindow.startDragging();
+      },
+      onDoubleTap: () => appWindow.maximizeOrRestore(),
+      child: this.child ?? Container(),
+    );
   }
 }
 

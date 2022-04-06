@@ -45,11 +45,17 @@ class AnnilController extends GetxController {
   }
 
   Future<void> refresh() async {
-    var newAlbums =
-        (await Future.wait(_clients.values.map((client) => client.getAlbums())))
-            .expand((e) => e)
-            .toSet()
-            .toList();
+    var newAlbums = (await Future.wait(_clients.values.map((client) async {
+      try {
+        var albums = await client.getAlbums();
+        return albums;
+      } catch (e) {
+        return <String>[];
+      }
+    })))
+        .expand((e) => e)
+        .toSet()
+        .toList();
     this.albums.replaceRange(0, this.albums.length, newAlbums);
   }
 
