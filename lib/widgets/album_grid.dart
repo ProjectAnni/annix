@@ -1,7 +1,6 @@
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/album_info.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
@@ -26,58 +25,50 @@ class AlbumGrid extends StatefulWidget {
 class _AlbumGridState extends State<AlbumGrid> {
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: LayoutBuilder(builder: (context, constraints) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Hero(
-              tag: widget.tag,
-              child: widget.cover,
+    return Card(
+      elevation: 16,
+      child: FutureBuilder<Album?>(
+        future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
+        builder: (ctx, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+
+          return InkWell(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Hero(
+                  tag: widget.tag,
+                  child: widget.cover,
+                ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.all(4.0),
+                  child: Text(
+                    '${snapshot.data?.title}',
+                    style: Get.textTheme.bodyLarge?.copyWith(
+                      backgroundColor: Get.theme.colorScheme.primaryContainer
+                          .withOpacity(0.8),
+                    ),
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 0,
-              child: FutureBuilder<Album?>(
-                future:
-                    Global.metadataSource!.getAlbum(albumId: widget.albumId),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return GestureDetector(
-                      onTap: () {
-                        Get.to(
-                          () => AlbumInfoScreen(
-                            albumInfo: snapshot.data!.toAlbumInfo(),
-                            tag: widget.tag,
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: constraints.maxWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Marquee(
-                            child: Text(
-                              '${snapshot.data?.title}',
-                              style: TextStyle(
-                                color: Colors.white,
-                                backgroundColor: Colors.black87,
-                              ),
-                            ),
-                            pauseDuration: Duration(seconds: 1),
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-            ),
-          ],
-        );
-      }),
+            onTap: () {
+              Get.to(
+                () => AlbumInfoScreen(
+                  albumInfo: snapshot.data!.toAlbumInfo(),
+                  tag: widget.tag,
+                ),
+                duration: Duration(milliseconds: 300),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
