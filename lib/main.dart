@@ -1,12 +1,12 @@
 import 'package:annix/app.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
+// import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+// import 'package:sqflite/sqflite.dart';
+// import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:flutter_ume/flutter_ume.dart';
 import 'package:flutter_ume_kit_ui/flutter_ume_kit_ui.dart';
@@ -25,24 +25,24 @@ Future<void> main() async {
     );
   }
 
-  if (AnniPlatform.isDesktop) {
-    doWhenWindowReady(() {
-      const initialSize = Size(1280, 720);
-      appWindow.minSize = initialSize;
-      appWindow.size = initialSize;
-      appWindow.alignment = Alignment.center;
-      appWindow.show();
-    });
-  }
+  // if (AnniPlatform.isDesktop) {
+  //   doWhenWindowReady(() {
+  //     const initialSize = Size(1280, 720);
+  //     appWindow.minSize = initialSize;
+  //     appWindow.size = initialSize;
+  //     appWindow.alignment = Alignment.center;
+  //     appWindow.show();
+  //   });
+  // }
 
   await Global.init();
 
-  if (AnniPlatform.isDesktop) {
-    // Initialize FFI
-    sqfliteFfiInit();
-    // Change the default factory
-    databaseFactory = databaseFactoryFfi;
-  }
+  // if (AnniPlatform.isDesktop) {
+  //   // Initialize FFI
+  //   sqfliteFfiInit();
+  //   // Change the default factory
+  //   databaseFactory = databaseFactoryFfi;
+  // }
 
   if (kDebugMode) {
     PluginManager.instance

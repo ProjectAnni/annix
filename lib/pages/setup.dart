@@ -2,9 +2,8 @@ import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/metadata/metadata_source_sqlite.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class AnnixSetup extends StatefulWidget {
@@ -71,11 +70,10 @@ class _AnnixSetupState extends State<AnnixSetup> {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
-      iosContentPadding: true,
-      appBar: DraggableAppBar(
+    return Scaffold(
+      appBar: AppBar(
         title: Text("Annix Setup"),
-        trailingActions: [
+        actions: [
           PlatformIconButton(
             icon: Icon(context.platformIcons.checkMark),
             padding: EdgeInsets.zero,

@@ -1,7 +1,6 @@
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash_memory/stash_memory.dart';
 
 /// MetadataSource is the source of local metadata need by the whole application.
 ///
@@ -45,7 +44,7 @@ abstract class BaseMetadataSource {
 
   /// Private album object cache for album object reading
   static final _albumCache = Global.cacheStore.cache(
-    cacheName: 'album',
+    name: 'album',
     maxEntries: 64,
     evictionPolicy: LruEvictionPolicy(),
   );

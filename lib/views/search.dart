@@ -47,7 +47,6 @@ class _SearchScreenState extends State<SearchScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            color: Theme.of(context).primaryColorDark,
             child: TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
               labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -112,10 +111,15 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: TextField(
+      // appBar: AppBar(
+      //   title: Container(
+      //     // color: Theme.of(context).scaffoldBackgroundColor,
+      //     child:
+      //   ),
+      // ),
+      body: CustomScrollView(slivers: [
+        SliverAppBar(
+          title: TextField(
             autofocus: true,
             controller: _controller,
             decoration: InputDecoration(
@@ -125,25 +129,19 @@ class _SearchScreenState extends State<SearchScreen> {
               border: InputBorder.none,
               isDense: true,
             ),
-            onSubmitted: (_) => search,
+            onSubmitted: (_) => search(),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: search,
-          ),
-        ],
-      ),
-      body: _result == null
-          ? Container(
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(top: 8),
-              child: isLoading
-                  ? CircularProgressIndicator()
-                  : Text("Search results would display here"),
-            )
-          : buildSearchResult(),
+        // _result == null
+        //   ? Container(
+        //       alignment: Alignment.topCenter,
+        //       padding: EdgeInsets.only(top: 8),
+        //       child: isLoading
+        //           ? CircularProgressIndicator()
+        //           : Text("Search results would display here"),
+        //     )
+        //   : buildSearchResult()
+      ]),
     );
   }
 }

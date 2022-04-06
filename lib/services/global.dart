@@ -7,7 +7,7 @@ import 'package:stash_memory/stash_memory.dart';
 
 class Global {
   static late SharedPreferences preferences;
-  static final cacheStore = newMemoryStore();
+  static final cacheStore = newMemoryCacheStore();
 
   static AnniAudioService audioService = AnniAudioService();
   static AnnivClient? anniv;

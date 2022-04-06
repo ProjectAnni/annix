@@ -1,10 +1,9 @@
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/pages/album_list.dart';
-import 'package:annix/pages/setup.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/views/home.dart';
 import 'package:annix/views/search.dart';
-import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/repeat_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +19,10 @@ class AnnixApp extends StatelessWidget {
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.teal),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Color.fromARGB(255, 184, 253, 127),
+      ),
       darkTheme: ThemeData(brightness: Brightness.dark),
       initialRoute: '/home',
       getPages: [
@@ -28,6 +30,11 @@ class AnnixApp extends StatelessWidget {
           name: '/home',
           page: () => AnnixHome(),
           binding: HomeBinding(),
+        ),
+        GetPage(
+          name: '/search',
+          page: () => SearchScreen(),
+          transitionDuration: Duration(milliseconds: 300),
         ),
       ],
     );
@@ -50,10 +57,21 @@ class HomeController extends GetxController {
 
   void changePage(int index) {
     currentIndex.value = index;
-    Get.toNamed(pages[index], id: 1);
+    Get.toNamed(pages[index], id: 1, preventDuplicates: false);
   }
 
   Route? onGenerateRoute(RouteSettings settings) {
+    print(settings);
+    if (settings.name == '/home')
+      return GetPageRoute(
+        settings: settings,
+        page: () => HomeScreen(),
+        transition: Transition.fadeIn,
+        curve: Curves.easeInQuint,
+        transitionDuration: Duration(milliseconds: 300),
+        // binding: HistoryBinding(),
+      );
+
     if (settings.name == '/albums')
       return GetPageRoute(
         settings: settings,
@@ -61,16 +79,6 @@ class HomeController extends GetxController {
         transition: Transition.fadeIn,
         curve: Curves.easeInQuint,
         transitionDuration: Duration(milliseconds: 300),
-      );
-
-    if (settings.name == '/home')
-      return GetPageRoute(
-        settings: settings,
-        page: () => Text('/home'),
-        transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
-        transitionDuration: Duration(milliseconds: 300),
-        // binding: HistoryBinding(),
       );
 
     if (settings.name == '/settings')
@@ -91,20 +99,6 @@ class AnnixHome extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // toolbarHeight: 48,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Get.to(
-                () => SearchScreen(),
-                transition: Transition.fade,
-              );
-            },
-          ),
-        ],
-      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -132,28 +126,30 @@ class AnnixHome extends GetView<HomeController> {
         initialRoute: '/home',
         onGenerateRoute: controller.onGenerateRoute,
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.search),
+        onPressed: () {},
+      ),
       bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          elevation: 0,
-          backgroundColor: Get.theme.primaryColor.withOpacity(0.6),
-          selectedFontSize: 16,
-          unselectedFontSize: 14,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: SizedBox(height: 32, child: Icon(Icons.person_outlined)),
+        () => NavigationBar(
+          // elevation: 0,
+          // backgroundColor: Get.theme.primaryColor.withOpacity(0.6),
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.person_outlined),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: SizedBox(height: 32, child: Icon(Icons.album)),
+            NavigationDestination(
+              icon: Icon(Icons.album),
               label: 'Albums',
             ),
-            BottomNavigationBarItem(
-              icon: SizedBox(height: 32, child: Icon(Icons.settings)),
+            NavigationDestination(
+              icon: Icon(Icons.settings),
               label: 'Settings',
             ),
           ],
-          currentIndex: controller.currentIndex.value,
-          onTap: controller.changePage,
+          selectedIndex: controller.currentIndex.value,
+          onDestinationSelected: controller.changePage,
         ),
       ),
     );

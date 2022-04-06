@@ -2,7 +2,6 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/draggable_appbar.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -70,10 +69,8 @@ class AlbumInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferSizedMoveWindow(
-        child: AppBar(
-          title: Marquee(child: Text(albumInfo.title)),
-        ),
+      appBar: AppBar(
+        title: Marquee(child: Text(albumInfo.title)),
       ),
       body: Container(
         child: LayoutBuilder(builder: (context, constriants) {
