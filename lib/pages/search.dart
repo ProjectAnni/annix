@@ -1,5 +1,5 @@
 import 'package:annix/models/anniv.dart';
-import 'package:annix/pages/album_info.dart';
+import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -89,7 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     subtitle: Text(_result!.albums![index].artist),
                     onTap: () {
                       Get.to(
-                        () => AlbumInfoScreen(
+                        () => AlbumDetailScreen(
                           albumInfo: _result!.albums![index],
                           // FIXME
                           tag: 'no-tag',

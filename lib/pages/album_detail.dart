@@ -5,11 +5,12 @@ import 'package:annix/services/global.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 
-class AlbumInfoScreen extends StatelessWidget {
+class AlbumDetailScreen extends StatelessWidget {
   final String tag;
   final AlbumInfo albumInfo;
 
-  const AlbumInfoScreen({Key? key, required this.albumInfo, required this.tag})
+  const AlbumDetailScreen(
+      {Key? key, required this.albumInfo, required this.tag})
       : super(key: key);
 
   List<Widget> getAlbumTracks() {

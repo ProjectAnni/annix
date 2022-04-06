@@ -1,5 +1,5 @@
 import 'package:annix/models/metadata.dart';
-import 'package:annix/pages/album_info.dart';
+import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -59,7 +59,7 @@ class _AlbumGridState extends State<AlbumGrid> {
             ),
             onTap: () {
               Get.to(
-                () => AlbumInfoScreen(
+                () => AlbumDetailScreen(
                   albumInfo: snapshot.data!.toAlbumInfo(),
                   tag: widget.tag,
                 ),

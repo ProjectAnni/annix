@@ -3,8 +3,8 @@ import 'package:annix/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AlbumList extends StatelessWidget {
-  const AlbumList({Key? key}) : super(key: key);
+class AlbumsView extends StatelessWidget {
+  const AlbumsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

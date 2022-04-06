@@ -1,9 +1,9 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/playlist_controller.dart';
-import 'package:annix/pages/album_list.dart';
+import 'package:annix/pages/root.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/views/home.dart';
-import 'package:annix/views/search.dart';
+import 'package:annix/pages/search.dart';
 import 'package:annix/widgets/repeat_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,8 +28,8 @@ class AnnixApp extends StatelessWidget {
       getPages: [
         GetPage(
           name: '/',
-          page: () => AnnixMain(),
-          binding: HomeBinding(),
+          page: () => RootScreen(),
+          binding: RootScreenBinding(),
         ),
         GetPage(
           name: '/search',
@@ -40,135 +40,13 @@ class AnnixApp extends StatelessWidget {
   }
 }
 
-class HomeBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => HomeController());
-  }
-}
-
-class HomeController extends GetxController {
-  static HomeController get to => Get.find();
-
-  var currentIndex = 0.obs;
-
-  final pages = <String>['/home', '/albums', '/playlists', '/server'];
-
-  void changePage(int index) {
-    currentIndex.value = index;
-    Get.toNamed(pages[index], id: 1, preventDuplicates: false);
-  }
-
-  Route? onGenerateRoute(RouteSettings settings) {
-    if (settings.name == '/home')
-      return GetPageRoute(
-        settings: settings,
-        page: () => HomeScreen(),
-        transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
-      );
-
-    if (settings.name == '/albums')
-      return GetPageRoute(
-        settings: settings,
-        page: () => AlbumList(),
-        transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
-      );
-
-    if (settings.name == '/playlists')
-      return GetPageRoute(
-        settings: settings,
-        page: () => Text('/playlists'),
-        transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
-      );
-
-    if (settings.name == '/server')
-      return GetPageRoute(
-        settings: settings,
-        page: () => Text('/server'),
-        transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
-      );
-
-    return null;
-  }
-}
-
-class AnnixMain extends GetView<HomeController> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              leading: Icon(Icons.dark_mode),
-              title: Text("Light / Dark Theme"),
-              onTap: () {
-                Get.changeThemeMode(
-                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-                );
-              },
-            )
-          ],
-        ),
-      ),
-      body: Navigator(
-        key: Get.nestedKey(1),
-        initialRoute: '/home',
-        onGenerateRoute: controller.onGenerateRoute,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
-        onPressed: () {
-          Get.toNamed('/search');
-        },
-      ),
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
-          // elevation: 0,
-          // backgroundColor: Get.theme.primaryColor.withOpacity(0.6),
-          destinations: [
-            NavigationDestination(
-              icon: Icon(Icons.casino_outlined),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.album_outlined),
-              label: 'Albums',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.queue_music_outlined),
-              label: 'Playlists',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.dns_outlined),
-              label: 'Server',
-            ),
-          ],
-          selectedIndex: controller.currentIndex.value,
-          onDestinationSelected: controller.changePage,
-        ),
-      ),
-    );
-  }
-}
-
 class BottomPlayer extends StatelessWidget {
   const BottomPlayer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
+    final AnnilController annil = Get.find();
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -191,7 +69,7 @@ class BottomPlayer extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Obx(
-              () => Global.annil.cover(
+              () => annil.cover(
                   albumId: playing.state.value.track?.track.albumId ?? "TODO"),
             ),
             SizedBox(width: 10),
