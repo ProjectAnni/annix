@@ -90,9 +90,21 @@ class AlbumDetailScreen extends StatelessWidget {
                 snap: true,
                 floating: true,
                 expandedHeight: 200.0,
+                automaticallyImplyLeading: true,
                 flexibleSpace: FlexibleSpaceBar(
                   expandedTitleScale: 1.2,
-                  title: Marquee(child: Text(albumInfo.title)),
+                  title: Marquee(
+                    child: Text(
+                      albumInfo.title,
+                      style: TextStyle(
+                        shadows: [
+                          Shadow(
+                            blurRadius: 12.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   background: Hero(
                     tag: this.tag,
                     child: Global.annil.cover(
