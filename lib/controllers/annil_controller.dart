@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AnnilController extends GetxController {
-  final RxMap<String, AnnilClient> _clients = Map<String, AnnilClient>().obs;
+  final RxMap<String, AnnilClient> clients = Map<String, AnnilClient>().obs;
   final RxList<String> albums = <String>[].obs;
 
-  bool get hasClient => _clients.isNotEmpty;
+  bool get hasClient => clients.isNotEmpty;
 
   /// Load state from shared preferences
   static Future<AnnilController> load() async {
@@ -19,7 +19,7 @@ class AnnilController extends GetxController {
     if (tokens != null) {
       for (String token in tokens) {
         final client = AnnilClient.fromJson(jsonDecode(token));
-        combined._clients[client.id] = client;
+        combined.clients[client.id] = client;
       }
     }
     await combined.refresh();
@@ -29,27 +29,32 @@ class AnnilController extends GetxController {
   /// Save the current state of the combined client to shared preferences
   Future<void> save() async {
     final tokens =
-        _clients.values.map((client) => jsonEncode(client.toJson())).toList();
+        clients.values.map((client) => jsonEncode(client.toJson())).toList();
     Global.preferences.setStringList("annil_clients", tokens);
   }
 
   /// Add a list of clients to the combined client
-  Future<void> addAll(List<AnnilClient> clients) async {
-    _clients.addAll(Map.fromEntries(clients.map((c) => MapEntry(c.id, c))));
+  Future<void> addClients(List<AnnilClient> newClients) async {
+    clients.addAll(Map.fromEntries(newClients.map((c) => MapEntry(c.id, c))));
     await save();
   }
 
   /// Remove all remote annil sources
   Future<void> removeRemote() async {
-    _clients.removeWhere((_, client) => !client.local);
+    // 1. remove clients
+    clients.removeWhere((_, client) => !client.local);
+    // 2. scan current clients, generate new albums list
+    albums.replaceRange(0, this.albums.length,
+        clients.values.map((e) => e.albums).expand((e) => e).toSet().toList());
   }
 
+  /// Refresh all annil servers
   Future<void> refresh() async {
-    var newAlbums = (await Future.wait(_clients.values.map((client) async {
+    var newAlbums = (await Future.wait(clients.values.map((client) async {
       try {
-        var albums = await client.getAlbums();
-        return albums;
+        return await client.getAlbums();
       } catch (e) {
+        // TODO: failed to get albums, hint user
         return <String>[];
       }
     })))
@@ -65,7 +70,7 @@ class AnnilController extends GetxController {
     required int trackId,
     PreferQuality preferBitrate = PreferQuality.Lossless,
   }) {
-    for (final client in _clients.values) {
+    for (final client in clients.values) {
       if (client.albums.contains(albumId)) {
         return AnnilAudioSource.create(
           annil: client,
@@ -80,7 +85,7 @@ class AnnilController extends GetxController {
   }
 
   Widget cover({required String albumId, int? discId, BoxFit? fit}) {
-    for (final client in _clients.values) {
+    for (final client in clients.values) {
       if (client.albums.contains(albumId)) {
         return ExtendedImage.network(
           client.getCoverUrl(albumId: albumId, discId: discId),
@@ -91,7 +96,10 @@ class AnnilController extends GetxController {
         );
       }
     }
-    // TODO: return a placeholder
-    return Text("No cover");
+    return Container(
+      alignment: Alignment.center,
+      color: Colors.blueGrey,
+      child: Text("Cover not available"),
+    );
   }
 }

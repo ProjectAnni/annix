@@ -39,7 +39,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
             Obx(
               () => Text(
                 "${playing.state.value.track?.info.title}",
-                style: context.theme.textTheme.titleLarge,
+                style: context.textTheme.titleLarge,
               ),
             ),
             Row(

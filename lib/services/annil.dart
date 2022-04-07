@@ -102,6 +102,8 @@ class AnnilClient {
     return resp.data;
   }
 
+  /// Get the available album list of an Annil server.
+  /// TODO: handle cache correctly
   Future<List<String>> getAlbums() async {
     List<dynamic> result =
         await _request(path: '/albums', responseType: ResponseType.json);

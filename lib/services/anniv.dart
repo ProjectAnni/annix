@@ -176,7 +176,7 @@ class AnnivClient {
               priority: c.priority,
             ))
         .toList();
-    await Global.annil.addAll(annilClients);
+    await Global.annil.addClients(annilClients);
     await Global.annil.refresh();
   }
 
