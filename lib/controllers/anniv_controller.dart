@@ -9,18 +9,19 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart' show GetxController;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_ume/flutter_ume.dart';
 import 'package:flutter_ume_kit_dio/flutter_ume_kit_dio.dart';
 
-class AnnivClient {
+class AnnivController extends GetxController {
   final Dio _client;
   final CookieJar _cookieJar;
 
   Map<String, TrackInfo> favorites = Map();
 
-  AnnivClient._({
+  AnnivController._({
     required String url,
     required CookieJar cookieJar,
   })  : _client =
@@ -73,12 +74,13 @@ class AnnivClient {
     return PersistCookieJar(storage: FileStorage(dir.path));
   }
 
-  static Future<AnnivClient> create({
+  static Future<AnnivController> create({
     required String url,
     required String email,
     required String password,
   }) async {
-    final client = AnnivClient._(url: url, cookieJar: await _loadCookieJar());
+    final client =
+        AnnivController._(url: url, cookieJar: await _loadCookieJar());
     await client.login(email: email, password: password);
     await client._save();
 
@@ -90,24 +92,24 @@ class AnnivClient {
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static Future<AnnivClient?> load() async {
+  static Future<AnnivController?> load() async {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      final client =
-          AnnivClient._(url: annivUrl, cookieJar: await _loadCookieJar());
+      final anniv =
+          AnnivController._(url: annivUrl, cookieJar: await _loadCookieJar());
       try {
         // TODO: save user info & site info
         // try validate login
-        await client.getSiteInfo();
-        await client.getUserInfo();
-        await client.setAnnilClients();
+        await anniv.getSiteInfo();
+        await anniv.getUserInfo();
+        await anniv.setAnnilClients();
 
         if (Global.metadataSource == null) {
-          Global.metadataSource = AnnivMetadataSource();
+          Global.metadataSource = AnnivMetadataSource(anniv);
         }
-        return client;
+        return anniv;
       } catch (e) {
         // failed to get user info
         return null;
