@@ -1,5 +1,4 @@
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class FavoriteButton extends StatefulWidget {
@@ -12,34 +11,40 @@ class FavoriteButton extends StatefulWidget {
 }
 
 class FavoriteButtonState extends State<FavoriteButton> {
-  bool isLoading = false;
+  bool favorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (Global.anniv!.favorites.containsKey(widget.id)) {
+      favorited = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: isLoading
-          ? CircularProgressIndicator()
-          : Icon(
-              Global.anniv!.favorites.containsKey(widget.id)
-                  ? Icons.favorite_outlined
-                  : Icons.favorite_border_outlined,
-            ),
+      icon: Icon(
+        favorited ? Icons.favorite_outlined : Icons.favorite_border_outlined,
+      ),
       onPressed: () async {
-        if (!Global.anniv!.favorites.containsKey(widget.id)) {
+        try {
+          if (!favorited) {
+            setState(() {
+              favorited = true;
+            });
+            await Global.anniv!.addFavorite(widget.id);
+          } else {
+            setState(() {
+              favorited = false;
+            });
+            await Global.anniv!.removeFavorite(widget.id);
+          }
+        } catch (e) {
           setState(() {
-            isLoading = true;
-          });
-          await Global.anniv!.addFavorite(widget.id);
-          setState(() {
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            isLoading = true;
-          });
-          await Global.anniv!.removeFavorite(widget.id);
-          setState(() {
-            isLoading = false;
+            favorited = !favorited;
+            // TODO: Toast error
           });
         }
       },
