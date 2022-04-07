@@ -40,7 +40,7 @@ class AnnilController extends GetxController {
   }
 
   /// Remove all remote annil sources
-  Future<void> removeRemote() async {
+  void removeRemote() {
     // 1. remove clients
     clients.removeWhere((_, client) => !client.local);
     // 2. scan current clients, generate new albums list

@@ -1,3 +1,4 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
@@ -9,7 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart' show GetxController, Rx, RxT;
+import 'package:get/get.dart' show GetxController, Rx, RxT, Get, Inst;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_ume/flutter_ume.dart';
@@ -55,7 +56,8 @@ class AnnivClient {
               requestOptions: response.requestOptions,
               response: response,
               type: DioErrorType.response,
-              error: resp['message'] ?? 'Error ${resp['status']}',
+              // TODO: deserialize resp to Error object
+              error: resp,
             ));
           } else {
             dynamic data = resp['data'];
@@ -144,11 +146,10 @@ class AnnivClient {
         .toList();
   }
 
-  Future<void> setAnnilClients() async {
-    Global.annil.removeRemote();
+  Future<List<AnnilClient>> getAnnilClients() async {
     final credentials = await getCredentials();
 
-    final annilClients = credentials
+    return credentials
         .map((c) => AnnilClient.remote(
               id: c.id,
               name: c.name,
@@ -157,8 +158,6 @@ class AnnivClient {
               priority: c.priority,
             ))
         .toList();
-    await Global.annil.addClients(annilClients);
-    await Global.annil.refresh();
   }
 
   // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF
@@ -233,6 +232,8 @@ class AnnivClient {
 }
 
 class AnnivController extends GetxController {
+  AnnilController _annil = Get.find();
+
   AnnivClient? client;
   Rx<bool> loggedIn = false.obs;
 
@@ -246,6 +247,7 @@ class AnnivController extends GetxController {
     await checkLogin(await AnnivClient.loadFromLocal());
   }
 
+  // TODO: believe user is login unless meet incorrect response(403), or unauthorized error code in anniv
   Future<void> checkLogin(AnnivClient? anniv) async {
     if (anniv != null) {
       try {
@@ -255,7 +257,12 @@ class AnnivController extends GetxController {
         this.loggedIn.value = false;
         return;
       }
-      // await anniv.setAnnilClients();
+
+      // reload annil client
+      var annilClients = await anniv.getAnnilClients();
+      _annil.removeRemote();
+      await _annil.addClients(annilClients);
+      await _annil.refresh();
 
       if (Global.metadataSource == null) {
         Global.metadataSource = AnnivMetadataSource(anniv);
