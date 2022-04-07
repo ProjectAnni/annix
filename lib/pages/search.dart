@@ -1,3 +1,4 @@
+import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/global.dart';
@@ -23,7 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _controller = TextEditingController();
   }
 
-  Future<void> search() async {
+  Future<void> search(AnnivClient anniv) async {
     print(_controller.text);
     primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
     setState(() {
@@ -31,8 +32,8 @@ class _SearchScreenState extends State<SearchScreen> {
       _result = null;
     });
 
-    final result = await Global.anniv!
-        .search(_controller.text, searchAlbums: true, searchTracks: true);
+    final result = await anniv.search(_controller.text,
+        searchAlbums: true, searchTracks: true);
     setState(() {
       isLoading = false;
       _result = result;
@@ -110,6 +111,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AnnivController anniv = Get.find();
+
     return Scaffold(
       // appBar: AppBar(
       //   title: Container(
@@ -129,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
               border: InputBorder.none,
               isDense: true,
             ),
-            onSubmitted: (_) => search(),
+            onSubmitted: (_) => search(anniv.client.value!),
           ),
         ),
         // _result == null

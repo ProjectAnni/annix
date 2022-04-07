@@ -10,7 +10,6 @@ class Global {
   static final cacheStore = newMemoryCacheStore();
 
   static AnniAudioService audioService = AnniAudioService();
-  static AnnivClient? anniv;
   static late AnnilController annil;
 
   static BaseMetadataSource? metadataSource;
@@ -20,6 +19,5 @@ class Global {
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
     annil = await AnnilController.load();
-    AnnivClient.load().then((anniv) => Global.anniv = anniv);
   }
 }

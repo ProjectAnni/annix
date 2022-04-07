@@ -1,5 +1,7 @@
+import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FavoriteButton extends StatefulWidget {
   final String id;
@@ -14,16 +16,13 @@ class FavoriteButtonState extends State<FavoriteButton> {
   bool favorited = false;
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    final AnnivController anniv = Get.find();
 
-    if (Global.anniv!.favorites.containsKey(widget.id)) {
+    if (anniv.client.value!.favorites.containsKey(widget.id)) {
       favorited = true;
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
         favorited ? Icons.favorite_outlined : Icons.favorite_border_outlined,
@@ -34,12 +33,12 @@ class FavoriteButtonState extends State<FavoriteButton> {
             setState(() {
               favorited = true;
             });
-            await Global.anniv!.addFavorite(widget.id);
+            await anniv.client.value!.addFavorite(widget.id);
           } else {
             setState(() {
               favorited = false;
             });
-            await Global.anniv!.removeFavorite(widget.id);
+            await anniv.client.value!.removeFavorite(widget.id);
           }
         } catch (e) {
           setState(() {

@@ -21,7 +21,7 @@ class AnnivClient {
 
   Map<String, TrackInfo> favorites = Map();
 
-  AnnivClient._({
+  AnnivClient({
     required String url,
     required CookieJar cookieJar,
   })  : _client =
@@ -74,45 +74,25 @@ class AnnivClient {
     return PersistCookieJar(storage: FileStorage(dir.path));
   }
 
-  static Future<AnnivClient> create({
+  static Future<AnnivClient> login({
     required String url,
     required String email,
     required String password,
   }) async {
-    final client = AnnivClient._(url: url, cookieJar: await _loadCookieJar());
-    await client.login(email: email, password: password);
+    final client = AnnivClient(url: url, cookieJar: await _loadCookieJar());
+    await client._login(email: email, password: password);
     await client._save();
-
-    client.favorites = Map.fromEntries((await client.getFavoriteList())
-        .map((e) => MapEntry(e.track.toSlashedString(), e.info)));
-    // TODO: initialize albums
     return client;
   }
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static Future<AnnivClient?> load() async {
+  static Future<AnnivClient?> loadFromLocal() async {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      final anniv =
-          AnnivClient._(url: annivUrl, cookieJar: await _loadCookieJar());
-      try {
-        // TODO: save user info & site info
-        // try validate login
-        await anniv.getSiteInfo();
-        await anniv.getUserInfo();
-        await anniv.setAnnilClients();
-
-        if (Global.metadataSource == null) {
-          Global.metadataSource = AnnivMetadataSource(anniv);
-        }
-        return anniv;
-      } catch (e) {
-        // failed to get user info
-        return null;
-      }
+      return AnnivClient(url: annivUrl, cookieJar: await _loadCookieJar());
     }
   }
 
@@ -137,7 +117,7 @@ class AnnivClient {
   }
 
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95
-  Future<UserInfo> login({
+  Future<UserInfo> _login({
     required String email,
     required String password,
   }) async {
@@ -256,14 +236,35 @@ class AnnivController extends GetxController {
   Rx<AnnivClient?> client = null.obs;
   Rx<bool> loggedIn = false.obs;
 
+  Rx<SiteInfo> siteInfo =
+      SiteInfo(siteName: "", description: "", protocolVersion: "", features: [])
+          .obs;
+  Rx<UserInfo> userInfo =
+      UserInfo(userId: "", email: "", nickname: "", avatar: "").obs;
+
   AnnivController() {
     this.loggedIn.bindStream(this.client.map((c) => c != null));
   }
 
   Future<void> init() async {
-    final anniv = await AnnivClient.load();
+    await checkLogin(await AnnivClient.loadFromLocal());
+  }
+
+  Future<void> checkLogin(AnnivClient? anniv) async {
     if (anniv != null) {
-      this.client.value = anniv;
+      try {
+        this.siteInfo.value = await anniv.getSiteInfo();
+        this.userInfo.value = await anniv.getUserInfo();
+        // await anniv.setAnnilClients();
+
+        if (Global.metadataSource == null) {
+          Global.metadataSource = AnnivMetadataSource(anniv);
+        }
+        this.client.value = anniv;
+      } catch (e) {
+        // TODO: inform user
+        print(e);
+      }
     }
   }
 }
