@@ -1,8 +1,8 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/album_detail.dart';
-import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,6 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget buildSearchResult() {
     final PlaylistController playlist = Get.find();
+    final AnnilController annil = Get.find();
 
     print(_result);
     return DefaultTabController(
@@ -75,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       subtitle: Text(e.info.artist),
                       onTap: () async {
                         await playlist.setPlaylist([
-                          await Global.annil.getAudio(
+                          await annil.getAudio(
                             albumId: e.track.albumId,
                             discId: e.track.discId,
                             trackId: e.track.trackId,

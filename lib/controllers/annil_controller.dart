@@ -13,17 +13,15 @@ class AnnilController extends GetxController {
   bool get hasClient => clients.isNotEmpty;
 
   /// Load state from shared preferences
-  static Future<AnnilController> load() async {
+  Future<void> init() async {
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
-    final combined = AnnilController();
     if (tokens != null) {
       for (String token in tokens) {
         final client = AnnilClient.fromJson(jsonDecode(token));
-        combined.clients[client.id] = client;
+        clients[client.id] = client;
       }
     }
-    await combined.refresh();
-    return combined;
+    await refresh();
   }
 
   /// Save the current state of the combined client to shared preferences

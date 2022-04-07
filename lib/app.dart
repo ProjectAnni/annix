@@ -1,10 +1,10 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/initialize_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/pages/playing.dart';
 import 'package:annix/pages/root.dart';
-import 'package:annix/services/global.dart';
 import 'package:annix/pages/search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,15 +15,17 @@ class AnnixApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // annil
-    Get.put(Global.annil);
+    final annil = AnnilController();
+    Get.put(annil);
     // anniv
     final anniv = AnnivController();
     Get.put(anniv);
+    // playing
     Get.put(PlayingController());
     Get.put(PlaylistController());
 
     // initialization awaiter
-    ever(InitializeController([anniv.init()]).done, (value) {
+    ever(InitializeController([annil.init(), anniv.init()]).done, (value) {
       Get.toNamed('/');
     });
 

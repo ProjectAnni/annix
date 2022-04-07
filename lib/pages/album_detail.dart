@@ -3,7 +3,6 @@ import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/annil.dart';
-import 'package:annix/services/global.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,7 +48,7 @@ class AlbumDetailScreen extends StatelessWidget {
     return list;
   }
 
-  void playAlbum() async {
+  void playAlbum(AnnilController annil) async {
     List<Song> songs = [];
     var discId = 1;
     albumInfo.discs.forEach((disc) {
@@ -69,7 +68,7 @@ class AlbumDetailScreen extends StatelessWidget {
     await playlist.setPlaylist(
       await Future.wait(
         songs.map<Future<AnnilAudioSource>>(
-          (s) => Global.annil.getAudio(
+          (s) => annil.getAudio(
             albumId: s.albumId,
             discId: s.discId,
             trackId: s.trackId,
@@ -141,7 +140,7 @@ class AlbumDetailScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.play_arrow),
-        onPressed: playAlbum,
+        onPressed: () => playAlbum(annil),
       ),
     );
   }
