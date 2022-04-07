@@ -1,9 +1,11 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AlbumDetailScreen extends StatelessWidget {
   final String tag;
@@ -77,6 +79,7 @@ class AlbumDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AnnilController annil = Get.find();
     var tracks = getAlbumTracks();
 
     return Scaffold(
@@ -107,8 +110,10 @@ class AlbumDetailScreen extends StatelessWidget {
                   ),
                   background: Hero(
                     tag: this.tag,
-                    child: Global.annil.cover(
-                        albumId: albumInfo.albumId, fit: BoxFit.fitWidth),
+                    child: annil.cover(
+                      albumId: albumInfo.albumId,
+                      fit: BoxFit.fitWidth,
+                    ),
                   ),
                 ),
               ),

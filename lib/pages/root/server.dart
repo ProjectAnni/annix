@@ -114,6 +114,32 @@ class AnnivCard extends StatelessWidget {
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Annil
+class AnnilListTile extends StatelessWidget {
+  final AnnilClient annil;
+
+  const AnnilListTile({Key? key, required this.annil}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(annil.name),
+      leading: Icon(Icons.drag_handle_outlined),
+      trailing: IconButton(
+        icon: Icon(Icons.edit_outlined),
+        onPressed: () {
+          Get.generalDialog(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return Container();
+            },
+          );
+        },
+      ),
+      dense: true,
+      selected: true,
+    );
+  }
+}
+
 class AnnilDialogController extends GetxController {
   var serverNameController = TextEditingController();
   var serverUrlController = TextEditingController();
@@ -198,41 +224,13 @@ class AnnilDialog extends StatelessWidget {
   }
 }
 
-class AnnilListTile extends StatelessWidget {
-  final AnnilClient annil;
-
-  const AnnilListTile({Key? key, required this.annil}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(annil.name),
-      leading: Icon(Icons.drag_handle_outlined),
-      trailing: IconButton(
-        icon: Icon(Icons.edit_outlined),
-        onPressed: () {
-          Get.generalDialog(
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return Container();
-            },
-          );
-        },
-      ),
-      dense: true,
-      selected: true,
-    );
-  }
-}
-
+///////////////////////////////////////////////////////////////////////////////
+/// Page
 class ServerView extends StatelessWidget {
   const ServerView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    AnnilController annil = Get.find();
-    var clients = annil.clients.values.toList();
-    clients.sort((a, b) => a.priority - b.priority);
-
     return Column(
       children: [
         AppBar(
@@ -256,15 +254,21 @@ class ServerView extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ReorderableListView(
-            padding: EdgeInsets.zero,
-            buildDefaultDragHandles: true,
-            onReorder: (oldIndex, newIndex) {},
-            children: clients
-                .map((value) =>
-                    AnnilListTile(annil: value, key: ValueKey(value.priority)))
-                .toList(),
-          ),
+          child: Obx(() {
+            AnnilController annil = Get.find();
+            var clients = annil.clients.values.toList();
+            clients.sort((a, b) => a.priority - b.priority);
+
+            return ReorderableListView(
+              padding: EdgeInsets.zero,
+              buildDefaultDragHandles: true,
+              onReorder: (oldIndex, newIndex) {},
+              children: clients
+                  .map((value) => AnnilListTile(
+                      annil: value, key: ValueKey(value.priority)))
+                  .toList(),
+            );
+          }),
         ),
       ],
     );
