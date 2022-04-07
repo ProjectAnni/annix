@@ -19,6 +19,7 @@ Future<void> main() async {
       androidNotificationChannelId: 'rs.anni.annix.audio',
       androidNotificationChannelName: 'Annix Audio playback',
       androidNotificationOngoing: true,
+      preloadArtwork: true,
     );
   }
 

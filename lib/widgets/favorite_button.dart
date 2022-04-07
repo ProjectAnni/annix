@@ -16,8 +16,8 @@ class FavoriteButtonState extends State<FavoriteButton> {
 
   @override
   Widget build(BuildContext context) {
-    return SquareIconButton(
-      child: isLoading
+    return IconButton(
+      icon: isLoading
           ? CircularProgressIndicator()
           : Icon(
               Global.anniv!.favorites.containsKey(widget.id)

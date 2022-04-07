@@ -8,18 +8,16 @@ class PlaylistController extends GetxController {
 
   final AnniAudioService _service;
 
-  List<AudioSource> get playlist => _service.playlist;
-
   PlaylistController({required AnniAudioService service}) : _service = service {
-    _service.playlistChangeNotifier.addListener(() {
-      playingController.updateTrack(_service.activeAudioSource?.toTrack());
-    });
+    // _service.playlistChangeNotifier.addListener(() {
+    //   playingController.updateTrack(_service.activeAudioSource?.toTrack());
+    // });
   }
 
   Future<void> goto(AudioSource audio) async {
-    var index = playlist.indexOf(audio);
-    if (index != -1) {
-      await _service.goto(index);
-    }
+    // var index = playlist.indexOf(audio);
+    // if (index != -1) {
+    //   await _service.goto(index);
+    // }
   }
 }

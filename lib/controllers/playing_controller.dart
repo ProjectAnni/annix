@@ -40,10 +40,29 @@ class PlayingController extends GetxController {
       }
       this.status.refresh();
     });
+
+    // progress
+    service.player.positionStream.listen((progress) {
+      this.progress.value = progress;
+    });
+    // buffered
+    service.player.bufferedPositionStream.listen((buffered) {
+      this.buffered.value = buffered;
+    });
+    // total
+    service.player.durationStream.listen((duration) {
+      // FIXME: use duration in header
+      this.duration.value = duration ?? Duration.zero;
+    });
   }
 
   Rx<PlayingStatus> status = PlayingStatus.paused.obs;
   Rx<PlayingState> state = PlayingState().obs;
+
+  // Duration & Progress
+  Rx<Duration> progress = Duration.zero.obs;
+  Rx<Duration> buffered = Duration.zero.obs;
+  Rx<Duration> duration = Duration.zero.obs;
 
   updateTrack(TrackInfoWithAlbum? track) {
     this.state.update((state) {
