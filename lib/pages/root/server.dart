@@ -1,4 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/annil.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,7 +39,7 @@ class AnnivCard extends StatelessWidget {
     );
   }
 
-  Widget afterLogin(BuildContext context) {
+  Widget afterLogin(BuildContext context, AnnivController anniv) {
     return Padding(
       padding: EdgeInsets.only(bottom: 4.0, right: 12.0, top: 16, left: 16),
       child: Column(
@@ -97,10 +98,16 @@ class AnnivCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AnnivController anniv = Get.find();
+
     return Card(
       elevation: 0,
       color: context.theme.colorScheme.surfaceVariant,
-      child: beforeLogin(context),
+      child: Obx(
+        () => anniv.loggedIn.value
+            ? afterLogin(context, anniv)
+            : beforeLogin(context),
+      ),
     );
   }
 }

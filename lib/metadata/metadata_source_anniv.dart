@@ -3,7 +3,7 @@ import 'package:annix/models/metadata.dart';
 import 'package:annix/metadata/metadata_source.dart';
 
 class AnnivMetadataSource extends BaseMetadataSource {
-  final AnnivController anniv;
+  final AnnivClient anniv;
   AnnivMetadataSource(this.anniv);
 
   @override

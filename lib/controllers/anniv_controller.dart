@@ -9,19 +9,19 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart' show GetxController;
+import 'package:get/get.dart' show GetxController, Rx, RxT;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_ume/flutter_ume.dart';
 import 'package:flutter_ume_kit_dio/flutter_ume_kit_dio.dart';
 
-class AnnivController extends GetxController {
+class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
 
   Map<String, TrackInfo> favorites = Map();
 
-  AnnivController._({
+  AnnivClient._({
     required String url,
     required CookieJar cookieJar,
   })  : _client =
@@ -74,13 +74,12 @@ class AnnivController extends GetxController {
     return PersistCookieJar(storage: FileStorage(dir.path));
   }
 
-  static Future<AnnivController> create({
+  static Future<AnnivClient> create({
     required String url,
     required String email,
     required String password,
   }) async {
-    final client =
-        AnnivController._(url: url, cookieJar: await _loadCookieJar());
+    final client = AnnivClient._(url: url, cookieJar: await _loadCookieJar());
     await client.login(email: email, password: password);
     await client._save();
 
@@ -92,13 +91,13 @@ class AnnivController extends GetxController {
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static Future<AnnivController?> load() async {
+  static Future<AnnivClient?> load() async {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
       final anniv =
-          AnnivController._(url: annivUrl, cookieJar: await _loadCookieJar());
+          AnnivClient._(url: annivUrl, cookieJar: await _loadCookieJar());
       try {
         // TODO: save user info & site info
         // try validate login
@@ -250,5 +249,21 @@ class AnnivController extends GetxController {
       'track_id': track.trackId,
     });
     favorites.remove(id);
+  }
+}
+
+class AnnivController extends GetxController {
+  Rx<AnnivClient?> client = null.obs;
+  Rx<bool> loggedIn = false.obs;
+
+  AnnivController() {
+    this.loggedIn.bindStream(this.client.map((c) => c != null));
+  }
+
+  Future<void> init() async {
+    final anniv = await AnnivClient.load();
+    if (anniv != null) {
+      this.client.value = anniv;
+    }
   }
 }
