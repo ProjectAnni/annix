@@ -233,7 +233,7 @@ class AnnivClient {
 }
 
 class AnnivController extends GetxController {
-  Rx<AnnivClient?> client = null.obs;
+  AnnivClient? client;
   Rx<bool> loggedIn = false.obs;
 
   Rx<SiteInfo> siteInfo =
@@ -241,10 +241,6 @@ class AnnivController extends GetxController {
           .obs;
   Rx<UserInfo> userInfo =
       UserInfo(userId: "", email: "", nickname: "", avatar: "").obs;
-
-  AnnivController() {
-    this.loggedIn.bindStream(this.client.map((c) => c != null));
-  }
 
   Future<void> init() async {
     await checkLogin(await AnnivClient.loadFromLocal());
@@ -255,16 +251,23 @@ class AnnivController extends GetxController {
       try {
         this.siteInfo.value = await anniv.getSiteInfo();
         this.userInfo.value = await anniv.getUserInfo();
-        // await anniv.setAnnilClients();
-
-        if (Global.metadataSource == null) {
-          Global.metadataSource = AnnivMetadataSource(anniv);
-        }
-        this.client.value = anniv;
       } catch (e) {
-        // TODO: inform user
-        print(e);
+        this.loggedIn.value = false;
+        return;
       }
+      // await anniv.setAnnilClients();
+
+      if (Global.metadataSource == null) {
+        Global.metadataSource = AnnivMetadataSource(anniv);
+      }
+      this.client = anniv;
+      this.loggedIn.value = true;
     }
+  }
+
+  Future<void> login(String url, String email, String password) async {
+    final anniv =
+        await AnnivClient.login(url: url, email: email, password: password);
+    await checkLogin(anniv);
   }
 }

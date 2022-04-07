@@ -132,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
               border: InputBorder.none,
               isDense: true,
             ),
-            onSubmitted: (_) => search(anniv.client.value!),
+            onSubmitted: (_) => search(anniv.client!),
           ),
         ),
         // _result == null

@@ -1,6 +1,7 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/annil.dart';
+import 'package:annix/widgets/simple_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,9 +30,7 @@ class AnnivCard extends StatelessWidget {
             alignment: Alignment.bottomRight,
             child: TextButton(
               child: Text("Login"),
-              onPressed: () {
-                // TODO: show anniv login dialog
-              },
+              onPressed: () => Get.dialog(AnnivDialog()),
             ),
           ),
         ],
@@ -50,7 +49,11 @@ class AnnivCard extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
-                child: CircleAvatar(),
+                child: CircleAvatar(
+                  child: Obx(() {
+                    return Text(anniv.userInfo.value.nickname.substring(0, 1));
+                  }),
+                ),
               ),
               Expanded(
                 flex: 1,
@@ -59,14 +62,18 @@ class AnnivCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text(
-                      "Yesterday17",
-                      style: context.textTheme.titleLarge,
-                    ),
-                    Text(
-                      "Anniv Site Name Goes Here",
-                      style: context.textTheme.bodyMedium,
-                    ),
+                    Obx(() {
+                      return Text(
+                        anniv.userInfo.value.nickname,
+                        style: context.textTheme.titleLarge,
+                      );
+                    }),
+                    Obx(() {
+                      return Text(
+                        anniv.siteInfo.value.siteName,
+                        style: context.textTheme.bodyMedium,
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -112,6 +119,101 @@ class AnnivCard extends StatelessWidget {
   }
 }
 
+class AnnivDialogController extends GetxController {
+  var serverUrlController = TextEditingController();
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+}
+
+class AnnivDialog extends StatelessWidget {
+  final AnnivDialogController _controller = AnnivDialogController();
+
+  AnnivDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final AnnivController anniv = Get.find();
+
+    return AlertDialog(
+      title: Center(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: Icon(
+                Icons.login_outlined,
+                size: 32,
+              ),
+            ),
+            Text("Login to Anniv"),
+          ],
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SimpleTextField(
+                label: "Server", controller: _controller.serverUrlController),
+            SimpleTextField(
+                label: "Email", controller: _controller.emailController),
+            SimpleTextField(
+                label: "Password",
+                controller: _controller.passwordController,
+                password: true),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(
+            textStyle: context.textTheme.labelLarge,
+          ),
+          child: const Text('Cancel'),
+          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+        ),
+        TextButton(
+          style: TextButton.styleFrom(
+            textStyle: context.textTheme.labelLarge,
+          ),
+          child: const Text('Add'),
+          onPressed: () async {
+            var url = this._controller.serverUrlController.text;
+            var email = this._controller.emailController.text;
+            final password = this._controller.passwordController.text;
+            if (url.isEmpty) {
+              Get.snackbar("Error", "Please enter a valid URL");
+            } else if (email.isEmpty || !email.contains('@')) {
+              Get.snackbar("Error", "Please enter a valid email");
+            } else if (password.isEmpty) {
+              Get.snackbar("Error", "Please enter a password");
+            } else {
+              email = email.trim();
+              if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                url = "https://$url";
+              }
+              // login
+              Get.snackbar("Logging in", "Please wait...");
+              try {
+                await anniv.login(url, email, password);
+                Navigator.of(Get.overlayContext!).pop();
+              } catch (e) {
+                Get.snackbar("Failed to login", e.toString());
+              }
+            }
+          },
+        ),
+      ],
+      titlePadding: EdgeInsets.only(top: 8),
+      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      actionsPadding: EdgeInsets.zero,
+      insetPadding: EdgeInsets.zero,
+      buttonPadding: EdgeInsets.zero,
+      elevation: 16,
+    );
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Annil
 class AnnilListTile extends StatelessWidget {
@@ -152,22 +254,6 @@ class AnnilDialog extends StatelessWidget {
 
   AnnilDialog({Key? key, required this.onSubmit}) : super(key: key);
 
-  Widget buildTextField(BuildContext context, String labelText,
-      TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          labelText: labelText,
-          isDense: true,
-          filled: true,
-          fillColor: context.theme.colorScheme.surfaceVariant,
-        ),
-        controller: controller,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -189,9 +275,12 @@ class AnnilDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildTextField(context, "Name", _controller.serverNameController),
-            buildTextField(context, "Server", _controller.serverUrlController),
-            buildTextField(context, "Token", _controller.serverTokenController),
+            SimpleTextField(
+                label: "Name", controller: _controller.serverNameController),
+            SimpleTextField(
+                label: "Server", controller: _controller.serverUrlController),
+            SimpleTextField(
+                label: "Token", controller: _controller.serverTokenController),
           ],
         ),
       ),
