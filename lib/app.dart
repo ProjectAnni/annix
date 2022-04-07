@@ -19,8 +19,8 @@ class AnnixApp extends StatelessWidget {
     // anniv
     final anniv = AnnivController();
     Get.put(anniv);
-    Get.put(PlayingController(service: Global.audioService));
-    Get.put(PlaylistController(service: Global.audioService));
+    Get.put(PlayingController());
+    Get.put(PlaylistController());
 
     // initialization awaiter
     ever(InitializeController([anniv.init()]).done, (value) {

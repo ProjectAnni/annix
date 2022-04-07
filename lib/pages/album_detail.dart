@@ -1,4 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/playlist_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/annil.dart';
@@ -63,7 +64,9 @@ class AlbumDetailScreen extends StatelessWidget {
       discId++;
     });
 
-    await Global.audioService.setPlaylist(
+    final PlaylistController playlist = Get.find();
+
+    await playlist.setPlaylist(
       await Future.wait(
         songs.map<Future<AnnilAudioSource>>(
           (s) => Global.annil.getAudio(
@@ -74,7 +77,6 @@ class AlbumDetailScreen extends StatelessWidget {
         ),
       ),
     );
-    await Global.audioService.play();
   }
 
   @override

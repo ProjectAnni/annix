@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/playlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,11 +12,10 @@ class PlayingScreen extends StatefulWidget {
 }
 
 class _PlayingScreenState extends State<PlayingScreen> {
-  double dragY = 0.0;
-
   @override
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
+    final PlaylistController playlist = Get.find();
     final AnnilController annil = Get.find();
 
     var inner = Expanded(
@@ -30,17 +30,31 @@ class _PlayingScreenState extends State<PlayingScreen> {
                 elevation: 16,
                 child: Hero(
                   tag: "playing-cover",
-                  child: annil.cover(
-                    albumId: playing.state.value.track?.track.albumId ?? "TODO",
-                  ),
+                  child: Obx(() {
+                    final index = playlist.playingIndex.value;
+                    if (playlist.playlist.length <= index) {
+                      return Container();
+                    } else {
+                      var playingItem = playlist.playlist[index];
+                      return annil.cover(albumId: playingItem.id.split('/')[0]);
+                    }
+                  }),
                 ),
               ),
             ),
             Obx(
-              () => Text(
-                "${playing.state.value.track?.info.title}",
-                style: context.textTheme.titleLarge,
-              ),
+              () {
+                final index = playlist.playingIndex.value;
+                var text = "";
+                if (playlist.playlist.length > index) {
+                  var playingItem = playlist.playlist[index];
+                  text = "${playingItem.title}";
+                }
+                return Text(
+                  text,
+                  style: context.textTheme.titleLarge,
+                );
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -48,35 +62,21 @@ class _PlayingScreenState extends State<PlayingScreen> {
                 IconButton(
                   icon: Icon(Icons.skip_previous),
                   iconSize: 48,
-                  onPressed: () {
-                    playing.service.previous();
-                  },
+                  onPressed: () => playing.previous(),
                 ),
                 Obx(
-                  () => playing.status.value == PlayingStatus.loading
-                      ? CircularProgressIndicator()
-                      : IconButton(
-                          icon: Icon(
-                            playing.status.value == PlayingStatus.playing
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                          ),
-                          iconSize: 48,
-                          onPressed: () async {
-                            if (playing.status.value == PlayingStatus.playing) {
-                              playing.service.pause();
-                            } else {
-                              playing.service.play();
-                            }
-                          },
-                        ),
+                  () => IconButton(
+                    icon: Icon(
+                      playing.isPlaying.value ? Icons.pause : Icons.play_arrow,
+                    ),
+                    iconSize: 48,
+                    onPressed: () => playing.playOrPause(),
+                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.skip_next),
                   iconSize: 48,
-                  onPressed: () {
-                    playing.service.next();
-                  },
+                  onPressed: () => playing.next(),
                 ),
               ],
             ),
