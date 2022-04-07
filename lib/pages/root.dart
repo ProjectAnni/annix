@@ -70,9 +70,6 @@ class RootScreen extends GetView<RootScreenController> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
               child: Text('Drawer Header'),
             ),
             ListTile(
