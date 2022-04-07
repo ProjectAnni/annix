@@ -7,6 +7,8 @@ class InitializeController extends GetxController {
     (() async {
       try {
         await Future.wait(futures);
+      } catch (e) {
+        print(e);
       } finally {
         done.value = true;
       }
