@@ -2,6 +2,12 @@
 
 Desktop / Mobile client for Project Anni.
 
+## Build
+
+```bash
+flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
+```
+
 ## TODOs
 
 - [x] Audio Playback
