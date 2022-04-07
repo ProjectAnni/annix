@@ -3,42 +3,110 @@ import 'package:annix/services/annil.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AnnivLoginCard extends StatelessWidget {
-  const AnnivLoginCard({Key? key}) : super(key: key);
+///////////////////////////////////////////////////////////////////////////////
+/// Anniv
+class AnnivCard extends StatelessWidget {
+  const AnnivCard({Key? key}) : super(key: key);
+
+  // Card content before login
+  Widget beforeLogin(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0).copyWith(bottom: 12, right: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            "Not logged in to Anniv",
+            style: context.textTheme.titleLarge,
+          ),
+          Text(
+            // TODO: some description about anniv's functions
+            "TODO: some description about anniv’s functions",
+            style: context.textTheme.bodyMedium,
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: TextButton(
+              child: Text("Login"),
+              onPressed: () {
+                // TODO: show anniv login dialog
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget afterLogin(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 4.0, right: 12.0, top: 16, left: 16),
+      child: Column(
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: CircleAvatar(),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      "Yesterday17",
+                      style: context.textTheme.titleLarge,
+                    ),
+                    Text(
+                      "Anniv Site Name Goes Here",
+                      style: context.textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+              // TODO: Add more things in this card
+              SizedBox(height: 80),
+              IconButton(
+                icon: Icon(Icons.more_vert_outlined),
+                padding: EdgeInsets.zero,
+                alignment: Alignment.topRight,
+                splashRadius: 1.0,
+                onPressed: () {},
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              TextButton(
+                child: Text("Logout"),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
       color: context.theme.colorScheme.surfaceVariant,
-      child: Padding(
-        padding: const EdgeInsets.all(24.0).copyWith(bottom: 12, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              "Not logged in to Anniv",
-              style: context.textTheme.titleLarge,
-            ),
-            Text(
-              // TODO: some description about anniv’s functions
-              "TODO: some description about anniv’s functions",
-              style: context.textTheme.bodyMedium,
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: TextButton(
-                child: Text("Login"),
-                onPressed: () {},
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: beforeLogin(context),
     );
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// Annil
 class AnnilDialogController extends GetxController {
   var serverNameController = TextEditingController();
   var serverUrlController = TextEditingController();
@@ -164,7 +232,7 @@ class ServerView extends StatelessWidget {
           title: Text("Server"),
           centerTitle: true,
         ),
-        AnnivLoginCard(),
+        AnnivCard(),
         ListTile(
           title: Text("Libraries"),
           trailing: IconButton(
