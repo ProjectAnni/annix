@@ -323,43 +323,46 @@ class ServerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BaseAppBar(title: Text("Server")),
-        AnnivCard(),
-        ListTile(
-          title: Text("Libraries"),
-          trailing: IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Get.dialog(
-                AnnilDialog(
-                  onSubmit: (annil) {
-                    // TODO: save annil
-                  },
-                ),
-              );
-            },
+    return Container(
+      color: context.theme.scaffoldBackgroundColor,
+      child: Column(
+        children: [
+          BaseAppBar(title: Text("Server")),
+          AnnivCard(),
+          ListTile(
+            title: Text("Libraries"),
+            trailing: IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Get.dialog(
+                  AnnilDialog(
+                    onSubmit: (annil) {
+                      // TODO: save annil
+                    },
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        Expanded(
-          child: Obx(() {
-            AnnilController annil = Get.find();
-            var clients = annil.clients.values.toList();
-            clients.sort((a, b) => a.priority - b.priority);
+          Expanded(
+            child: Obx(() {
+              AnnilController annil = Get.find();
+              var clients = annil.clients.values.toList();
+              clients.sort((a, b) => a.priority - b.priority);
 
-            return ReorderableListView(
-              padding: EdgeInsets.zero,
-              buildDefaultDragHandles: true,
-              onReorder: (oldIndex, newIndex) {},
-              children: clients
-                  .map((value) => AnnilListTile(
-                      annil: value, key: ValueKey(value.priority)))
-                  .toList(),
-            );
-          }),
-        ),
-      ],
+              return ReorderableListView(
+                padding: EdgeInsets.zero,
+                buildDefaultDragHandles: true,
+                onReorder: (oldIndex, newIndex) {},
+                children: clients
+                    .map((value) => AnnilListTile(
+                        annil: value, key: ValueKey(value.priority)))
+                    .toList(),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 }

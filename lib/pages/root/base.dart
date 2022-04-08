@@ -52,20 +52,25 @@ class BaseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
-        height: MediaQuery.of(context).padding.top,
-        color: context.isDarkMode
-            ? context.theme.colorScheme.surface
-            : context.theme.colorScheme.onPrimary,
+    return Container(
+      color: context.theme.scaffoldBackgroundColor,
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).padding.top,
+            color: context.isDarkMode
+                ? context.theme.colorScheme.surface
+                : context.theme.colorScheme.onPrimary,
+          ),
+          Expanded(
+            flex: 1,
+            child: NestedScrollView(
+              headerSliverBuilder: headerSliverBuilder,
+              body: body,
+            ),
+          ),
+        ],
       ),
-      Expanded(
-        flex: 1,
-        child: NestedScrollView(
-          headerSliverBuilder: headerSliverBuilder,
-          body: body,
-        ),
-      ),
-    ]);
+    );
   }
 }
