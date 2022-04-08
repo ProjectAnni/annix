@@ -1,6 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
-import 'package:annix/controllers/playlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +9,6 @@ class PlayingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
-    final PlaylistController playlist = Get.find();
     final AnnilController annil = Get.find();
 
     var inner = Material(
@@ -25,30 +23,21 @@ class PlayingScreen extends StatelessWidget {
               child: Hero(
                 tag: "playing-cover",
                 child: Obx(() {
-                  final index = playlist.playingIndex.value;
-                  if (playlist.playlist.length <= index) {
+                  final item = playing.currentPlaying.value;
+                  if (item == null) {
                     return Container();
                   } else {
-                    var playingItem = playlist.playlist[index];
-                    return annil.cover(albumId: playingItem.id.split('/')[0]);
+                    return annil.cover(albumId: item.id.split('/')[0]);
                   }
                 }),
               ),
             ),
           ),
           Obx(
-            () {
-              final index = playlist.playingIndex.value;
-              var text = "";
-              if (playlist.playlist.length > index) {
-                var playingItem = playlist.playlist[index];
-                text = "${playingItem.title}";
-              }
-              return Text(
-                text,
-                style: context.textTheme.titleLarge,
-              );
-            },
+            () => Text(
+              playing.currentPlaying.value?.title ?? "",
+              style: context.textTheme.titleLarge,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

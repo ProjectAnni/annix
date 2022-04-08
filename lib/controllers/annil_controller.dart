@@ -44,6 +44,7 @@ class AnnilController extends GetxController {
     // 2. scan current clients, generate new albums list
     albums.replaceRange(0, this.albums.length,
         clients.values.map((e) => e.albums).expand((e) => e).toSet().toList());
+    albums.refresh();
   }
 
   /// Refresh all annil servers
@@ -59,7 +60,8 @@ class AnnilController extends GetxController {
         .expand((e) => e)
         .toSet()
         .toList();
-    this.albums.replaceRange(0, this.albums.length, newAlbums);
+    albums.replaceRange(0, this.albums.length, newAlbums);
+    albums.refresh();
   }
 
   Future<AnnilAudioSource> getAudio({

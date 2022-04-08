@@ -1,5 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/playlist_controller.dart';
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/services/annil.dart';
@@ -63,9 +63,9 @@ class AlbumDetailScreen extends StatelessWidget {
       discId++;
     });
 
-    final PlaylistController playlist = Get.find();
+    final PlayingController playing = Get.find();
 
-    await playlist.setPlaylist(
+    await playing.setPlayingQueue(
       await Future.wait(
         songs.map<Future<AnnilAudioSource>>(
           (s) => annil.getAudio(
