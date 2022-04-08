@@ -5,8 +5,12 @@ import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+const double kPreviouNextMove = 150.0;
+
 class BottomPlayer extends StatelessWidget {
-  const BottomPlayer({Key? key}) : super(key: key);
+  BottomPlayer({Key? key}) : super(key: key);
+
+  final RxBool isSwitching = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +20,20 @@ class BottomPlayer extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Get.toNamed('/playing');
+      },
+      onVerticalDragEnd: (details) async {
+        if (isSwitching.value) {
+          return;
+        }
+
+        final move = (details.primaryVelocity ?? 0);
+        isSwitching.value = true;
+        if (move > kPreviouNextMove) {
+          await playing.previous();
+        } else if (move < -kPreviouNextMove) {
+          await playing.next();
+        }
+        isSwitching.value = false;
       },
       child: Material(
         elevation: 16,
@@ -29,24 +47,27 @@ class BottomPlayer extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.zero,
-                child: Obx(() {
-                  final item = playing.currentPlaying.value;
-                  if (item == null) {
-                    return Container(
-                      color: Colors.grey,
-                      height: 60,
-                      width: 60,
-                    );
-                  } else {
-                    return Hero(
-                      tag: "playing-cover",
-                      child: annil.cover(albumId: item.id.split('/')[0]),
-                    );
-                  }
-                }),
+              Container(
+                height: 60,
+                width: 60,
+                padding: EdgeInsets.all(8.0),
+                child: Card(
+                  elevation: 4,
+                  margin: EdgeInsets.zero,
+                  child: Obx(() {
+                    final item = playing.currentPlaying.value;
+                    if (item == null) {
+                      return Container(
+                        color: Colors.grey,
+                      );
+                    } else {
+                      return Hero(
+                        tag: "playing-cover",
+                        child: annil.cover(albumId: item.id.split('/')[0]),
+                      );
+                    }
+                  }),
+                ),
               ),
               Expanded(
                 flex: 1,
@@ -56,7 +77,9 @@ class BottomPlayer extends StatelessWidget {
                   ),
                 ),
               ),
-              PlayPauseButton(),
+              Obx(() => isSwitching.value
+                  ? CircularProgressIndicator()
+                  : PlayPauseButton()),
             ],
           ),
         ),

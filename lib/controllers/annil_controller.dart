@@ -103,7 +103,7 @@ class AnnilController extends GetxController {
     return Container(
       alignment: Alignment.center,
       color: Colors.blueGrey,
-      child: Text("Cover not available"),
+      child: Text("？"),
     );
   }
 }
