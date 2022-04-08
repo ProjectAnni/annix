@@ -18,70 +18,68 @@ class _PlayingScreenState extends State<PlayingScreen> {
     final PlaylistController playlist = Get.find();
     final AnnilController annil = Get.find();
 
-    var inner = Expanded(
-      flex: 1,
-      child: Material(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Card(
-                elevation: 16,
-                child: Hero(
-                  tag: "playing-cover",
-                  child: Obx(() {
-                    final index = playlist.playingIndex.value;
-                    if (playlist.playlist.length <= index) {
-                      return Container();
-                    } else {
-                      var playingItem = playlist.playlist[index];
-                      return annil.cover(albumId: playingItem.id.split('/')[0]);
-                    }
-                  }),
-                ),
+    var inner = Material(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Card(
+              elevation: 16,
+              child: Hero(
+                tag: "playing-cover",
+                child: Obx(() {
+                  final index = playlist.playingIndex.value;
+                  if (playlist.playlist.length <= index) {
+                    return Container();
+                  } else {
+                    var playingItem = playlist.playlist[index];
+                    return annil.cover(albumId: playingItem.id.split('/')[0]);
+                  }
+                }),
               ),
             ),
-            Obx(
-              () {
-                final index = playlist.playingIndex.value;
-                var text = "";
-                if (playlist.playlist.length > index) {
-                  var playingItem = playlist.playlist[index];
-                  text = "${playingItem.title}";
-                }
-                return Text(
-                  text,
-                  style: context.textTheme.titleLarge,
-                );
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.skip_previous),
-                  iconSize: 48,
-                  onPressed: () => playing.previous(),
-                ),
-                Obx(
-                  () => IconButton(
-                    icon: Icon(
-                      playing.isPlaying.value ? Icons.pause : Icons.play_arrow,
-                    ),
-                    iconSize: 48,
-                    onPressed: () => playing.playOrPause(),
+          ),
+          Obx(
+            () {
+              final index = playlist.playingIndex.value;
+              var text = "";
+              if (playlist.playlist.length > index) {
+                var playingItem = playlist.playlist[index];
+                text = "${playingItem.title}";
+              }
+              return Text(
+                text,
+                style: context.textTheme.titleLarge,
+              );
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.skip_previous),
+                iconSize: 48,
+                onPressed: () => playing.previous(),
+              ),
+              Obx(
+                () => IconButton(
+                  icon: Icon(
+                    playing.isPlaying.value ? Icons.pause : Icons.play_arrow,
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.skip_next),
                   iconSize: 48,
-                  onPressed: () => playing.next(),
+                  onPressed: () => playing.playOrPause(),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              IconButton(
+                icon: Icon(Icons.skip_next),
+                iconSize: 48,
+                onPressed: () => playing.next(),
+              ),
+            ],
+          ),
+        ],
       ),
     );
 

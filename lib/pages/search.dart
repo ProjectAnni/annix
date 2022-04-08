@@ -27,7 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> search(AnnivClient anniv) async {
     print(_controller.text);
-    primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
+    // primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
     setState(() {
       isLoading = true;
       _result = null;
@@ -117,16 +117,11 @@ class _SearchScreenState extends State<SearchScreen> {
     final AnnivController anniv = Get.find();
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Container(
-      //     // color: Theme.of(context).scaffoldBackgroundColor,
-      //     child:
-      //   ),
-      // ),
-      body: CustomScrollView(slivers: [
-        SliverAppBar(
-          title: TextField(
-            autofocus: true,
+      appBar: AppBar(
+        title: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: TextField(
+            // autofocus: true,
             controller: _controller,
             decoration: InputDecoration(
               hintText: "Search",
@@ -138,16 +133,16 @@ class _SearchScreenState extends State<SearchScreen> {
             onSubmitted: (_) => search(anniv.client!),
           ),
         ),
-        // _result == null
-        //   ? Container(
-        //       alignment: Alignment.topCenter,
-        //       padding: EdgeInsets.only(top: 8),
-        //       child: isLoading
-        //           ? CircularProgressIndicator()
-        //           : Text("Search results would display here"),
-        //     )
-        //   : buildSearchResult()
-      ]),
+      ),
+      body: _result == null
+          ? Container(
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.only(top: 8),
+              child: isLoading
+                  ? CircularProgressIndicator()
+                  : Text("Search results would display here"),
+            )
+          : buildSearchResult(),
     );
   }
 }
