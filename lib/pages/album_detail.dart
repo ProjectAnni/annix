@@ -93,7 +93,7 @@ class AlbumDetailScreen extends StatelessWidget {
                 pinned: true,
                 snap: true,
                 floating: true,
-                expandedHeight: 200.0,
+                expandedHeight: context.mediaQuerySize.width * 0.8,
                 automaticallyImplyLeading: true,
                 flexibleSpace: FlexibleSpaceBar(
                   expandedTitleScale: 1.2,
