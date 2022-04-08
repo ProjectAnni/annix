@@ -4,14 +4,9 @@ import 'package:annix/controllers/playlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PlayingScreen extends StatefulWidget {
-  PlayingScreen({Key? key}) : super(key: key);
+class PlayingScreen extends StatelessWidget {
+  const PlayingScreen({Key? key}) : super(key: key);
 
-  @override
-  _PlayingScreenState createState() => _PlayingScreenState();
-}
-
-class _PlayingScreenState extends State<PlayingScreen> {
   @override
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
