@@ -47,8 +47,9 @@ class _AlbumGridState extends State<AlbumGrid> {
                   padding: EdgeInsets.all(4.0),
                   child: Text(
                     '${snapshot.data?.title}',
-                    style: Get.textTheme.bodyLarge?.copyWith(
-                      backgroundColor: Get.theme.colorScheme.primaryContainer
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      backgroundColor: context
+                          .theme.colorScheme.primaryContainer
                           .withOpacity(0.8),
                     ),
                     softWrap: false,

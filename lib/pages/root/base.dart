@@ -15,8 +15,8 @@ class BaseView extends StatelessWidget {
       Container(
         height: MediaQuery.of(context).padding.top,
         color: context.isDarkMode
-            ? Get.theme.colorScheme.surface
-            : Get.theme.colorScheme.primary,
+            ? context.theme.colorScheme.surface
+            : context.theme.colorScheme.primary,
       ),
       Expanded(
         flex: 1,

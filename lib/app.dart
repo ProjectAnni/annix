@@ -35,7 +35,10 @@ class AnnixApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Color.fromARGB(255, 184, 253, 127),
       ),
-      darkTheme: ThemeData(brightness: Brightness.dark),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorSchemeSeed: Color.fromARGB(255, 184, 253, 127),
+      ),
       initialRoute: '/initialize',
       getPages: [
         GetPage(

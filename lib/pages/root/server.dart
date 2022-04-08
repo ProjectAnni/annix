@@ -325,6 +325,10 @@ class ServerView extends StatelessWidget {
         AppBar(
           title: Text("Server"),
           centerTitle: true,
+          backgroundColor: context.isDarkMode
+              ? context.theme.colorScheme.surface
+              : context.theme.colorScheme.onPrimary,
+          foregroundColor: context.theme.colorScheme.onSurface,
         ),
         AnnivCard(),
         ListTile(
