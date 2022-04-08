@@ -45,7 +45,7 @@ class AnnixApp extends StatelessWidget {
           page: () => Scaffold(
             body: Builder(builder: (context) {
               return Center(
-                child: Text(""),
+                child: FlutterLogo(),
               );
             }),
           ),
