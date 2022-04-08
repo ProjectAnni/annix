@@ -20,8 +20,10 @@ class RootScreenController extends GetxController {
   final pages = <String>['/home', '/albums', '/playlists', '/server'];
 
   void changePage(int index) {
-    currentIndex.value = index;
-    Get.toNamed(pages[index], id: 1, preventDuplicates: false);
+    if (currentIndex.value != index) {
+      currentIndex.value = index;
+      Get.toNamed(pages[index], id: 1, preventDuplicates: true);
+    }
   }
 
   Route? onGenerateRoute(RouteSettings settings) {
