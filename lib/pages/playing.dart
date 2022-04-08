@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/widgets/player_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -47,15 +48,7 @@ class PlayingScreen extends StatelessWidget {
                 iconSize: 48,
                 onPressed: () => playing.previous(),
               ),
-              Obx(
-                () => IconButton(
-                  icon: Icon(
-                    playing.isPlaying.value ? Icons.pause : Icons.play_arrow,
-                  ),
-                  iconSize: 48,
-                  onPressed: () => playing.playOrPause(),
-                ),
-              ),
+              PlayPauseButton(iconSize: 48),
               IconButton(
                 icon: Icon(Icons.skip_next),
                 iconSize: 48,

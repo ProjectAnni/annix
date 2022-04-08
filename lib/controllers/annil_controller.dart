@@ -84,7 +84,8 @@ class AnnilController extends GetxController {
     throw new UnsupportedError("No annil client found for album $albumId");
   }
 
-  Widget cover({required String albumId, int? discId, BoxFit? fit}) {
+  Widget cover(
+      {required String albumId, int? discId, BoxFit? fit, double? scale}) {
     for (final client in clients.values) {
       if (client.albums.contains(albumId)) {
         return ExtendedImage.network(
@@ -93,9 +94,12 @@ class AnnilController extends GetxController {
           fit: fit ?? BoxFit.scaleDown,
           filterQuality: FilterQuality.medium,
           imageCacheName: '$albumId/$discId',
+          scale: scale ?? 1.0,
         );
       }
     }
+    print(clients);
+    print(albumId);
     return Container(
       alignment: Alignment.center,
       color: Colors.blueGrey,

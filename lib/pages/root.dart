@@ -2,6 +2,7 @@ import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
+import 'package:annix/widgets/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -86,17 +87,26 @@ class RootScreen extends GetView<RootScreenController> {
           ],
         ),
       ),
-      body: Navigator(
-        key: Get.nestedKey(1),
-        initialRoute: '/home',
-        onGenerateRoute: controller.onGenerateRoute,
+      body: Stack(
+        children: [
+          Navigator(
+            key: Get.nestedKey(1),
+            initialRoute: '/home',
+            onGenerateRoute: controller.onGenerateRoute,
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: BottomPlayer(),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
-        onPressed: () {
-          Get.toNamed('/search');
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.search),
+      //   onPressed: () {
+      //     Get.toNamed('/search');
+      //   },
+      //   isExtended: true,
+      // ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
           destinations: [

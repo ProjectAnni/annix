@@ -14,16 +14,7 @@ class HomeView extends StatelessWidget {
         ];
       },
       body: Column(
-        children: [
-          Card(
-            child: TextButton(
-              child: Text("Now Playing"),
-              onPressed: () {
-                Get.toNamed('/playing');
-              },
-            ),
-          ),
-        ],
+        children: [],
       ),
     );
   }
