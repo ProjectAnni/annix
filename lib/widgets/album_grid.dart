@@ -26,7 +26,6 @@ class _AlbumGridState extends State<AlbumGrid> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 16,
       child: FutureBuilder<Album?>(
         future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
         builder: (ctx, snapshot) {
@@ -49,7 +48,7 @@ class _AlbumGridState extends State<AlbumGrid> {
                     '${snapshot.data?.title}',
                     style: context.textTheme.bodyLarge?.copyWith(
                       backgroundColor: context
-                          .theme.colorScheme.primaryContainer
+                          .theme.colorScheme.secondaryContainer
                           .withOpacity(0.8),
                     ),
                     softWrap: false,
