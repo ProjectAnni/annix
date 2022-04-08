@@ -25,9 +25,8 @@ jobs:
           cache: true
           cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
       
-      - run: flutter pub get
-      - run: flutter build apk
-      - run: flutter build appbundle
+      - name: Setup | Dependencies
+        run: flutter pub get
 
       - name: Build | Apk
         run: |
