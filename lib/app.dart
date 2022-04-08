@@ -30,6 +30,7 @@ class AnnixApp extends StatelessWidget {
     });
 
     return GetMaterialApp(
+      title: "Annix",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
