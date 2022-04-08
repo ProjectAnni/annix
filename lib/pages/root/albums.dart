@@ -14,13 +14,7 @@ class AlbumsView extends StatelessWidget {
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
-          SliverAppBar(
-            title: Text("Albums"),
-            primary: false,
-            snap: true,
-            floating: true,
-            centerTitle: true,
-          ),
+          BaseSliverAppBar(title: Text("Albums")),
         ];
       },
       body: GridView.custom(

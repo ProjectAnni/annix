@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/simple_text_field.dart';
 import 'package:flutter/material.dart';
@@ -322,14 +323,7 @@ class ServerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppBar(
-          title: Text("Server"),
-          centerTitle: true,
-          backgroundColor: context.isDarkMode
-              ? context.theme.colorScheme.surface
-              : context.theme.colorScheme.onPrimary,
-          foregroundColor: context.theme.colorScheme.onSurface,
-        ),
+        BaseAppBar(title: Text("Server")),
         AnnivCard(),
         ListTile(
           title: Text("Libraries"),

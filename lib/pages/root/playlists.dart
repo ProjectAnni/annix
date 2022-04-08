@@ -9,13 +9,7 @@ class PlaylistsView extends StatelessWidget {
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
-          SliverAppBar(
-            title: Text("Playlists"),
-            primary: false,
-            snap: true,
-            floating: true,
-            centerTitle: true,
-          ),
+          BaseSliverAppBar(title: Text("Playlists")),
         ];
       },
       body: Container(),

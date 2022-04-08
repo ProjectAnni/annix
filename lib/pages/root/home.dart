@@ -10,13 +10,7 @@ class HomeView extends StatelessWidget {
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
-          SliverAppBar(
-            title: Text("Annix"),
-            primary: false,
-            snap: true,
-            floating: true,
-            centerTitle: true,
-          ),
+          BaseSliverAppBar(title: Text("Annix")),
         ];
       },
       body: Column(
