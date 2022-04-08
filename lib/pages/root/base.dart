@@ -15,6 +15,7 @@ class BaseAppBar extends StatelessWidget {
           ? context.theme.colorScheme.surface
           : context.theme.colorScheme.onPrimary,
       foregroundColor: context.theme.colorScheme.onSurface,
+      elevation: 0,
     );
   }
 }

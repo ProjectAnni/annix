@@ -30,7 +30,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/home')
       return GetPageRoute(
         settings: settings,
-        page: () => HomeView(),
+        page: () => Material(child: HomeView()),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
       );
@@ -38,7 +38,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/albums')
       return GetPageRoute(
         settings: settings,
-        page: () => AlbumsView(),
+        page: () => Material(child: AlbumsView()),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
       );
@@ -46,7 +46,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/playlists')
       return GetPageRoute(
         settings: settings,
-        page: () => PlaylistsView(),
+        page: () => Material(child: PlaylistsView()),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
       );
@@ -54,7 +54,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/server')
       return GetPageRoute(
         settings: settings,
-        page: () => ServerView(),
+        page: () => Material(child: ServerView()),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
       );

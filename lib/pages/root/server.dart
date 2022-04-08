@@ -107,15 +107,17 @@ class AnnivCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AnnivController anniv = Get.find();
+    final inner = Obx(
+      () => anniv.loggedIn.value
+          ? afterLogin(context, anniv)
+          : beforeLogin(context),
+    );
 
     return Card(
       elevation: 0,
       color: context.theme.colorScheme.surfaceVariant,
-      child: Obx(
-        () => anniv.loggedIn.value
-            ? afterLogin(context, anniv)
-            : beforeLogin(context),
-      ),
+      child: inner,
+      clipBehavior: Clip.none,
     );
   }
 }
