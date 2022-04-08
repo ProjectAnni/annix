@@ -30,7 +30,7 @@ class RootScreenController extends GetxController {
         settings: settings,
         page: () => HomeView(),
         transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
+        curve: Curves.easeIn,
       );
 
     if (settings.name == '/albums')
@@ -38,7 +38,7 @@ class RootScreenController extends GetxController {
         settings: settings,
         page: () => AlbumsView(),
         transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
+        curve: Curves.easeIn,
       );
 
     if (settings.name == '/playlists')
@@ -46,7 +46,7 @@ class RootScreenController extends GetxController {
         settings: settings,
         page: () => PlaylistsView(),
         transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
+        curve: Curves.easeIn,
       );
 
     if (settings.name == '/server')
@@ -54,7 +54,7 @@ class RootScreenController extends GetxController {
         settings: settings,
         page: () => ServerView(),
         transition: Transition.fadeIn,
-        curve: Curves.easeInQuint,
+        curve: Curves.easeIn,
       );
 
     return null;
