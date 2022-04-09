@@ -1,3 +1,5 @@
+import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
@@ -8,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart' show GetxController, Rx, RxT, Get, Inst;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_ume/flutter_ume.dart';
@@ -19,11 +22,12 @@ class AnnivClient {
 
   Map<String, TrackInfo> favorites = Map();
 
-  AnnivClient._({
+  AnnivClient({
     required String url,
     required CookieJar cookieJar,
-  })  : _client = Dio(BaseOptions(baseUrl: url))
-          ..httpClientAdapter = Http2Adapter(ConnectionManager()),
+  })  : _client =
+            Dio(BaseOptions(baseUrl: url, responseType: ResponseType.json))
+              ..httpClientAdapter = Http2Adapter(ConnectionManager()),
         _cookieJar = cookieJar {
     if (kDebugMode) {
       PluginManager.instance.register(DioInspector(dio: _client));
@@ -32,7 +36,7 @@ class AnnivClient {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        options.responseType = ResponseType.json;
+        options.queryParameters.removeWhere((key, value) => value == false);
         return handler.next(options);
       },
       onResponse: (response, handler) {
@@ -52,7 +56,8 @@ class AnnivClient {
               requestOptions: response.requestOptions,
               response: response,
               type: DioErrorType.response,
-              error: resp['message'] ?? 'Error ${resp['status']}',
+              // TODO: deserialize resp to Error object
+              error: resp,
             ));
           } else {
             dynamic data = resp['data'];
@@ -71,41 +76,25 @@ class AnnivClient {
     return PersistCookieJar(storage: FileStorage(dir.path));
   }
 
-  static Future<AnnivClient> create({
+  static Future<AnnivClient> login({
     required String url,
     required String email,
     required String password,
   }) async {
-    final client = AnnivClient._(url: url, cookieJar: await _loadCookieJar());
-    await client.login(email: email, password: password);
+    final client = AnnivClient(url: url, cookieJar: await _loadCookieJar());
+    await client._login(email: email, password: password);
     await client._save();
-
-    client.favorites = Map.fromEntries((await client.getFavoriteList())
-        .map((e) => MapEntry(e.track.toSlashedString(), e.info)));
-    // TODO: initialize albums
     return client;
   }
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static Future<AnnivClient?> load() async {
+  static Future<AnnivClient?> loadFromLocal() async {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      final client =
-          AnnivClient._(url: annivUrl, cookieJar: await _loadCookieJar());
-      try {
-        // TODO: save user info & site info
-        // try validate login
-        await client.getSiteInfo();
-        await client.getUserInfo();
-        await client.setAnnilClients();
-        return client;
-      } catch (e) {
-        // failed to get user info
-        return null;
-      }
+      return AnnivClient(url: annivUrl, cookieJar: await _loadCookieJar());
     }
   }
 
@@ -130,7 +119,7 @@ class AnnivClient {
   }
 
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95
-  Future<UserInfo> login({
+  Future<UserInfo> _login({
     required String email,
     required String password,
   }) async {
@@ -157,11 +146,10 @@ class AnnivClient {
         .toList();
   }
 
-  Future<void> setAnnilClients() async {
-    Global.annil.removeRemote();
+  Future<List<AnnilClient>> getAnnilClients() async {
     final credentials = await getCredentials();
 
-    final annilClients = credentials
+    return credentials
         .map((c) => AnnilClient.remote(
               id: c.id,
               name: c.name,
@@ -170,8 +158,6 @@ class AnnivClient {
               priority: c.priority,
             ))
         .toList();
-    await Global.annil.addAll(annilClients);
-    await Global.annil.refresh();
   }
 
   // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF
@@ -242,5 +228,53 @@ class AnnivClient {
       'track_id': track.trackId,
     });
     favorites.remove(id);
+  }
+}
+
+class AnnivController extends GetxController {
+  AnnilController _annil = Get.find();
+
+  AnnivClient? client;
+  Rx<bool> loggedIn = false.obs;
+
+  Rx<SiteInfo> siteInfo =
+      SiteInfo(siteName: "", description: "", protocolVersion: "", features: [])
+          .obs;
+  Rx<UserInfo> userInfo =
+      UserInfo(userId: "", email: "", nickname: "", avatar: "").obs;
+
+  Future<void> init() async {
+    await checkLogin(await AnnivClient.loadFromLocal());
+  }
+
+  // TODO: believe user is login unless meet incorrect response(403), or unauthorized error code in anniv
+  Future<void> checkLogin(AnnivClient? anniv) async {
+    if (anniv != null) {
+      try {
+        this.siteInfo.value = await anniv.getSiteInfo();
+        this.userInfo.value = await anniv.getUserInfo();
+      } catch (e) {
+        this.loggedIn.value = false;
+        return;
+      }
+
+      // reload annil client
+      var annilClients = await anniv.getAnnilClients();
+      _annil.removeRemote();
+      await _annil.addClients(annilClients);
+      await _annil.refresh();
+
+      if (Global.metadataSource == null) {
+        Global.metadataSource = AnnivMetadataSource(anniv);
+      }
+      this.client = anniv;
+      this.loggedIn.value = true;
+    }
+  }
+
+  Future<void> login(String url, String email, String password) async {
+    final anniv =
+        await AnnivClient.login(url: url, email: email, password: password);
+    await checkLogin(anniv);
   }
 }

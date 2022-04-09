@@ -1,18 +1,17 @@
+import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/metadata/metadata_source.dart';
-import 'package:annix/services/anniv.dart';
 
 class AnnivMetadataSource extends BaseMetadataSource {
-  AnnivClient anniv;
-
-  AnnivMetadataSource({required this.anniv});
+  final AnnivClient anniv;
+  AnnivMetadataSource(this.anniv);
 
   @override
   Future<void> prepare() async {}
 
   @override
   Future<Album?> getAlbumDetail({required String albumId}) async {
-    final result = await anniv.getAlbumMetadata([albumId]);
+    final result = await this.anniv.getAlbumMetadata([albumId]);
     if (result.isEmpty) {
       return null;
     } else {

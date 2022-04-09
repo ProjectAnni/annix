@@ -1,0 +1,47 @@
+name: Build
+on: [ push ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v2.4.0
+
+      - name: Setup | Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'beta'
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+      
+      - name: Setup | Dependencies
+        run: flutter pub get
+
+      - name: Build | Apk
+        run: |
+          flutter build apk --release
+          cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
+          flutter build apk --release --split-per-abi
+
+      - name: Build | App Bundle
+        run: flutter build appbundle --release
+
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Annix
+          path: |
+            ./build/app/outputs/apk/**/*.apk
+            ./build/app/outputs/bundle/**/*.aab
+            

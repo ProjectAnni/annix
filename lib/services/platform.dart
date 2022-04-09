@@ -1,10 +1,6 @@
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart';
 
 class AnniPlatform {
-  // Web platform
-  static bool get isWeb => kIsWeb;
-
   // Desktop platforms
   static bool get isDesktop =>
       Platform.isWindows || Platform.isLinux || Platform.isMacOS;

@@ -1,8 +1,6 @@
-import 'package:annix/services/global.dart';
-import 'package:annix/widgets/square_icon_button.dart';
-import 'package:flutter/widgets.dart';
-import 'package:annix/utils/platform_icons.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:annix/controllers/anniv_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FavoriteButton extends StatefulWidget {
   final String id;
@@ -14,32 +12,37 @@ class FavoriteButton extends StatefulWidget {
 }
 
 class FavoriteButtonState extends State<FavoriteButton> {
-  bool isLoading = false;
+  bool favorited = false;
 
   @override
   Widget build(BuildContext context) {
-    return SquareIconButton(
-      child: isLoading
-          ? PlatformCircularProgressIndicator()
-          : Icon(Global.anniv!.favorites.containsKey(widget.id)
-              ? context.icons.heart_filled
-              : context.icons.heart_outlined),
+    final AnnivController anniv = Get.find();
+
+    if (anniv.client!.favorites.containsKey(widget.id)) {
+      favorited = true;
+    }
+
+    return IconButton(
+      icon: Icon(
+        favorited ? Icons.favorite_outlined : Icons.favorite_border_outlined,
+      ),
       onPressed: () async {
-        if (!Global.anniv!.favorites.containsKey(widget.id)) {
+        try {
+          if (!favorited) {
+            setState(() {
+              favorited = true;
+            });
+            await anniv.client!.addFavorite(widget.id);
+          } else {
+            setState(() {
+              favorited = false;
+            });
+            await anniv.client!.removeFavorite(widget.id);
+          }
+        } catch (e) {
           setState(() {
-            isLoading = true;
-          });
-          await Global.anniv!.addFavorite(widget.id);
-          setState(() {
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            isLoading = true;
-          });
-          await Global.anniv!.removeFavorite(widget.id);
-          setState(() {
-            isLoading = false;
+            favorited = !favorited;
+            // TODO: Toast error
           });
         }
       },

@@ -1,114 +1,148 @@
+import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/pages/album_info.dart';
-import 'package:annix/services/global.dart';
-import 'package:annix/services/route.dart';
-import 'package:annix/widgets/platform_widgets/platform_list.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:annix/utils/platform_icons.dart';
+import 'package:annix/pages/album_detail.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class AnnixSearch extends StatefulWidget {
-  const AnnixSearch({Key? key}) : super(key: key);
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  _AnnixSearchState createState() => _AnnixSearchState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _AnnixSearchState extends State<AnnixSearch> {
-  TextEditingController _controller = TextEditingController();
+class _SearchScreenState extends State<SearchScreen> {
+  late TextEditingController _controller;
   SearchResult? _result;
+  bool isLoading = false;
 
-  Widget _buildAlbumList() {
-    if (_result?.albums == null || _result?.albums?.isEmpty == true) {
-      return Container();
-    } else {
-      return Expanded(
-        flex: 1,
-        child: PlatformListView(
-          children: _result!.albums!
-              .map(
-                (e) => PlatformListTile(
-                  title: Text(e.title),
-                  subtitle: Text(
-                    e.artist,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () async {
-                    AnnixDesktopRouter.navigator.push(platformPageRoute(
-                      context: context,
-                      builder: (context) => AnnixAlbumInfo(albumInfo: e),
-                    ));
-                  },
-                ),
-              )
-              .toList(),
-        ),
-      );
-    }
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = TextEditingController();
   }
 
-  Widget _buildTrackList() {
-    if (_result?.tracks == null || _result?.tracks?.isEmpty == true) {
-      return Container();
-    } else {
-      return Expanded(
-        flex: 1,
-        child: PlatformListView(
-          children: _result!.tracks!
-              .map(
-                (e) => PlatformListTile(
-                  title: Text(e.info.title),
-                  subtitle: Text(
-                    e.info.artist,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () async {
-                    await Global.audioService.setPlaylist([
-                      await Global.annil.getAudio(
-                        albumId: e.track.albumId,
-                        discId: e.track.discId,
-                        trackId: e.track.trackId,
-                      )
-                    ]);
-                    await Global.audioService.play();
-                  },
+  Future<void> search(AnnivClient anniv) async {
+    print(_controller.text);
+    // primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
+    setState(() {
+      isLoading = true;
+      _result = null;
+    });
+
+    final result = await anniv.search(_controller.text,
+        searchAlbums: true, searchTracks: true);
+    setState(() {
+      isLoading = false;
+      _result = result;
+    });
+  }
+
+  Widget buildSearchResult() {
+    final PlayingController playing = Get.find();
+    final AnnilController annil = Get.find();
+
+    print(_result);
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            child: TabBar(
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              tabs: [
+                Tab(child: Text("Tracks (${_result?.tracks?.length ?? 0})")),
+                Tab(child: Text("Albums (${_result?.albums?.length ?? 0})")),
+                Tab(
+                  child: Text("Playlists (${_result?.playlists?.length ?? 0})"),
                 ),
-              )
-              .toList(),
-        ),
-      );
-    }
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: TabBarView(
+              children: [
+                ListView.builder(
+                  itemBuilder: (context, index) {
+                    var e = _result!.tracks![index];
+                    return ListTile(
+                      title: Text(e.info.title),
+                      subtitle: Text(e.info.artist),
+                      onTap: () async {
+                        await playing.setPlayingQueue([
+                          await annil.getAudio(
+                            albumId: e.track.albumId,
+                            discId: e.track.discId,
+                            trackId: e.track.trackId,
+                          )
+                        ]);
+                      },
+                    );
+                  },
+                  itemCount: _result?.tracks?.length ?? 0,
+                ),
+                ListView.builder(
+                  itemBuilder: (context, index) => ListTile(
+                    title: Text(_result!.albums![index].title),
+                    subtitle: Text(_result!.albums![index].artist),
+                    onTap: () {
+                      Get.to(
+                        () => AlbumDetailScreen(
+                          albumInfo: _result!.albums![index],
+                          // FIXME
+                          tag: 'no-tag',
+                        ),
+                      );
+                    },
+                  ),
+                  itemCount: _result?.albums?.length ?? 0,
+                ),
+                ListView(),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: PlatformTextField(
-                  controller: _controller,
-                ),
-              ),
-              PlatformIconButton(
-                icon: Icon(context.icons.search),
-                onPressed: () async {
-                  final result = await Global.anniv!.search(_controller.text,
-                      searchAlbums: true, searchTracks: true);
-                  setState(() {
-                    _result = result;
-                  });
-                },
-              ),
-            ],
+    final AnnivController anniv = Get.find();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: TextField(
+            // autofocus: true,
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: "Search",
+              contentPadding:
+                  EdgeInsets.only(left: 8, right: 0, top: 8, bottom: 8),
+              border: InputBorder.none,
+              isDense: true,
+            ),
+            onSubmitted: (_) => search(anniv.client!),
           ),
         ),
-        _buildAlbumList(),
-        _buildTrackList(),
-      ],
+      ),
+      body: _result == null
+          ? Container(
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.only(top: 8),
+              child: isLoading
+                  ? CircularProgressIndicator()
+                  : Text("Search results would display here"),
+            )
+          : buildSearchResult(),
     );
   }
 }

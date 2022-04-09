@@ -1,20 +1,22 @@
 import 'package:annix/models/metadata.dart';
-import 'package:annix/pages/album_info.dart';
+import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/services/route.dart';
-import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
 class AlbumGrid extends StatefulWidget {
   final String albumId;
   final Widget cover;
+  final String tag;
 
-  const AlbumGrid({
+  AlbumGrid({
     Key? key,
     required this.albumId,
     required this.cover,
-  }) : super(key: key);
+    String? tag,
+  })  : this.tag = tag ?? Uuid().v4().toString(),
+        super(key: key);
 
   @override
   _AlbumGridState createState() => _AlbumGridState();
@@ -23,55 +25,50 @@ class AlbumGrid extends StatefulWidget {
 class _AlbumGridState extends State<AlbumGrid> {
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: LayoutBuilder(builder: (context, constraints) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            widget.cover,
-            Positioned(
-              bottom: 0,
-              child: FutureBuilder<Album?>(
-                future:
-                    Global.metadataSource!.getAlbum(albumId: widget.albumId),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return GestureDetector(
-                      onTap: () {
-                        AnnixDesktopRouter.navigator.push(platformPageRoute(
-                          context: context,
-                          builder: (context) => AnnixAlbumInfo(
-                            albumInfo: snapshot.data!.toAlbumInfo(),
-                          ),
-                        ));
-                      },
-                      child: Container(
-                        width: constraints.maxWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Marquee(
-                            child: Text(
-                              '${snapshot.data?.title}',
-                              style: TextStyle(
-                                color: Colors.white,
-                                backgroundColor: Colors.black87,
-                              ),
-                            ),
-                            pauseDuration: Duration(seconds: 1),
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
+    return Card(
+      child: FutureBuilder<Album?>(
+        future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
+        builder: (ctx, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+
+          return InkWell(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Hero(
+                  tag: widget.tag,
+                  child: widget.cover,
+                ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.all(4.0),
+                  child: Text(
+                    '${snapshot.data?.title}',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      backgroundColor: context
+                          .theme.colorScheme.secondaryContainer
+                          .withOpacity(0.8),
+                    ),
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-          ],
-        );
-      }),
+            onTap: () {
+              Get.to(
+                () => AlbumDetailScreen(
+                  albumInfo: snapshot.data!.toAlbumInfo(),
+                  tag: widget.tag,
+                ),
+                duration: Duration(milliseconds: 300),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
