@@ -251,12 +251,20 @@ class AnnivController extends GetxController {
   Rx<bool> isLogin = false.obs;
 
   Future<void> init() async {
-    // 1. load cached site info & user info
+    // 1. init client
+    this.client = await AnnivClient.loadFromLocal();
+
+    // 2. load cached site info & user info
     this._loadInfo();
 
-    // 2. update if online
+    // 3. update if online
     if (_network.isOnline.value) {
-      await checkLogin(await AnnivClient.loadFromLocal());
+      await checkLogin(this.client);
+    }
+
+    // 4. metadata
+    if (this.client != null && Global.metadataSource == null) {
+      Global.metadataSource = AnnivMetadataSource(this.client!);
     }
   }
 
@@ -284,9 +292,6 @@ class AnnivController extends GetxController {
       await _annil.addClients(annilClients);
       await _annil.refresh();
 
-      if (Global.metadataSource == null) {
-        Global.metadataSource = AnnivMetadataSource(anniv);
-      }
       this.client = anniv;
     }
   }

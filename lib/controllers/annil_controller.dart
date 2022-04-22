@@ -17,7 +17,6 @@ class AnnilController extends GetxController {
 
   /// Load state from shared preferences
   Future<void> init() async {
-    // TODO: initialize offline mode if necessary
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
     if (tokens != null) {
       for (String token in tokens) {
@@ -25,9 +24,15 @@ class AnnilController extends GetxController {
         clients[client.id] = client;
       }
     }
-    if (_network.isOnline.value) {
-      await refresh();
-    }
+    await refresh();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    this._network.isOnline.listen((isOnline) {
+      this.refresh();
+    });
   }
 
   /// Save the current state of the combined client to shared preferences
@@ -55,18 +60,23 @@ class AnnilController extends GetxController {
 
   /// Refresh all annil servers
   Future<void> refresh() async {
-    var newAlbums = (await Future.wait(clients.values.map((client) async {
-      try {
-        return await client.getAlbums();
-      } catch (e) {
-        // TODO: failed to get albums, hint user
-        return <String>[];
-      }
-    })))
-        .expand((e) => e)
-        .toSet()
-        .toList();
-    albums.replaceRange(0, this.albums.length, newAlbums);
+    if (_network.isOnline.value) {
+      var newAlbums = (await Future.wait(clients.values.map((client) async {
+        try {
+          return await client.getAlbums();
+        } catch (e) {
+          // TODO: failed to get albums, hint user
+          return <String>[];
+        }
+      })))
+          .expand((e) => e)
+          .toSet()
+          .toList();
+      albums.replaceRange(0, this.albums.length, newAlbums);
+    } else {
+      var newAlbums = await OfflineAnnilClient.instance.getAlbums();
+      albums.replaceRange(0, this.albums.length, newAlbums);
+    }
     albums.refresh();
   }
 
@@ -107,10 +117,9 @@ class AnnilController extends GetxController {
       return ExtendedImage.network(
         'NO URL',
         cache: true,
-        cacheKey: discId == null ? "$albumId" : "$albumId/$discId",
+        cacheKey: OfflineAnnilClient.cacheKey(albumId, discId: discId),
         fit: fit ?? BoxFit.scaleDown,
         filterQuality: FilterQuality.medium,
-        imageCacheName: '$albumId/$discId',
         scale: scale ?? 1.0,
       );
     } else {
@@ -119,7 +128,7 @@ class AnnilController extends GetxController {
           return ExtendedImage.network(
             client.getCoverUrl(albumId: albumId, discId: discId),
             cache: true,
-            cacheKey: discId == null ? "$albumId" : "$albumId/$discId",
+            cacheKey: OfflineAnnilClient.cacheKey(albumId, discId: discId),
             fit: fit ?? BoxFit.scaleDown,
             filterQuality: FilterQuality.medium,
             scale: scale ?? 1.0,

@@ -4,6 +4,7 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart'
     show MediaItem;
@@ -152,6 +153,11 @@ class OnlineAnnilClient implements BaseAnnilClient {
   }
 }
 
+Future<String> getCachePath(String albumId, int discId, int trackId) {
+  return getExternalStorageDirectory().then(
+      (root) => p.join(root!.path, 'audio', albumId, "${discId}_$trackId"));
+}
+
 class AnnilAudioSource extends ModifiedLockCachingAudioSource {
   final String albumId;
   final int discId;
@@ -166,10 +172,8 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
   }) : super(
           uri,
           // FIXME: iOS
-          cacheFile: getExternalStorageDirectory()
-              .then((root) =>
-                  p.join(root!.path, 'audio', albumId, "${discId}_$trackId"))
-              .then((path) => File(path)),
+          cacheFile:
+              getCachePath(albumId, discId, trackId).then((path) => File(path)),
           tag: tag,
         );
 
@@ -218,8 +222,8 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         title: track?.title ?? "Unknown Title",
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
-        artUri: OfflineAnnilClient.instance
-            .getCoverUrl(albumId: albumId, discId: discId),
+        artUri: Uri.parse((await OfflineAnnilClient.getCoverPath(
+            albumId: albumId, discId: discId))!),
         displayDescription: track?.type.toString() ?? "normal",
       ),
     );
@@ -268,14 +272,18 @@ extension PreferBitrateToString on PreferQuality {
 
 class OfflineAnnilClient implements BaseAnnilClient {
   static OfflineAnnilClient _instance = OfflineAnnilClient._();
-  static get instance => OfflineAnnilClient._instance;
+  static OfflineAnnilClient get instance => OfflineAnnilClient._instance;
 
   OfflineAnnilClient._();
 
   @override
-  Future<List<String>> getAlbums() {
-    // TODO: implement getAlbums
-    throw UnimplementedError();
+  Future<List<String>> getAlbums() async {
+    final root = await getExternalStorageDirectory()
+        .then((root) => p.join(root!.path, 'audio'));
+    return Directory(root)
+        .list()
+        .map((entry) => p.basename(entry.path))
+        .toList();
   }
 
   @override
@@ -284,14 +292,30 @@ class OfflineAnnilClient implements BaseAnnilClient {
     required int discId,
     required int trackId,
     PreferQuality preferBitrate = PreferQuality.Lossless,
-  }) {
-    // TODO: implement getAudio
-    throw UnimplementedError();
+  }) async {
+    final path = await getCachePath(albumId, discId, trackId);
+    return AudioSource.uri(Uri.parse("file://" + path));
   }
 
   @override
   String getCoverUrl({required String albumId, int? discId}) {
-    // TODO: implement getCoverUrl
+    // placeholder, would never be called
     throw UnimplementedError();
+  }
+
+  static String cacheKey(String albumId, {int? discId}) {
+    return discId == null ? "$albumId" : "$albumId/$discId";
+  }
+
+  static Future<String?> getCoverPath(
+      {required String albumId, int? discId}) async {
+    final root = await getCachedImageFile('',
+        cacheKey: cacheKey(albumId, discId: discId));
+    if (root != null) {
+      return root.path;
+    } else {
+      final root = await getCachedImageFile('', cacheKey: cacheKey(albumId));
+      return root?.path;
+    }
   }
 }
