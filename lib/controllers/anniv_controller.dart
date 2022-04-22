@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/offline_controller.dart';
 import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
@@ -10,7 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart' show GetxController, Rx, RxT, Get, Inst;
+import 'package:get/get.dart' show GetxController, Rx, RxT, Rxn, Get, Inst;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_ume/flutter_ume.dart';
@@ -231,30 +234,47 @@ class AnnivClient {
   }
 }
 
+class SiteUserInfo {
+  SiteInfo site;
+  UserInfo user;
+
+  SiteUserInfo({required this.site, required this.user});
+}
+
 class AnnivController extends GetxController {
   AnnilController _annil = Get.find();
+  NetworkController _network = Get.find();
 
   AnnivClient? client;
-  Rx<bool> loggedIn = false.obs;
 
-  Rx<SiteInfo> siteInfo =
-      SiteInfo(siteName: "", description: "", protocolVersion: "", features: [])
-          .obs;
-  Rx<UserInfo> userInfo =
-      UserInfo(userId: "", email: "", nickname: "", avatar: "").obs;
+  Rxn<SiteUserInfo> info = Rxn(null);
+  Rx<bool> isLogin = false.obs;
 
   Future<void> init() async {
-    await checkLogin(await AnnivClient.loadFromLocal());
+    // 1. load cached site info & user info
+    this._loadInfo();
+
+    // 2. update if online
+    if (_network.isOnline.value) {
+      await checkLogin(await AnnivClient.loadFromLocal());
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    this.isLogin.bindStream(this.info.stream.map((user) => user != null));
   }
 
   // TODO: believe user is login unless meet incorrect response(403), or unauthorized error code in anniv
   Future<void> checkLogin(AnnivClient? anniv) async {
     if (anniv != null) {
       try {
-        this.siteInfo.value = await anniv.getSiteInfo();
-        this.userInfo.value = await anniv.getUserInfo();
+        final site = await anniv.getSiteInfo();
+        final user = await anniv.getUserInfo();
+        this.info.value = SiteUserInfo(site: site, user: user);
+        await this._saveInfo();
       } catch (e) {
-        this.loggedIn.value = false;
         return;
       }
 
@@ -268,7 +288,6 @@ class AnnivController extends GetxController {
         Global.metadataSource = AnnivMetadataSource(anniv);
       }
       this.client = anniv;
-      this.loggedIn.value = true;
     }
   }
 
@@ -276,5 +295,25 @@ class AnnivController extends GetxController {
     final anniv =
         await AnnivClient.login(url: url, email: email, password: password);
     await checkLogin(anniv);
+  }
+
+  void _loadInfo() {
+    final site = Global.preferences.getString("anniv_site");
+    final user = Global.preferences.getString("anniv_user");
+    if (site != null && user != null) {
+      this.info.value = SiteUserInfo(
+        site: SiteInfo.fromJson(jsonDecode(site)),
+        user: UserInfo.fromJson(jsonDecode(user)),
+      );
+    }
+  }
+
+  Future<void> _saveInfo() async {
+    if (this.info.value != null) {
+      final site = this.info.value!.site.toJson();
+      final user = this.info.value!.user.toJson();
+      await Global.preferences.setString("anniv_site", jsonEncode(site));
+      await Global.preferences.setString("anniv_user", jsonEncode(user));
+    }
   }
 }

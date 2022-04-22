@@ -5,6 +5,7 @@ Desktop / Mobile client for Project Anni.
 ## Build
 
 ```bash
+flutter pub run build_runner build
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 ```
 
@@ -17,14 +18,14 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
   - [x] Cover
   - [x] Audio
   - [ ] Lyric
-  - [ ] Annil selection based on priority
+  - [x] Annil selection based on priority
 - [ ] Metadata Sources
   - [x] Anniv
   - [x] Local sqlite file
   - [ ] Remote sqlite file
   - [ ] Metadata repository
 - [ ] Anniv
-  - [ ] Server Info
+  - [x] Server Info
   - [ ] User system
     - [x] Login
       - [ ] 2FA

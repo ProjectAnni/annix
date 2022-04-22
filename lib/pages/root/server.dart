@@ -39,7 +39,7 @@ class AnnivCard extends StatelessWidget {
     );
   }
 
-  Widget afterLogin(BuildContext context, AnnivController anniv) {
+  Widget afterLogin(BuildContext context, SiteUserInfo info) {
     return Padding(
       padding: EdgeInsets.only(bottom: 4.0, right: 12.0, top: 16, left: 16),
       child: Column(
@@ -52,7 +52,7 @@ class AnnivCard extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16.0),
                 child: CircleAvatar(
                   child: Obx(() {
-                    return Text(anniv.userInfo.value.nickname.substring(0, 1));
+                    return Text(info.user.nickname.substring(0, 1));
                   }),
                 ),
               ),
@@ -65,13 +65,13 @@ class AnnivCard extends StatelessWidget {
                   children: [
                     Obx(() {
                       return Text(
-                        anniv.userInfo.value.nickname,
+                        info.user.nickname,
                         style: context.textTheme.titleLarge,
                       );
                     }),
                     Obx(() {
                       return Text(
-                        anniv.siteInfo.value.siteName,
+                        info.site.siteName,
                         style: context.textTheme.bodyMedium,
                       );
                     }),
@@ -108,9 +108,14 @@ class AnnivCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final AnnivController anniv = Get.find();
     final inner = Obx(
-      () => anniv.loggedIn.value
-          ? afterLogin(context, anniv)
-          : beforeLogin(context),
+      () {
+        final info = anniv.info.value;
+        if (info == null) {
+          return beforeLogin(context);
+        } else {
+          return afterLogin(context, info);
+        }
+      },
     );
 
     return Card(

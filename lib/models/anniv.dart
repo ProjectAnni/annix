@@ -6,7 +6,7 @@ Object? readValueFlatten(Map json, String key) {
   return json;
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class SiteInfo {
   final String siteName;
   final String description;
@@ -22,9 +22,10 @@ class SiteInfo {
 
   factory SiteInfo.fromJson(Map<String, dynamic> json) =>
       _$SiteInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$SiteInfoToJson(this);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class UserInfo {
   final String userId;
   final String email;
@@ -40,6 +41,7 @@ class UserInfo {
 
   factory UserInfo.fromJson(Map<String, dynamic> json) =>
       _$UserInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$UserInfoToJson(this);
 }
 
 @JsonSerializable()

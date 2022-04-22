@@ -14,12 +14,26 @@ SiteInfo _$SiteInfoFromJson(Map<String, dynamic> json) => SiteInfo(
           (json['features'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
+Map<String, dynamic> _$SiteInfoToJson(SiteInfo instance) => <String, dynamic>{
+      'site_name': instance.siteName,
+      'description': instance.description,
+      'protocol_version': instance.protocolVersion,
+      'features': instance.features,
+    };
+
 UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => UserInfo(
       userId: json['user_id'] as String,
       email: json['email'] as String,
       nickname: json['nickname'] as String,
       avatar: json['avatar'] as String,
     );
+
+Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
+      'user_id': instance.userId,
+      'email': instance.email,
+      'nickname': instance.nickname,
+      'avatar': instance.avatar,
+    };
 
 AnnilToken _$AnnilTokenFromJson(Map<String, dynamic> json) => AnnilToken(
       id: json['id'] as String,
