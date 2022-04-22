@@ -10,8 +10,9 @@ class AnnilController extends GetxController {
   final RxMap<String, OnlineAnnilClient> clients =
       Map<String, OnlineAnnilClient>().obs;
   final RxList<String> albums = <String>[].obs;
-
   bool get hasClient => clients.isNotEmpty;
+
+  final RxBool offline = false.obs;
 
   /// Load state from shared preferences
   Future<void> init() async {
@@ -72,15 +73,24 @@ class AnnilController extends GetxController {
     required int trackId,
     PreferQuality preferBitrate = PreferQuality.Lossless,
   }) {
-    for (final client in clients.values) {
-      if (client.albums.contains(albumId)) {
-        return AnnilAudioSource.create(
-          annil: client,
-          albumId: albumId,
-          discId: discId,
-          trackId: trackId,
-          preferBitrate: preferBitrate,
-        );
+    if (offline.value) {
+      return AnnilAudioSource.local(
+        albumId: albumId,
+        discId: discId,
+        trackId: trackId,
+        preferBitrate: preferBitrate,
+      );
+    } else {
+      for (final client in clients.values) {
+        if (client.albums.contains(albumId)) {
+          return AnnilAudioSource.create(
+            annil: client,
+            albumId: albumId,
+            discId: discId,
+            trackId: trackId,
+            preferBitrate: preferBitrate,
+          );
+        }
       }
     }
     throw new UnsupportedError("No annil client found for album $albumId");
@@ -88,20 +98,32 @@ class AnnilController extends GetxController {
 
   Widget cover(
       {required String albumId, int? discId, BoxFit? fit, double? scale}) {
-    for (final client in clients.values) {
-      if (client.albums.contains(albumId)) {
-        return ExtendedImage.network(
-          client.getCoverUrl(albumId: albumId, discId: discId),
-          cache: true,
-          fit: fit ?? BoxFit.scaleDown,
-          filterQuality: FilterQuality.medium,
-          imageCacheName: '$albumId/$discId',
-          scale: scale ?? 1.0,
-        );
+    if (offline.value) {
+      return ExtendedImage.network(
+        'NO URL',
+        cache: true,
+        cacheKey: discId == null ? "$albumId" : "$albumId/$discId",
+        fit: fit ?? BoxFit.scaleDown,
+        filterQuality: FilterQuality.medium,
+        imageCacheName: '$albumId/$discId',
+        scale: scale ?? 1.0,
+      );
+    } else {
+      for (final client in clients.values) {
+        if (client.albums.contains(albumId)) {
+          return ExtendedImage.network(
+            client.getCoverUrl(albumId: albumId, discId: discId),
+            cache: true,
+            cacheKey: discId == null ? "$albumId" : "$albumId/$discId",
+            fit: fit ?? BoxFit.scaleDown,
+            filterQuality: FilterQuality.medium,
+            imageCacheName: '$albumId/$discId',
+            scale: scale ?? 1.0,
+          );
+        }
       }
     }
-    print(clients);
-    print(albumId);
+
     return Container(
       alignment: Alignment.center,
       color: Colors.blueGrey,

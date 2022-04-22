@@ -158,17 +158,13 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
   final int trackId;
 
   AnnilAudioSource._({
-    required String baseUri,
-    required String authorization,
+    required Uri uri,
     required this.albumId,
     required this.discId,
     required this.trackId,
-    PreferQuality preferBitrate = PreferQuality.Lossless,
     required MediaItem tag,
   }) : super(
-          Uri.parse(
-            '$baseUri/$albumId/$discId/$trackId?auth=$authorization&prefer_quality=${preferBitrate.toBitrateString()}',
-          ),
+          uri,
           // FIXME: iOS
           cacheFile: getExternalStorageDirectory()
               .then((root) =>
@@ -187,18 +183,43 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource._(
-      baseUri: annil.url,
-      authorization: annil.token,
+      uri: Uri.parse(
+        '${annil.url}/$albumId/$discId/$trackId?auth=${annil.token}&prefer_quality=${preferBitrate.toBitrateString()}',
+      ),
       albumId: albumId,
       discId: discId,
       trackId: trackId,
-      preferBitrate: preferBitrate,
       tag: MediaItem(
         id: '$albumId/$discId/$trackId',
         title: track?.title ?? "Unknown Title",
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
         artUri: Uri.parse(annil.getCoverUrl(albumId: albumId)),
+        displayDescription: track?.type.toString() ?? "normal",
+      ),
+    );
+  }
+
+  static Future<AnnilAudioSource> local({
+    required String albumId,
+    required int discId,
+    required int trackId,
+    PreferQuality preferBitrate = PreferQuality.Medium,
+  }) async {
+    var track = await Global.metadataSource!
+        .getTrack(albumId: albumId, discId: discId, trackId: trackId);
+    return AnnilAudioSource._(
+      uri: Uri.parse(''),
+      albumId: albumId,
+      discId: discId,
+      trackId: trackId,
+      tag: MediaItem(
+        id: '$albumId/$discId/$trackId',
+        title: track?.title ?? "Unknown Title",
+        album: track?.disc.album.title ?? "Unknown Album",
+        artist: track?.artist,
+        artUri: OfflineAnnilClient.instance
+            .getCoverUrl(albumId: albumId, discId: discId),
         displayDescription: track?.type.toString() ?? "normal",
       ),
     );
@@ -246,6 +267,11 @@ extension PreferBitrateToString on PreferQuality {
 }
 
 class OfflineAnnilClient implements BaseAnnilClient {
+  static OfflineAnnilClient _instance = OfflineAnnilClient._();
+  static get instance => OfflineAnnilClient._instance;
+
+  OfflineAnnilClient._();
+
   @override
   Future<List<String>> getAlbums() {
     // TODO: implement getAlbums
