@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
@@ -6,8 +8,23 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart'
     show MediaItem;
 import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
-class AnnilClient {
+abstract class BaseAnnilClient {
+  Future<List<String>> getAlbums();
+
+  Future<AudioSource> getAudio({
+    required String albumId,
+    required int discId,
+    required int trackId,
+    PreferQuality preferBitrate = PreferQuality.Lossless,
+  });
+
+  String getCoverUrl({required String albumId, int? discId});
+}
+
+class OnlineAnnilClient implements BaseAnnilClient {
   final Dio client;
   final String id;
   final String name;
@@ -19,7 +36,7 @@ class AnnilClient {
   // cached album list in client
   List<String> albums = [];
 
-  AnnilClient._({
+  OnlineAnnilClient._({
     required this.id,
     required this.name,
     required this.url,
@@ -28,14 +45,14 @@ class AnnilClient {
     this.local = false,
   }) : client = Dio(BaseOptions(baseUrl: url));
 
-  factory AnnilClient.remote({
+  factory OnlineAnnilClient.remote({
     required String id,
     required String name,
     required String url,
     required String token,
     required int priority,
   }) =>
-      AnnilClient._(
+      OnlineAnnilClient._(
         id: id,
         name: name,
         url: url,
@@ -44,13 +61,13 @@ class AnnilClient {
         local: false,
       );
 
-  factory AnnilClient.local({
+  factory OnlineAnnilClient.local({
     required String name,
     required String url,
     required String token,
     required int priority,
   }) =>
-      AnnilClient._(
+      OnlineAnnilClient._(
         id: Uuid().v4(),
         name: name,
         url: url,
@@ -71,8 +88,8 @@ class AnnilClient {
     };
   }
 
-  factory AnnilClient.fromJson(Map<String, dynamic> json) {
-    final client = AnnilClient._(
+  factory OnlineAnnilClient.fromJson(Map<String, dynamic> json) {
+    final client = OnlineAnnilClient._(
       id: json['id'] as String,
       name: json['name'] as String,
       url: json['url'] as String,
@@ -152,11 +169,16 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
           Uri.parse(
             '$baseUri/$albumId/$discId/$trackId?auth=$authorization&prefer_quality=${preferBitrate.toBitrateString()}',
           ),
+          // FIXME: iOS
+          cacheFile: getExternalStorageDirectory()
+              .then((root) =>
+                  p.join(root!.path, 'audio', albumId, "${discId}_$trackId"))
+              .then((path) => File(path)),
           tag: tag,
         );
 
   static Future<AnnilAudioSource> create({
-    required AnnilClient annil,
+    required OnlineAnnilClient annil,
     required String albumId,
     required int discId,
     required int trackId,
@@ -220,5 +242,30 @@ extension PreferBitrateToString on PreferQuality {
       case PreferQuality.Lossless:
         return "lossless";
     }
+  }
+}
+
+class OfflineAnnilClient implements BaseAnnilClient {
+  @override
+  Future<List<String>> getAlbums() {
+    // TODO: implement getAlbums
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<AudioSource> getAudio({
+    required String albumId,
+    required int discId,
+    required int trackId,
+    PreferQuality preferBitrate = PreferQuality.Lossless,
+  }) {
+    // TODO: implement getAudio
+    throw UnimplementedError();
+  }
+
+  @override
+  String getCoverUrl({required String albumId, int? discId}) {
+    // TODO: implement getCoverUrl
+    throw UnimplementedError();
   }
 }

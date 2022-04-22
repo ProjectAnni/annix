@@ -7,17 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AnnilController extends GetxController {
-  final RxMap<String, AnnilClient> clients = Map<String, AnnilClient>().obs;
+  final RxMap<String, OnlineAnnilClient> clients =
+      Map<String, OnlineAnnilClient>().obs;
   final RxList<String> albums = <String>[].obs;
 
   bool get hasClient => clients.isNotEmpty;
 
   /// Load state from shared preferences
   Future<void> init() async {
+    // TODO: initialize offline mode if necessary
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
     if (tokens != null) {
       for (String token in tokens) {
-        final client = AnnilClient.fromJson(jsonDecode(token));
+        final client = OnlineAnnilClient.fromJson(jsonDecode(token));
         clients[client.id] = client;
       }
     }
@@ -32,7 +34,7 @@ class AnnilController extends GetxController {
   }
 
   /// Add a list of clients to the combined client
-  Future<void> addClients(List<AnnilClient> newClients) async {
+  Future<void> addClients(List<OnlineAnnilClient> newClients) async {
     clients.addAll(Map.fromEntries(newClients.map((c) => MapEntry(c.id, c))));
     await save();
   }

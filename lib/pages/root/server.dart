@@ -220,7 +220,7 @@ class AnnivDialog extends StatelessWidget {
 ///////////////////////////////////////////////////////////////////////////////
 /// Annil
 class AnnilListTile extends StatelessWidget {
-  final AnnilClient annil;
+  final OnlineAnnilClient annil;
 
   const AnnilListTile({Key? key, required this.annil}) : super(key: key);
 
@@ -253,7 +253,7 @@ class AnnilDialogController extends GetxController {
 
 class AnnilDialog extends StatelessWidget {
   final AnnilDialogController _controller = AnnilDialogController();
-  final void Function(AnnilClient annil) onSubmit;
+  final void Function(OnlineAnnilClient annil) onSubmit;
 
   AnnilDialog({Key? key, required this.onSubmit}) : super(key: key);
 

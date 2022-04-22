@@ -146,11 +146,11 @@ class AnnivClient {
         .toList();
   }
 
-  Future<List<AnnilClient>> getAnnilClients() async {
+  Future<List<OnlineAnnilClient>> getAnnilClients() async {
     final credentials = await getCredentials();
 
     return credentials
-        .map((c) => AnnilClient.remote(
+        .map((c) => OnlineAnnilClient.remote(
               id: c.id,
               name: c.name,
               url: c.url,

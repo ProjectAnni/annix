@@ -345,10 +345,9 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
   ModifiedLockCachingAudioSource(
     this.uri, {
     this.headers,
-    File? cacheFile,
+    Future<File>? cacheFile,
     dynamic tag,
-  })  : cacheFile =
-            cacheFile != null ? Future.value(cacheFile) : _getCacheFile(uri),
+  })  : cacheFile = cacheFile != null ? cacheFile : _getCacheFile(uri),
         super(tag: tag) {
     _init();
   }

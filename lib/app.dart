@@ -13,14 +13,14 @@ class AnnixApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // annil
-    final annil = AnnilController();
-    Get.put(annil);
-    // anniv
-    final anniv = AnnivController();
-    Get.put(anniv);
     // playing
     Get.put(PlayingController());
+
+    // annil & anniv
+    final annil = AnnilController();
+    final anniv = AnnivController();
+    Get.put(annil);
+    Get.put(anniv);
 
     // initialization awaiter
     ever(InitializeController([annil.init(), anniv.init()]).done, (value) {
