@@ -18,8 +18,8 @@ class AnnixApp extends StatelessWidget {
 
     // annil & anniv
     final annil = AnnilController();
-    final anniv = AnnivController();
     Get.put(annil);
+    final anniv = AnnivController();
     Get.put(anniv);
 
     // initialization awaiter
