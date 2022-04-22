@@ -295,20 +295,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  drift:
-    dependency: transitive
-    description:
-      name: drift
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.5.0"
-  equatable:
-    dependency: transitive
-    description:
-      name: equatable
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.3"
   extended_image:
     dependency: "direct main"
     description:
@@ -882,13 +868,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
-  sqlite3:
-    dependency: transitive
-    description:
-      name: sqlite3
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.6.4"
   stack_trace:
     dependency: transitive
     description:
@@ -896,20 +875,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.0"
-  stash:
-    dependency: "direct main"
-    description:
-      name: stash
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.1"
-  stash_sqlite:
-    dependency: "direct main"
-    description:
-      name: stash_sqlite
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.1"
   stream_channel:
     dependency: transitive
     description:

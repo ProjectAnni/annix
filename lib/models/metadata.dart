@@ -1,6 +1,10 @@
 import 'package:annix/models/anniv.dart';
 import 'package:toml/toml.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'metadata.g.dart';
+
+@JsonSerializable()
 class ReleaseDate {
   final int year;
   final int? month;
@@ -49,6 +53,10 @@ class ReleaseDate {
     }
     return result;
   }
+
+  factory ReleaseDate.fromJson(Map<String, dynamic> json) =>
+      _$ReleaseDateFromJson(json);
+  Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
 }
 
 enum TrackType { Normal, Instrumental, Absolute, Drama, Radio, Vocal, Unknown }
@@ -72,6 +80,7 @@ TrackType stringToTrackType(String value) {
   }
 }
 
+@JsonSerializable()
 class Album {
   final String albumId;
   final String title;
@@ -137,8 +146,12 @@ class Album {
       discs: discs.map((e) => e.toDiscInfo()).toList(),
     );
   }
+
+  factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
+  Map<String, dynamic> toJson() => _$AlbumToJson(this);
 }
 
+@JsonSerializable()
 class Disc {
   late final Album album;
   final String? _title;
@@ -196,8 +209,12 @@ class Disc {
       tracks: tracks.map((e) => e.toTrackInfo()).toList(),
     );
   }
+
+  factory Disc.fromJson(Map<String, dynamic> json) => _$DiscFromJson(json);
+  Map<String, dynamic> toJson() => _$DiscToJson(this);
 }
 
+@JsonSerializable()
 class Track {
   late final Disc disc;
   final String title;
@@ -234,4 +251,7 @@ class Track {
       tags: tags ?? [],
     );
   }
+
+  factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
+  Map<String, dynamic> toJson() => _$TrackToJson(this);
 }
