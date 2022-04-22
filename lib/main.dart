@@ -18,6 +18,7 @@ Future<void> main() async {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'rs.anni.annix.audio',
       androidNotificationChannelName: 'Annix Audio playback',
+      androidNotificationIcon: 'drawable/ic_notification',
       androidNotificationOngoing: true,
       preloadArtwork: true,
     );
