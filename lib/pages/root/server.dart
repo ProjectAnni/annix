@@ -51,9 +51,7 @@ class AnnivCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: CircleAvatar(
-                  child: Obx(() {
-                    return Text(info.user.nickname.substring(0, 1));
-                  }),
+                  child: Text(info.user.nickname.substring(0, 1)),
                 ),
               ),
               Expanded(
@@ -63,18 +61,14 @@ class AnnivCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Obx(() {
-                      return Text(
-                        info.user.nickname,
-                        style: context.textTheme.titleLarge,
-                      );
-                    }),
-                    Obx(() {
-                      return Text(
-                        info.site.siteName,
-                        style: context.textTheme.bodyMedium,
-                      );
-                    }),
+                    Text(
+                      info.user.nickname,
+                      style: context.textTheme.titleLarge,
+                    ),
+                    Text(
+                      info.site.siteName,
+                      style: context.textTheme.bodyMedium,
+                    ),
                   ],
                 ),
               ),
