@@ -15,7 +15,8 @@ class AnnixApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // network
-    Get.put(NetworkController());
+    final network = NetworkController();
+    Get.put(network);
     // playing
     Get.put(PlayingController());
 
@@ -26,7 +27,10 @@ class AnnixApp extends StatelessWidget {
     Get.put(anniv);
 
     // initialization awaiter
-    ever(InitializeController([annil.init(), anniv.init()]).done, (value) {
+    ever(
+        InitializeController([
+          network.init().then((_) => Future.wait([annil.init(), anniv.init()]))
+        ]).done, (value) {
       Get.offAllNamed('/');
     });
 

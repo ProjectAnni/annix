@@ -122,7 +122,6 @@ class AnnilController extends GetxController {
             cacheKey: discId == null ? "$albumId" : "$albumId/$discId",
             fit: fit ?? BoxFit.scaleDown,
             filterQuality: FilterQuality.medium,
-            imageCacheName: '$albumId/$discId',
             scale: scale ?? 1.0,
           );
         }
