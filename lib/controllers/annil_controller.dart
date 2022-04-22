@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:annix/controllers/offline_controller.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:extended_image/extended_image.dart';
@@ -12,7 +13,7 @@ class AnnilController extends GetxController {
   final RxList<String> albums = <String>[].obs;
   bool get hasClient => clients.isNotEmpty;
 
-  final RxBool offline = false.obs;
+  NetworkController _network = Get.find();
 
   /// Load state from shared preferences
   Future<void> init() async {
@@ -24,7 +25,9 @@ class AnnilController extends GetxController {
         clients[client.id] = client;
       }
     }
-    await refresh();
+    if (_network.isOnline.value) {
+      await refresh();
+    }
   }
 
   /// Save the current state of the combined client to shared preferences
@@ -73,7 +76,7 @@ class AnnilController extends GetxController {
     required int trackId,
     PreferQuality preferBitrate = PreferQuality.Lossless,
   }) {
-    if (offline.value) {
+    if (!_network.isOnline.value) {
       return AnnilAudioSource.local(
         albumId: albumId,
         discId: discId,
@@ -81,6 +84,7 @@ class AnnilController extends GetxController {
         preferBitrate: preferBitrate,
       );
     } else {
+      // TODO: add option to not use mobile network
       for (final client in clients.values) {
         if (client.albums.contains(albumId)) {
           return AnnilAudioSource.create(
@@ -98,7 +102,8 @@ class AnnilController extends GetxController {
 
   Widget cover(
       {required String albumId, int? discId, BoxFit? fit, double? scale}) {
-    if (offline.value) {
+    if (!_network.isOnline.value) {
+      // offline, load cached cover
       return ExtendedImage.network(
         'NO URL',
         cache: true,
