@@ -24,7 +24,7 @@ class AnnixApp extends StatelessWidget {
 
     // initialization awaiter
     ever(InitializeController([annil.init(), anniv.init()]).done, (value) {
-      Get.toNamed('/');
+      Get.offAllNamed('/');
     });
 
     return GetMaterialApp(
