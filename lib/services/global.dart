@@ -1,10 +1,10 @@
 import 'package:annix/metadata/metadata_source.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stash_memory/stash_memory.dart';
+import 'package:stash_sqlite/stash_sqlite.dart';
 
 class Global {
   static late SharedPreferences preferences;
-  static final cacheStore = newMemoryCacheStore();
+  static final store = newSqliteLocalVaultStore();
 
   static BaseMetadataSource? metadataSource;
 

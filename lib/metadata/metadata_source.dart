@@ -1,3 +1,4 @@
+import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:stash/stash_api.dart';
@@ -22,7 +23,7 @@ abstract class BaseMetadataSource {
       bool updated = await doUpdate();
       if (updated) {
         // metadata repository updated, invalidate cache
-        await _albumCache.clear();
+        await _albumVault.clear();
       }
       return updated;
     }
@@ -43,27 +44,23 @@ abstract class BaseMetadataSource {
   bool get needPersist;
 
   /// Private album object cache for album object reading
-  static final _albumCache = Global.cacheStore.cache(
-    name: 'album',
-    maxEntries: 64,
-    evictionPolicy: LruEvictionPolicy(),
-  );
+  static final _albumVault = Global.store.vault<Album>(name: 'album');
 
   /// Get album information
   ///
   /// DO NOT OVERRIDE THIS METHOD
   Future<Album?> getAlbum({required String albumId}) async {
-    if (!await _albumCache.containsKey(albumId)) {
+    if (!await _albumVault.containsKey(albumId)) {
       // album not in cache, load it from source
       Album? album = await getAlbumDetail(albumId: albumId);
-      if (album == null) {
-        // album not found
+      if (!this.needPersist || album == null) {
+        // does not need persist, or album not found
         return null;
       } else {
-        await _albumCache.put(albumId, album);
+        await _albumVault.put(albumId, album);
       }
     }
-    return await _albumCache.get(albumId);
+    return await _albumVault.get(albumId);
   }
 
   /// Actual method to get album detail from metadata source
