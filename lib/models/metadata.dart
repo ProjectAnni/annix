@@ -80,7 +80,7 @@ TrackType stringToTrackType(String value) {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Album {
   final String albumId;
   final String title;
@@ -151,9 +151,11 @@ class Album {
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Disc {
+  @JsonKey(ignore: true)
   late final Album album;
+
   final String? _title;
   final String catalog;
   final String? _artist;
@@ -216,7 +218,9 @@ class Disc {
 
 @JsonSerializable()
 class Track {
+  @JsonKey(ignore: true)
   late final Disc disc;
+
   final String title;
   final String? _artist;
   final TrackType? _type;

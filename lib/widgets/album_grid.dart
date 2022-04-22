@@ -27,6 +27,7 @@ class _AlbumGridState extends State<AlbumGrid> {
   Widget build(BuildContext context) {
     return Card(
       child: FutureBuilder<Album?>(
+        // TODO: still show cover if metadata not found
         future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
         builder: (ctx, snapshot) {
           if (!snapshot.hasData) {

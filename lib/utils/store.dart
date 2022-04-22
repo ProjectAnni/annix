@@ -10,6 +10,7 @@ class AnnixStore {
   AnnixStore()
       : _database = openDatabase(
           "store.db",
+          version: 1,
           onCreate: ((db, version) async {
             await db.execute('''
 CREATE TABLE store(
@@ -28,7 +29,7 @@ CREATE TABLE store(
   }
 }
 
-class AnnixStoreCategory<V> {
+class AnnixStoreCategory {
   AnnixStore _store;
   String _category;
 
@@ -43,8 +44,10 @@ class AnnixStoreCategory<V> {
         [this._category, key]);
     if (values.isEmpty) {
       return null;
-    } else {
+    } else if (values[0]['value'] != null) {
       return jsonDecode(values[0]['value'] as String);
+    } else {
+      return null;
     }
   }
 

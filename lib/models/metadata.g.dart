@@ -40,9 +40,9 @@ Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'catalog': instance.catalog,
       'artist': instance.artist,
       'type': _$TrackTypeEnumMap[instance.type],
-      'date': instance.date,
+      'date': instance.date.toJson(),
       'tags': instance.tags,
-      'discs': instance.discs,
+      'discs': instance.discs.map((e) => e.toJson()).toList(),
     };
 
 const _$TrackTypeEnumMap = {
@@ -64,13 +64,12 @@ Disc _$DiscFromJson(Map<String, dynamic> json) => Disc(
       tracks: (json['tracks'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),
-    )..album = Album.fromJson(json['album'] as Map<String, dynamic>);
+    );
 
 Map<String, dynamic> _$DiscToJson(Disc instance) => <String, dynamic>{
-      'album': instance.album,
       'catalog': instance.catalog,
       'tags': instance.tags,
-      'tracks': instance.tracks,
+      'tracks': instance.tracks.map((e) => e.toJson()).toList(),
       'title': instance.title,
       'artist': instance.artist,
       'type': _$TrackTypeEnumMap[instance.type],
@@ -83,10 +82,9 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track(
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
-    )..disc = Disc.fromJson(json['disc'] as Map<String, dynamic>);
+    );
 
 Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
-      'disc': instance.disc,
       'title': instance.title,
       'tags': instance.tags,
       'artist': instance.artist,
