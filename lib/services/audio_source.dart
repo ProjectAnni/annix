@@ -234,8 +234,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:annix/services/global.dart';
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/services/platform.dart';
+import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
+import 'package:get/get.dart' hide Rx;
 import 'package:just_audio/just_audio.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
@@ -438,8 +440,12 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     }
     final duration = int.parse(response.headers['x-duration-seconds']![0]);
     final originalSize = int.parse(response.headers['x-origin-size']![0]);
-    print(this.uri.path);
-    Global.durations[this.uri.path.substring(1)] = Duration(seconds: duration);
+    final id = (super.tag as MediaItem).id;
+
+    PlayingController playing = Get.find();
+    playing.durationMap[id] = Duration(seconds: duration);
+    playing.durationMap.refresh();
+
     (await _partialCacheFile).createSync(recursive: true);
     // TODO: Should close sink after done, but it throws an error.
     // ignore: close_sinks

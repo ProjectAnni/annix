@@ -11,17 +11,13 @@ class PlayingController extends GetxController {
     this.isPlaying.bindStream(player.playingStream);
     this.progress.bindStream(player.positionStream);
     this.buffered.bindStream(player.bufferedPositionStream);
-    // FIXME: use duration in header
-    this
-        .duration
-        .bindStream(player.durationStream.map((t) => t ?? Duration.zero));
+    this.duration.bindStream(player.durationStream);
 
     this.loopMode.bindStream(player.loopModeStream);
     this.shuffleEnabled.bindStream(player.shuffleModeEnabledStream);
     this.playingIndex.bindStream(player.currentIndexStream);
 
     this.queue.listen((queue) {
-      print(queue);
       final index = this.playingIndex.value;
       if (index == null || index >= queue.length) {
         currentPlaying.value = null;
@@ -30,7 +26,6 @@ class PlayingController extends GetxController {
       }
     });
     this.playingIndex.listen((index) {
-      print(this.queue);
       if (index == null || index >= this.queue.length) {
         currentPlaying.value = null;
       } else {
@@ -47,7 +42,9 @@ class PlayingController extends GetxController {
 
   Rx<Duration> progress = Duration.zero.obs;
   Rx<Duration> buffered = Duration.zero.obs;
-  Rx<Duration> duration = Duration.zero.obs;
+  Rxn<Duration> duration = Rxn();
+
+  RxMap<String, Duration> durationMap = RxMap();
 
   Future<void> play() async {
     await player.play();
@@ -97,5 +94,9 @@ class PlayingController extends GetxController {
     await player.setAudioSource(ConcatenatingAudioSource(children: songs),
         initialIndex: initialIndex);
     await play();
+  }
+
+  Duration getDuration(String id) {
+    return this.duration.value ?? this.durationMap[id] ?? Duration.zero;
   }
 }
