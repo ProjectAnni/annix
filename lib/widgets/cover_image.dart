@@ -138,8 +138,8 @@ class LRUImageCache {
         do {
           if (_identifiers.isNotEmpty) {
             final lastIdentifier = _identifiers.removeLast();
-            final imageBytesToRemove = _map.remove(lastIdentifier)!;
-            currentBytes -= imageBytesToRemove.length;
+            final imageBytesToRemove = _map.remove(lastIdentifier);
+            currentBytes -= imageBytesToRemove?.length ?? 0;
           } else {
             break;
           }

@@ -23,8 +23,6 @@ class PlayingScreen extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Center(
-                // child: Padding(
-                // padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Card(
                   elevation: 0,
                   clipBehavior: Clip.hardEdge,
@@ -46,7 +44,6 @@ class PlayingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // ),
               ),
             ),
             Column(
@@ -64,6 +61,7 @@ class PlayingScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                SizedBox(height: 24),
                 Obx(
                   () => ProgressBar(
                     progress: playing.progress.value,
