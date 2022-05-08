@@ -25,7 +25,13 @@ dependencies:
   #   git:
   #     url: https://github.com/ProjectAnni/just_audio_libwinmedia.git
   #     ref: fork
-  audio_video_progress_bar: ^0.10.0
+
+  # https://github.com/suragch/audio_video_progress_bar/issues/23
+  # use official version if https://github.com/suragch/audio_video_progress_bar/pull/29 was merged
+  audio_video_progress_bar:
+    git:
+      url: https://github.com/Hwan-seok/audio_video_progress_bar
+      ref: 26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b
   smooth_page_indicator: ^1.0.0+2
 
   toml: ^0.12.0

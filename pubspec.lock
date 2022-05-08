@@ -67,9 +67,11 @@ packages:
   audio_video_progress_bar:
     dependency: "direct main"
     description:
-      name: audio_video_progress_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b"
+      resolved-ref: "26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b"
+      url: "https://github.com/Hwan-seok/audio_video_progress_bar"
+    source: git
     version: "0.10.0"
   boolean_selector:
     dependency: transitive
