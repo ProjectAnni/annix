@@ -17,26 +17,27 @@ class AlbumsView extends StatelessWidget {
           BaseSliverAppBar(title: Text("Albums")),
         ];
       },
-      body: GridView.custom(
-        padding: EdgeInsets.all(4.0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 4,
-          crossAxisSpacing: 4,
-        ),
-        childrenDelegate: SliverChildBuilderDelegate(
-          (context, index) {
-            if (index == annil.albums.length) {
-              return null;
-            }
-
-            var albumId = annil.albums[index];
-            return AlbumGrid(
-              albumId: albumId,
-              cover: annil.cover(albumId: albumId),
-            );
-          },
-        ),
+      body: Obx(
+        () {
+          return GridView.builder(
+            padding: EdgeInsets.all(4.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+            ),
+            itemCount: annil.albums.length,
+            itemBuilder: (context, index) {
+              return Obx(() {
+                final albumId = annil.albums[index];
+                return AlbumGrid(
+                  albumId: albumId,
+                  cover: annil.cover(albumId: albumId),
+                );
+              });
+            },
+          );
+        },
       ),
     );
   }

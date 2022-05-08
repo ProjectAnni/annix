@@ -40,7 +40,7 @@ class NetworkController extends GetxController {
       // bluetooth connection is slow, treat as no network
       case ConnectivityResult.bluetooth:
         isOnline.value = false;
-        isMobile.value = true;
+        isMobile.value = false;
         break;
     }
   }

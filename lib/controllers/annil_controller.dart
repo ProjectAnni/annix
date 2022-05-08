@@ -61,6 +61,9 @@ class AnnilController extends GetxController {
   /// Refresh all annil servers
   Future<void> refresh() async {
     if (_network.isOnline.value) {
+      // wait for a while
+      // TODO: refresh after network is actually available
+      await Future.delayed(Duration(seconds: 2));
       var newAlbums = (await Future.wait(clients.values.map((client) async {
         try {
           return await client.getAlbums();
