@@ -280,6 +280,7 @@ class OfflineAnnilClient implements BaseAnnilClient {
   Future<List<String>> getAlbums() async {
     final root = await getExternalStorageDirectory()
         .then((root) => p.join(root!.path, 'audio'));
+    // TODO: filter empty folders
     return Directory(root)
         .list()
         .map((entry) => p.basename(entry.path))

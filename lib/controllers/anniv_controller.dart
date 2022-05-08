@@ -282,6 +282,13 @@ class AnnivController extends GetxController {
         final user = await anniv.getUserInfo();
         this.info.value = SiteUserInfo(site: site, user: user);
         await this._saveInfo();
+      } on DioError catch (e) {
+        if (e.error["status"] == 902002) {
+          // 鉴权失败，退出登录
+          this.info.value = null;
+          await this._saveInfo();
+        }
+        return;
       } catch (e) {
         return;
       }
@@ -319,6 +326,9 @@ class AnnivController extends GetxController {
       final user = this.info.value!.user.toJson();
       await Global.preferences.setString("anniv_site", jsonEncode(site));
       await Global.preferences.setString("anniv_user", jsonEncode(user));
+    } else {
+      await Global.preferences.remove("anniv_site");
+      await Global.preferences.remove("anniv_user");
     }
   }
 }
