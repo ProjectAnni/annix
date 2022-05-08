@@ -74,6 +74,10 @@ class PlayingController extends GetxController {
     await player.seek(position);
   }
 
+  Future<void> jump(int index) async {
+    await player.seek(Duration.zero, index: index);
+  }
+
   Future<void> setLoopMode(LoopMode mode) async {
     await player.setLoopMode(mode);
   }

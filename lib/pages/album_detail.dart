@@ -37,6 +37,7 @@ class AlbumDetailScreen extends StatelessWidget {
       list.addAll(
         disc.tracks.map(
           (track) => ListTile(
+            // TODO: indicate playing track
             leading: Text("${trackId++}"),
             title: Text('${track.title}', overflow: TextOverflow.ellipsis),
             subtitle: Marquee(child: Text(track.artist)),
