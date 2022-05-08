@@ -539,8 +539,10 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
         request.complete(StreamAudioResponse(
           rangeRequestsSupported: originSupportsRangeRequests,
           sourceLength: start != null ? sourceLength : null,
-          contentLength:
-              effectiveEnd != null ? effectiveEnd - effectiveStart : null,
+          // FIXME: do not set fake content length
+          contentLength: effectiveEnd != null
+              ? effectiveEnd - effectiveStart
+              : int.tryParse(response.headers['x-origin-size']![0]),
           offset: start,
           contentType: mimeType,
           stream: responseStream.asBroadcastStream(),

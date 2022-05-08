@@ -101,7 +101,7 @@ class AnnilController extends GetxController {
             discId: discId,
             trackId: trackId,
             // TODO: select quality
-            preferBitrate: PreferQuality.Lossless,
+            preferBitrate: PreferQuality.Medium,
           );
         }
       }
