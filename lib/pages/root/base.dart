@@ -11,11 +11,6 @@ class BaseAppBar extends StatelessWidget {
     return AppBar(
       title: title,
       centerTitle: true,
-      backgroundColor: context.isDarkMode
-          ? context.theme.colorScheme.surface
-          : context.theme.colorScheme.onPrimary,
-      foregroundColor: context.theme.colorScheme.onSurface,
-      elevation: 0,
     );
   }
 }
@@ -33,11 +28,6 @@ class BaseSliverAppBar extends StatelessWidget {
       snap: true,
       floating: true,
       centerTitle: true,
-      backgroundColor: context.isDarkMode
-          ? context.theme.colorScheme.surface
-          : context.theme.colorScheme.onPrimary,
-      foregroundColor: context.theme.colorScheme.onSurface,
-      // forceElevated: true,
     );
   }
 }
