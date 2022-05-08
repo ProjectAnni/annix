@@ -403,7 +403,7 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     if (file.existsSync()) {
       return (await _mimeFile).readAsString();
     } else {
-      return 'audio/mpeg';
+      return 'audio/flac';
     }
   }
 

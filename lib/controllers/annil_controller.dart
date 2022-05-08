@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:annix/controllers/offline_controller.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:annix/widgets/cover_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -113,24 +113,21 @@ class AnnilController extends GetxController {
       {required String albumId, int? discId, BoxFit? fit, double? scale}) {
     if (!_network.isOnline.value) {
       // offline, load cached cover
-      return ExtendedImage.network(
-        'NO URL',
-        cache: true,
-        cacheKey: OfflineAnnilClient.cacheKey(albumId, discId: discId),
+      return CoverImage(
+        albumId: albumId,
+        discId: discId,
         fit: fit ?? BoxFit.scaleDown,
         filterQuality: FilterQuality.medium,
-        scale: scale ?? 1.0,
       );
     } else {
       for (final client in clients.values) {
         if (client.albums.contains(albumId)) {
-          return ExtendedImage.network(
-            client.getCoverUrl(albumId: albumId, discId: discId),
-            cache: true,
-            cacheKey: OfflineAnnilClient.cacheKey(albumId, discId: discId),
+          return CoverImage(
+            albumId: albumId,
+            discId: discId,
+            remoteUrl: client.getCoverUrl(albumId: albumId, discId: discId),
             fit: fit ?? BoxFit.scaleDown,
             filterQuality: FilterQuality.medium,
-            scale: scale ?? 1.0,
           );
         }
       }
