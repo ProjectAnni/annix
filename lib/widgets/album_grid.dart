@@ -27,13 +27,8 @@ class _AlbumGridState extends State<AlbumGrid> {
   Widget build(BuildContext context) {
     return Card(
       child: FutureBuilder<Album?>(
-        // TODO: still show cover if metadata not found
         future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
         builder: (ctx, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
-
           return InkWell(
             child: Stack(
               fit: StackFit.expand,
@@ -42,30 +37,34 @@ class _AlbumGridState extends State<AlbumGrid> {
                   tag: widget.tag,
                   child: widget.cover,
                 ),
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  padding: EdgeInsets.all(4.0),
-                  child: Text(
-                    '${snapshot.data?.title}',
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      backgroundColor: context
-                          .theme.colorScheme.secondaryContainer
-                          .withOpacity(0.8),
-                    ),
-                    softWrap: false,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+                snapshot.hasData
+                    ? Container(
+                        alignment: Alignment.bottomLeft,
+                        padding: EdgeInsets.all(4.0),
+                        child: Text(
+                          '${snapshot.data?.title}',
+                          style: context.textTheme.bodyLarge?.copyWith(
+                            backgroundColor: context
+                                .theme.colorScheme.secondaryContainer
+                                .withOpacity(0.8),
+                          ),
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    : Container(),
               ],
             ),
             onTap: () {
-              Get.to(
-                () => AlbumDetailScreen(
-                  albumInfo: snapshot.data!.toAlbumInfo(),
-                  tag: widget.tag,
-                ),
-                duration: Duration(milliseconds: 300),
-              );
+              if (snapshot.hasData) {
+                Get.to(
+                  () => AlbumDetailScreen(
+                    albumInfo: snapshot.data!.toAlbumInfo(),
+                    tag: widget.tag,
+                  ),
+                  duration: Duration(milliseconds: 300),
+                );
+              }
             },
           );
         },

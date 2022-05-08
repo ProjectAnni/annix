@@ -274,7 +274,6 @@ class AnnivController extends GetxController {
     this.isLogin.bindStream(this.info.stream.map((user) => user != null));
   }
 
-  // TODO: believe user is login unless meet incorrect response(403), or unauthorized error code in anniv
   Future<void> checkLogin(AnnivClient? anniv) async {
     if (anniv != null) {
       try {
