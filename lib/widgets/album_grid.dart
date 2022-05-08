@@ -26,6 +26,7 @@ class _AlbumGridState extends State<AlbumGrid> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      clipBehavior: Clip.hardEdge,
       child: FutureBuilder<Album?>(
         future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
         builder: (ctx, snapshot) {
