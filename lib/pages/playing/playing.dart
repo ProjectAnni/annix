@@ -1,5 +1,5 @@
-import 'package:annix/pages/playing/control.dart';
-import 'package:annix/pages/playing/queue.dart';
+import 'package:annix/pages/playing/playing_control.dart';
+import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
