@@ -15,7 +15,7 @@ class AlbumDetailScreen extends StatelessWidget {
       {Key? key, required this.albumInfo, required this.tag})
       : super(key: key);
 
-  List<Widget> getAlbumTracks() {
+  List<Widget> getAlbumTracks(BuildContext context) {
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -38,8 +38,9 @@ class AlbumDetailScreen extends StatelessWidget {
         disc.tracks.map(
           (track) => ListTile(
             leading: Text("${trackId++}"),
-            title: Text('${track.title}'),
+            title: Text('${track.title}', overflow: TextOverflow.ellipsis),
             subtitle: Marquee(child: Text(track.artist)),
+            minLeadingWidth: 16,
           ),
         ),
       );
@@ -81,7 +82,7 @@ class AlbumDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AnnilController annil = Get.find();
-    var tracks = getAlbumTracks();
+    var tracks = getAlbumTracks(context);
 
     return Scaffold(
       body: NestedScrollView(
