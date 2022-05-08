@@ -2,15 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:synchronized/synchronized.dart';
 
-Future<String> getCoverCachePath(String albumId, int? discId) {
+String getCoverCachePath(String albumId, int? discId) {
   final fileName = "${discId == null ? "$albumId" : "${albumId}_$discId"}.jpg";
-  return getExternalStorageDirectory()
-      .then((root) => p.join(root!.path, "cover", fileName));
+  return p.join(Global.storageRoot, "cover", fileName);
 }
 
 class CoverImage extends StatelessWidget {
@@ -31,7 +30,7 @@ class CoverImage extends StatelessWidget {
   }) : super(key: key);
 
   Future<Uint8List> getCoverImage() async {
-    final coverImagePath = await getCoverCachePath(albumId, discId);
+    final coverImagePath = getCoverCachePath(albumId, discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
       if (remoteUrl == null) {

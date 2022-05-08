@@ -15,7 +15,7 @@ class AlbumDetailScreen extends StatelessWidget {
       {Key? key, required this.albumInfo, required this.tag})
       : super(key: key);
 
-  List<Widget> getAlbumTracks(BuildContext context) {
+  List<Widget> getAlbumTracks(BuildContext context, AnnilController annil) {
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -36,13 +36,22 @@ class AlbumDetailScreen extends StatelessWidget {
       var trackId = 1;
       list.addAll(
         disc.tracks.map(
-          (track) => ListTile(
+          (track) {
+            final trackIndex = trackId;
+            trackId++;
             // TODO: indicate playing track
-            leading: Text("${trackId++}"),
-            title: Text('${track.title}', overflow: TextOverflow.ellipsis),
-            subtitle: Marquee(child: Text(track.artist)),
-            minLeadingWidth: 16,
-          ),
+            return ListTile(
+              leading: Text("$trackIndex"),
+              title: Text('${track.title}', overflow: TextOverflow.ellipsis),
+              subtitle: Marquee(child: Text(track.artist)),
+              minLeadingWidth: 16,
+              enabled: annil.isAvailable(
+                albumId: albumInfo.albumId,
+                discId: discId,
+                trackId: trackIndex,
+              ),
+            );
+          },
         ),
       );
       discId++;
@@ -56,11 +65,19 @@ class AlbumDetailScreen extends StatelessWidget {
     albumInfo.discs.forEach((disc) {
       var trackId = 1;
       disc.tracks.forEach((element) {
-        songs.add(Song(
+        // check if  available
+        final song = Song(
           albumId: albumInfo.albumId,
           discId: discId,
           trackId: trackId++,
-        ));
+        );
+        if (annil.isAvailable(
+          albumId: song.albumId,
+          discId: song.discId,
+          trackId: song.trackId,
+        )) {
+          songs.add(song);
+        }
       });
       discId++;
     });
@@ -83,7 +100,7 @@ class AlbumDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AnnilController annil = Get.find();
-    var tracks = getAlbumTracks(context);
+    var tracks = getAlbumTracks(context, annil);
 
     return Scaffold(
       body: NestedScrollView(

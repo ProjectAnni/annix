@@ -139,4 +139,17 @@ class AnnilController extends GetxController {
       child: Text("？"),
     );
   }
+
+  bool isAvailable({
+    required String albumId,
+    required int discId,
+    required int trackId,
+  }) {
+    if (_network.isOnline.value) {
+      return true;
+    } else {
+      return OfflineAnnilClient.instance
+          .isAvailable(albumId: albumId, discId: discId, trackId: trackId);
+    }
+  }
 }

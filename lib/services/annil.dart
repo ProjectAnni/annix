@@ -10,7 +10,6 @@ import 'package:just_audio_background/just_audio_background.dart'
     show MediaItem;
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 abstract class BaseAnnilClient {
   Future<List<String>> getAlbums();
@@ -157,9 +156,8 @@ class OnlineAnnilClient implements BaseAnnilClient {
   }
 }
 
-Future<String> getAudioCachePath(String albumId, int discId, int trackId) {
-  return getExternalStorageDirectory().then(
-      (root) => p.join(root!.path, 'audio', albumId, "${discId}_$trackId"));
+String getAudioCachePath(String albumId, int discId, int trackId) {
+  return p.join(Global.storageRoot, 'audio', albumId, "${discId}_$trackId");
 }
 
 class AnnilAudioSource extends ModifiedLockCachingAudioSource {
@@ -175,9 +173,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required MediaItem tag,
   }) : super(
           uri,
-          // FIXME: iOS
-          cacheFile: getAudioCachePath(albumId, discId, trackId)
-              .then((path) => File(path)),
+          cacheFile: File(getAudioCachePath(albumId, discId, trackId)),
           tag: tag,
         );
 
@@ -203,7 +199,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
         // TODO: use disc cover
-        artUri: File(await getCoverCachePath(albumId, null)).uri,
+        artUri: File(getCoverCachePath(albumId, null)).uri,
         displayDescription: track?.type.toString() ?? "normal",
       ),
     );
@@ -227,7 +223,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
         // TODO: use disc cover
-        artUri: File(await getCoverCachePath(albumId, null)).uri,
+        artUri: File(getCoverCachePath(albumId, null)).uri,
         displayDescription: track?.type.toString() ?? "normal",
       ),
     );
@@ -282,11 +278,18 @@ class OfflineAnnilClient implements BaseAnnilClient {
 
   @override
   Future<List<String>> getAlbums() async {
-    final root = await getExternalStorageDirectory()
-        .then((root) => p.join(root!.path, 'audio'));
-    // TODO: filter empty folders
+    final root = p.join(Global.storageRoot, 'audio');
     return Directory(root)
         .list()
+        .where((entry) {
+          if (entry is! Directory) {
+            return false;
+          }
+          // return true if music file exists (any file with no extension)
+          return entry
+              .listSync()
+              .any((e) => e is File && !p.basename(e.path).contains('.'));
+        })
         .map((entry) => p.basename(entry.path))
         .toList();
   }
@@ -298,7 +301,7 @@ class OfflineAnnilClient implements BaseAnnilClient {
     required int trackId,
     required PreferQuality preferBitrate,
   }) async {
-    final path = await getAudioCachePath(albumId, discId, trackId);
+    final path = getAudioCachePath(albumId, discId, trackId);
     return AudioSource.uri(Uri.parse("file://" + path));
   }
 
@@ -310,5 +313,14 @@ class OfflineAnnilClient implements BaseAnnilClient {
 
   static String cacheKey(String albumId, {int? discId}) {
     return discId == null ? "$albumId" : "$albumId/$discId";
+  }
+
+  bool isAvailable({
+    required String albumId,
+    required int discId,
+    required int trackId,
+  }) {
+    final path = getAudioCachePath(albumId, discId, trackId);
+    return File(path).existsSync();
   }
 }
