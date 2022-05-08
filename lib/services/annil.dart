@@ -19,7 +19,7 @@ abstract class BaseAnnilClient {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality preferBitrate = PreferQuality.Lossless,
+    required PreferQuality preferBitrate,
   });
 
   String getCoverUrl({required String albumId, int? discId});
@@ -52,15 +52,19 @@ class OnlineAnnilClient implements BaseAnnilClient {
     required String url,
     required String token,
     required int priority,
-  }) =>
-      OnlineAnnilClient._(
-        id: id,
-        name: name,
-        url: url,
-        token: token,
-        priority: priority,
-        local: false,
-      );
+  }) {
+    if (url.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
+    }
+    return OnlineAnnilClient._(
+      id: id,
+      name: name,
+      url: url,
+      token: token,
+      priority: priority,
+      local: false,
+    );
+  }
 
   factory OnlineAnnilClient.local({
     required String name,
@@ -133,7 +137,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality preferBitrate = PreferQuality.Lossless,
+    required PreferQuality preferBitrate,
   }) {
     return AnnilAudioSource.create(
       annil: this,
@@ -182,13 +186,13 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality preferBitrate = PreferQuality.Medium,
+    required PreferQuality preferBitrate,
   }) async {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource._(
       uri: Uri.parse(
-        '${annil.url}/$albumId/$discId/$trackId?auth=${annil.token}&prefer_quality=${preferBitrate.toBitrateString()}',
+        '${annil.url}/$albumId/$discId/$trackId?auth=${annil.token}&quality=${preferBitrate.toBitrateString()}',
       ),
       albumId: albumId,
       discId: discId,
@@ -208,7 +212,6 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality preferBitrate = PreferQuality.Medium,
   }) async {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
@@ -292,7 +295,7 @@ class OfflineAnnilClient implements BaseAnnilClient {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality preferBitrate = PreferQuality.Lossless,
+    required PreferQuality preferBitrate,
   }) async {
     final path = await getCachePath(albumId, discId, trackId);
     return AudioSource.uri(Uri.parse("file://" + path));

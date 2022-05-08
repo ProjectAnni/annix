@@ -84,14 +84,12 @@ class AnnilController extends GetxController {
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality preferBitrate = PreferQuality.Lossless,
   }) {
     if (!_network.isOnline.value) {
       return AnnilAudioSource.local(
         albumId: albumId,
         discId: discId,
         trackId: trackId,
-        preferBitrate: preferBitrate,
       );
     } else {
       // TODO: add option to not use mobile network
@@ -102,7 +100,8 @@ class AnnilController extends GetxController {
             albumId: albumId,
             discId: discId,
             trackId: trackId,
-            preferBitrate: preferBitrate,
+            // TODO: select quality
+            preferBitrate: PreferQuality.Lossless,
           );
         }
       }

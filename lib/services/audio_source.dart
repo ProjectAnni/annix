@@ -235,7 +235,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:annix/controllers/playing_controller.dart';
-import 'package:annix/services/platform.dart';
 import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
 import 'package:get/get.dart' hide Rx;
 import 'package:just_audio/just_audio.dart';
@@ -438,10 +437,9 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
       httpClient.close();
       throw Exception('HTTP Status Error: ${response.statusCode}');
     }
-    final duration = int.parse(response.headers['x-duration-seconds']![0]);
-    final originalSize = int.parse(response.headers['x-origin-size']![0]);
-    final id = (super.tag as MediaItem).id;
 
+    final duration = int.parse(response.headers['x-duration-seconds']![0]);
+    final id = (super.tag as MediaItem).id;
     PlayingController playing = Get.find();
     playing.durationMap[id] = Duration(seconds: duration);
     playing.durationMap.refresh();
@@ -450,17 +448,12 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     // TODO: Should close sink after done, but it throws an error.
     // ignore: close_sinks
     final sink = (await _partialCacheFile).openWrite();
-    final sourceLength = response.contentLength == -1
-        // Fake Range support on Apple devices
-        ? AnniPlatform.isApple
-            ? originalSize
-            : null
-        : response.contentLength;
+    final sourceLength =
+        response.contentLength == -1 ? null : response.contentLength;
     final mimeType = response.headers.contentType.toString();
     final acceptRanges = response.headers.value(HttpHeaders.acceptRangesHeader);
     final originSupportsRangeRequests =
-        // Fake Range support on Apple devices
-        AnniPlatform.isApple || acceptRanges != null && acceptRanges != 'none';
+        acceptRanges != null && acceptRanges != 'none';
     final mimeFile = await _mimeFile;
     await mimeFile.writeAsString(mimeType);
     final inProgressResponses = <_InProgressCacheResponse>[];
@@ -545,12 +538,12 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
         }
         request.complete(StreamAudioResponse(
           rangeRequestsSupported: originSupportsRangeRequests,
-          sourceLength: request.start != null ? sourceLength : null,
+          sourceLength: start != null ? sourceLength : null,
           contentLength:
               effectiveEnd != null ? effectiveEnd - effectiveStart : null,
           offset: start,
           contentType: mimeType,
-          stream: responseStream,
+          stream: responseStream.asBroadcastStream(),
         ));
       }
       subscription.resume();
@@ -579,10 +572,12 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
             contentLength: end != null ? end - start : null,
             offset: start,
             contentType: mimeType,
-            stream: response,
+            stream: response.asBroadcastStream(),
           ));
         }, onError: (dynamic e, StackTrace? stackTrace) {
           request.fail(e, stackTrace);
+        }).onError((Object e, StackTrace st) {
+          request.fail(e, st);
         });
       }
     }, onDone: () async {
@@ -599,7 +594,6 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
       httpClient.close();
       _downloading = false;
     }, onError: (Object e, StackTrace stackTrace) async {
-      print(stackTrace);
       (await _partialCacheFile).deleteSync();
       httpClient.close();
       // Fail all pending requests
@@ -628,20 +622,31 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
         contentLength: (end ?? sourceLength) - (start ?? 0),
         offset: start,
         contentType: await _readCachedMimeType(),
-        stream: cacheFile.openRead(start, end),
+        stream: cacheFile.openRead(start, end).asBroadcastStream(),
       );
     }
-    print([start, end]);
     final byteRangeRequest = _StreamingByteRangeRequest(start, end);
     _requests.add(byteRangeRequest);
-    _response ??= _fetch().catchError((dynamic error, StackTrace? stackTrace) {
+    _response ??=
+        _fetch().catchError((dynamic error, StackTrace? stackTrace) async {
       // So that we can restart later
       _response = null;
       // Cancel any pending request
       for (final req in _requests) {
         req.fail(error, stackTrace);
       }
+      return Future<HttpClientResponse>.error(error as Object, stackTrace);
     });
-    return byteRangeRequest.future;
+    return byteRangeRequest.future.then((response) {
+      response.stream.listen((event) {}, onError: (Object e, StackTrace st) {
+        // So that we can restart later
+        _response = null;
+        // Cancel any pending request
+        for (final req in _requests) {
+          req.fail(e, st);
+        }
+      });
+      return response;
+    });
   }
 }

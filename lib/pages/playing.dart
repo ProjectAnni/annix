@@ -15,13 +15,16 @@ class PlayingScreen extends StatelessWidget {
 
     var inner = Material(
       child: Container(
-        padding: const EdgeInsets.all(32.0),
+        // padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.only(left: 24, right: 24),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               flex: 1,
               child: Center(
+                // child: Padding(
+                // padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Card(
                   elevation: 0,
                   clipBehavior: Clip.hardEdge,
@@ -43,18 +46,11 @@ class PlayingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                // ),
               ),
             ),
             Column(
               children: [
-                Obx(
-                  () => ProgressBar(
-                    progress: playing.progress.value,
-                    total: playing.getDuration(
-                      playing.currentPlaying.value!.id,
-                    ),
-                  ),
-                ),
                 Obx(
                   () => Text(
                     playing.currentPlaying.value?.title ?? "",
@@ -66,6 +62,20 @@ class PlayingScreen extends StatelessWidget {
                     playing.currentPlaying.value?.artist ?? "",
                     style: context.textTheme.subtitle1,
                     overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Obx(
+                  () => ProgressBar(
+                    progress: playing.progress.value,
+                    total: playing.getDuration(
+                      playing.currentPlaying.value!.id,
+                    ),
+                    onSeek: (position) {
+                      playing.seek(position);
+                    },
+                    barHeight: 2.0,
+                    thumbRadius: 5.0,
+                    thumbCanPaintOutsideBar: false,
                   ),
                 ),
                 Row(
