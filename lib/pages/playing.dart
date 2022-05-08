@@ -11,39 +11,36 @@ class PlayingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inner = DefaultTabController(
-      length: 3,
-      initialIndex: 1,
-      child: Scaffold(
-        appBar: AppBar(
-          leadingWidth: 0,
-          leading: Container(),
-          centerTitle: true,
-          title: SmoothPageIndicator(
-            controller: controller,
-            count: 3,
-            effect: WormEffect(
-              dotWidth: 12,
-              dotHeight: 12,
-              activeDotColor: context.theme.colorScheme.primary,
-            ),
+    final inner = Scaffold(
+      appBar: AppBar(
+        leadingWidth: 0,
+        leading: Container(),
+        centerTitle: true,
+        title: SmoothPageIndicator(
+          controller: controller,
+          count: 3,
+          effect: WormEffect(
+            dotWidth: 12,
+            dotHeight: 12,
+            activeDotColor: context.theme.colorScheme.primary,
           ),
         ),
-        body: PageView.builder(
-          controller: controller,
-          itemBuilder: (context, index) {
-            switch (index) {
-              case 0:
-                return Text("Lyric");
-              case 1:
-                return PlayingControl();
-              case 2:
-                return PlayingQueue();
-              default:
-                return Container();
-            }
-          },
-        ),
+      ),
+      body: PageView.builder(
+        controller: controller,
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return Text("Lyric");
+            case 1:
+              return PlayingControl();
+            case 2:
+              return PlayingQueue();
+            default:
+              return Container();
+          }
+        },
       ),
     );
 
