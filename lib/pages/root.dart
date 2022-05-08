@@ -1,4 +1,3 @@
-import 'package:annix/pages/playing/queue.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
@@ -75,20 +74,6 @@ class RootScreen extends GetView<RootScreenController> {
           children: [
             DrawerHeader(
               child: Text('Drawer Header'),
-            ),
-            // TODO: remote this, it's just for testing
-            ListTile(
-              leading: Icon(Icons.playlist_add),
-              title: Text("Playlist"),
-              onTap: () {
-                Get.to(
-                  () => Scaffold(
-                    appBar: AppBar(),
-                    body: PlayingQueue(),
-                  ),
-                  duration: Duration(milliseconds: 300),
-                );
-              },
             ),
             ListTile(
               leading: Icon(Icons.dark_mode),

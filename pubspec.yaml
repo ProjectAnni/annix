@@ -26,6 +26,7 @@ dependencies:
   #     url: https://github.com/ProjectAnni/just_audio_libwinmedia.git
   #     ref: fork
   audio_video_progress_bar: ^0.10.0
+  smooth_page_indicator: ^1.0.0+2
 
   toml: ^0.12.0
   json_serializable: ^6.1.1
