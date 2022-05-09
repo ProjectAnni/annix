@@ -74,7 +74,6 @@ class AlbumInfo {
   String catalog;
   String artist;
   String date;
-  List<String> tags;
   String type;
   List<DiscInfo> discs;
 
@@ -85,7 +84,6 @@ class AlbumInfo {
     required this.catalog,
     required this.artist,
     required this.date,
-    required this.tags,
     required this.type,
     required this.discs,
   });
@@ -99,7 +97,6 @@ class DiscInfo {
   String title;
   String artist;
   String catalog;
-  List<String> tags;
   String type;
   List<TrackInfo> tracks;
 
@@ -107,7 +104,6 @@ class DiscInfo {
     required this.title,
     required this.artist,
     required this.catalog,
-    required this.tags,
     required this.type,
     required this.tracks,
   });

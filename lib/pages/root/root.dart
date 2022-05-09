@@ -86,13 +86,20 @@ class RootScreen extends GetView<RootScreenController> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   child: Icon(Icons.search),
-      //   onPressed: () {
-      //     Get.toNamed('/search');
-      //   },
-      //   isExtended: true,
-      // ),
+      floatingActionButton: Obx(
+        () => Padding(
+          padding: EdgeInsets.only(
+            bottom: playing.currentPlaying.value != null ? 56.0 : 0.0,
+          ),
+          child: FloatingActionButton(
+            child: Icon(Icons.search),
+            onPressed: () {
+              Get.toNamed('/search');
+            },
+            isExtended: true,
+          ),
+        ),
+      ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
           destinations: [

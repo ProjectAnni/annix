@@ -1,6 +1,5 @@
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
-import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/utils/hash.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -178,6 +177,10 @@ class AnnivClient {
       'search_tracks': searchTracks,
       'search_playlists': searchPlaylists,
     });
+    // TODO: remove workaround after anniv fix the bug
+    response.data['albums'] ??= response.data['Albums'];
+    response.data['tracks'] ??= response.data['Tracks'];
+    response.data['playlists'] ??= response.data['Playlists'];
     return SearchResult.fromJson(response.data);
   }
 

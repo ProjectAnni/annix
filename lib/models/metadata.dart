@@ -142,7 +142,6 @@ class Album {
       artist: artist,
       type: type.toString(),
       date: date.toString(),
-      tags: tags ?? [],
       discs: discs.map((e) => e.toDiscInfo()).toList(),
     );
   }
@@ -207,7 +206,6 @@ class Disc {
       catalog: catalog,
       artist: artist,
       type: type.toString(),
-      tags: tags ?? [],
       tracks: tracks.map((e) => e.toTrackInfo()).toList(),
     );
   }

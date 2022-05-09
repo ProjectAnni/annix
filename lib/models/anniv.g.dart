@@ -59,7 +59,6 @@ AlbumInfo _$AlbumInfoFromJson(Map<String, dynamic> json) => AlbumInfo(
       catalog: json['catalog'] as String,
       artist: json['artist'] as String,
       date: json['date'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
       type: json['type'] as String,
       discs: (json['discs'] as List<dynamic>)
           .map((e) => DiscInfo.fromJson(e as Map<String, dynamic>))
@@ -70,7 +69,6 @@ DiscInfo _$DiscInfoFromJson(Map<String, dynamic> json) => DiscInfo(
       title: json['title'] as String,
       artist: json['artist'] as String,
       catalog: json['catalog'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
       type: json['type'] as String,
       tracks: (json['tracks'] as List<dynamic>)
           .map((e) => TrackInfo.fromJson(e as Map<String, dynamic>))

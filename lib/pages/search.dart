@@ -27,7 +27,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> search(AnnivClient anniv) async {
-    print(_controller.text);
     // primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
     setState(() {
       isLoading = true;
@@ -46,24 +45,23 @@ class _SearchScreenState extends State<SearchScreen> {
     final PlayingController playing = Get.find();
     final AnnilController annil = Get.find();
 
-    print(_result);
     return DefaultTabController(
       length: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            child: TabBar(
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              tabs: [
-                Tab(child: Text("Tracks (${_result?.tracks?.length ?? 0})")),
-                Tab(child: Text("Albums (${_result?.albums?.length ?? 0})")),
-                Tab(
-                  child: Text("Playlists (${_result?.playlists?.length ?? 0})"),
-                ),
-              ],
-            ),
+          TabBar(
+            labelColor: context.textTheme.titleMedium?.color,
+            indicatorColor: context.theme.colorScheme.primary,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            tabs: [
+              Tab(child: Text("Tracks (${_result?.tracks?.length ?? 0})")),
+              Tab(child: Text("Albums (${_result?.albums?.length ?? 0})")),
+              Tab(
+                child: Text("Playlists (${_result?.playlists?.length ?? 0})"),
+              ),
+            ],
           ),
           Expanded(
             flex: 1,

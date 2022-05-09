@@ -16,8 +16,9 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
   - [ ] Server info
   - [x] Album list
   - [x] Cover
+    - [x] Cover cache
   - [x] Audio
-  - [ ] Lyric
+    - [x] Audio cache
   - [x] Annil selection based on priority
 - [ ] Metadata Sources
   - [x] Anniv
@@ -31,7 +32,7 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
       - [ ] 2FA
     - [ ] Register
     - [ ] Logout
-    - [ ] ~~Revoke account~~ (May not be implemented in Annix)
+    - [ ] ~~Revoke account~~ (Would not be implemented in Annix)
   - [ ] Playlist
     - [ ] List playlist
     - [ ] Create playlist
@@ -41,9 +42,14 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
       - [ ] Remove
       - [ ] Reorder
       - [ ] Replace
+  - [ ] Favorite
+    - [x] Add favorite
+    - [x] Remove favorite
+    - [ ] Favorite list
   - [ ] Credentials
     - [x] Get credentials
     - [ ] Add credential
     - [ ] Edit credential
     - [ ] Delete credential
-  - [ ] Search
+  - [ ] Lyric
+  - [x] Search
