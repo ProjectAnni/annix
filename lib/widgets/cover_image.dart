@@ -67,6 +67,7 @@ class CoverImage extends StatelessWidget {
             fit: fit,
             filterQuality: filterQuality,
             compressionRatio: 0.5,
+            gaplessPlayback: true,
           );
         } else if (snapshot.hasError) {
           // TODO: show error

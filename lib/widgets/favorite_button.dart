@@ -2,50 +2,41 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FavoriteButton extends StatefulWidget {
+class FavoriteButton extends StatelessWidget {
   final String id;
+  FavoriteButton({Key? key, required this.id}) : super(key: key);
 
-  const FavoriteButton({Key? key, required this.id}) : super(key: key);
-
-  @override
-  FavoriteButtonState createState() => FavoriteButtonState();
-}
-
-class FavoriteButtonState extends State<FavoriteButton> {
-  bool favorited = false;
+  final favorited = false.obs;
 
   @override
   Widget build(BuildContext context) {
     final AnnivController anniv = Get.find();
 
-    if (anniv.favorites.containsKey(widget.id)) {
-      favorited = true;
+    if (anniv.favorites.containsKey(id)) {
+      favorited.value = true;
     }
 
-    return IconButton(
-      icon: Icon(
-        favorited ? Icons.favorite_outlined : Icons.favorite_border_outlined,
-      ),
-      onPressed: () async {
-        try {
-          if (!favorited) {
-            setState(() {
-              favorited = true;
-            });
-            await anniv.addFavorite(widget.id);
-          } else {
-            setState(() {
-              favorited = false;
-            });
-            await anniv.removeFavorite(widget.id);
+    return Obx(
+      () => IconButton(
+        icon: Icon(
+          favorited.value
+              ? Icons.favorite_outlined
+              : Icons.favorite_border_outlined,
+        ),
+        onPressed: () async {
+          try {
+            if (!favorited.value) {
+              favorited.value = true;
+              await anniv.addFavorite(id);
+            } else {
+              favorited.value = false;
+              await anniv.removeFavorite(id);
+            }
+          } catch (e) {
+            favorited.value = !favorited.value;
           }
-        } catch (e) {
-          setState(() {
-            favorited = !favorited;
-            // TODO: Toast error
-          });
-        }
-      },
+        },
+      ),
     );
   }
 }
