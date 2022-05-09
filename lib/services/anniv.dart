@@ -177,10 +177,6 @@ class AnnivClient {
       'search_tracks': searchTracks,
       'search_playlists': searchPlaylists,
     });
-    // TODO: remove workaround after anniv fix the bug
-    response.data['albums'] ??= response.data['Albums'];
-    response.data['tracks'] ??= response.data['Tracks'];
-    response.data['playlists'] ??= response.data['Playlists'];
     return SearchResult.fromJson(response.data);
   }
 
