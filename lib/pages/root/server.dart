@@ -347,7 +347,7 @@ class ServerView extends StatelessWidget {
             child: Obx(() {
               AnnilController annil = Get.find();
               var clients = annil.clients.values.toList();
-              clients.sort((a, b) => a.priority - b.priority);
+              clients.sort((a, b) => b.priority - a.priority);
 
               return ReorderableListView(
                 padding: EdgeInsets.zero,
