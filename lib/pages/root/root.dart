@@ -68,25 +68,6 @@ class RootScreen extends GetView<RootScreenController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              leading: Icon(Icons.dark_mode),
-              title: Text("Light / Dark Theme"),
-              onTap: () {
-                Get.changeThemeMode(
-                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
       body: Stack(
         children: [
           Navigator(

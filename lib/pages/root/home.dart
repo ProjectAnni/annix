@@ -1,4 +1,5 @@
 import 'package:annix/pages/root/base.dart';
+import 'package:annix/widgets/theme_button.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
@@ -9,7 +10,10 @@ class HomeView extends StatelessWidget {
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
-          BaseSliverAppBar(title: Text("Annix")),
+          BaseSliverAppBar(
+            title: Text("Annix"),
+            actions: [ThemeButton()],
+          ),
         ];
       },
       body: Column(

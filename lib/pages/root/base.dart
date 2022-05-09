@@ -17,8 +17,10 @@ class BaseAppBar extends StatelessWidget {
 
 class BaseSliverAppBar extends StatelessWidget {
   final Widget title;
+  final List<Widget>? actions;
 
-  const BaseSliverAppBar({Key? key, required this.title}) : super(key: key);
+  const BaseSliverAppBar({Key? key, required this.title, this.actions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,8 @@ class BaseSliverAppBar extends StatelessWidget {
       snap: true,
       floating: true,
       centerTitle: true,
+      automaticallyImplyLeading: false,
+      actions: actions,
     );
   }
 }
