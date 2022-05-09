@@ -238,7 +238,6 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
       info: TrackInfo(
         title: tag.title,
         artist: tag.artist!,
-        tags: [],
         type: tag.displayDescription!,
       ),
     );

@@ -1,7 +1,7 @@
-import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/offline_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/metadata/metadata_source.dart';
+import 'package:annix/services/anniv.dart';
 import 'package:get/get.dart';
 
 class AnnivMetadataSource extends BaseMetadataSource {

@@ -70,7 +70,6 @@ class PlayingControl extends StatelessWidget {
                   ShuffleButton(),
                 ],
               ),
-              SizedBox(height: 24),
               Obx(
                 () {
                   var position = playing.progress.value;

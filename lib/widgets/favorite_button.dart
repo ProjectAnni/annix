@@ -18,7 +18,7 @@ class FavoriteButtonState extends State<FavoriteButton> {
   Widget build(BuildContext context) {
     final AnnivController anniv = Get.find();
 
-    if (anniv.client!.favorites.containsKey(widget.id)) {
+    if (anniv.favorites.containsKey(widget.id)) {
       favorited = true;
     }
 
@@ -32,12 +32,12 @@ class FavoriteButtonState extends State<FavoriteButton> {
             setState(() {
               favorited = true;
             });
-            await anniv.client!.addFavorite(widget.id);
+            await anniv.addFavorite(widget.id);
           } else {
             setState(() {
               favorited = false;
             });
-            await anniv.client!.removeFavorite(widget.id);
+            await anniv.removeFavorite(widget.id);
           }
         } catch (e) {
           setState(() {

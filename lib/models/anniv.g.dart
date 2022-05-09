@@ -94,7 +94,6 @@ Map<String, dynamic> _$TrackIdentifierToJson(TrackIdentifier instance) =>
 TrackInfo _$TrackInfoFromJson(Map<String, dynamic> json) => TrackInfo(
       title: json['title'] as String,
       artist: json['artist'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
       type: json['type'] as String,
     );
 

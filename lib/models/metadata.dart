@@ -252,7 +252,6 @@ class Track {
       title: title,
       artist: artist,
       type: type.toString(),
-      tags: tags ?? [],
     );
   }
 

@@ -6,7 +6,6 @@ import 'package:annix/services/global.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:synchronized/synchronized.dart';
 
 String getCoverCachePath(String albumId, int? discId) {
   final fileName = "${discId == null ? "$albumId" : "${albumId}_$discId"}.jpg";

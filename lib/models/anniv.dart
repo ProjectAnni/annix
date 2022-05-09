@@ -150,12 +150,10 @@ class TrackInfo {
   String title;
   String artist;
   String type;
-  List<String> tags;
 
   TrackInfo({
     required this.title,
     required this.artist,
-    required this.tags,
     required this.type,
   });
 
