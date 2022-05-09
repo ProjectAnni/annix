@@ -291,12 +291,17 @@ class _InProgressCacheResponse {
   // player is consuming audio data, it is also likely that this buffered data
   // will never be used.
   // TODO: Improve this code.
-  // ignore: close_sinks
   final controller = ReplaySubject<List<int>>();
   final int? end;
   _InProgressCacheResponse({
     required this.end,
   });
+
+  close() {
+    if (!controller.isClosed) {
+      controller.close();
+    }
+  }
 }
 
 /// Encapsulates the start and end of an HTTP range request.
@@ -318,6 +323,7 @@ class _HttpRangeRequest {
       'bytes=$start-${end != null ? (end! - 1).toString() : ""}';
 
   /// Creates an [_HttpRangeRequest] from [header].
+  // ignore: unused_element
   static _HttpRangeRequest? parse(List<String>? header) {
     if (header == null || header.isEmpty) return null;
     final match = RegExp(r'^bytes=(\d+)(-(\d+)?)?').firstMatch(header.first);
@@ -446,8 +452,6 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     playing.durationMap.refresh();
 
     (await _partialCacheFile).createSync(recursive: true);
-    // TODO: Should close sink after done, but it throws an error.
-    // ignore: close_sinks
     final sink = (await _partialCacheFile).openWrite();
     final sourceLength =
         response.contentLength == -1 ? null : response.contentLength;
@@ -497,7 +501,7 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
           final subEnd =
               min(data.length, max(0, data.length - (_progress - end)));
           cacheResponse.controller.add(data.sublist(0, subEnd));
-          cacheResponse.controller.close();
+          cacheResponse.close();
         } else {
           cacheResponse.controller.add(data);
         }
@@ -587,14 +591,12 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
       if (sourceLength == null) {
         updateProgress(100);
       }
-      for (var cacheResponse in inProgressResponses) {
-        if (!cacheResponse.controller.isClosed) {
-          cacheResponse.controller.close();
-        }
-      }
+
+      inProgressResponses.forEach((element) => element.close());
       (await _partialCacheFile).renameSync(cacheFile.path);
       await subscription.cancel();
       httpClient.close();
+      sink.close();
       _downloading = false;
     }, onError: (Object e, StackTrace stackTrace) async {
       (await _partialCacheFile).deleteSync();
@@ -607,8 +609,9 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
       // Close all in progress requests
       for (final res in inProgressResponses) {
         res.controller.addError(e, stackTrace);
-        res.controller.close();
+        res.close();
       }
+      sink.close();
       _downloading = false;
     }, cancelOnError: true);
     return response;
