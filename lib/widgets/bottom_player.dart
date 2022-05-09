@@ -52,6 +52,7 @@ class BottomPlayer extends StatelessWidget {
                 width: 60,
                 padding: EdgeInsets.all(8.0),
                 child: Card(
+                  clipBehavior: Clip.hardEdge,
                   elevation: 4,
                   margin: EdgeInsets.zero,
                   child: Obx(() {

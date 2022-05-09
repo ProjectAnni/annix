@@ -23,7 +23,7 @@ class PlayingControl extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Card(
-            elevation: 0,
+            elevation: 4,
             clipBehavior: Clip.hardEdge,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
