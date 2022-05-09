@@ -1,3 +1,8 @@
+import 'dart:math';
+
+import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/models/metadata.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -111,5 +116,36 @@ class PlayingController extends GetxController {
 
   Duration getDuration(String id) {
     return this.durationMap[id] ?? this.duration.value ?? Duration.zero;
+  }
+
+  Future<void> fullShuffleMode({int count = 30}) async {
+    AnnilController annil = Get.find();
+    final albums = annil.albums.toList();
+    final rand = Random();
+
+    final songs = <IndexedAudioSource>[];
+    for (int i = 0; i < count; i++) {
+      final albumId = albums[rand.nextInt(albums.length)];
+      final metadata =
+          (await Global.metadataSource!.getAlbum(albumId: albumId))!;
+      // random disc in metadata
+      final discIndex = rand.nextInt(metadata.discs.length);
+      final disc = metadata.discs[discIndex];
+      // random track
+      final trackIndex = rand.nextInt(disc.tracks.length);
+      final track = disc.tracks[trackIndex];
+
+      if (track.type == TrackType.Normal) {
+        songs.add(await annil.getAudio(
+          albumId: albumId,
+          discId: discIndex + 1,
+          trackId: trackIndex + 1,
+        ));
+      }
+    }
+
+    await this.setLoopMode(LoopMode.off);
+    await this.setShuffleModeEnabled(false);
+    await this.setPlayingQueue(songs);
   }
 }

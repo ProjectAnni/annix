@@ -12,7 +12,9 @@ class HomeView extends StatelessWidget {
         return <Widget>[
           BaseSliverAppBar(
             title: Text("Annix"),
-            actions: [ThemeButton()],
+            actions: [
+              ThemeButton(),
+            ],
           ),
         ];
       },

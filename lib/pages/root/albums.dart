@@ -1,4 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +11,22 @@ class AlbumsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AnnilController annil = Get.find();
+    PlayingController playing = Get.find();
 
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
-          BaseSliverAppBar(title: Text("Albums")),
+          BaseSliverAppBar(
+            title: Text("Albums"),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.shuffle),
+                onPressed: () {
+                  playing.fullShuffleMode();
+                },
+              ),
+            ],
+          ),
         ];
       },
       body: Obx(
