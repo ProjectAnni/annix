@@ -65,8 +65,11 @@ class PlayingControl extends StatelessWidget {
                     playing.currentPlaying.value!.id,
                   );
                   if (position.compareTo(total) > 0) {
-                    // pause
-                    playing.pause();
+                    // seek to next
+                    playing
+                        .pause()
+                        .then((value) => playing.next())
+                        .then((value) => playing.play());
                     // limit progress to total
                     position = total;
                   }
