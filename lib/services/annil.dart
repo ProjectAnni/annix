@@ -34,6 +34,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
   final bool local;
 
   // cached album list in client
+  String eTag = "";
   List<String> albums = [];
 
   OnlineAnnilClient._({
@@ -89,6 +90,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
       'priority': priority,
       'local': local,
       'albums': albums,
+      'etag': eTag,
     };
   }
 
@@ -104,32 +106,33 @@ class OnlineAnnilClient implements BaseAnnilClient {
     client.albums = (json['albums'] as List<dynamic>)
         .map((album) => album as String)
         .toList();
+    client.eTag = json['eTag'] as String;
     return client;
   }
 
-  Future<dynamic> _request({
-    required String path,
-    ResponseType responseType = ResponseType.bytes,
-  }) async {
-    var resp = await client.get(
-      '$path',
+  /// Get the available album list of an Annil server.
+  Future<List<String>> getAlbums() async {
+    final resp = await client.get(
+      '/albums',
       options: Options(
-        responseType: responseType,
+        responseType: ResponseType.json,
         headers: {
-          'Authorization': this.token,
+          'Authorization': token,
+          'If-None-Match': eTag,
         },
       ),
     );
-    return resp.data;
-  }
-
-  /// Get the available album list of an Annil server.
-  /// TODO: handle cache correctly
-  Future<List<String>> getAlbums() async {
-    List<dynamic> result =
-        await _request(path: '/albums', responseType: ResponseType.json);
-    albums = result.map((e) => e.toString()).toList();
-    return List.unmodifiable(albums);
+    if (resp.statusCode == 304) {
+      return albums;
+    } else if (resp.statusCode == 200) {
+      eTag = resp.headers['etag']![0];
+      albums = (resp.data as List<dynamic>)
+          .map((album) => album.toString())
+          .toList();
+      return List.unmodifiable(albums);
+    } else {
+      throw Exception('Failed to get album list: ${resp.statusCode}');
+    }
   }
 
   Future<AudioSource> getAudio({

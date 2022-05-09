@@ -141,20 +141,6 @@ class AnnivClient {
         .toList();
   }
 
-  Future<List<OnlineAnnilClient>> getAnnilClients() async {
-    final credentials = await getCredentials();
-
-    return credentials
-        .map((c) => OnlineAnnilClient.remote(
-              id: c.id,
-              name: c.name,
-              url: c.url,
-              token: c.token,
-              priority: c.priority,
-            ))
-        .toList();
-  }
-
   // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF
   Future<Map<String, Album>> getAlbumMetadata(List<String> albums) async {
     final response =

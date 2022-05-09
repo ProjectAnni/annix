@@ -4,6 +4,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/offline_controller.dart';
 import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/models/anniv.dart';
+import 'package:annix/services/annil.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
 import 'package:dio/dio.dart';
@@ -68,9 +69,19 @@ class AnnivController extends GetxController {
       }
 
       // reload annil client
-      var annilClients = await anniv.getAnnilClients();
-      _annil.removeRemote();
-      await _annil.addClients(annilClients);
+      final annilTokens = await anniv.getCredentials();
+      _annil.syncWithRemote(annilTokens);
+      await _annil.addClients(
+        annilTokens
+            .map((e) => OnlineAnnilClient.remote(
+                  id: e.id,
+                  name: e.name,
+                  url: e.url,
+                  token: e.token,
+                  priority: e.priority,
+                ))
+            .toList(),
+      );
       await _annil.refresh();
 
       this.client = anniv;

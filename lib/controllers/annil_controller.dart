@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:annix/controllers/offline_controller.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/cover_image.dart';
@@ -50,13 +51,11 @@ class AnnilController extends GetxController {
   }
 
   /// Remove all remote annil sources
-  void removeRemote() {
-    // 1. remove clients
-    clients.removeWhere((_, client) => !client.local);
-    // 2. scan current clients, generate new albums list
-    albums.replaceRange(0, this.albums.length,
-        clients.values.map((e) => e.albums).expand((e) => e).toSet().toList());
-    albums.refresh();
+  void syncWithRemote(List<AnnilToken> newList) {
+    final newIds = newList.map((e) => e.id).toList();
+    // remove clients(non-local and does not exist in remote list)
+    clients.removeWhere(
+        (_, client) => !client.local && !newIds.contains(client.id));
   }
 
   /// Refresh all annil servers
@@ -77,6 +76,7 @@ class AnnilController extends GetxController {
           .toSet()
           .toList();
       albums.replaceRange(0, this.albums.length, newAlbums);
+      this.save();
     } else {
       var newAlbums = await OfflineAnnilClient.instance.getAlbums();
       albums.replaceRange(0, this.albums.length, newAlbums);
