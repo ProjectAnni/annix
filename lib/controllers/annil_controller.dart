@@ -137,10 +137,12 @@ class AnnilController extends GetxController {
       }
     }
 
-    return Container(
-      alignment: Alignment.center,
-      color: Colors.blueGrey,
-      child: Text("？"),
+    // try to load from local
+    return CoverImage(
+      albumId: albumId,
+      discId: discId,
+      fit: fit ?? BoxFit.scaleDown,
+      filterQuality: FilterQuality.medium,
     );
   }
 

@@ -13,7 +13,8 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 // import 'package:flutter/foundation.dart';
-import 'package:get/get.dart' show GetxController, Rx, RxT, Rxn, Get, Inst;
+import 'package:get/get.dart'
+    show GetxController, Rx, RxT, Rxn, Get, Inst, RxMap;
 import 'package:path_provider/path_provider.dart';
 
 // import 'package:flutter_ume/flutter_ume.dart';
@@ -23,7 +24,7 @@ class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
 
-  Map<String, TrackInfo> favorites = Map();
+  RxMap<String, TrackInfo> favorites = RxMap();
 
   AnnivClient({
     required String url,

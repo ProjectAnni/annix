@@ -1,6 +1,10 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/widgets/favorite_button.dart';
+import 'package:annix/widgets/loop_mode_button.dart';
 import 'package:annix/widgets/player_buttons.dart';
+import 'package:annix/widgets/shuffle_button.dart';
+import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,38 +20,37 @@ class PlayingControl extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Expanded(
-            child: Center(
-              child: Card(
-                elevation: 0,
-                clipBehavior: Clip.hardEdge,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Hero(
-                    tag: "playing-cover",
-                    child: Obx(() {
-                      final item = playing.currentPlaying.value;
-                      if (item == null) {
-                        return Container();
-                      } else {
-                        return annil.cover(albumId: item.id.split('/')[0]);
-                      }
-                    }),
-                  ),
-                ),
+          Card(
+            elevation: 0,
+            clipBehavior: Clip.hardEdge,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Hero(
+                tag: "playing-cover",
+                child: Obx(() {
+                  final item = playing.currentPlaying.value;
+                  if (item == null) {
+                    return Container();
+                  } else {
+                    return annil.cover(albumId: item.id.split('/')[0]);
+                  }
+                }),
               ),
             ),
           ),
           Column(
             children: [
               Obx(
-                () => Text(
-                  playing.currentPlaying.value?.title ?? "",
-                  style: context.textTheme.titleLarge,
+                () => Marquee(
+                  child: Text(
+                    playing.currentPlaying.value?.title ?? "",
+                    style: context.textTheme.titleLarge,
+                  ),
                 ),
               ),
               Obx(
@@ -56,6 +59,16 @@ class PlayingControl extends StatelessWidget {
                   style: context.textTheme.subtitle1,
                   overflow: TextOverflow.ellipsis,
                 ),
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(
+                    () => FavoriteButton(id: playing.currentPlaying.value!.id),
+                  ),
+                  LoopModeButton(),
+                  ShuffleButton(),
+                ],
               ),
               SizedBox(height: 24),
               Obx(

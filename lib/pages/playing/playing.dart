@@ -15,6 +15,7 @@ class PlayingScreen extends StatelessWidget {
       appBar: AppBar(
         leadingWidth: 0,
         leading: Container(),
+        toolbarHeight: 28.0,
         centerTitle: true,
         title: SmoothPageIndicator(
           controller: controller,

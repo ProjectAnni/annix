@@ -87,7 +87,7 @@ class PlayingController extends GetxController {
     await player.setLoopMode(mode);
   }
 
-  Future<void> setShuffleModeEnabledde(bool enable) async {
+  Future<void> setShuffleModeEnabled(bool enable) async {
     await player.setShuffleModeEnabled(enable);
   }
 
