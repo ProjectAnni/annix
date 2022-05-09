@@ -59,18 +59,28 @@ class PlayingControl extends StatelessWidget {
               ),
               SizedBox(height: 24),
               Obx(
-                () => ProgressBar(
-                  progress: playing.progress.value,
-                  total: playing.getDuration(
+                () {
+                  var position = playing.progress.value;
+                  final total = playing.getDuration(
                     playing.currentPlaying.value!.id,
-                  ),
-                  onSeek: (position) {
-                    playing.seek(position);
-                  },
-                  barHeight: 2.0,
-                  thumbRadius: 5.0,
-                  thumbCanPaintOutsideBar: false,
-                ),
+                  );
+                  if (position.compareTo(total) < 0) {
+                    // pause
+                    playing.pause();
+                    // limit progress to total
+                    position = total;
+                  }
+                  return ProgressBar(
+                    progress: position,
+                    total: total,
+                    onSeek: (position) {
+                      playing.seek(position);
+                    },
+                    barHeight: 2.0,
+                    thumbRadius: 5.0,
+                    thumbCanPaintOutsideBar: false,
+                  );
+                },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
