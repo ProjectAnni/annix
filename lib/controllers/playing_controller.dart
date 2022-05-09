@@ -4,6 +4,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -57,10 +58,12 @@ class PlayingController extends GetxController {
   RxMap<String, Duration> durationMap = RxMap();
 
   Future<void> play() async {
+    debugPrint("[PlayingController] play()");
     await player.play();
   }
 
   Future<void> pause() async {
+    debugPrint("[PlayingController] pause()");
     await player.pause();
   }
 
@@ -85,6 +88,7 @@ class PlayingController extends GetxController {
   }
 
   Future<void> jump(int index) async {
+    debugPrint("[PlayingController] jump($index)");
     await player.seek(Duration.zero, index: index);
   }
 
@@ -109,8 +113,9 @@ class PlayingController extends GetxController {
     queue.replaceRange(0, queue.length, songs.map((e) => e.tag as MediaItem));
     queue.refresh();
 
-    await player.setAudioSource(ConcatenatingAudioSource(children: songs),
-        initialIndex: initialIndex);
+    debugPrint("[PlayingController] setAudioSource");
+    final playQueue = ConcatenatingAudioSource(children: songs);
+    await player.setAudioSource(playQueue, initialIndex: initialIndex);
     await play();
   }
 

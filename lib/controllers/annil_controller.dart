@@ -52,6 +52,7 @@ class AnnilController extends GetxController {
 
   /// Remove all remote annil sources
   void syncWithRemote(List<AnnilToken> newList) {
+    // TODO: update existing client info
     final newIds = newList.map((e) => e.id).toList();
     // remove clients(non-local and does not exist in remote list)
     clients.removeWhere(
@@ -97,7 +98,9 @@ class AnnilController extends GetxController {
       );
     } else {
       // TODO: add option to not use mobile network
-      for (final client in clients.values) {
+      final list = clients.values.toList();
+      list.sort((a, b) => b.priority - a.priority);
+      for (final client in list) {
         if (client.albums.contains(albumId)) {
           return AnnilAudioSource.create(
             annil: client,
@@ -130,7 +133,9 @@ class AnnilController extends GetxController {
         tag: tag,
       );
     } else {
-      for (final client in clients.values) {
+      final list = clients.values.toList();
+      list.sort((a, b) => b.priority - a.priority);
+      for (final client in list) {
         if (client.albums.contains(albumId)) {
           return CoverImage(
             albumId: albumId,
