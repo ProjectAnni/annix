@@ -150,3 +150,18 @@ SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
           ?.map((e) => PlaylistIntro.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
+
+LyricResponse _$LyricResponseFromJson(Map<String, dynamic> json) =>
+    LyricResponse(
+      source: LyricLanguage.fromJson(json['source'] as Map<String, dynamic>),
+      translations: (json['translations'] as List<dynamic>)
+          .map((e) => LyricLanguage.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+LyricLanguage _$LyricLanguageFromJson(Map<String, dynamic> json) =>
+    LyricLanguage(
+      language: json['language'] as String,
+      type: json['type'] as String,
+      data: json['data'] as String,
+    );

@@ -279,3 +279,31 @@ class SearchResult {
   factory SearchResult.fromJson(Map<String, dynamic> json) =>
       _$SearchResultFromJson(json);
 }
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class LyricResponse {
+  LyricLanguage source;
+  List<LyricLanguage> translations;
+
+  LyricResponse({required this.source, required this.translations});
+
+  factory LyricResponse.fromJson(Map<String, dynamic> json) =>
+      _$LyricResponseFromJson(json);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class LyricLanguage {
+  String language;
+  String type; // "text" | "lrc"
+  String data;
+  // UserIntro contributor;
+
+  LyricLanguage({
+    required this.language,
+    required this.type,
+    required this.data,
+  });
+
+  factory LyricLanguage.fromJson(Map<String, dynamic> json) =>
+      _$LyricLanguageFromJson(json);
+}

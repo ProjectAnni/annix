@@ -210,4 +210,23 @@ class AnnivClient {
       'track_id': track.trackId,
     });
   }
+
+  Future<LyricResponse?> getLyric(String id) async {
+    TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
+    try {
+      final response = await _client.get('/api/lyric', queryParameters: {
+        'album_id': track.albumId,
+        'disc_id': track.discId,
+        'track_id': track.trackId,
+      });
+      return LyricResponse.fromJson(response.data);
+    } on DioError catch (e) {
+      // no available lyric found
+      if (e.error["status"] == 902000) {
+        return null;
+      } else {
+        rethrow;
+      }
+    }
+  }
 }

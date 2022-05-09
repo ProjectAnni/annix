@@ -60,6 +60,10 @@ class PlayingControl extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+            ],
+          ),
+          Column(
+            children: [
               ButtonBar(
                 alignment: MainAxisAlignment.spaceBetween,
                 children: [

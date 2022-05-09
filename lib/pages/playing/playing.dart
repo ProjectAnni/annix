@@ -1,4 +1,5 @@
 import 'package:annix/pages/playing/playing_control.dart';
+import 'package:annix/pages/playing/playing_lyric.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class PlayingScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           switch (index) {
             case 0:
-              return Text("Lyric");
+              return PlayingLyric();
             case 1:
               return PlayingControl();
             case 2:
