@@ -128,12 +128,10 @@ class AlbumDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  background: Hero(
-                    tag: this.tag,
-                    child: annil.cover(
-                      albumId: albumInfo.albumId,
-                      fit: BoxFit.fitWidth,
-                    ),
+                  background: annil.cover(
+                    albumId: albumInfo.albumId,
+                    fit: BoxFit.fitWidth,
+                    tag: tag,
                   ),
                 ),
               ),

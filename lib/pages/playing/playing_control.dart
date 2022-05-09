@@ -30,17 +30,17 @@ class PlayingControl extends StatelessWidget {
             ),
             child: AspectRatio(
               aspectRatio: 1,
-              child: Hero(
-                tag: "playing-cover",
-                child: Obx(() {
-                  final item = playing.currentPlaying.value;
-                  if (item == null) {
-                    return Container();
-                  } else {
-                    return annil.cover(albumId: item.id.split('/')[0]);
-                  }
-                }),
-              ),
+              child: Obx(() {
+                final item = playing.currentPlaying.value;
+                if (item == null) {
+                  return Container();
+                } else {
+                  return annil.cover(
+                    albumId: item.id.split('/')[0],
+                    tag: "playing-cover",
+                  );
+                }
+              }),
             ),
           ),
           Column(

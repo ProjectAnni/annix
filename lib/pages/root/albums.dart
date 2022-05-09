@@ -42,10 +42,7 @@ class AlbumsView extends StatelessWidget {
             itemBuilder: (context, index) {
               return Obx(() {
                 final albumId = annil.albums[index];
-                return AlbumGrid(
-                  albumId: albumId,
-                  cover: annil.cover(albumId: albumId),
-                );
+                return AlbumGrid(albumId: albumId);
               });
             },
           );

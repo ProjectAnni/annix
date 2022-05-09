@@ -20,6 +20,8 @@ class CoverImage extends StatelessWidget {
   final BoxFit? fit;
   final FilterQuality filterQuality;
 
+  final String? tag;
+
   const CoverImage({
     Key? key,
     this.remoteUrl,
@@ -27,6 +29,7 @@ class CoverImage extends StatelessWidget {
     this.discId,
     this.fit,
     this.filterQuality = FilterQuality.low,
+    this.tag,
   }) : super(key: key);
 
   Future<File> getCoverImage() async {
@@ -62,13 +65,18 @@ class CoverImage extends StatelessWidget {
       future: getCoverImage(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return ExtendedImage.file(
+          final image = ExtendedImage.file(
             snapshot.data!,
             fit: fit,
             filterQuality: filterQuality,
             compressionRatio: 0.5,
             gaplessPlayback: true,
           );
+          if (tag != null) {
+            return Hero(tag: tag!, child: image);
+          } else {
+            return image;
+          }
         } else if (snapshot.hasError) {
           // TODO: show error
           return Container(

@@ -113,8 +113,13 @@ class AnnilController extends GetxController {
     throw new UnsupportedError("No annil client found for album $albumId");
   }
 
-  Widget cover(
-      {required String albumId, int? discId, BoxFit? fit, double? scale}) {
+  Widget cover({
+    required String albumId,
+    int? discId,
+    BoxFit? fit,
+    double? scale,
+    String? tag,
+  }) {
     if (!_network.isOnline.value) {
       // offline, load cached cover
       return CoverImage(
@@ -122,6 +127,7 @@ class AnnilController extends GetxController {
         discId: discId,
         fit: fit ?? BoxFit.scaleDown,
         filterQuality: FilterQuality.medium,
+        tag: tag,
       );
     } else {
       for (final client in clients.values) {
@@ -132,6 +138,7 @@ class AnnilController extends GetxController {
             remoteUrl: client.getCoverUrl(albumId: albumId, discId: discId),
             fit: fit ?? BoxFit.scaleDown,
             filterQuality: FilterQuality.medium,
+            tag: tag,
           );
         }
       }

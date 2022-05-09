@@ -61,9 +61,9 @@ class BottomPlayer extends StatelessWidget {
                         color: Colors.grey,
                       );
                     } else {
-                      return Hero(
+                      return annil.cover(
+                        albumId: item.id.split('/')[0],
                         tag: "playing-cover",
-                        child: annil.cover(albumId: item.id.split('/')[0]),
                       );
                     }
                   }),

@@ -1,3 +1,4 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/global.dart';
@@ -7,13 +8,11 @@ import 'package:uuid/uuid.dart';
 
 class AlbumGrid extends StatefulWidget {
   final String albumId;
-  final Widget cover;
   final String tag;
 
   AlbumGrid({
     Key? key,
     required this.albumId,
-    required this.cover,
     String? tag,
   })  : this.tag = tag ?? Uuid().v4().toString(),
         super(key: key);
@@ -25,6 +24,8 @@ class AlbumGrid extends StatefulWidget {
 class _AlbumGridState extends State<AlbumGrid> {
   @override
   Widget build(BuildContext context) {
+    AnnilController annil = Get.find();
+
     return Card(
       clipBehavior: Clip.hardEdge,
       child: FutureBuilder<Album?>(
@@ -34,10 +35,7 @@ class _AlbumGridState extends State<AlbumGrid> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Hero(
-                  tag: widget.tag,
-                  child: widget.cover,
-                ),
+                annil.cover(albumId: widget.albumId, tag: widget.tag),
                 snapshot.hasData
                     ? Container(
                         alignment: Alignment.bottomLeft,
