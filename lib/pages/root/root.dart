@@ -1,3 +1,4 @@
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
@@ -67,6 +68,8 @@ class RootScreenController extends GetxController {
 class RootScreen extends GetView<RootScreenController> {
   @override
   Widget build(BuildContext context) {
+    PlayingController playing = Get.find();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -77,7 +80,9 @@ class RootScreen extends GetView<RootScreenController> {
           ),
           Container(
             alignment: Alignment.bottomCenter,
-            child: BottomPlayer(),
+            child: Obx((() => playing.currentPlaying.value != null
+                ? BottomPlayer()
+                : Container())),
           ),
         ],
       ),
