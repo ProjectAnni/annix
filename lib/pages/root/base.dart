@@ -11,6 +11,7 @@ class BaseAppBar extends StatelessWidget {
     return AppBar(
       title: title,
       centerTitle: true,
+      automaticallyImplyLeading: false,
     );
   }
 }
