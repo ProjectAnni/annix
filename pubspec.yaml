@@ -39,6 +39,7 @@ dependencies:
       url: https://github.com/Hwan-seok/audio_video_progress_bar
       ref: 26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b
   smooth_page_indicator: ^1.0.0+2
+  extended_image: ^7.0.0-dev.1
 
   toml: ^0.12.0
   json_serializable: ^6.1.1
