@@ -25,9 +25,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -392,7 +394,16 @@ class _PlayerAudioHandler extends BaseAudioHandler
   Future<void> _init(String playerId) async {
     final player = await _platform.init(InitRequest(id: playerId));
     _playerCompleter.complete(player);
-    final playbackEventMessageStream = player.playbackEventMessageStream;
+    final PlayingController playing = Get.find();
+    final playbackEventMessageStream =
+        player.playbackEventMessageStream.map((event) {
+      final duration = playing.getDuration(playing.currentPlaying.value!.id);
+      if (duration == Duration.zero) {
+        return event;
+      } else {
+        return event.copyWith(duration: duration);
+      }
+    });
     playbackEventMessageStream.listen((event) {
       _justAudioEvent = event;
       _broadcastState();

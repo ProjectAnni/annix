@@ -450,7 +450,6 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     PlayingController playing = Get.find();
     playing.durationMap[id] =
         Duration(seconds: duration + 1); // +1 to avoid duration exceeding
-    playing.durationMap.refresh();
 
     (await _partialCacheFile).createSync(recursive: true);
     final sink = (await _partialCacheFile).openWrite();
