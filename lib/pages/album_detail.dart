@@ -6,6 +6,7 @@ import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 
 class AlbumDetailScreen extends StatelessWidget {
   final String tag;
@@ -86,7 +87,7 @@ class AlbumDetailScreen extends StatelessWidget {
 
     await playing.setPlayingQueue(
       await Future.wait(
-        songs.map<Future<AnnilAudioSource>>(
+        songs.map<Future<IndexedAudioSource>>(
           (s) => annil.getAudio(
             albumId: s.albumId,
             discId: s.discId,

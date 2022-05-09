@@ -6,6 +6,7 @@ import 'package:annix/services/global.dart';
 import 'package:annix/widgets/cover_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 
 class AnnilController extends GetxController {
   final RxMap<String, OnlineAnnilClient> clients =
@@ -83,7 +84,7 @@ class AnnilController extends GetxController {
     albums.refresh();
   }
 
-  Future<AnnilAudioSource> getAudio({
+  Future<IndexedAudioSource> getAudio({
     required String albumId,
     required int discId,
     required int trackId,

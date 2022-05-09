@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/third_party/just_audio_background/just_audio_background.dart'
+    show MediaItem;
 import 'package:annix/widgets/cover_image.dart';
 import 'package:dio/dio.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart'
-    show MediaItem;
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 
@@ -177,7 +177,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
           tag: tag,
         );
 
-  static Future<AnnilAudioSource> create({
+  static Future<IndexedAudioSource> create({
     required OnlineAnnilClient annil,
     required String albumId,
     required int discId,
@@ -205,18 +205,15 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     );
   }
 
-  static Future<AnnilAudioSource> local({
+  static Future<IndexedAudioSource> local({
     required String albumId,
     required int discId,
     required int trackId,
   }) async {
     var track = await Global.metadataSource!
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
-    return AnnilAudioSource._(
-      uri: Uri.parse(''),
-      albumId: albumId,
-      discId: discId,
-      trackId: trackId,
+    return AudioSource.uri(
+      Uri.file(getAudioCachePath(albumId, discId, trackId)),
       tag: MediaItem(
         id: '$albumId/$discId/$trackId',
         title: track?.title ?? "Unknown Title",
@@ -302,7 +299,7 @@ class OfflineAnnilClient implements BaseAnnilClient {
     required PreferQuality preferBitrate,
   }) async {
     final path = getAudioCachePath(albumId, discId, trackId);
-    return AudioSource.uri(Uri.parse("file://" + path));
+    return AudioSource.uri(Uri.file(path));
   }
 
   @override

@@ -448,7 +448,8 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     final duration = int.parse(response.headers['x-duration-seconds']![0]);
     final id = (super.tag as MediaItem).id;
     PlayingController playing = Get.find();
-    playing.durationMap[id] = Duration(seconds: duration);
+    playing.durationMap[id] =
+        Duration(seconds: duration + 1); // +1 to avoid duration exceeding
     playing.durationMap.refresh();
 
     (await _partialCacheFile).createSync(recursive: true);

@@ -1,10 +1,15 @@
-import 'package:annix/services/annil.dart';
+import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 class PlayingController extends GetxController {
-  AudioPlayer player = AudioPlayer();
+  AudioPlayer player = AudioPlayer(
+    audioLoadConfiguration: AudioLoadConfiguration(
+      androidLoadControl: AndroidLoadControl(
+        enableConstantBitrateSeeking: true,
+      ),
+    ),
+  );
 
   @override
   onInit() {
@@ -91,7 +96,7 @@ class PlayingController extends GetxController {
   Rxn<int> playingIndex = Rxn();
   Rxn<MediaItem> currentPlaying = Rxn();
 
-  Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
+  Future<void> setPlayingQueue(List<IndexedAudioSource> songs,
       {int? initialIndex}) async {
     await pause();
 
@@ -105,6 +110,6 @@ class PlayingController extends GetxController {
   }
 
   Duration getDuration(String id) {
-    return this.duration.value ?? this.durationMap[id] ?? Duration.zero;
+    return this.durationMap[id] ?? this.duration.value ?? Duration.zero;
   }
 }

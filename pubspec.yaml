@@ -19,8 +19,14 @@ dependencies:
   dio_http2_adapter: ^2.0.0
   cookie_jar: ^3.0.1
 
-  just_audio: ^0.9.21
-  just_audio_background: ^0.0.1-beta.5
+  #just_audio: ^0.9.21
+  just_audio:
+    git:
+      url: https://github.com/ProjectAnni/just_audio
+      path: just_audio
+      ref: prod
+  audio_service: ^0.18.4
+  # just_audio_background: ^0.0.1-beta.5
   # just_audio_libwinmedia:
   #   git:
   #     url: https://github.com/ProjectAnni/just_audio_libwinmedia.git
