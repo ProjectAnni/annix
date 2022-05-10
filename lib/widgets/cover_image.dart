@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
+import 'dart:io' show File;
 
 import 'package:annix/services/global.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:http_plus/http_plus.dart';
 import 'package:path/path.dart' as p;
+// import 'dart:io';
+// import 'package:cronet/cronet.dart';
 
 String getCoverCachePath(String albumId, int? discId) {
   final fileName = "${discId == null ? "$albumId" : "${albumId}_$discId"}.jpg";
@@ -13,6 +15,8 @@ String getCoverCachePath(String albumId, int? discId) {
 }
 
 class CoverImage extends StatelessWidget {
+  static final client = HttpPlusClient(enableHttp2: false);
+
   final String albumId;
   final int? discId;
   final String? remoteUrl;
@@ -42,16 +46,14 @@ class CoverImage extends StatelessWidget {
       }
 
       // fetch remote cover
-      final request = await HttpClient().getUrl(Uri.parse(remoteUrl!));
-      final response = await request.close();
+      final response = await client.get(Uri.parse(remoteUrl!));
       if (response.statusCode == 200) {
         // create folder
         await file.parent.create(recursive: true);
 
         // response stream to Uint8List
-        final data = (await response.toList()).expand((e) => e).toList();
-        final raw = Uint8List.fromList(data);
-        await file.writeAsBytes(raw);
+        final data = response.bodyBytes;
+        await file.writeAsBytes(data);
       } else {
         throw Exception("Failed to fetch cover image");
       }

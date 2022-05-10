@@ -14,10 +14,16 @@ dependencies:
   shared_preferences: ^2.0.9
   archive: ^3.1.6
   connectivity_plus: ^2.3.0
+
   dio: ^4.0.4
   dio_cookie_manager: ^2.0.0
   dio_http2_adapter: ^2.0.0
   cookie_jar: ^3.0.1
+  http_plus: ^0.2.1
+  # cronet: ^0.0.7
+  # cronet_flutter:
+  #   git:
+  #     url: https://github.com/Sunbreak/cronet_flutter
 
   #just_audio: ^0.9.21
   just_audio:
