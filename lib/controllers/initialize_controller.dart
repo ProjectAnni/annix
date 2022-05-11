@@ -1,3 +1,4 @@
+import 'package:f_logs/f_logs.dart';
 import 'package:get/get.dart';
 
 class InitializeController extends GetxController {
@@ -8,7 +9,12 @@ class InitializeController extends GetxController {
       try {
         await Future.wait(futures);
       } catch (e) {
-        print(e);
+        FLog.error(
+          className: "InitializeController",
+          methodName: "constructor",
+          text: "initialization error",
+          exception: e,
+        );
       } finally {
         done.value = true;
       }

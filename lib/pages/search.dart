@@ -29,16 +29,19 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> search(AnnivClient anniv) async {
     // primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
     setState(() {
-      isLoading = true;
       _result = null;
+      isLoading = true;
     });
 
-    final result = await anniv.search(_controller.text,
-        searchAlbums: true, searchTracks: true);
-    setState(() {
-      isLoading = false;
+    try {
+      final result = await anniv.search(_controller.text,
+          searchAlbums: true, searchTracks: true);
       _result = result;
-    });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Widget buildSearchResult() {

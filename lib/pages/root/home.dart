@@ -1,5 +1,5 @@
 import 'package:annix/pages/root/base.dart';
-import 'package:annix/widgets/theme_button.dart';
+import 'package:annix/widgets/buttons/theme_button.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
