@@ -2,21 +2,21 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// FIXME: sync like state with anniv
 class FavoriteButton extends StatelessWidget {
+  final AnnivController anniv = Get.find();
   final String id;
-  FavoriteButton({Key? key, required this.id}) : super(key: key);
+  final RxBool favorited = false.obs;
 
-  final favorited = false.obs;
+  FavoriteButton({Key? key, required this.id}) : super(key: key) {
+    // listen further updates
+    favorited.bindStream(
+        anniv.favorites.stream.map((favorites) => favorites.containsKey(id)));
+    // initialize current status
+    favorited.value = anniv.favorites.containsKey(id);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final AnnivController anniv = Get.find();
-
-    if (anniv.favorites.containsKey(id)) {
-      favorited.value = true;
-    }
-
     return Obx(
       () => IconButton(
         icon: Icon(
@@ -25,17 +25,7 @@ class FavoriteButton extends StatelessWidget {
               : Icons.favorite_border_outlined,
         ),
         onPressed: () async {
-          try {
-            if (!favorited.value) {
-              favorited.value = true;
-              await anniv.addFavorite(id);
-            } else {
-              favorited.value = false;
-              await anniv.removeFavorite(id);
-            }
-          } catch (e) {
-            favorited.value = !favorited.value;
-          }
+          this.anniv.toggleFavorite(id);
         },
       ),
     );

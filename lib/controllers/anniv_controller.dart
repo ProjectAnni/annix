@@ -150,6 +150,14 @@ class AnnivController extends GetxController {
     }
   }
 
+  Future<void> toggleFavorite(String id) async {
+    if (favorites.containsKey(id)) {
+      await this.removeFavorite(id);
+    } else {
+      await this.addFavorite(id);
+    }
+  }
+
   Future<void> syncFavorite() async {
     if (this.client != null) {
       final list = await this.client!.getFavoriteList();

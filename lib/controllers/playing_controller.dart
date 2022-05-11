@@ -178,10 +178,6 @@ class PlayingController extends GetxController {
   }
 
   Future<void> toggleFavorite() async {
-    if (this.favorited.value) {
-      await this.anniv.removeFavorite(this.currentPlaying.value!.id);
-    } else {
-      await this.anniv.addFavorite(this.currentPlaying.value!.id);
-    }
+    this.anniv.toggleFavorite(this.currentPlaying.value!.id);
   }
 }
