@@ -26,10 +26,10 @@ abstract class BaseAnnilClient {
 class OnlineAnnilClient implements BaseAnnilClient {
   final Dio client;
   final String id;
-  final String name;
-  final String url;
-  final String token;
-  final int priority;
+  String name;
+  String url;
+  String token;
+  int priority;
   final bool local;
 
   // cached album list in client
@@ -105,7 +105,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
     client.albums = (json['albums'] as List<dynamic>)
         .map((album) => album as String)
         .toList();
-    client.eTag = json['eTag'] as String;
+    client.eTag = json['etag'] as String;
     return client;
   }
 

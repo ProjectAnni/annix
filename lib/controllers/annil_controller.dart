@@ -44,19 +44,37 @@ class AnnilController extends GetxController {
     Global.preferences.setStringList("annil_clients", tokens);
   }
 
-  /// Add a list of clients to the combined client
-  Future<void> addClients(List<OnlineAnnilClient> newClients) async {
-    clients.addAll(Map.fromEntries(newClients.map((c) => MapEntry(c.id, c))));
-    await save();
-  }
-
   /// Remove all remote annil sources
   void syncWithRemote(List<AnnilToken> newList) {
-    // TODO: update existing client info
     final newIds = newList.map((e) => e.id).toList();
+    // update existing client info
+    clients.forEach((id, client) {
+      final index = newIds.indexOf(id);
+      if (index != -1) {
+        final newClient = newList[index];
+        client.name = newClient.name;
+        client.url = newClient.url;
+        client.token = newClient.token;
+        client.priority = newClient.priority;
+      }
+    });
     // remove clients(non-local and does not exist in remote list)
     clients.removeWhere(
         (_, client) => !client.local && !newIds.contains(client.id));
+    // add new clients
+    clients.addAll(
+      Map.fromEntries(
+        newList
+            .map((e) => OnlineAnnilClient.remote(
+                  id: e.id,
+                  name: e.name,
+                  url: e.url,
+                  token: e.token,
+                  priority: e.priority,
+                ))
+            .map((c) => MapEntry(c.id, c)),
+      ),
+    );
   }
 
   /// Refresh all annil servers
