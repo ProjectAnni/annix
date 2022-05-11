@@ -183,6 +183,5 @@ class PlayingController extends GetxController {
     } else {
       await this.anniv.addFavorite(this.currentPlaying.value!.id);
     }
-    this.favorited.value = !this.favorited.value;
   }
 }

@@ -2,6 +2,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// FIXME: sync like state with anniv
 class FavoriteButton extends StatelessWidget {
   final String id;
   FavoriteButton({Key? key, required this.id}) : super(key: key);

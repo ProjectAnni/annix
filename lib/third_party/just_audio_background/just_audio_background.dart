@@ -765,8 +765,6 @@ class _PlayerAudioHandler extends BaseAudioHandler
               controls[i].action == MediaAction.fastForward ||
               controls[i].action == MediaAction.pause ||
               controls[i].action == MediaAction.play)
-          .toList()
-          .reversed
           .toList(),
       processingState: {
         ProcessingStateMessage.idle: AudioProcessingState.idle,

@@ -122,19 +122,31 @@ class AnnivController extends GetxController {
 
   Future<void> addFavorite(String id) async {
     if (this.client != null) {
-      await this.client?.addFavorite(id);
       favorites[id] = TrackInfoWithAlbum(
         track: TrackIdentifier.fromSlashSplitedString(id),
         // TODO: get track info
         info: TrackInfo(title: "", artist: "", type: ""),
       );
+      try {
+        await this.client?.addFavorite(id);
+      } catch (e) {
+        favorites.remove(id);
+        rethrow;
+      }
     }
   }
 
   Future<void> removeFavorite(String id) async {
     if (this.client != null) {
-      await this.client?.removeFavorite(id);
-      favorites.remove(id);
+      final got = favorites.remove(id);
+      try {
+        await this.client?.removeFavorite(id);
+      } catch (e) {
+        if (got != null) {
+          favorites[id] = got;
+        }
+        rethrow;
+      }
     }
   }
 
