@@ -14,6 +14,7 @@ class InitializeController extends GetxController {
           methodName: "constructor",
           text: "initialization error",
           exception: e,
+          stacktrace: e is Error ? e.stackTrace : null,
         );
       } finally {
         done.value = true;

@@ -1,6 +1,7 @@
 import 'package:annix/app.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/platform.dart';
+import 'package:f_logs/f_logs.dart';
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -46,6 +47,21 @@ Future<void> main() async {
   //     ..register(Console());
   //   runApp(UMEWidget(child: AnnixApp(), enable: true));
   // } else {
-  runApp(AnnixApp());
+  try {
+    runApp(AnnixApp());
+  } on Error catch (e) {
+    FLog.error(
+      methodName: "main",
+      text: "Uncaught error",
+      exception: e,
+      stacktrace: e.stackTrace,
+    );
+  } catch (e) {
+    FLog.error(
+      methodName: "main",
+      text: "Uncaught exception",
+      exception: e,
+    );
+  }
   // }
 }
