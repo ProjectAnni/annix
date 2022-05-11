@@ -3,6 +3,7 @@ import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
+import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -43,7 +44,7 @@ class AlbumDetailScreen extends StatelessWidget {
             return ListTile(
               leading: Text("$trackIndex"),
               title: Text('${track.title}', overflow: TextOverflow.ellipsis),
-              subtitle: Marquee(child: Text(track.artist)),
+              subtitle: ArtistText(track.artist),
               minLeadingWidth: 16,
               enabled: annil.isAvailable(
                 albumId: albumInfo.albumId,

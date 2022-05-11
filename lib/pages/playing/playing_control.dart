@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
@@ -54,7 +55,7 @@ class PlayingControl extends StatelessWidget {
                 ),
               ),
               Obx(
-                () => Text(
+                () => ArtistText(
                   playing.currentPlaying.value?.artist ?? "",
                   style: context.textTheme.subtitle1,
                   overflow: TextOverflow.ellipsis,

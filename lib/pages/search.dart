@@ -4,6 +4,7 @@ import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/anniv.dart';
+import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -75,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     var e = _result!.tracks![index];
                     return ListTile(
                       title: Text(e.info.title),
-                      subtitle: Text(e.info.artist),
+                      subtitle: ArtistText(e.info.artist),
                       onTap: () async {
                         await playing.setPlayingQueue([
                           await annil.getAudio(
@@ -92,7 +93,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ListView.builder(
                   itemBuilder: (context, index) => ListTile(
                     title: Text(_result!.albums![index].title),
-                    subtitle: Text(_result!.albums![index].artist),
+                    subtitle: ArtistText(_result!.albums![index].artist),
                     onTap: () {
                       Get.to(
                         () => AlbumDetailScreen(

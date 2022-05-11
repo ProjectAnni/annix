@@ -5,7 +5,6 @@ import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 

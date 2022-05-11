@@ -1,4 +1,5 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,7 @@ class FavoriteDetail extends StatelessWidget {
                   favorite.info.title,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(
+                subtitle: ArtistText(
                   favorite.info.artist,
                   overflow: TextOverflow.ellipsis,
                 ),
