@@ -10,8 +10,6 @@ const double kPreviouNextMove = 150.0;
 class BottomPlayer extends StatelessWidget {
   BottomPlayer({Key? key}) : super(key: key);
 
-  final RxBool isSwitching = false.obs;
-
   @override
   Widget build(BuildContext context) {
     final PlayingController playing = Get.find();
@@ -21,20 +19,6 @@ class BottomPlayer extends StatelessWidget {
       onTap: () {
         Get.toNamed('/playing');
       },
-      onVerticalDragEnd: (details) async {
-        if (isSwitching.value) {
-          return;
-        }
-
-        final move = (details.primaryVelocity ?? 0);
-        isSwitching.value = true;
-        if (move > kPreviouNextMove) {
-          await playing.previous();
-        } else if (move < -kPreviouNextMove) {
-          await playing.next();
-        }
-        isSwitching.value = false;
-      },
       child: Material(
         elevation: 16,
         child: Container(
@@ -43,7 +27,6 @@ class BottomPlayer extends StatelessWidget {
               context.theme.colorScheme.surface,
               context.theme.colorScheme.primary,
               3.0),
-          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -78,11 +61,7 @@ class BottomPlayer extends StatelessWidget {
                   ),
                 ),
               ),
-              Obx(
-                () => isSwitching.value
-                    ? CircularProgressIndicator()
-                    : PlayPauseButton(),
-              ),
+              PlayPauseButton(),
             ],
           ),
         ),
