@@ -1,3 +1,4 @@
+import 'package:annix/pages/keepalive.dart';
 import 'package:annix/pages/playing/playing_control.dart';
 import 'package:annix/pages/playing/playing_lyric.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
@@ -9,6 +10,11 @@ class PlayingScreen extends StatelessWidget {
   PlayingScreen({Key? key}) : super(key: key);
 
   final PageController controller = PageController(initialPage: 1);
+  final pages = [
+    KeepAlivePage(child: PlayingLyric()),
+    PlayingControl(),
+    PlayingQueue()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +38,7 @@ class PlayingScreen extends StatelessWidget {
         controller: controller,
         itemCount: 3,
         itemBuilder: (context, index) {
-          switch (index) {
-            case 0:
-              return PlayingLyric();
-            case 1:
-              return PlayingControl();
-            case 2:
-              return PlayingQueue();
-            default:
-              return Container();
-          }
+          return pages[index];
         },
       ),
     );
