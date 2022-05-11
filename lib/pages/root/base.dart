@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 
 class BaseAppBar extends StatelessWidget {
   final Widget title;
+  final List<Widget>? actions;
 
-  const BaseAppBar({Key? key, required this.title}) : super(key: key);
+  const BaseAppBar({Key? key, required this.title, this.actions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +14,7 @@ class BaseAppBar extends StatelessWidget {
       title: title,
       centerTitle: true,
       automaticallyImplyLeading: false,
+      actions: actions,
     );
   }
 }

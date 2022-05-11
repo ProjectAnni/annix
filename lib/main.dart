@@ -29,6 +29,8 @@ Future<void> main() async {
     );
   }
 
+  FLog.applyConfigurations(LogsConfig()..isDevelopmentDebuggingEnabled = true);
+
   await Global.init();
 
   // if (kDebugMode) {

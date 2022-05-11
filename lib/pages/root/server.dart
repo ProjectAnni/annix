@@ -322,46 +322,53 @@ class ServerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.theme.scaffoldBackgroundColor,
-      child: Column(
-        children: [
-          BaseAppBar(title: Text("Server")),
-          AnnivCard(),
-          ListTile(
-            title: Text("Libraries"),
-            trailing: IconButton(
-              icon: Icon(Icons.add),
+    return Column(
+      children: [
+        BaseAppBar(
+          title: Text("Server"),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.settings),
               onPressed: () {
-                Get.dialog(
-                  AnnilDialog(
-                    onSubmit: (annil) {
-                      // TODO: save annil
-                    },
-                  ),
-                );
+                Get.toNamed('/settings');
               },
             ),
-          ),
-          Expanded(
-            child: Obx(() {
-              AnnilController annil = Get.find();
-              var clients = annil.clients.values.toList();
-              clients.sort((a, b) => b.priority - a.priority);
-
-              return ReorderableListView(
-                padding: EdgeInsets.zero,
-                buildDefaultDragHandles: true,
-                onReorder: (oldIndex, newIndex) {},
-                children: clients
-                    .map((value) => AnnilListTile(
-                        annil: value, key: ValueKey(value.priority)))
-                    .toList(),
+          ],
+        ),
+        AnnivCard(),
+        ListTile(
+          title: Text("Libraries"),
+          trailing: IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Get.dialog(
+                AnnilDialog(
+                  onSubmit: (annil) {
+                    // TODO: save annil
+                  },
+                ),
               );
-            }),
+            },
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: Obx(() {
+            AnnilController annil = Get.find();
+            var clients = annil.clients.values.toList();
+            clients.sort((a, b) => b.priority - a.priority);
+
+            return ReorderableListView(
+              padding: EdgeInsets.zero,
+              buildDefaultDragHandles: true,
+              onReorder: (oldIndex, newIndex) {},
+              children: clients
+                  .map((value) => AnnilListTile(
+                      annil: value, key: ValueKey(value.priority)))
+                  .toList(),
+            );
+          }),
+        ),
+      ],
     );
   }
 }

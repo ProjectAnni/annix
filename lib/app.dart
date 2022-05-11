@@ -6,6 +6,7 @@ import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/pages/playing/playing.dart';
 import 'package:annix/pages/root/root.dart';
 import 'package:annix/pages/search.dart';
+import 'package:annix/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -72,6 +73,10 @@ class AnnixApp extends StatelessWidget {
         GetPage(
           name: '/search',
           page: () => SearchScreen(),
+        ),
+        GetPage(
+          name: '/settings',
+          page: () => SettingsScreen(),
         ),
       ],
     );
