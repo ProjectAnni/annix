@@ -80,7 +80,8 @@ class CoverImage extends StatelessWidget {
             return image;
           }
         } else if (snapshot.hasError) {
-          // TODO: show error
+          // TODO: log error
+          // TODO: show default cover
           return Container(
             child: Center(
               child: Text(
