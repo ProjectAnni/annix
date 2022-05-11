@@ -33,8 +33,6 @@ import 'package:get/get.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:rxdart/rxdart.dart';
 
-export 'package:audio_service/audio_service.dart' show MediaItem;
-
 late SwitchAudioHandler _audioHandler;
 late JustAudioPlatform _platform;
 
@@ -457,6 +455,12 @@ class _PlayerAudioHandler extends BaseAudioHandler
             mediaItem.add(currentMediaItem!);
           }
         });
+
+    final PlayingController playingController = Get.find();
+    playingController.favorited.listen((favorited) {
+      isFavorited = favorited;
+      _broadcastState();
+    });
   }
 
   @override
@@ -560,6 +564,7 @@ class _PlayerAudioHandler extends BaseAudioHandler
   int get previousIndex => getRelativeIndex(-1);
   bool get hasNext => nextIndex != -1;
   bool get hasPrevious => previousIndex != -1;
+  bool isFavorited = false;
 
   int getRelativeIndex(int offset) {
     if (_repeatMode == AudioServiceRepeatMode.one) return index!;
@@ -633,8 +638,13 @@ class _PlayerAudioHandler extends BaseAudioHandler
   }
 
   @override
-  Future<void> fastForward() =>
-      _seekRelative(AudioService.config.fastForwardInterval);
+  Future<void> fastForward() async {
+    isFavorited = !isFavorited;
+    _broadcastState();
+
+    final PlayingController playingController = Get.find();
+    await playingController.toggleFavorite();
+  }
 
   @override
   Future<void> rewind() => _seekRelative(-AudioService.config.rewindInterval);
@@ -727,9 +737,20 @@ class _PlayerAudioHandler extends BaseAudioHandler
   /// Broadcasts the current state to all clients.
   Future<void> _broadcastState() async {
     final controls = [
+      isFavorited
+          ? MediaControl(
+              label: 'Unfavorite',
+              androidIcon: 'drawable/ic_favorite',
+              action: MediaAction.fastForward,
+            )
+          : MediaControl(
+              label: 'Favorite',
+              androidIcon: 'drawable/ic_favorite_border',
+              action: MediaAction.fastForward,
+            ),
       if (hasPrevious) MediaControl.skipToPrevious,
       if (_playing) MediaControl.pause else MediaControl.play,
-      MediaControl.stop,
+      // MediaControl.stop,
       if (hasNext) MediaControl.skipToNext,
     ];
     playbackState.add(playbackState.nvalue!.copyWith(
@@ -740,7 +761,12 @@ class _PlayerAudioHandler extends BaseAudioHandler
         MediaAction.seekBackward,
       },
       androidCompactActionIndices: List.generate(controls.length, (i) => i)
-          .where((i) => controls[i].action != MediaAction.stop)
+          .where((i) =>
+              controls[i].action == MediaAction.fastForward ||
+              controls[i].action == MediaAction.pause ||
+              controls[i].action == MediaAction.play)
+          .toList()
+          .reversed
           .toList(),
       processingState: {
         ProcessingStateMessage.idle: AudioProcessingState.idle,

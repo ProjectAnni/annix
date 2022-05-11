@@ -22,6 +22,8 @@ Future<void> main() async {
       androidNotificationIcon: 'drawable/ic_notification',
       androidOnNotificationClick: () => Get.toNamed('/playing'),
       androidNotificationOngoing: true,
+      artDownscaleHeight: 500,
+      artDownscaleWidth: 500,
       preloadArtwork: true,
     );
   }

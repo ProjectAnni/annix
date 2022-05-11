@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -16,6 +17,8 @@ class PlayingController extends GetxController {
       ),
     ),
   );
+
+  final AnnivController anniv = Get.find();
 
   @override
   onInit() {
@@ -33,15 +36,23 @@ class PlayingController extends GetxController {
       if (index == null || index >= queue.length) {
         currentPlaying.value = null;
       } else {
-        currentPlaying.value = queue[this.playingIndex.value!];
+        final now = this.queue[this.playingIndex.value!];
+        currentPlaying.value = now;
+        favorited.value = this.anniv.favorites.containsKey(now.id);
       }
     });
     this.playingIndex.listen((index) {
       if (index == null || index >= this.queue.length) {
         currentPlaying.value = null;
       } else {
-        currentPlaying.value = this.queue[index];
+        final now = this.queue[index];
+        currentPlaying.value = now;
+        favorited.value = this.anniv.favorites.containsKey(now.id);
       }
+    });
+    this.anniv.favorites.listen((favoriteMap) {
+      final currentId = queue[this.playingIndex.value!].id;
+      favorited.value = favoriteMap.containsKey(currentId);
     });
 
     super.onInit();
@@ -54,6 +65,7 @@ class PlayingController extends GetxController {
   Rx<Duration> progress = Duration.zero.obs;
   Rx<Duration> buffered = Duration.zero.obs;
   Rxn<Duration> duration = Rxn();
+  RxBool favorited = false.obs;
 
   RxMap<String, Duration> durationMap = RxMap();
 
@@ -163,5 +175,14 @@ class PlayingController extends GetxController {
     await this.setLoopMode(LoopMode.off);
     await this.setShuffleModeEnabled(false);
     await this.setPlayingQueue(songs);
+  }
+
+  Future<void> toggleFavorite() async {
+    if (this.favorited.value) {
+      await this.anniv.removeFavorite(this.currentPlaying.value!.id);
+    } else {
+      await this.anniv.addFavorite(this.currentPlaying.value!.id);
+    }
+    this.favorited.value = !this.favorited.value;
   }
 }

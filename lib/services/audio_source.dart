@@ -235,7 +235,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:annix/controllers/playing_controller.dart';
-import 'package:annix/third_party/just_audio_background/just_audio_background.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:get/get.dart' hide Rx;
 import 'package:just_audio/just_audio.dart';
 import 'package:crypto/crypto.dart';

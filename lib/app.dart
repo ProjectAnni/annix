@@ -17,14 +17,15 @@ class AnnixApp extends StatelessWidget {
     // network
     final network = NetworkController();
     Get.put(network);
-    // playing
-    Get.put(PlayingController());
 
     // annil & anniv
     final annil = AnnilController();
     Get.put(annil);
     final anniv = AnnivController();
     Get.put(anniv);
+
+    // playing
+    Get.put(PlayingController());
 
     // initialization awaiter
     ever(

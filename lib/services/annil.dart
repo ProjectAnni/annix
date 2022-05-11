@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/third_party/just_audio_background/just_audio_background.dart'
-    show MediaItem;
 import 'package:annix/widgets/cover_image.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uuid/uuid.dart';
@@ -204,6 +203,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         // TODO: use disc cover
         artUri: File(getCoverCachePath(albumId, null)).uri,
         displayDescription: track?.type.toString() ?? "normal",
+        rating: Rating.newHeartRating(false),
       ),
     );
   }
