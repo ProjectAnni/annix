@@ -47,6 +47,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   extended_image: ^7.0.0-dev.1
   flutter_lyric: ^2.0.3
+  settings_ui: ^2.0.2
 
   toml: ^0.12.0
   json_serializable: ^6.1.1

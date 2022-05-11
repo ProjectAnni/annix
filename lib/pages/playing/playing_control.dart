@@ -1,9 +1,9 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
-import 'package:annix/widgets/favorite_button.dart';
-import 'package:annix/widgets/loop_mode_button.dart';
-import 'package:annix/widgets/player_buttons.dart';
-import 'package:annix/widgets/shuffle_button.dart';
+import 'package:annix/widgets/buttons/favorite_button.dart';
+import 'package:annix/widgets/buttons/loop_mode_button.dart';
+import 'package:annix/widgets/buttons/play_pause_button.dart';
+import 'package:annix/widgets/buttons/shuffle_button.dart';
 import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';

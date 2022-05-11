@@ -1,5 +1,5 @@
 import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/widgets/favorite_button.dart';
+import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
