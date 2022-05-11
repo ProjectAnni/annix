@@ -2,7 +2,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/song.dart';
-import 'package:annix/widgets/third_party/marquee_widget/marquee_widget.dart';
+import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
