@@ -57,39 +57,43 @@ class PlayingLyric extends StatelessWidget {
     final PlayingController playing = Get.find();
 
     return Obx(
-      () => FutureBuilder<LyricLanguage?>(
-        future: getLyric(playing.currentPlaying.value!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            final lyric = snapshot.data;
-            if (lyric == null) {
-              return Center(child: Text("No lyrics"));
-            } else {
-              if (lyric.type == "lrc") {
-                final model = LyricsModelBuilder.create()
-                    .bindLyricToMain(lyric.data)
-                    .getModel();
-                return Obx(() {
-                  return LyricsReader(
-                    model: model,
-                    lyricUi: PlayingLyricUI(),
-                    position: playing.progress.value.inMilliseconds,
-                  );
-                });
-              } else {
-                return SingleChildScrollView(
-                  child: Text(
-                    lyric.data,
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-            }
-          } else {
-            return Center(child: Text("Loading..."));
-          }
-        },
-      ),
+      () => playing.currentPlaying.value!.displayDescription == "normal"
+          ? FutureBuilder<LyricLanguage?>(
+              future: getLyric(playing.currentPlaying.value!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final lyric = snapshot.data;
+                  if (lyric == null) {
+                    return Center(child: Text("No lyrics"));
+                  } else {
+                    if (lyric.type == "lrc") {
+                      final model = LyricsModelBuilder.create()
+                          .bindLyricToMain(lyric.data)
+                          .getModel();
+                      return Obx(() {
+                        return LyricsReader(
+                          model: model,
+                          lyricUi: PlayingLyricUI(),
+                          position: playing.progress.value.inMilliseconds,
+                        );
+                      });
+                    } else {
+                      return SingleChildScrollView(
+                        child: Text(
+                          lyric.data,
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
+                  }
+                } else {
+                  return Center(child: Text("Loading..."));
+                }
+              },
+            )
+          : Center(
+              child: Text(playing.currentPlaying.value!.displayDescription!),
+            ),
     );
   }
 }
