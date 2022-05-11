@@ -42,7 +42,7 @@ abstract class BaseMetadataSource {
   bool get needPersist;
 
   /// Private album object cache for album object reading
-  static final _albumStore = AnnixStore.instance.category('album');
+  static final _albumStore = AnnixStore().category('album');
 
   /// Get album information
   ///

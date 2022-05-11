@@ -165,3 +165,10 @@ LyricLanguage _$LyricLanguageFromJson(Map<String, dynamic> json) =>
       type: json['type'] as String,
       data: json['data'] as String,
     );
+
+Map<String, dynamic> _$LyricLanguageToJson(LyricLanguage instance) =>
+    <String, dynamic>{
+      'language': instance.language,
+      'type': instance.type,
+      'data': instance.data,
+    };

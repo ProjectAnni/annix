@@ -3,11 +3,15 @@ import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 
 class AnnixStore {
-  static AnnixStore instance = AnnixStore();
+  static AnnixStore _instance = AnnixStore._();
+
+  factory AnnixStore() {
+    return _instance;
+  }
 
   Future<Database> _database;
 
-  AnnixStore()
+  AnnixStore._()
       : _database = openDatabase(
           "store.db",
           version: 1,

@@ -291,7 +291,7 @@ class LyricResponse {
       _$LyricResponseFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class LyricLanguage {
   String language;
   String type; // "text" | "lrc"
@@ -306,4 +306,6 @@ class LyricLanguage {
 
   factory LyricLanguage.fromJson(Map<String, dynamic> json) =>
       _$LyricLanguageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LyricLanguageToJson(this);
 }

@@ -20,6 +20,10 @@ dependencies:
   dio_http2_adapter: ^2.0.0
   cookie_jar: ^3.0.1
   http_plus: ^0.2.1
+
+  netease_music_api:
+    git:
+      url: https://github.com/ProjectAnni/flutter-netease-music-api.git
   # cronet: ^0.0.7
   # cronet_flutter:
   #   git:
