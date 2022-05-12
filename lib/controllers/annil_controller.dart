@@ -9,43 +9,36 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
-class AnnilController extends GetxController {
-  final RxMap<String, OnlineAnnilClient> clients =
-      Map<String, OnlineAnnilClient>().obs;
-  final RxList<String> albums = <String>[].obs;
-  bool get hasClient => clients.isNotEmpty;
+class CombinedOnlineAnnilClient {
+  final Map<String, OnlineAnnilClient> clients;
+  CombinedOnlineAnnilClient(List<OnlineAnnilClient> clients)
+      : this.clients = Map.fromEntries(clients.map((e) => MapEntry(e.id, e)));
 
-  NetworkController _network = Get.find();
+  bool get isEmpty => clients.isEmpty;
+  bool get isNotEmpty => !isEmpty;
 
-  /// Load state from shared preferences
-  Future<void> init() async {
+  /// Load clients from shared preferences
+  static Future<CombinedOnlineAnnilClient> load() async {
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
     if (tokens != null) {
-      for (String token in tokens) {
-        final client = OnlineAnnilClient.fromJson(jsonDecode(token));
-        clients[client.id] = client;
-      }
+      final _clients = tokens
+          .map((token) => OnlineAnnilClient.fromJson(jsonDecode(token)))
+          .toList();
+      return CombinedOnlineAnnilClient(_clients);
+    } else {
+      return CombinedOnlineAnnilClient([]);
     }
-    await refresh();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    this._network.isOnline.listen((isOnline) {
-      this.refresh();
-    });
-  }
-
-  /// Save the current state of the combined client to shared preferences
+  /// Save clients to shared preferences
   Future<void> save() async {
     final tokens =
         clients.values.map((client) => jsonEncode(client.toJson())).toList();
-    Global.preferences.setStringList("annil_clients", tokens);
+    await Global.preferences.setStringList("annil_clients", tokens);
   }
 
-  /// Remove all remote annil sources
-  void syncWithRemote(List<AnnilToken> remoteList) {
+  /// Keep sync with new credential list
+  void sync(List<AnnilToken> remoteList) {
     final remoteIds = remoteList.map((e) => e.id).toList();
     // update existing client info
     clients.removeWhere((id, client) {
@@ -84,13 +77,86 @@ class AnnilController extends GetxController {
     );
   }
 
+  Future<IndexedAudioSource> getAudio({
+    required String albumId,
+    required int discId,
+    required int trackId,
+  }) {
+    // TODO: add option to not use mobile network
+    final list = clients.values.toList();
+    list.sort((a, b) => b.priority - a.priority);
+    for (final client in list) {
+      if (client.albums.contains(albumId)) {
+        return AnnilAudioSource.create(
+          annil: client,
+          albumId: albumId,
+          discId: discId,
+          trackId: trackId,
+          // TODO: select quality
+          preferBitrate: PreferQuality.Medium,
+        );
+      }
+    }
+
+    throw new UnsupportedError("No annil client found for album $albumId");
+  }
+
+  Widget? cover({
+    required String albumId,
+    int? discId,
+    BoxFit? fit,
+    double? scale,
+    String? tag,
+  }) {
+    final list = clients.values.toList();
+    list.sort((a, b) => b.priority - a.priority);
+    for (final client in list) {
+      if (client.albums.contains(albumId)) {
+        return CoverImage(
+          albumId: albumId,
+          discId: discId,
+          remoteUrl: client.getCoverUrl(albumId: albumId, discId: discId),
+          fit: fit ?? BoxFit.scaleDown,
+          filterQuality: FilterQuality.medium,
+          tag: tag,
+        );
+      }
+    }
+    return null;
+  }
+}
+
+class AnnilController extends GetxController {
+  late Rx<CombinedOnlineAnnilClient> clients;
+  final RxList<String> albums = <String>[].obs;
+  bool get hasClient => clients.value.isNotEmpty;
+
+  NetworkController _network = Get.find();
+
+  /// Load state from shared preferences
+  Future<void> init() async {
+    clients = (await CombinedOnlineAnnilClient.load()).obs;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    this._network.isOnline.listen((isOnline) {
+      this.refresh();
+    });
+  }
+
+  /// Sync remote annil tokens with local ones
+  void syncWithRemote(List<AnnilToken> remoteList) {
+    clients.value.sync(remoteList);
+    clients.refresh();
+  }
+
   /// Refresh all annil servers
   Future<void> refresh() async {
     if (_network.isOnline.value) {
-      // wait for a while
-      // TODO: refresh after network is actually available
-      await Future.delayed(Duration(seconds: 2));
-      var newAlbums = (await Future.wait(clients.values.map((client) async {
+      var newAlbums =
+          (await Future.wait(clients.value.clients.values.map((client) async {
         try {
           return await client.getAlbums();
         } catch (e) {
@@ -98,11 +164,11 @@ class AnnilController extends GetxController {
           return <String>[];
         }
       })))
-          .expand((e) => e)
-          .toSet()
-          .toList();
+              .expand((e) => e)
+              .toSet()
+              .toList();
       albums.replaceRange(0, this.albums.length, newAlbums);
-      this.save();
+      clients.value.save();
     } else {
       var newAlbums = await OfflineAnnilClient.instance.getAlbums();
       albums.replaceRange(0, this.albums.length, newAlbums);
@@ -122,23 +188,12 @@ class AnnilController extends GetxController {
         trackId: trackId,
       );
     } else {
-      // TODO: add option to not use mobile network
-      final list = clients.values.toList();
-      list.sort((a, b) => b.priority - a.priority);
-      for (final client in list) {
-        if (client.albums.contains(albumId)) {
-          return AnnilAudioSource.create(
-            annil: client,
-            albumId: albumId,
-            discId: discId,
-            trackId: trackId,
-            // TODO: select quality
-            preferBitrate: PreferQuality.Medium,
-          );
-        }
-      }
+      return clients.value.getAudio(
+        albumId: albumId,
+        discId: discId,
+        trackId: trackId,
+      );
     }
-    throw new UnsupportedError("No annil client found for album $albumId");
   }
 
   Widget cover({
@@ -148,39 +203,24 @@ class AnnilController extends GetxController {
     double? scale,
     String? tag,
   }) {
-    if (!_network.isOnline.value) {
-      // offline, load cached cover
-      return CoverImage(
+    var cover;
+    if (_network.isOnline.value) {
+      cover = clients.value.cover(
         albumId: albumId,
         discId: discId,
-        fit: fit ?? BoxFit.scaleDown,
-        filterQuality: FilterQuality.medium,
-        tag: tag,
       );
-    } else {
-      final list = clients.values.toList();
-      list.sort((a, b) => b.priority - a.priority);
-      for (final client in list) {
-        if (client.albums.contains(albumId)) {
-          return CoverImage(
-            albumId: albumId,
-            discId: discId,
-            remoteUrl: client.getCoverUrl(albumId: albumId, discId: discId),
-            fit: fit ?? BoxFit.scaleDown,
-            filterQuality: FilterQuality.medium,
-            tag: tag,
-          );
-        }
-      }
     }
 
-    // try to load from local
-    return CoverImage(
+    // offline, load cached cover
+    cover ??= cover = CoverImage(
       albumId: albumId,
       discId: discId,
       fit: fit ?? BoxFit.scaleDown,
       filterQuality: FilterQuality.medium,
+      tag: tag,
     );
+
+    return cover;
   }
 
   bool isAvailable({
