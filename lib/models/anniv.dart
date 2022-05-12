@@ -1,3 +1,4 @@
+import 'package:annix/models/metadata.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'anniv.g.dart';
@@ -51,6 +52,7 @@ class AnnilToken {
   final String url;
   final String token;
   final int priority;
+  final bool controlled;
 
   AnnilToken({
     required this.id,
@@ -58,6 +60,7 @@ class AnnilToken {
     required this.url,
     required this.token,
     required this.priority,
+    required this.controlled,
   });
 
   factory AnnilToken.fromJson(Map<String, dynamic> json) =>
@@ -74,7 +77,7 @@ class AlbumInfo {
   String catalog;
   String artist;
   String date;
-  String type;
+  TrackType type;
   List<DiscInfo> discs;
 
   AlbumInfo({
@@ -90,14 +93,27 @@ class AlbumInfo {
 
   factory AlbumInfo.fromJson(Map<String, dynamic> json) =>
       _$AlbumInfoFromJson(json);
+
+  Album toAlbum() {
+    return Album(
+      albumId: albumId,
+      title: title,
+      edition: edition,
+      catalog: catalog,
+      artist: artist,
+      date: ReleaseDate.fromDynamic(date),
+      type: type,
+      discs: discs.map((e) => e.toDisc()).toList(),
+    );
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class DiscInfo {
-  String title;
-  String artist;
+  String? title;
+  String? artist;
   String catalog;
-  String type;
+  TrackType? type;
   List<TrackInfo> tracks;
 
   DiscInfo({
@@ -110,6 +126,32 @@ class DiscInfo {
 
   factory DiscInfo.fromJson(Map<String, dynamic> json) =>
       _$DiscInfoFromJson(json);
+
+  Disc toDisc() {
+    return Disc(
+      title: title,
+      artist: artist,
+      catalog: catalog,
+      type: type,
+      tracks: tracks.map((e) => e.toTrack()).toList(),
+    );
+  }
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class DiscIdentifier {
+  final String albumId;
+  final int discId;
+
+  DiscIdentifier({
+    required this.albumId,
+    required this.discId,
+  });
+
+  factory DiscIdentifier.fromJson(Map<String, dynamic> json) =>
+      _$DiscIdentifierFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DiscIdentifierToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -144,8 +186,8 @@ class TrackIdentifier {
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class TrackInfo {
   String title;
-  String artist;
-  String type;
+  String? artist;
+  TrackType? type;
 
   TrackInfo({
     required this.title,
@@ -155,6 +197,14 @@ class TrackInfo {
 
   factory TrackInfo.fromJson(Map<String, dynamic> json) =>
       _$TrackInfoFromJson(json);
+
+  Track toTrack() {
+    return Track(
+      title: title,
+      artist: artist,
+      type: type,
+    );
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -162,12 +212,15 @@ class TrackInfoWithAlbum {
   @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
   TrackIdentifier track;
 
-  @JsonKey(fromJson: _infoFromJson, readValue: readValueFlatten)
-  TrackInfo info;
+  String title;
+  String artist;
+  TrackType type;
 
   TrackInfoWithAlbum({
     required this.track,
-    required this.info,
+    required this.title,
+    required this.artist,
+    required this.type,
   });
 
   factory TrackInfoWithAlbum.fromJson(Map<String, dynamic> json) =>
@@ -175,9 +228,6 @@ class TrackInfoWithAlbum {
 
   static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
       TrackIdentifier.fromJson(json);
-
-  static TrackInfo _infoFromJson(Map<String, dynamic> json) =>
-      TrackInfo.fromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

@@ -24,11 +24,11 @@ class FavoriteDetail extends StatelessWidget {
               return ListTile(
                 leading: FavoriteButton(id: favorite.track.toSlashedString()),
                 title: Text(
-                  favorite.info.title,
+                  favorite.title,
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: ArtistText(
-                  favorite.info.artist,
+                  favorite.artist,
                   overflow: TextOverflow.ellipsis,
                 ),
               );

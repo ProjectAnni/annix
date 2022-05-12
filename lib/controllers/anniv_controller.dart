@@ -111,10 +111,14 @@ class AnnivController extends GetxController {
 
   Future<void> addFavorite(String id) async {
     if (this.client != null) {
+      final track = TrackIdentifier.fromSlashSplitedString(id);
+      final trackMetadata = await Global.metadataSource!.getTrack(
+          albumId: track.albumId, discId: track.discId, trackId: track.trackId);
       favorites[id] = TrackInfoWithAlbum(
-        track: TrackIdentifier.fromSlashSplitedString(id),
-        // TODO: get track info
-        info: TrackInfo(title: "", artist: "", type: ""),
+        track: track,
+        title: trackMetadata!.title,
+        artist: trackMetadata.artist,
+        type: trackMetadata.type,
       );
       try {
         await this.client?.addFavorite(id);

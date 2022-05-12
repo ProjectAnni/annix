@@ -78,8 +78,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   itemBuilder: (context, index) {
                     var e = _result!.tracks![index];
                     return ListTile(
-                      title: Text(e.info.title),
-                      subtitle: ArtistText(e.info.artist),
+                      title: Text(e.title),
+                      subtitle: ArtistText(e.artist),
                       onTap: () async {
                         await playing.setPlayingQueue([
                           await annil.getAudio(
@@ -100,7 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     onTap: () {
                       Get.to(
                         () => AlbumDetailScreen(
-                          albumInfo: _result!.albums![index],
+                          album: _result!.albums![index].toAlbum(),
                           // FIXME
                           tag: 'no-tag',
                         ),

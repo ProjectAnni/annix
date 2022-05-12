@@ -1,7 +1,7 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/models/song.dart';
+import 'package:annix/models/metadata.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -10,22 +10,21 @@ import 'package:just_audio/just_audio.dart';
 
 class AlbumDetailScreen extends StatelessWidget {
   final String tag;
-  final AlbumInfo albumInfo;
+  final Album album;
 
-  const AlbumDetailScreen(
-      {Key? key, required this.albumInfo, required this.tag})
+  const AlbumDetailScreen({Key? key, required this.album, required this.tag})
       : super(key: key);
 
   List<Widget> getAlbumTracks(BuildContext context, AnnilController annil) {
     final List<Widget> list = [];
 
     bool needDiscId = false;
-    if (albumInfo.discs.length > 1) {
+    if (album.discs.length > 1) {
       needDiscId = true;
     }
 
     var discId = 1;
-    albumInfo.discs.forEach((disc) {
+    album.discs.forEach((disc) {
       if (needDiscId) {
         var discTitle = 'Disc $discId';
         if (disc.title != "") {
@@ -47,7 +46,7 @@ class AlbumDetailScreen extends StatelessWidget {
               subtitle: ArtistText(track.artist),
               minLeadingWidth: 16,
               enabled: annil.isAvailable(
-                albumId: albumInfo.albumId,
+                albumId: album.albumId,
                 discId: discId,
                 trackId: trackIndex,
               ),
@@ -61,14 +60,14 @@ class AlbumDetailScreen extends StatelessWidget {
   }
 
   void playAlbum(AnnilController annil) async {
-    List<Song> songs = [];
+    List<TrackIdentifier> songs = [];
     var discId = 1;
-    albumInfo.discs.forEach((disc) {
+    album.discs.forEach((disc) {
       var trackId = 1;
       disc.tracks.forEach((element) {
         // check if  available
-        final song = Song(
-          albumId: albumInfo.albumId,
+        final song = TrackIdentifier(
+          albumId: album.albumId,
           discId: discId,
           trackId: trackId++,
         );
@@ -119,7 +118,7 @@ class AlbumDetailScreen extends StatelessWidget {
                   expandedTitleScale: 1.2,
                   title: Marquee(
                     child: Text(
-                      albumInfo.title,
+                      album.title,
                       style: TextStyle(
                         shadows: [
                           Shadow(
@@ -130,7 +129,7 @@ class AlbumDetailScreen extends StatelessWidget {
                     ),
                   ),
                   background: annil.cover(
-                    albumId: albumInfo.albumId,
+                    albumId: album.albumId,
                     fit: BoxFit.fitWidth,
                     tag: tag,
                   ),

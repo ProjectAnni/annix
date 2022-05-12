@@ -2,6 +2,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/global.dart';
+import 'package:f_logs/model/flog/flog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
@@ -31,6 +32,17 @@ class _AlbumGridState extends State<AlbumGrid> {
       child: FutureBuilder<Album?>(
         future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
         builder: (ctx, snapshot) {
+          if (snapshot.hasError) {
+            final e = snapshot.error;
+            FLog.error(
+              className: "AlbumGrid",
+              methodName: "FutureBuilder",
+              text: snapshot.error.toString(),
+              exception: snapshot.error,
+              stacktrace: e is Error ? e.stackTrace : null,
+            );
+          }
+
           return InkWell(
             child: Stack(
               fit: StackFit.expand,
@@ -58,7 +70,7 @@ class _AlbumGridState extends State<AlbumGrid> {
               if (snapshot.hasData) {
                 Get.to(
                   () => AlbumDetailScreen(
-                    albumInfo: snapshot.data!.toAlbumInfo(),
+                    album: snapshot.data!,
                     tag: widget.tag,
                   ),
                   duration: Duration(milliseconds: 300),

@@ -253,11 +253,9 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         discId: this.discId,
         trackId: this.trackId,
       ),
-      info: TrackInfo(
-        title: tag.title,
-        artist: tag.artist!,
-        type: tag.displayDescription!,
-      ),
+      title: tag.title,
+      artist: tag.artist!,
+      type: TrackTypeExtension.fromString(tag.displayDescription!),
     );
   }
 }

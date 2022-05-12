@@ -1,4 +1,3 @@
-import 'package:annix/models/anniv.dart';
 import 'package:toml/toml.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -59,6 +58,7 @@ class ReleaseDate {
   Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
 }
 
+@JsonEnum(fieldRename: FieldRename.snake)
 enum TrackType {
   Normal,
   Instrumental,
@@ -66,7 +66,6 @@ enum TrackType {
   Drama,
   Radio,
   Vocal,
-  Unknown,
 }
 
 extension TrackTypeExtension on TrackType {
@@ -85,7 +84,7 @@ extension TrackTypeExtension on TrackType {
       case "vocal":
         return TrackType.Vocal;
       default:
-        return TrackType.Unknown;
+        return TrackType.Normal;
     }
   }
 
@@ -162,19 +161,6 @@ class Album {
     );
   }
 
-  AlbumInfo toAlbumInfo() {
-    return AlbumInfo(
-      albumId: albumId,
-      title: title,
-      edition: edition,
-      catalog: catalog,
-      artist: artist,
-      type: type.toText(),
-      date: date.toString(),
-      discs: discs.map((e) => e.toDiscInfo()).toList(),
-    );
-  }
-
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 }
@@ -229,16 +215,6 @@ class Disc {
     );
   }
 
-  DiscInfo toDiscInfo() {
-    return DiscInfo(
-      title: title,
-      catalog: catalog,
-      artist: artist,
-      type: type.toText(),
-      tracks: tracks.map((e) => e.toTrackInfo()).toList(),
-    );
-  }
-
   factory Disc.fromJson(Map<String, dynamic> json) => _$DiscFromJson(json);
   Map<String, dynamic> toJson() => _$DiscToJson(this);
 }
@@ -272,14 +248,6 @@ class Track {
     List<String>? tags =
         (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
     return Track(title: title, artist: artist, type: type, tags: tags);
-  }
-
-  TrackInfo toTrackInfo() {
-    return TrackInfo(
-      title: title,
-      artist: artist,
-      type: type.toText(),
-    );
   }
 
   factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);

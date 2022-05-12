@@ -156,16 +156,7 @@ class AnnivClient {
         .map(
           (albumId, album) => MapEntry(
             albumId,
-            Album.fromMap({
-              'album': album,
-              'discs': (album['discs'] as List<dynamic>).map((e) {
-                var disc = e as Map<String, dynamic>;
-                e['tracks'] = (disc['tracks'] as List<dynamic>)
-                    .map((e) => e as Map<String, dynamic>)
-                    .toList();
-                return disc;
-              }).toList(),
-            }),
+            AlbumInfo.fromJson(album).toAlbum(),
           ),
         );
   }

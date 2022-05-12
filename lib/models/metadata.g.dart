@@ -46,13 +46,12 @@ Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
     };
 
 const _$TrackTypeEnumMap = {
-  TrackType.Normal: 'Normal',
-  TrackType.Instrumental: 'Instrumental',
-  TrackType.Absolute: 'Absolute',
-  TrackType.Drama: 'Drama',
-  TrackType.Radio: 'Radio',
-  TrackType.Vocal: 'Vocal',
-  TrackType.Unknown: 'Unknown',
+  TrackType.Normal: 'normal',
+  TrackType.Instrumental: 'instrumental',
+  TrackType.Absolute: 'absolute',
+  TrackType.Drama: 'drama',
+  TrackType.Radio: 'radio',
+  TrackType.Vocal: 'vocal',
 };
 
 Disc _$DiscFromJson(Map<String, dynamic> json) => Disc(
