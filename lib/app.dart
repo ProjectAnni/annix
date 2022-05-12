@@ -7,6 +7,7 @@ import 'package:annix/pages/playing/playing.dart';
 import 'package:annix/pages/root/root.dart';
 import 'package:annix/pages/search.dart';
 import 'package:annix/pages/settings.dart';
+import 'package:annix/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,15 +40,8 @@ class AnnixApp extends StatelessWidget {
     return GetMaterialApp(
       title: "Annix",
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Color.fromARGB(255, 184, 253, 127),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Color.fromARGB(255, 184, 253, 127),
-      ),
+      theme: AnnixTheme().theme,
+      darkTheme: AnnixTheme().darkTheme,
       initialRoute: '/initialize',
       getPages: [
         GetPage(
