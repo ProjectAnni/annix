@@ -31,7 +31,8 @@ class SqliteMetadataSource extends BaseMetadataSource {
       String discTitle = disc['title'] as String;
       String discArtist = disc['artist'] as String;
       String discCatalog = disc['catalog'] as String;
-      TrackType discType = stringToTrackType(disc['disc_type'] as String);
+      TrackType discType =
+          TrackTypeExtension.fromString(disc['disc_type'] as String);
 
       List<Map<String, Object?>> tracks = await database.rawQuery(
           "SELECT title, artist, track_type FROM repo_track WHERE album_id = ? AND disc_id = ? ORDER BY disc_id",
@@ -39,7 +40,8 @@ class SqliteMetadataSource extends BaseMetadataSource {
       List<Track> discTracks = tracks.map((track) {
         String trackTitle = track['title'] as String;
         String trackArtist = track['artist'] as String;
-        TrackType trackType = stringToTrackType(track['track_type'] as String);
+        TrackType trackType =
+            TrackTypeExtension.fromString(track['track_type'] as String);
         return Track(title: trackTitle, artist: trackArtist, type: trackType);
       }).toList();
 
@@ -59,7 +61,8 @@ class SqliteMetadataSource extends BaseMetadataSource {
       String catalog = album[0]['catalog'] as String;
       String artist = album[0]['artist'] as String;
       String releaseDate = album[0]['release_date'] as String;
-      TrackType albumType = stringToTrackType(album[0]['album_type'] as String);
+      TrackType albumType =
+          TrackTypeExtension.fromString(album[0]['album_type'] as String);
 
       return Album(
         albumId: albumId,

@@ -59,24 +59,53 @@ class ReleaseDate {
   Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
 }
 
-enum TrackType { Normal, Instrumental, Absolute, Drama, Radio, Vocal, Unknown }
+enum TrackType {
+  Normal,
+  Instrumental,
+  Absolute,
+  Drama,
+  Radio,
+  Vocal,
+  Unknown,
+}
 
-TrackType stringToTrackType(String value) {
-  switch (value) {
-    case "normal":
-      return TrackType.Normal;
-    case "instrumental":
-      return TrackType.Instrumental;
-    case "absolute":
-      return TrackType.Absolute;
-    case "drama":
-      return TrackType.Drama;
-    case "radio":
-      return TrackType.Radio;
-    case "vocal":
-      return TrackType.Vocal;
-    default:
-      return TrackType.Unknown;
+extension TrackTypeExtension on TrackType {
+  static TrackType fromString(String value) {
+    switch (value) {
+      case "normal":
+        return TrackType.Normal;
+      case "instrumental":
+        return TrackType.Instrumental;
+      case "absolute":
+        return TrackType.Absolute;
+      case "drama":
+        return TrackType.Drama;
+      case "radio":
+        return TrackType.Radio;
+      case "vocal":
+        return TrackType.Vocal;
+      default:
+        return TrackType.Unknown;
+    }
+  }
+
+  toText() {
+    switch (this) {
+      case TrackType.Normal:
+        return "normal";
+      case TrackType.Instrumental:
+        return "instrumental";
+      case TrackType.Absolute:
+        return "absolute";
+      case TrackType.Drama:
+        return "drama";
+      case TrackType.Radio:
+        return "radio";
+      case TrackType.Vocal:
+        return "vocal";
+      default:
+        return "unknown";
+    }
   }
 }
 
@@ -112,7 +141,7 @@ class Album {
     String? edition = map['album']['edition'];
     String catalog = map['album']['catalog'];
     String artist = map['album']['artist'];
-    TrackType type = stringToTrackType(map['album']['type']!);
+    TrackType type = TrackTypeExtension.fromString(map['album']['type']!);
     ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
     List<String>? tags = (map['album']['tags'] as List<dynamic>?)
         ?.map((e) => e.toString())
@@ -140,7 +169,7 @@ class Album {
       edition: edition,
       catalog: catalog,
       artist: artist,
-      type: type.toString(),
+      type: type.toText(),
       date: date.toString(),
       discs: discs.map((e) => e.toDiscInfo()).toList(),
     );
@@ -183,7 +212,7 @@ class Disc {
     String? title = map['title'];
     String catalog = map['catalog'];
     String? artist = map['artist'];
-    TrackType? type = stringToTrackType(map['type']);
+    TrackType? type = TrackTypeExtension.fromString(map['type']);
     List<String>? tags =
         (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
 
@@ -205,7 +234,7 @@ class Disc {
       title: title,
       catalog: catalog,
       artist: artist,
-      type: type.toString(),
+      type: type.toText(),
       tracks: tracks.map((e) => e.toTrackInfo()).toList(),
     );
   }
@@ -239,7 +268,7 @@ class Track {
     String title = map['title'];
     String? artist = map['artist'];
 
-    TrackType? type = stringToTrackType(map['type']);
+    TrackType? type = TrackTypeExtension.fromString(map['type']);
     List<String>? tags =
         (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
     return Track(title: title, artist: artist, type: type, tags: tags);
@@ -249,7 +278,7 @@ class Track {
     return TrackInfo(
       title: title,
       artist: artist,
-      type: type.toString(),
+      type: type.toText(),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:annix/models/anniv.dart';
+import 'package:annix/models/metadata.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/cover_image.dart';
@@ -202,7 +203,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         artist: track?.artist,
         // TODO: use disc cover
         artUri: File(getCoverCachePath(albumId, null)).uri,
-        displayDescription: track?.type.toString() ?? "normal",
+        displayDescription: track?.type.toText() ?? "normal",
         rating: Rating.newHeartRating(false),
       ),
     );
@@ -224,7 +225,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         artist: track?.artist,
         // TODO: use disc cover
         artUri: File(getCoverCachePath(albumId, null)).uri,
-        displayDescription: track?.type.toString() ?? "normal",
+        displayDescription: track?.type.toText() ?? "normal",
       ),
     );
   }
