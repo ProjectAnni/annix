@@ -39,6 +39,8 @@ class _SearchScreenState extends State<SearchScreen> {
       final result = await anniv.search(_controller.text,
           searchAlbums: true, searchTracks: true);
       _result = result;
+    } catch (e) {
+      rethrow;
     } finally {
       setState(() {
         isLoading = false;
