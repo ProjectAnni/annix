@@ -51,8 +51,10 @@ class PlayingController extends GetxController {
       }
     });
     this.anniv.favorites.listen((favoriteMap) {
-      final currentId = queue[this.playingIndex.value!].id;
-      favorited.value = favoriteMap.containsKey(currentId);
+      if (this.playingIndex.value != null) {
+        final currentId = queue[this.playingIndex.value!].id;
+        favorited.value = favoriteMap.containsKey(currentId);
+      }
     });
 
     super.onInit();
