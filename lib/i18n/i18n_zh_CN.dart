@@ -1,6 +1,8 @@
 import 'package:annix/i18n/i18n.dart';
 
 const Map<String, String> I18N_zh_CN = {
+  I18n.PROGRESS: "进度",
+
   I18n.HOME: "首页",
   I18n.ALBUMS: "专辑",
   I18n.PLAYLISTS: "播放列表",
@@ -10,4 +12,12 @@ const Map<String, String> I18N_zh_CN = {
   I18n.LOGIN: "登录",
   I18n.LOGOUT: "退出登录",
   I18n.ANNIL_LIBRARIES: "音频仓库",
+
+  // settings
+  I18n.SETTINGS: "设置",
+  I18n.SETTINGS_CLEAR_METADATA_CACHE: "清除元数据缓存",
+  I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC:
+      "当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。",
+  I18n.SETTINGS_CLEAR_LYRIC_CACHE: "清除歌词缓存",
+  I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC: "删除本地缓存的所有歌词。",
 };

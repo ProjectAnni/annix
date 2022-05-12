@@ -31,6 +31,16 @@ CREATE TABLE store(
   AnnixStoreCategory category(String category) {
     return AnnixStoreCategory(this, category);
   }
+
+  Future<void> clear([String? category]) {
+    return _database.then((db) async {
+      if (category == null) {
+        await db.delete('store');
+      } else {
+        await db.delete('store', where: 'category = ?', whereArgs: [category]);
+      }
+    });
+  }
 }
 
 class AnnixStoreCategory {
