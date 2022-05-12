@@ -45,26 +45,29 @@ class AnnilController extends GetxController {
   }
 
   /// Remove all remote annil sources
-  void syncWithRemote(List<AnnilToken> newList) {
-    final newIds = newList.map((e) => e.id).toList();
+  void syncWithRemote(List<AnnilToken> remoteList) {
+    final remoteIds = remoteList.map((e) => e.id).toList();
     // update existing client info
     clients.forEach((id, client) {
-      final index = newIds.indexOf(id);
+      final index = remoteIds.indexOf(id);
       if (index != -1) {
-        final newClient = newList[index];
+        // exist both in local and remote, update client info
+        final newClient = remoteList[index];
         client.name = newClient.name;
         client.url = newClient.url;
         client.token = newClient.token;
         client.priority = newClient.priority;
+        remoteIds.removeAt(index);
+        remoteList.removeAt(index);
+      } else if (!client.local) {
+        // remote client which only exist in local, remove it
+        clients.remove(id);
       }
     });
-    // remove clients(non-local and does not exist in remote list)
-    clients.removeWhere(
-        (_, client) => !client.local && !newIds.contains(client.id));
     // add new clients
     clients.addAll(
       Map.fromEntries(
-        newList
+        remoteList
             .map((e) => OnlineAnnilClient.remote(
                   id: e.id,
                   name: e.name,

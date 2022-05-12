@@ -133,12 +133,12 @@ class PlayingController extends GetxController {
       {int? initialIndex}) async {
     await pause();
 
-    playingIndex.value = initialIndex ?? 0;
     queue.replaceRange(0, queue.length, songs.map((e) => e.tag as MediaItem));
     queue.refresh();
 
     final playQueue = ConcatenatingAudioSource(children: songs);
     await player.setAudioSource(playQueue, initialIndex: initialIndex);
+    playingIndex.value = initialIndex ?? 0;
     await play();
   }
 

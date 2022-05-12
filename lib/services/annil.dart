@@ -4,9 +4,11 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/utils/dio.dart';
 import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
@@ -44,7 +46,12 @@ class OnlineAnnilClient implements BaseAnnilClient {
     required this.token,
     required this.priority,
     this.local = false,
-  }) : client = Dio(BaseOptions(baseUrl: url));
+  }) : client = Dio(
+          BaseOptions(
+            baseUrl: url,
+            validateStatus: validateStatusCode,
+          ),
+        );
 
   factory OnlineAnnilClient.remote({
     required String id,
@@ -123,9 +130,21 @@ class OnlineAnnilClient implements BaseAnnilClient {
       ),
     );
     if (resp.statusCode == 304) {
+      FLog.info(
+        className: "OnlineAnnilClient",
+        methodName: "getAlbums",
+        text: "Annil cache HIT, etag: $eTag",
+      );
       return albums;
     } else if (resp.statusCode == 200) {
-      eTag = resp.headers['etag']![0];
+      final newETag = resp.headers['etag']![0];
+      FLog.info(
+        className: "OnlineAnnilClient",
+        methodName: "getAlbums",
+        text: "Annil cache MISSED, old etag: $eTag, new etag: $newETag",
+      );
+      eTag = newETag;
+
       albums = (resp.data as List<dynamic>)
           .map((album) => album.toString())
           .toList();
