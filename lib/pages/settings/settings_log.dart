@@ -1,3 +1,4 @@
+import 'package:annix/i18n/i18n.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,8 +48,15 @@ class SettingsLogView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Log View"),
+        title: Text(I18n.SETTINGS_LOGS.tr),
         actions: [
+          IconButton(
+            icon: Icon(Icons.delete_outline),
+            onPressed: () async {
+              await FLog.clearLogs();
+              Get.back();
+            },
+          ),
           // TODO: Log filter
           PopupMenuButton(
             itemBuilder: (context) {

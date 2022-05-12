@@ -14,6 +14,8 @@ const Map<String, String> I18N_en_US = {
 
   // settings
   I18n.SETTINGS: "Settings",
+  I18n.SETTINGS_LOGS: "Logs",
+  I18n.SETTINGS_LOGS_DESC: "View Logs.",
   I18n.SETTINGS_CLEAR_METADATA_CACHE: "Clear metadata cache",
   I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC:
       "You might need to refetch metadata from metadata source for local playback.",

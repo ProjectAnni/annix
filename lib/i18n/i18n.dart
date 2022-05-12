@@ -15,6 +15,8 @@ class I18n extends Translations {
   static const ANNIL_LIBRARIES = "annil_library";
 
   static const SETTINGS = "settings";
+  static const SETTINGS_LOGS = "settings_logs";
+  static const SETTINGS_LOGS_DESC = "settings_logs_desc";
   static const SETTINGS_CLEAR_METADATA_CACHE = "settings_clear_metadata_cache";
   static const SETTINGS_CLEAR_METADATA_CACHE_DESC =
       "settings_clear_metadata_cache_desc";

@@ -38,8 +38,8 @@ class SettingsScreen extends StatelessWidget {
               // view logs
               SettingsTile.navigation(
                 leading: Icon(Icons.report_outlined),
-                title: Text('Logs'),
-                description: Text('View logs'),
+                title: Text(I18n.SETTINGS_LOGS.tr),
+                description: Text(I18n.SETTINGS_LOGS_DESC.tr),
                 onPressed: (context) {
                   Get.to(() => SettingsLogView());
                 },
@@ -62,7 +62,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               // clear local lyric cache
               SettingsTile.navigation(
-                leading: Icon(Icons.featured_play_list_outlined),
+                leading: Icon(Icons.lyrics_outlined),
                 title: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE.tr),
                 description: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC.tr),
                 onPressed: (context) async {

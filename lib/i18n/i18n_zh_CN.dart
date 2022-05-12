@@ -15,6 +15,8 @@ const Map<String, String> I18N_zh_CN = {
 
   // settings
   I18n.SETTINGS: "设置",
+  I18n.SETTINGS_LOGS: "应用日志",
+  I18n.SETTINGS_LOGS_DESC: "查看应用日志。",
   I18n.SETTINGS_CLEAR_METADATA_CACHE: "清除元数据缓存",
   I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC:
       "当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。",
