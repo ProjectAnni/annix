@@ -1,7 +1,6 @@
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/utils/dio.dart';
 import 'package:annix/utils/hash.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
@@ -22,11 +21,7 @@ class AnnivClient {
     required String url,
     required CookieJar cookieJar,
   })  : _client = Dio(
-          BaseOptions(
-            baseUrl: url,
-            responseType: ResponseType.json,
-            validateStatus: validateStatusCode,
-          ),
+          BaseOptions(baseUrl: url, responseType: ResponseType.json),
         )..httpClientAdapter = Http2Adapter(ConnectionManager()),
         _cookieJar = cookieJar {
     // if (kDebugMode) {

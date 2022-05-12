@@ -4,7 +4,6 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/utils/dio.dart';
 import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
@@ -46,12 +45,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
     required this.token,
     required this.priority,
     this.local = false,
-  }) : client = Dio(
-          BaseOptions(
-            baseUrl: url,
-            validateStatus: validateStatusCode,
-          ),
-        );
+  }) : client = Dio(BaseOptions(baseUrl: url));
 
   factory OnlineAnnilClient.remote({
     required String id,
@@ -119,25 +113,18 @@ class OnlineAnnilClient implements BaseAnnilClient {
 
   /// Get the available album list of an Annil server.
   Future<List<String>> getAlbums() async {
-    final resp = await client.get(
-      '/albums',
-      options: Options(
-        responseType: ResponseType.json,
-        headers: {
-          'Authorization': token,
-          'If-None-Match': eTag,
-        },
-      ),
-    );
-    if (resp.statusCode == 304) {
-      FLog.info(
-        className: "OnlineAnnilClient",
-        methodName: "getAlbums",
-        text: "Annil cache HIT, etag: $eTag",
+    try {
+      final response = await client.get(
+        '/albums',
+        options: Options(
+          responseType: ResponseType.json,
+          headers: {
+            'Authorization': token,
+            'If-None-Match': eTag,
+          },
+        ),
       );
-      return albums;
-    } else if (resp.statusCode == 200) {
-      final newETag = resp.headers['etag']![0];
+      final newETag = response.headers['etag']![0];
       FLog.info(
         className: "OnlineAnnilClient",
         methodName: "getAlbums",
@@ -145,13 +132,21 @@ class OnlineAnnilClient implements BaseAnnilClient {
       );
       eTag = newETag;
 
-      albums = (resp.data as List<dynamic>)
+      albums = (response.data as List<dynamic>)
           .map((album) => album.toString())
           .toList();
-      return List.unmodifiable(albums);
-    } else {
-      throw Exception('Failed to get album list: ${resp.statusCode}');
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 304) {
+        FLog.info(
+          className: "OnlineAnnilClient",
+          methodName: "getAlbums",
+          text: "Annil cache HIT, etag: $eTag",
+        );
+      } else {
+        rethrow;
+      }
     }
+    return List.unmodifiable(albums);
   }
 
   Future<AudioSource> getAudio({
