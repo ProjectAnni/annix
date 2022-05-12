@@ -6,8 +6,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http_plus/http_plus.dart';
 import 'package:path/path.dart' as p;
-// import 'dart:io';
-// import 'package:cronet/cronet.dart';
 
 String getCoverCachePath(String albumId, int? discId) {
   final fileName = "${discId == null ? "$albumId" : "${albumId}_$discId"}.jpg";

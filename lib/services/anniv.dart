@@ -9,10 +9,6 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:get/get.dart' show ExtensionSnackbar, Get;
 import 'package:path_provider/path_provider.dart';
 
-// import 'package:flutter/foundation.dart';
-// import 'package:flutter_ume/flutter_ume.dart';
-// import 'package:flutter_ume_kit_dio/flutter_ume_kit_dio.dart';
-
 class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
