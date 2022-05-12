@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class AlbumsView extends StatelessWidget {
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
           BaseSliverAppBar(
-            title: Text("Albums"),
+            title: Text(I18n.ALBUMS.tr),
             actions: [
               IconButton(
                 icon: Icon(Icons.shuffle),

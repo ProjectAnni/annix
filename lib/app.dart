@@ -3,6 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/initialize_controller.dart';
 import 'package:annix/controllers/offline_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playing/playing.dart';
 import 'package:annix/pages/root/root.dart';
 import 'package:annix/pages/search.dart';
@@ -40,8 +41,14 @@ class AnnixApp extends StatelessWidget {
     return GetMaterialApp(
       title: "Annix",
       debugShowCheckedModeBanner: false,
+      // theme
       theme: AnnixTheme().theme,
       darkTheme: AnnixTheme().darkTheme,
+      // i18n
+      locale: Get.deviceLocale,
+      translations: I18n(),
+      fallbackLocale: const Locale('en', 'US'),
+      // routes
       initialRoute: '/initialize',
       getPages: [
         GetPage(

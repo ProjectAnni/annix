@@ -1,4 +1,5 @@
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
@@ -105,19 +106,19 @@ class RootScreen extends GetView<RootScreenController> {
           destinations: [
             NavigationDestination(
               icon: Icon(Icons.casino_outlined),
-              label: 'Home',
+              label: I18n.HOME.tr,
             ),
             NavigationDestination(
               icon: Icon(Icons.album_outlined),
-              label: 'Albums',
+              label: I18n.ALBUMS.tr,
             ),
             NavigationDestination(
               icon: Icon(Icons.queue_music_outlined),
-              label: 'Playlists',
+              label: I18n.PLAYLISTS.tr,
             ),
             NavigationDestination(
               icon: Icon(Icons.dns_outlined),
-              label: 'Server',
+              label: I18n.SERVER.tr,
             ),
           ],
           selectedIndex: controller.currentIndex.value,

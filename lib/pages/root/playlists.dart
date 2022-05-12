@@ -1,4 +1,5 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist_detail.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class PlaylistsView extends StatelessWidget {
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return <Widget>[
-          BaseSliverAppBar(title: Text("Playlists")),
+          BaseSliverAppBar(title: Text(I18n.PLAYLISTS.tr)),
         ];
       },
       body: ListView.builder(

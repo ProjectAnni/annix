@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/simple_text_field.dart';
@@ -31,7 +32,7 @@ class AnnivCard extends StatelessWidget {
           Align(
             alignment: Alignment.bottomRight,
             child: TextButton(
-              child: Text("Login"),
+              child: Text(I18n.LOGIN.tr),
               onPressed: () => Get.dialog(AnnivDialog()),
             ),
           ),
@@ -89,8 +90,10 @@ class AnnivCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               TextButton(
-                child: Text("Logout"),
-                onPressed: () {},
+                child: Text(I18n.LOGOUT.tr),
+                onPressed: () {
+                  // TODO: logout
+                },
               ),
             ],
           ),
@@ -326,7 +329,7 @@ class ServerView extends StatelessWidget {
     return Column(
       children: [
         BaseAppBar(
-          title: Text("Server"),
+          title: Text(I18n.SERVER.tr),
           actions: [
             IconButton(
               icon: Icon(Icons.settings),
@@ -338,7 +341,7 @@ class ServerView extends StatelessWidget {
         ),
         AnnivCard(),
         ListTile(
-          title: Text("Libraries"),
+          title: Text(I18n.ANNIL_LIBRARIES.tr),
           trailing: IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
