@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:annix/controllers/offline_controller.dart';
+import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -127,16 +127,17 @@ class CombinedOnlineAnnilClient {
 }
 
 class AnnilController extends GetxController {
-  late Rx<CombinedOnlineAnnilClient> clients;
+  final Rx<CombinedOnlineAnnilClient> clients;
   final RxList<String> albums = <String>[].obs;
   bool get hasClient => clients.value.isNotEmpty;
 
   NetworkController _network = Get.find();
 
-  /// Load state from shared preferences
-  Future<void> init() async {
-    clients = (await CombinedOnlineAnnilClient.load()).obs;
+  static Future<AnnilController> init() async {
+    return AnnilController._(await CombinedOnlineAnnilClient.load());
   }
+
+  AnnilController._(CombinedOnlineAnnilClient clients) : clients = clients.obs;
 
   @override
   void onInit() {

@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class NetworkController extends GetxController {
@@ -9,17 +6,12 @@ class NetworkController extends GetxController {
   RxBool isOnline = false.obs;
 
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription _streamSubscription;
-  Future<void> init() async {
-    try {
-      final connectivityResult = await (_connectivity.checkConnectivity());
-      _updateState(connectivityResult);
 
-      _streamSubscription =
-          _connectivity.onConnectivityChanged.listen(_updateState);
-    } on PlatformException catch (e) {
-      print(e);
-    }
+  @override
+  void onInit() {
+    super.onInit();
+    _connectivity.onConnectivityChanged.listen(_updateState);
+    _connectivity.checkConnectivity().then(_updateState);
   }
 
   void _updateState(ConnectivityResult result) {
@@ -43,11 +35,5 @@ class NetworkController extends GetxController {
         isMobile.value = false;
         break;
     }
-  }
-
-  @override
-  void onClose() {
-    _streamSubscription.cancel();
-    super.onClose();
   }
 }

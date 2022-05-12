@@ -89,7 +89,7 @@ class AnnivClient {
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static Future<AnnivClient?> loadFromLocal() async {
+  static Future<AnnivClient?> load() async {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;

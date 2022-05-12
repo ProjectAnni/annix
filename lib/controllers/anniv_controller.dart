@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/offline_controller.dart';
+import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/anniv.dart';
@@ -25,35 +25,44 @@ class AnnivController extends GetxController {
   Rxn<SiteUserInfo> info = Rxn(null);
   Rx<bool> isLogin = false.obs;
 
-  Future<void> init() async {
+  static Future<AnnivController> init() async {
     // 1. init client
-    this.client = await AnnivClient.loadFromLocal();
+    final controller = AnnivController._(await AnnivClient.load());
 
     // 2. load cached site info & user info
-    this._loadInfo();
-
-    // 3. update if online
-    if (_network.isOnline.value) {
-      await checkLogin(this.client);
-    }
+    controller._loadInfo();
 
     // 4. metadata
-    if (this.client != null && Global.metadataSource == null) {
-      Global.metadataSource = AnnivMetadataSource(this.client!);
+    if (controller.client != null && Global.metadataSource == null) {
+      Global.metadataSource = AnnivMetadataSource(controller.client!);
     }
+
+    return controller;
   }
+
+  AnnivController._(this.client);
 
   @override
   void onInit() {
     super.onInit();
     this.isLogin.bindStream(this.info.stream.map((user) => user != null));
+
+    // check login status
+    if (_network.isOnline.value) {
+      checkLogin(this.client);
+    }
+    _network.isOnline.listen((isOnline) {
+      if (isOnline) {
+        checkLogin(this.client);
+      }
+    });
   }
 
-  Future<void> checkLogin(AnnivClient? anniv) async {
-    if (anniv != null) {
+  Future<void> checkLogin(AnnivClient? client) async {
+    if (client != null) {
       try {
-        final site = await anniv.getSiteInfo();
-        final user = await anniv.getUserInfo();
+        final site = await client.getSiteInfo();
+        final user = await client.getUserInfo();
         this.info.value = SiteUserInfo(site: site, user: user);
         await this._saveInfo();
       } catch (e) {
@@ -69,11 +78,11 @@ class AnnivController extends GetxController {
       }
 
       // reload annil client
-      final annilTokens = await anniv.getCredentials();
+      final annilTokens = await client.getCredentials();
       _annil.syncWithRemote(annilTokens);
       await _annil.refresh();
 
-      this.client = anniv;
+      this.client = client;
     }
   }
 

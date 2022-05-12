@@ -1,8 +1,3 @@
-import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/controllers/initialize_controller.dart';
-import 'package:annix/controllers/offline_controller.dart';
-import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playing/playing.dart';
 import 'package:annix/pages/root/root.dart';
@@ -17,27 +12,6 @@ class AnnixApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // network
-    final network = NetworkController();
-    Get.put(network);
-
-    // annil & anniv
-    final annil = AnnilController();
-    Get.put(annil);
-    final anniv = AnnivController();
-    Get.put(anniv);
-
-    // playing
-    Get.put(PlayingController());
-
-    // initialization awaiter
-    ever(
-        InitializeController([
-          network.init().then((_) => Future.wait([annil.init(), anniv.init()]))
-        ]).done, (value) {
-      Get.offAllNamed('/');
-    });
-
     return GetMaterialApp(
       title: "Annix",
       debugShowCheckedModeBanner: false,
@@ -49,18 +23,8 @@ class AnnixApp extends StatelessWidget {
       translations: I18n(),
       fallbackLocale: const Locale('en', 'US'),
       // routes
-      initialRoute: '/initialize',
+      initialRoute: '/',
       getPages: [
-        GetPage(
-          name: '/initialize',
-          page: () => Scaffold(
-            body: Builder(builder: (context) {
-              return Center(
-                child: FlutterLogo(),
-              );
-            }),
-          ),
-        ),
         GetPage(
           name: '/',
           page: () => RootScreen(),
