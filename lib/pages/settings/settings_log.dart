@@ -1,0 +1,94 @@
+import 'package:f_logs/f_logs.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class SettingsLogView extends StatelessWidget {
+  const SettingsLogView({Key? key}) : super(key: key);
+
+  Icon getLogLevelIcon(LogLevel level) {
+    switch (level) {
+      case LogLevel.DEBUG:
+        return Icon(Icons.bug_report);
+      case LogLevel.WARNING:
+        return Icon(Icons.warning);
+      case LogLevel.ERROR:
+        return Icon(Icons.error);
+      case LogLevel.FATAL:
+        return Icon(Icons.error_outline);
+      case LogLevel.INFO:
+      default:
+        return Icon(Icons.info);
+    }
+  }
+
+  void showDetailDialog(Log log) {
+    Get.dialog(
+      AlertDialog(
+        title: Text('Detail'),
+        content: SingleChildScrollView(
+          child: Text(
+            log.stacktrace != "null" ? log.stacktrace ?? "" : "No stacktrace",
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text("Close"),
+            onPressed: () => Get.back(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Log View"),
+        actions: [
+          // TODO: Log filter
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                // PopupMenuItem(
+                //   value: 'clear',
+                //   child: Text('Clear'),
+                // ),
+              ];
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.filter_alt_outlined),
+            ),
+          ),
+        ],
+      ),
+      body: FutureBuilder<List<Log>>(
+        future: FLog.getAllLogs().then((value) => value.reversed.toList()),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final log = snapshot.data![index];
+                return ListTile(
+                  leading: getLogLevelIcon(log.logLevel!),
+                  title: Text(log.text ?? "[No log message]"),
+                  subtitle: Text(
+                      '${DateTime.fromMillisecondsSinceEpoch(log.timeInMillis!)}, ${log.className}/${log.methodName}'),
+                  onTap: () => showDetailDialog(log),
+                );
+              },
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}

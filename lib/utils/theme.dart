@@ -10,7 +10,7 @@ class AnnixTheme {
 
   AnnixTheme._() {
     // TODO: load seed from config
-    setTheme(Color.fromARGB(255, 184, 253, 127));
+    setTheme(Color.fromARGB(255, 184, 253, 127), false);
   }
 
   void setTheme(Color seed, [bool apply = true]) {

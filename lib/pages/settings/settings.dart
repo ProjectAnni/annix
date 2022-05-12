@@ -1,4 +1,4 @@
-import 'package:f_logs/f_logs.dart';
+import 'package:annix/pages/settings/settings_log.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -37,22 +37,8 @@ class SettingsScreen extends StatelessWidget {
                 leading: Icon(Icons.report_outlined),
                 title: Text('Logs'),
                 description: Text('View logs'),
-                onPressed: (context) async {
-                  final logs = await FLog.getAllLogs();
-                  if (logs.isNotEmpty) {
-                    Get.dialog(
-                      AlertDialog(
-                        title: Text('Log'),
-                        content: Text(logs[0].text ?? ""),
-                        actions: [
-                          TextButton(
-                            child: Text("Close"),
-                            onPressed: () => Get.back(),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                onPressed: (context) {
+                  Get.to(() => SettingsLogView());
                 },
               ),
             ],
