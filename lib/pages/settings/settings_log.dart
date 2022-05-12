@@ -26,7 +26,11 @@ class SettingsLogView extends StatelessWidget {
         title: Text('Detail'),
         content: SingleChildScrollView(
           child: Text(
-            log.stacktrace != "null" ? log.stacktrace ?? "" : "No stacktrace",
+            log.exception.toString() +
+                '\n' +
+                (log.stacktrace != "null"
+                    ? log.stacktrace ?? ""
+                    : "No stacktrace"),
           ),
         ),
         actions: [
@@ -74,7 +78,7 @@ class SettingsLogView extends StatelessWidget {
                   leading: getLogLevelIcon(log.logLevel!),
                   title: Text(log.text ?? "[No log message]"),
                   subtitle: Text(
-                      '${DateTime.fromMillisecondsSinceEpoch(log.timeInMillis!)}, ${log.className}/${log.methodName}'),
+                      '${DateTime.fromMillisecondsSinceEpoch(log.timeInMillis!)}, ${log.className}.${log.methodName}'),
                   onTap: () => showDetailDialog(log),
                 );
               },

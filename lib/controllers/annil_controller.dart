@@ -48,7 +48,7 @@ class AnnilController extends GetxController {
   void syncWithRemote(List<AnnilToken> remoteList) {
     final remoteIds = remoteList.map((e) => e.id).toList();
     // update existing client info
-    clients.forEach((id, client) {
+    clients.removeWhere((id, client) {
       final index = remoteIds.indexOf(id);
       if (index != -1) {
         // exist both in local and remote, update client info
@@ -61,9 +61,13 @@ class AnnilController extends GetxController {
         remoteList.removeAt(index);
       } else if (!client.local) {
         // remote client which only exist in local, remove it
-        clients.remove(id);
+        return true;
       }
+
+      // do not remove the remaining
+      return false;
     });
+
     // add new clients
     clients.addAll(
       Map.fromEntries(
