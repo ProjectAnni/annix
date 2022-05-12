@@ -2,6 +2,7 @@ import 'package:annix/pages/keepalive.dart';
 import 'package:annix/pages/playing/playing_control.dart';
 import 'package:annix/pages/playing/playing_lyric.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -30,7 +31,7 @@ class PlayingScreen extends StatelessWidget {
           effect: WormEffect(
             dotWidth: 12,
             dotHeight: 12,
-            activeDotColor: context.theme.colorScheme.primary,
+            activeDotColor: context.colorScheme.primary,
           ),
         ),
       ),

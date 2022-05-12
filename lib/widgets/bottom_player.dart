@@ -2,6 +2,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,9 +25,7 @@ class BottomPlayer extends StatelessWidget {
         child: Container(
           height: 60,
           color: ElevationOverlay.colorWithOverlay(
-              context.theme.colorScheme.surface,
-              context.theme.colorScheme.primary,
-              3.0),
+              context.colorScheme.surface, context.colorScheme.primary, 3.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

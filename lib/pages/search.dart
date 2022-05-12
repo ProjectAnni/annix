@@ -4,6 +4,7 @@ import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/album_detail.dart';
 import 'package:annix/services/anniv.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
         children: [
           TabBar(
             labelColor: context.textTheme.titleMedium?.color,
-            indicatorColor: context.theme.colorScheme.primary,
+            indicatorColor: context.colorScheme.primary,
             indicatorSize: TabBarIndicatorSize.tab,
             labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             tabs: [

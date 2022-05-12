@@ -3,6 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/simple_text_field.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -114,7 +115,7 @@ class AnnivCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: context.theme.colorScheme.surfaceVariant,
+      color: context.colorScheme.surfaceVariant,
       child: inner,
       clipBehavior: Clip.none,
     );

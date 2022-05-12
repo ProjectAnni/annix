@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:annix/utils/context_extension.dart';
 
 class SimpleTextField extends StatelessWidget {
   final String label;
@@ -23,7 +23,7 @@ class SimpleTextField extends StatelessWidget {
           labelText: label,
           isDense: true,
           filled: true,
-          fillColor: context.theme.colorScheme.surfaceVariant,
+          fillColor: context.colorScheme.surfaceVariant,
         ),
         controller: controller,
       ),

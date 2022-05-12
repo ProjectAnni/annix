@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:annix/utils/context_extension.dart';
 
 class BaseAppBar extends StatelessWidget {
   final Widget title;
@@ -57,8 +58,8 @@ class BaseView extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).padding.top,
             color: context.isDarkMode
-                ? context.theme.colorScheme.surface
-                : context.theme.colorScheme.onPrimary,
+                ? context.colorScheme.surface
+                : context.colorScheme.onPrimary,
           ),
           Expanded(
             flex: 1,
