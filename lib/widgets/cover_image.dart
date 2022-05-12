@@ -71,7 +71,7 @@ class CoverImage extends StatelessWidget {
             snapshot.data!,
             fit: fit,
             filterQuality: filterQuality,
-            compressionRatio: 0.5,
+            cacheHeight: 800,
             gaplessPlayback: true,
           );
           if (tag != null) {
