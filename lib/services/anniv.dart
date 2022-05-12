@@ -224,6 +224,7 @@ class AnnivClient {
       return LyricResponse.fromJson(response.data);
     } on DioError catch (e) {
       // no available lyric found
+      // TODO: handle error correctly
       if (e.error["status"] == 902000) {
         return null;
       } else {

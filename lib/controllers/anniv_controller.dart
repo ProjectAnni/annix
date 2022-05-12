@@ -56,15 +56,16 @@ class AnnivController extends GetxController {
         final user = await anniv.getUserInfo();
         this.info.value = SiteUserInfo(site: site, user: user);
         await this._saveInfo();
-      } on DioError catch (e) {
-        if (e.error["status"] == 902002) {
+      } catch (e) {
+        if (e is DioError &&
+            e.response?.statusCode == 200 &&
+            e.error["status"] == 902002) {
           // 鉴权失败，退出登录
           this.info.value = null;
           await this._saveInfo();
+        } else {
+          rethrow;
         }
-        return;
-      } catch (e) {
-        return;
       }
 
       // reload annil client
