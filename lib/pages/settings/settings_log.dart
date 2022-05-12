@@ -8,16 +8,15 @@ class SettingsLogView extends StatelessWidget {
   Icon getLogLevelIcon(LogLevel level) {
     switch (level) {
       case LogLevel.DEBUG:
-        return Icon(Icons.bug_report);
+        return Icon(Icons.bug_report_outlined);
       case LogLevel.WARNING:
-        return Icon(Icons.warning);
+        return Icon(Icons.warning_amber_outlined);
       case LogLevel.ERROR:
-        return Icon(Icons.error);
       case LogLevel.FATAL:
-        return Icon(Icons.error_outline);
+        return Icon(Icons.error_outline_outlined);
       case LogLevel.INFO:
       default:
-        return Icon(Icons.info);
+        return Icon(Icons.sms_outlined);
     }
   }
 
