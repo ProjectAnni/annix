@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
@@ -235,21 +234,6 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         artUri: File(getCoverCachePath(albumId, null)).uri,
         displayDescription: track?.type.toText() ?? "normal",
       ),
-    );
-  }
-
-  TrackInfoWithAlbum toTrack() {
-    MediaItem tag = this.tag;
-
-    return TrackInfoWithAlbum(
-      track: TrackIdentifier(
-        albumId: this.albumId,
-        discId: this.discId,
-        trackId: this.trackId,
-      ),
-      title: tag.title,
-      artist: tag.artist!,
-      type: TrackTypeExtension.fromString(tag.displayDescription!),
     );
   }
 }

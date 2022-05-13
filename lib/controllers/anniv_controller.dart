@@ -153,6 +153,7 @@ class AnnivController extends GetxController {
         track: track,
         title: trackMetadata!.title,
         artist: trackMetadata.artist,
+        albumTitle: trackMetadata.disc.album.title,
         type: trackMetadata.type,
       );
       try {
