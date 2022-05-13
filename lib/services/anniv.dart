@@ -83,10 +83,6 @@ class AnnivClient {
     return client;
   }
 
-  Future<void> logout() {
-    return this._cookieJar.deleteAll();
-  }
-
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
   static Future<AnnivClient?> load() async {
@@ -136,6 +132,7 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     await _client.post("/api/user/logout");
+    return this._cookieJar.deleteAll();
   }
 
   /// https://book.anni.rs/06.anniv/04.credential.html#%E8%8E%B7%E5%8F%96-token

@@ -3,6 +3,7 @@ import 'dart:io' show File;
 
 import 'package:annix/services/global.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:http_plus/http_plus.dart';
 import 'package:path/path.dart' as p;
@@ -78,23 +79,14 @@ class CoverImage extends StatelessWidget {
             return image;
           }
         } else if (snapshot.hasError) {
-          // TODO: log error
-          // TODO: show default cover
-          return Container(
-            child: Center(
-              child: Text(
-                snapshot.error.toString(),
-              ),
-            ),
-          );
-        } else {
-          // loading
-          return Center(
-            child: CircularProgressIndicator(
-              strokeWidth: 2.0,
-            ),
-          );
+          FLog.error(text: "Failed to load cover", exception: snapshot.error);
         }
+        return Container(
+          color: Colors.black87,
+          child: Center(
+            child: Icon(Icons.music_note, color: Colors.white, size: 32),
+          ),
+        );
       },
     );
   }
