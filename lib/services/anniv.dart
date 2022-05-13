@@ -42,9 +42,8 @@ class AnnivClient {
           final resp = response.data as Map<String, dynamic>;
           int status = resp['status'];
           if (status != 0) {
-            if (status != 902000 && // lyric not found
-                    status != 902004 // already in favorite list
-                ) {
+            if (status != 902000) {
+              // skip [lyric not found] error
               Get.snackbar("Error", resp["message"].toString());
             }
             // business logic error code
