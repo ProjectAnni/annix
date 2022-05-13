@@ -26,7 +26,7 @@ Future<void> main() async {
     );
   }
 
-  FLog.applyConfigurations(LogsConfig()..isDevelopmentDebuggingEnabled = true);
+  FLog.getDefaultConfigurations()..isDevelopmentDebuggingEnabled = true;
 
   await Global.init();
 
@@ -37,18 +37,7 @@ Future<void> main() async {
     Get.put(PlayingController());
 
     runApp(AnnixApp());
-  } on Error catch (e) {
-    FLog.error(
-      methodName: "main",
-      text: "Uncaught error",
-      exception: e,
-      stacktrace: e.stackTrace,
-    );
   } catch (e) {
-    FLog.error(
-      methodName: "main",
-      text: "Uncaught exception",
-      exception: e,
-    );
+    FLog.error(text: "Uncaught exception", exception: e);
   }
 }

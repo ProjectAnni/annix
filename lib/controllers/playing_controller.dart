@@ -72,20 +72,12 @@ class PlayingController extends GetxController {
   RxMap<String, Duration> durationMap = RxMap();
 
   Future<void> play() async {
-    FLog.debug(
-      className: "PlayingController",
-      methodName: "play",
-      text: "start playing",
-    );
+    FLog.trace(text: "Start playing");
     await player.play();
   }
 
   Future<void> pause() async {
-    FLog.debug(
-      className: "PlayingController",
-      methodName: "pause",
-      text: "pause playing",
-    );
+    FLog.trace(text: "Pause playing");
     await player.pause();
   }
 
@@ -98,31 +90,32 @@ class PlayingController extends GetxController {
   }
 
   Future<void> previous() async {
+    FLog.trace(text: "Seek to previous");
     await player.seekToPrevious();
   }
 
   Future<void> next() async {
+    FLog.trace(text: "Seek to next");
     await player.seekToNext();
   }
 
   Future<void> seek(Duration position) async {
+    FLog.trace(text: "Seek to position $position");
     await player.seek(position);
   }
 
   Future<void> jump(int index) async {
-    FLog.debug(
-      className: "PlayingController",
-      methodName: "jump",
-      text: "jump to $index in playing queue",
-    );
+    FLog.trace(text: "Jump to $index in playing queue");
     await player.seek(Duration.zero, index: index);
   }
 
   Future<void> setLoopMode(LoopMode mode) async {
+    FLog.trace(text: "Set loop mode $mode");
     await player.setLoopMode(mode);
   }
 
   Future<void> setShuffleModeEnabled(bool enable) async {
+    FLog.trace(text: "Shuffle mode enabled: $enable");
     await player.setShuffleModeEnabled(enable);
   }
 

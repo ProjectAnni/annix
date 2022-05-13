@@ -125,9 +125,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
         ),
       );
       final newETag = response.headers['etag']![0];
-      FLog.info(
-        className: "OnlineAnnilClient",
-        methodName: "getAlbums",
+      FLog.debug(
         text: "Annil cache MISSED, old etag: $eTag, new etag: $newETag",
       );
       eTag = newETag;
@@ -137,11 +135,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
           .toList();
     } on DioError catch (e) {
       if (e.response?.statusCode == 304) {
-        FLog.info(
-          className: "OnlineAnnilClient",
-          methodName: "getAlbums",
-          text: "Annil cache HIT, etag: $eTag",
-        );
+        FLog.trace(text: "Annil cache HIT, etag: $eTag");
       } else {
         rethrow;
       }

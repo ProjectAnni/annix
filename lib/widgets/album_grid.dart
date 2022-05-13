@@ -33,13 +33,9 @@ class _AlbumGridState extends State<AlbumGrid> {
         future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
         builder: (ctx, snapshot) {
           if (snapshot.hasError) {
-            final e = snapshot.error;
             FLog.error(
-              className: "AlbumGrid",
-              methodName: "FutureBuilder",
-              text: snapshot.error.toString(),
+              text: "Failed to fetch metadata",
               exception: snapshot.error,
-              stacktrace: e is Error ? e.stackTrace : null,
             );
           }
 

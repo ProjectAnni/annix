@@ -5,6 +5,7 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/cover_image.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -161,7 +162,10 @@ class AnnilController extends GetxController {
         try {
           return await client.getAlbums();
         } catch (e) {
-          // TODO: failed to get albums, hint user
+          FLog.error(
+            text: "Failed to refresh annil client ${client.name}",
+            exception: e,
+          );
           return <String>[];
         }
       })))

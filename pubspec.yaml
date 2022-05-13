@@ -10,7 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  f_logs: ^2.0.1
+  f_logs:
+    git:
+      url: https://github.com/ProjectAnni/Flogs
   get: ^4.6.1
   shared_preferences: ^2.0.9
   connectivity_plus: ^2.3.0
