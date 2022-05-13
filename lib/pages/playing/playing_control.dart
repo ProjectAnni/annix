@@ -92,6 +92,7 @@ class PlayingControl extends StatelessWidget {
                   }
                   return ProgressBar(
                     progress: position,
+                    buffered: playing.buffered.value,
                     total: total,
                     onSeek: (position) {
                       playing.seek(position);
