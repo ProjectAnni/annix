@@ -22,6 +22,8 @@ class PlayingController extends GetxController {
 
   @override
   onInit() {
+    super.onInit();
+
     this.isPlaying.bindStream(player.playingStream);
     this.progress.bindStream(player.positionStream);
     this.buffered.bindStream(player.bufferedPositionStream);
@@ -56,8 +58,7 @@ class PlayingController extends GetxController {
         favorited.value = favoriteMap.containsKey(currentId);
       }
     });
-
-    super.onInit();
+    this.player.setAudioSource(ConcatenatingAudioSource(children: []));
   }
 
   Rx<bool> isPlaying = false.obs;

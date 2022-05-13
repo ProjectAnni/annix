@@ -395,12 +395,11 @@ class _PlayerAudioHandler extends BaseAudioHandler
     final PlayingController playing = Get.find();
     final playbackEventMessageStream =
         player.playbackEventMessageStream.map((event) {
-      final duration = playing.getDuration(playing.currentPlaying.value!.id);
-      if (duration == Duration.zero) {
-        return event;
-      } else {
-        return event.copyWith(duration: duration);
+      var duration = event.duration;
+      if (playing.currentPlaying.value != null) {
+        duration = playing.getDuration(playing.currentPlaying.value!.id);
       }
+      return event.copyWith(duration: duration);
     });
     playbackEventMessageStream.listen((event) {
       _justAudioEvent = event;
