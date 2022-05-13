@@ -214,12 +214,14 @@ class TrackInfoWithAlbum {
 
   String title;
   String artist;
+  String albumTitle;
   TrackType type;
 
   TrackInfoWithAlbum({
     required this.track,
     required this.title,
     required this.artist,
+    required this.albumTitle,
     required this.type,
   });
 

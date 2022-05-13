@@ -124,6 +124,7 @@ TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
           readValueFlatten(json, 'track') as Map<String, dynamic>),
       title: json['title'] as String,
       artist: json['artist'] as String,
+      albumTitle: json['album_title'] as String,
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
     );
 
@@ -132,6 +133,7 @@ Map<String, dynamic> _$TrackInfoWithAlbumToJson(TrackInfoWithAlbum instance) =>
       'track': instance.track,
       'title': instance.title,
       'artist': instance.artist,
+      'album_title': instance.albumTitle,
       'type': _$TrackTypeEnumMap[instance.type],
     };
 
