@@ -83,6 +83,10 @@ class AnnivClient {
     return client;
   }
 
+  Future<void> logout() {
+    return this._cookieJar.deleteAll();
+  }
+
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
   static Future<AnnivClient?> load() async {

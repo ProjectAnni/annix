@@ -76,12 +76,22 @@ class AnnivCard extends StatelessWidget {
               ),
               // TODO: Add more things in this card
               SizedBox(height: 80),
-              IconButton(
-                icon: Icon(Icons.more_vert_outlined),
-                padding: EdgeInsets.zero,
-                alignment: Alignment.topRight,
-                splashRadius: 1.0,
-                onPressed: () {},
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      child: Text(I18n.LOGOUT.tr),
+                      onTap: () {
+                        AnnivController anniv = Get.find();
+                        anniv.logout();
+                      },
+                    ),
+                  ];
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.more_vert_outlined),
+                ),
               ),
             ],
           ),
@@ -89,12 +99,13 @@ class AnnivCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: [
-              TextButton(
-                child: Text(I18n.LOGOUT.tr),
-                onPressed: () {
-                  // TODO: logout
-                },
-              ),
+              if (info.site.features.contains("metadata-db"))
+                TextButton(
+                  child: Text("Update Database"),
+                  onPressed: () {
+                    // TODO: logout
+                  },
+                ),
             ],
           ),
         ],

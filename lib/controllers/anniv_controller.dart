@@ -70,8 +70,7 @@ class AnnivController extends GetxController {
             e.response?.statusCode == 200 &&
             e.error["status"] == 902002) {
           // 鉴权失败，退出登录
-          this.info.value = null;
-          await this._saveInfo();
+          await this.logout();
         } else {
           rethrow;
         }
@@ -90,6 +89,12 @@ class AnnivController extends GetxController {
     final anniv =
         await AnnivClient.login(url: url, email: email, password: password);
     await checkLogin(anniv);
+  }
+
+  Future<void> logout() async {
+    await this.client?.logout();
+    this.info.value = null;
+    await this._saveInfo();
   }
 
   void _loadInfo() {
