@@ -26,6 +26,7 @@ class PlayingController extends GetxController {
 
     this.isPlaying.bindStream(player.playingStream);
     this.progress.bindStream(player.positionStream);
+    // FIXME: buffered stream should reflect the download progress instead of player decode buffer
     this.buffered.bindStream(player.bufferedPositionStream);
     this.duration.bindStream(player.durationStream);
 

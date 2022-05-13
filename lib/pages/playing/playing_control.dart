@@ -90,9 +90,14 @@ class PlayingControl extends StatelessWidget {
                     // limit progress to total
                     position = total;
                   }
+
+                  var buffered = playing.buffered.value;
+                  if (position.compareTo(total) > 0) {
+                    buffered = total;
+                  }
                   return ProgressBar(
                     progress: position,
-                    buffered: playing.buffered.value,
+                    buffered: buffered,
                     total: total,
                     onSeek: (position) {
                       playing.seek(position);
