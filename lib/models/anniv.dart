@@ -207,7 +207,7 @@ class TrackInfo {
   }
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class TrackInfoWithAlbum {
   @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
   TrackIdentifier track;
@@ -228,6 +228,8 @@ class TrackInfoWithAlbum {
 
   static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
       TrackIdentifier.fromJson(json);
+
+  Map<String, dynamic> toJson() => _$TrackInfoWithAlbumToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
