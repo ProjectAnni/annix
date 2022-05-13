@@ -32,6 +32,9 @@ class AnnivController extends GetxController {
     // 2. load cached site info & user info
     controller._loadInfo();
 
+    // 3. load favorites
+    controller._loadFavorites();
+
     // 4. metadata
     if (controller.client != null && Global.metadataSource == null) {
       Global.metadataSource = AnnivMetadataSource(controller.client!);
@@ -81,6 +84,9 @@ class AnnivController extends GetxController {
       _annil.syncWithRemote(annilTokens);
       await _annil.refresh();
 
+      // reload favorite list
+      await this.syncFavorite();
+
       this.client = client;
     }
   }
@@ -123,6 +129,21 @@ class AnnivController extends GetxController {
   //////////////////////////////// Favorite ///////////////////////////////
   RxMap<String, TrackInfoWithAlbum> favorites = RxMap();
 
+  void _loadFavorites() async {
+    final favoritesLoaded = Global.preferences.getString("anniv_favorites");
+    if (favoritesLoaded != null) {
+      final favoriteMap = (jsonDecode(favoritesLoaded) as List<dynamic>)
+          .map((e) => TrackInfoWithAlbum.fromJson(e))
+          .map((e) => MapEntry(e.track.toSlashedString(), e));
+      favorites.value = Map.fromEntries(favoriteMap);
+    }
+  }
+
+  Future<void> _saveFavorites() async {
+    await Global.preferences
+        .setString("anniv_favorites", jsonEncode(favorites.values.toList()));
+  }
+
   Future<void> addFavorite(String id) async {
     if (this.client != null) {
       final track = TrackIdentifier.fromSlashSplitedString(id);
@@ -136,6 +157,7 @@ class AnnivController extends GetxController {
       );
       try {
         await this.client?.addFavorite(id);
+        await _saveFavorites();
       } catch (e) {
         favorites.remove(id);
         rethrow;
@@ -148,6 +170,7 @@ class AnnivController extends GetxController {
       final got = favorites.remove(id);
       try {
         await this.client?.removeFavorite(id);
+        await _saveFavorites();
       } catch (e) {
         if (got != null) {
           favorites[id] = got;
@@ -168,11 +191,10 @@ class AnnivController extends GetxController {
   Future<void> syncFavorite() async {
     if (this.client != null) {
       final list = await this.client!.getFavoriteList();
-      final map = Map<String, TrackInfoWithAlbum>();
-      for (final track in list) {
-        map[track.track.toSlashedString()] = track;
-      }
+      final map = Map.fromEntries(
+          list.map((e) => MapEntry(e.track.toSlashedString(), e)));
       favorites.value = map;
+      await _saveFavorites();
     }
   }
 }
