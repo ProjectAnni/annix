@@ -1,7 +1,6 @@
 import 'package:annix/models/metadata.dart';
 import 'package:annix/metadata/metadata_source.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:uuid/uuid.dart';
 
 class SqliteMetadataSource extends BaseMetadataSource {
   String dbPath;
@@ -21,9 +20,9 @@ class SqliteMetadataSource extends BaseMetadataSource {
 
   @override
   Future<Album?> getAlbumDetail({required String albumId}) async {
-    var albumUuid = Uuid.parse(albumId);
+    var albumUuid = albumId.replaceAll('-', '').toUpperCase();
     List<Map<String, Object?>> discs = await database.rawQuery(
-        "SELECT * FROM repo_disc WHERE album_id = ? ORDER BY disc_id",
+        "SELECT * FROM repo_disc WHERE hex(album_id) = ? ORDER BY disc_id",
         [albumUuid]);
 
     List<Disc> albumDiscs = await Future.wait(discs.map((disc) async {
@@ -35,7 +34,7 @@ class SqliteMetadataSource extends BaseMetadataSource {
           TrackTypeExtension.fromString(disc['disc_type'] as String);
 
       List<Map<String, Object?>> tracks = await database.rawQuery(
-          "SELECT title, artist, track_type FROM repo_track WHERE album_id = ? AND disc_id = ? ORDER BY disc_id",
+          "SELECT title, artist, track_type FROM repo_track WHERE hex(album_id) = ? AND disc_id = ? ORDER BY disc_id",
           [albumUuid, discId]);
       List<Track> discTracks = tracks.map((track) {
         String trackTitle = track['title'] as String;
@@ -54,7 +53,7 @@ class SqliteMetadataSource extends BaseMetadataSource {
       );
     }));
     List<Map<String, Object?>> album = await database.rawQuery(
-        "SELECT * FROM repo_album WHERE album_id = ?", [Uuid.parse(albumId)]);
+        "SELECT * FROM repo_album WHERE hex(album_id) = ?", [albumUuid]);
     if (album.isNotEmpty) {
       String title = album[0]['title'] as String;
       String? edition = album[0]['edition'] as String?;
