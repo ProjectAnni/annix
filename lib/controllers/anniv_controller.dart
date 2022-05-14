@@ -40,7 +40,7 @@ class AnnivController extends GetxController {
 
     // 4. metadata
     try {
-      controller.loadDatabase();
+      await controller.loadDatabase();
     } finally {
       if (controller.client != null && Global.metadataSource == null) {
         Global.metadataSource = AnnivMetadataSource(controller.client!);
@@ -211,12 +211,14 @@ class AnnivController extends GetxController {
 
   Future<void> updateDatabase() async {
     await client!.getRepoDatabase(_databasePath);
-    loadDatabase();
+    await loadDatabase();
   }
 
-  void loadDatabase() {
+  Future<void> loadDatabase() async {
     if (File(_databasePath).existsSync()) {
-      Global.metadataSource = SqliteMetadataSource(_databasePath);
+      final db = SqliteMetadataSource(_databasePath);
+      await db.prepare();
+      Global.metadataSource = db;
     }
   }
 }
