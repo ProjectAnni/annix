@@ -6,7 +6,7 @@ import 'package:annix/utils/store.dart';
 /// It can be folder with structure defined in [Anni Metadata Repository][metadata-repository], or pre-compiled sqlite database file.
 ///
 /// [metadata-repository]: https://book.anni.rs/02.metadata-repository/00.readme.html
-abstract class BaseMetadataSource {
+abstract class MetadataSource {
   /// Prepare for metadata source
   Future<void> prepare();
 
@@ -41,20 +41,24 @@ abstract class BaseMetadataSource {
   /// Whether a metadata source needs to be cached
   bool get needPersist;
 
+  /// Get detail of multiple albums
+  Future<Map<String, Album>> getAlbumsDetail(List<String> albums);
+
   /// Private album object cache for album object reading
   static final _albumStore = AnnixStore().category('album');
 
   /// Get album information
-  ///
-  /// DO NOT OVERRIDE THIS METHOD
   Future<Album?> getAlbum({required String albumId}) async {
     if (!await _albumStore.contains(albumId)) {
       // album not in cache, load it from source
-      Album? album = await getAlbumDetail(albumId: albumId);
-      if (album == null) {
-        //  album not found
+      final albums = await getAlbumsDetail([albumId]);
+      if (albums.isEmpty) {
+        // album not found
         return null;
-      } else if (this.needPersist) {
+      }
+
+      final album = albums[albumId]!;
+      if (this.needPersist) {
         // album need persist
         await _albumStore.set(albumId, album.toJson());
       }
@@ -64,15 +68,35 @@ abstract class BaseMetadataSource {
     return Album.fromJson(data!);
   }
 
-  /// Actual method to get album detail from metadata source
-  /// Override this function to grant ability to get album detail
-  ///
-  /// Return null if album is not found
-  Future<Album?> getAlbumDetail({required String albumId});
+  Future<Map<String, Album>> getAlbums(List<String> albums) async {
+    // dedup album list
+    final albumToGet = albums.toSet();
+    final result = Map<String, Album>();
+    final toFetch = <String>[];
+
+    for (final albumId in albumToGet) {
+      final cache = await _albumStore.get(albumId);
+      if (cache != null) {
+        result[albumId] = Album.fromJson(cache);
+      } else {
+        toFetch.add(albumId);
+      }
+    }
+
+    final got = await getAlbumsDetail(toFetch);
+    if (needPersist) {
+      for (final albumId in toFetch) {
+        final album = got[albumId];
+        if (album != null) {
+          await _albumStore.set(albumId, album.toJson());
+        }
+      }
+    }
+    result.addAll(got);
+    return result;
+  }
 
   /// Get track information
-  ///
-  /// DO NOT OVERRIDE THIS METHOD
   Future<Track?> getTrack({
     required String albumId,
     required int discId,

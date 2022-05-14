@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 class Global {
   static late SharedPreferences preferences;
 
-  static BaseMetadataSource? metadataSource;
+  static MetadataSource? metadataSource;
 
   static late String storageRoot;
 

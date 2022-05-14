@@ -2,7 +2,7 @@ import 'package:annix/models/metadata.dart';
 import 'package:annix/metadata/metadata_source.dart';
 import 'package:sqflite/sqflite.dart';
 
-class SqliteMetadataSource extends BaseMetadataSource {
+class SqliteMetadataSource extends MetadataSource {
   String dbPath;
   late Database database;
 
@@ -18,8 +18,7 @@ class SqliteMetadataSource extends BaseMetadataSource {
     return false;
   }
 
-  @override
-  Future<Album?> getAlbumDetail({required String albumId}) async {
+  Future<Album?> getAlbumDetail(String albumId) async {
     var albumUuid = albumId.replaceAll('-', '').toUpperCase();
     List<Map<String, Object?>> discs = await database.rawQuery(
         "SELECT * FROM repo_disc WHERE hex(album_id) = ? ORDER BY disc_id",
@@ -76,6 +75,13 @@ class SqliteMetadataSource extends BaseMetadataSource {
     } else {
       return null;
     }
+  }
+
+  Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
+    return Map.fromEntries(
+        (await Future.wait(albums.map((albumId) => getAlbumDetail(albumId))))
+            .where((e) => e != null)
+            .map((e) => MapEntry(e!.albumId, e)));
   }
 
   @override

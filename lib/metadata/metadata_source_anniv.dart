@@ -4,7 +4,7 @@ import 'package:annix/metadata/metadata_source.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:get/get.dart';
 
-class AnnivMetadataSource extends BaseMetadataSource {
+class AnnivMetadataSource extends MetadataSource {
   final AnnivClient anniv;
   AnnivMetadataSource(this.anniv);
 
@@ -14,18 +14,11 @@ class AnnivMetadataSource extends BaseMetadataSource {
   @override
   Future<void> prepare() async {}
 
-  @override
-  Future<Album?> getAlbumDetail({required String albumId}) async {
+  Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
     if (_network.isOnline.value) {
-      final result = await this.anniv.getAlbumMetadata([albumId]);
-      if (result.isEmpty) {
-        return null;
-      } else {
-        final album = result[albumId];
-        return album;
-      }
+      return await this.anniv.getAlbumMetadata(albums);
     } else {
-      return null;
+      return Map();
     }
   }
 

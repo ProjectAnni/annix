@@ -149,23 +149,31 @@ class PlayingController extends GetxController {
     final rand = Random();
 
     final songs = <IndexedAudioSource>[];
+    final albumIds = <String>[];
+
     for (int i = 0; i < count; i++) {
       final albumId = albums[rand.nextInt(albums.length)];
-      final metadata =
-          (await Global.metadataSource!.getAlbum(albumId: albumId))!;
-      // random disc in metadata
-      final discIndex = rand.nextInt(metadata.discs.length);
-      final disc = metadata.discs[discIndex];
-      // random track
-      final trackIndex = rand.nextInt(disc.tracks.length);
-      final track = disc.tracks[trackIndex];
+      albumIds.add(albumId);
+    }
 
-      if (track.type == TrackType.Normal) {
-        songs.add(await annil.getAudio(
-          albumId: albumId,
-          discId: discIndex + 1,
-          trackId: trackIndex + 1,
-        ));
+    final metadataMap = await Global.metadataSource!.getAlbums(albumIds);
+    for (final albumId in albumIds) {
+      final metadata = metadataMap[albumId];
+      if (metadata != null) {
+        // random disc in metadata
+        final discIndex = rand.nextInt(metadata.discs.length);
+        final disc = metadata.discs[discIndex];
+        // random track
+        final trackIndex = rand.nextInt(disc.tracks.length);
+        final track = disc.tracks[trackIndex];
+
+        if (track.type == TrackType.Normal) {
+          songs.add(await annil.getAudio(
+            albumId: albumId,
+            discId: discIndex + 1,
+            trackId: trackIndex + 1,
+          ));
+        }
       }
     }
 
