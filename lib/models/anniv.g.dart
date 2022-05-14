@@ -206,3 +206,9 @@ Map<String, dynamic> _$LyricLanguageToJson(LyricLanguage instance) =>
       'type': instance.type,
       'data': instance.data,
     };
+
+RepoDatabaseDecsription _$RepoDatabaseDecsriptionFromJson(
+        Map<String, dynamic> json) =>
+    RepoDatabaseDecsription(
+      lastModified: json['last_modified'] as int,
+    );

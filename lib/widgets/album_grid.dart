@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-class AlbumGrid extends StatefulWidget {
+class AlbumGrid extends StatelessWidget {
   final String albumId;
   final String tag;
 
@@ -19,18 +19,13 @@ class AlbumGrid extends StatefulWidget {
         super(key: key);
 
   @override
-  _AlbumGridState createState() => _AlbumGridState();
-}
-
-class _AlbumGridState extends State<AlbumGrid> {
-  @override
   Widget build(BuildContext context) {
     AnnilController annil = Get.find();
 
     return Card(
       clipBehavior: Clip.hardEdge,
       child: FutureBuilder<Album?>(
-        future: Global.metadataSource!.getAlbum(albumId: widget.albumId),
+        future: Global.metadataSource!.getAlbum(albumId: albumId),
         builder: (ctx, snapshot) {
           if (snapshot.hasError) {
             FLog.error(
@@ -43,7 +38,7 @@ class _AlbumGridState extends State<AlbumGrid> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                annil.cover(albumId: widget.albumId, tag: widget.tag),
+                annil.cover(albumId: albumId, tag: tag),
                 snapshot.hasData
                     ? Container(
                         alignment: Alignment.bottomLeft,
@@ -67,7 +62,7 @@ class _AlbumGridState extends State<AlbumGrid> {
                 Get.to(
                   () => AlbumDetailScreen(
                     album: snapshot.data!,
-                    tag: widget.tag,
+                    tag: tag,
                   ),
                   duration: Duration(milliseconds: 300),
                 );

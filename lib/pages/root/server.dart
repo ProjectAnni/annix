@@ -102,8 +102,10 @@ class AnnivCard extends StatelessWidget {
               if (info.site.features.contains("metadata-db"))
                 TextButton(
                   child: Text("Update Database"),
-                  onPressed: () {
-                    // TODO: logout
+                  onPressed: () async {
+                    // TODO: update metadata db
+                    AnnivController anniv = Get.find();
+                    await anniv.updateDatabase();
                   },
                 ),
             ],

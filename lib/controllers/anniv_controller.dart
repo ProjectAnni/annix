@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/metadata/metadata_source_anniv.dart';
+import 'package:annix/metadata/metadata_source_sqlite.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart' as p;
 
 class SiteUserInfo {
   SiteInfo site;
@@ -36,8 +39,12 @@ class AnnivController extends GetxController {
     controller._loadFavorites();
 
     // 4. metadata
-    if (controller.client != null && Global.metadataSource == null) {
-      Global.metadataSource = AnnivMetadataSource(controller.client!);
+    try {
+      controller.loadDatabase();
+    } finally {
+      if (controller.client != null && Global.metadataSource == null) {
+        Global.metadataSource = AnnivMetadataSource(controller.client!);
+      }
     }
 
     return controller;
@@ -196,6 +203,20 @@ class AnnivController extends GetxController {
           list.map((e) => MapEntry(e.track.toSlashedString(), e)));
       favorites.value = map;
       await _saveFavorites();
+    }
+  }
+
+  /////////////////////////////// Database ///////////////////////////////
+  String get _databasePath => p.join(Global.storageRoot, 'repo.db');
+
+  Future<void> updateDatabase() async {
+    await client!.getRepoDatabase(_databasePath);
+    loadDatabase();
+  }
+
+  void loadDatabase() {
+    if (File(_databasePath).existsSync()) {
+      Global.metadataSource = SqliteMetadataSource(_databasePath);
     }
   }
 }

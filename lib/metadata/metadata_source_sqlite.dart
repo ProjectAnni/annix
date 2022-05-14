@@ -7,7 +7,7 @@ class SqliteMetadataSource extends BaseMetadataSource {
   String dbPath;
   late Database database;
 
-  SqliteMetadataSource({required this.dbPath});
+  SqliteMetadataSource(this.dbPath);
 
   @override
   Future<void> prepare() async {

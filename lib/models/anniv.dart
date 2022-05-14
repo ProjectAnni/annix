@@ -363,3 +363,13 @@ class LyricLanguage {
 
   Map<String, dynamic> toJson() => _$LyricLanguageToJson(this);
 }
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class RepoDatabaseDecsription {
+  final int lastModified;
+
+  RepoDatabaseDecsription({required this.lastModified});
+
+  factory RepoDatabaseDecsription.fromJson(Map<String, dynamic> json) =>
+      _$RepoDatabaseDecsriptionFromJson(json);
+}
