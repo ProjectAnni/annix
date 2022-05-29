@@ -7,6 +7,10 @@ const Map<String, String> I18N_zh_CN = {
   I18n.ALBUMS: "专辑",
   I18n.PLAYLISTS: "播放列表",
 
+  // home
+  I18n.SHUFFLE_MODE: "随机模式",
+  I18n.MY_FAVORITE: "喜欢",
+
   // server
   I18n.SERVER: "服务器",
   I18n.LOGIN: "登录",

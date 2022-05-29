@@ -6,6 +6,10 @@ const Map<String, String> I18N_en_US = {
   I18n.ALBUMS: "Albums",
   I18n.PLAYLISTS: "Playlists",
 
+  // home
+  I18n.SHUFFLE_MODE: "Shuffle Mode",
+  I18n.MY_FAVORITE: "My Favorite",
+
   // server
   I18n.SERVER: "Server",
   I18n.LOGIN: "Login",

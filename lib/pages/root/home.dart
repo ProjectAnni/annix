@@ -1,4 +1,5 @@
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist_detail.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/widgets/buttons/theme_button.dart';
@@ -27,13 +28,12 @@ class HomeView extends StatelessWidget {
           SliverGrid.count(
             crossAxisCount: 2,
             childAspectRatio: 4 * 0.618,
-            crossAxisSpacing: 4,
             children: [
               // Random mode
               IconCard(
                 icon: Icon(Icons.shuffle),
                 child: Text(
-                  'Random songs',
+                  I18n.SHUFFLE_MODE.tr,
                   style: context.textTheme.titleSmall,
                 ),
                 onTap: () => playing.fullShuffleMode(),
@@ -42,7 +42,7 @@ class HomeView extends StatelessWidget {
               IconCard(
                 icon: Icon(Icons.favorite_outlined),
                 child: Text(
-                  'My favorite',
+                  I18n.MY_FAVORITE.tr,
                   style: context.textTheme.titleSmall,
                 ),
                 onTap: () => Get.to(() => FavoriteDetail()),

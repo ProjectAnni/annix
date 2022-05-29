@@ -1,4 +1,5 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class FavoriteDetail extends StatelessWidget {
     final AnnivController anniv = Get.find();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorite"),
+        title: Text(I18n.MY_FAVORITE.tr),
       ),
       body: Obx(() {
         return ListView.builder(
@@ -22,7 +23,7 @@ class FavoriteDetail extends StatelessWidget {
             return Obx(() {
               final favorite = anniv.favorites.values.elementAt(index);
               return ListTile(
-                leading: FavoriteButton(id: favorite.track.toSlashedString()),
+                // leading: FavoriteButton(id: favorite.track.toSlashedString()),
                 title: Text(
                   favorite.title,
                   overflow: TextOverflow.ellipsis,

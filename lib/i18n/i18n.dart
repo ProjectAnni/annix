@@ -9,6 +9,9 @@ class I18n extends Translations {
   static const ALBUMS = "albums";
   static const PLAYLISTS = "playlists";
 
+  static const SHUFFLE_MODE = "shuffle_mode";
+  static const MY_FAVORITE = "my_favorite";
+
   static const SERVER = "server";
   static const LOGIN = "login";
   static const LOGOUT = "logout";
