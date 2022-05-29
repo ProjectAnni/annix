@@ -1,6 +1,7 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +11,7 @@ class FavoriteScreen extends PlaylistScreen {
   final AnnilController _annil = Get.find();
   final AnnivController _anniv = Get.find();
 
-  FavoriteScreen({Key? key})
-      : super(
-          key: key,
-          pageTitle: Text(I18n.MY_FAVORITE.tr),
-        );
+  FavoriteScreen({Key? key}) : super(key: key);
 
   String get title => I18n.MY_FAVORITE.tr;
   Widget get cover =>
@@ -41,4 +38,8 @@ class FavoriteScreen extends PlaylistScreen {
           },
         );
       });
+
+  List<TrackIdentifier> get tracks => _anniv.favorites.keys
+      .map((t) => TrackIdentifier.fromSlashSplitedString(t))
+      .toList();
 }

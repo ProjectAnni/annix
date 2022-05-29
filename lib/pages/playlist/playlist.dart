@@ -1,19 +1,18 @@
+import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/settings_controller.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 
 abstract class PlaylistScreen extends StatelessWidget {
-  /// Additional widgets after title of intro part
-  final List<Widget>? intro;
-
   /// Page title
   final Widget? pageTitle;
 
   /// Page actions
   final List<Widget>? pageActions;
-
-  /// Page FAB
-  final Widget? pageFloatingActionButton;
 
   /// Cover image of the playlist.
   Widget get cover;
@@ -21,15 +20,19 @@ abstract class PlaylistScreen extends StatelessWidget {
   /// Playlist name, will be displayed in intro part
   String get title;
 
+  /// Additional widgets after title of intro part
+  List<Widget> get intro => [];
+
   /// Widget to show track list
   Widget get body;
 
+  /// Tracks to play
+  List<TrackIdentifier> get tracks;
+
   const PlaylistScreen({
     Key? key,
-    this.intro,
     this.pageTitle,
     this.pageActions,
-    this.pageFloatingActionButton,
   }) : super(key: key);
 
   Widget _albumIntro(BuildContext context) {
@@ -37,7 +40,7 @@ abstract class PlaylistScreen extends StatelessWidget {
       height: 150,
       padding: EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // cover
@@ -68,7 +71,7 @@ abstract class PlaylistScreen extends StatelessWidget {
                     textScaleFactor: 1.2,
                     minFontSize: context.textTheme.titleSmall!.fontSize!,
                   ),
-                  ...(intro ?? []),
+                  ...intro,
                 ],
               ),
             ),
@@ -80,6 +83,8 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final SettingsController settings = Get.find();
+
     return Scaffold(
       appBar: AppBar(
         title: pageTitle,
@@ -91,7 +96,41 @@ abstract class PlaylistScreen extends StatelessWidget {
           Expanded(child: body),
         ],
       ),
-      floatingActionButton: pageFloatingActionButton,
+      floatingActionButton: GestureDetector(
+        onLongPress: () {
+          settings.shufflePlayButton.value = !settings.shufflePlayButton.value;
+        },
+        child: Obx(() {
+          return FloatingActionButton(
+            child: Icon(
+              settings.shufflePlayButton.value
+                  ? Icons.shuffle
+                  : Icons.play_arrow,
+            ),
+            onPressed: () => _playFullList(settings.shufflePlayButton.value),
+          );
+        }),
+      ),
+    );
+  }
+
+  void _playFullList(bool shuffle) async {
+    final AnnilController annil = Get.find();
+    if (shuffle) {
+      tracks.shuffle();
+    }
+
+    final PlayingController playing = Get.find();
+    await playing.setPlayingQueue(
+      await Future.wait(
+        tracks.map<Future<IndexedAudioSource>>(
+          (s) => annil.getAudio(
+            albumId: s.albumId,
+            discId: s.discId,
+            trackId: s.trackId,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/pages/album_detail.dart';
+import 'package:annix/pages/playlist/playlist_album.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/widgets/artist_text.dart';

@@ -1,6 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/metadata.dart';
-import 'package:annix/pages/album_detail.dart';
+import 'package:annix/pages/playlist/playlist_album.dart';
 import 'package:annix/services/global.dart';
 import 'package:f_logs/model/flog/flog.dart';
 import 'package:flutter/material.dart';
