@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
@@ -7,6 +8,7 @@ import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class AlbumDetailScreen extends StatelessWidget {
   final String tag;
@@ -59,13 +61,13 @@ class AlbumDetailScreen extends StatelessWidget {
     return list;
   }
 
-  void playAlbum(AnnilController annil) async {
+  void playAlbum(AnnilController annil, bool shuffle) async {
     List<TrackIdentifier> songs = [];
     var discId = 1;
     album.discs.forEach((disc) {
       var trackId = 1;
       disc.tracks.forEach((element) {
-        // check if  available
+        // check if available
         final song = TrackIdentifier(
           albumId: album.albumId,
           discId: discId,
@@ -82,6 +84,10 @@ class AlbumDetailScreen extends StatelessWidget {
       discId++;
     });
 
+    if (shuffle) {
+      songs.shuffle();
+    }
+
     final PlayingController playing = Get.find();
 
     await playing.setPlayingQueue(
@@ -97,67 +103,112 @@ class AlbumDetailScreen extends StatelessWidget {
     );
   }
 
+  Widget _albumIntro(BuildContext context) {
+    final AnnilController annil = Get.find();
+
+    return Container(
+      height: 150,
+      padding: EdgeInsets.only(bottom: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // cover
+          Container(
+            height: 150,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Card(
+              elevation: 8,
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: annil.cover(
+                  albumId: album.albumId,
+                  fit: BoxFit.fitWidth,
+                  tag: tag,
+                ),
+              ),
+            ),
+          ),
+          // intro text
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.only(right: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AutoSizeText(
+                    album.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.titleMedium,
+                    textScaleFactor: 1.2,
+                    minFontSize: context.textTheme.titleSmall!.fontSize!,
+                  ),
+                  Text(album.date.toString()),
+                  // TODO: Add some action buttons
+                  // Row(
+                  //   children: [
+                  //     InkWell(
+                  //       child: Container(
+                  //         child: const Icon(
+                  //           Icons.add_box_outlined,
+                  //           size: 32.0,
+                  //         ),
+                  //       ),
+                  //       onTap: () {},
+                  //     ),
+                  //   ],
+                  // ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final SettingsController settings = Get.find();
     final AnnilController annil = Get.find();
     var tracks = getAlbumTracks(context, annil);
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return <Widget>[
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                pinned: true,
-                snap: true,
-                floating: true,
-                expandedHeight: context.mediaQuerySize.width * 0.8,
-                automaticallyImplyLeading: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  expandedTitleScale: 1.2,
-                  title: Marquee(
-                    child: Text(
-                      album.title,
-                      style: TextStyle(
-                        shadows: [
-                          Shadow(
-                            blurRadius: 12.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  background: annil.cover(
-                    albumId: album.albumId,
-                    fit: BoxFit.fitWidth,
-                    tag: tag,
-                  ),
-                ),
-              ),
-            )
-          ];
+      appBar: AppBar(
+        title: Text("Album"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search_outlined),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          _albumIntro(context),
+          Expanded(
+            child: ListView(
+              children: tracks,
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: GestureDetector(
+        onLongPress: () {
+          settings.shufflePlayButton.value = !settings.shufflePlayButton.value;
         },
-        body: Builder(builder: (context) {
-          return CustomScrollView(
-            slivers: [
-              SliverOverlapInjector(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => tracks[index],
-                  childCount: tracks.length,
-                ),
-              ),
-            ],
+        child: Obx(() {
+          return FloatingActionButton(
+            child: Icon(
+              settings.shufflePlayButton.value
+                  ? Icons.shuffle
+                  : Icons.play_arrow,
+            ),
+            onPressed: () => playAlbum(annil, settings.shufflePlayButton.value),
           );
         }),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.play_arrow),
-        onPressed: () => playAlbum(annil),
       ),
     );
   }

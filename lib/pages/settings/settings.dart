@@ -8,11 +8,12 @@ import 'package:settings_ui/settings_ui.dart';
 
 typedef WidgetCallback = Widget Function();
 
-class ObxSettingsTile<T extends RxInterface> extends AbstractSettingsTile {
+class ObxSettingsTileBuilder<T extends RxInterface>
+    extends AbstractSettingsTile {
   final Widget Function(T) builder;
   final T value;
 
-  ObxSettingsTile({required this.builder, required this.value, Key? key})
+  ObxSettingsTileBuilder({required this.builder, required this.value, Key? key})
       : super(key: key);
 
   @override
@@ -53,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
           SettingsSection(
             title: Text('Playback'),
             tiles: [
-              ObxSettingsTile<RxBool>(
+              ObxSettingsTileBuilder<RxBool>(
                 value: settings.useMobileNetwork,
                 builder: (p) => SettingsTile.switchTile(
                   onToggle: (value) {

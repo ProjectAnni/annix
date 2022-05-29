@@ -167,6 +167,7 @@ class AnnilController extends GetxController {
             text: "Failed to refresh annil client ${client.name}",
             exception: e,
           );
+          // TODO: use local copy
           return <String>[];
         }
       })))
