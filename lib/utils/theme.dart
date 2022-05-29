@@ -1,3 +1,4 @@
+import 'package:annix/utils/theme.preset.anni.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,20 @@ class AnnixTheme {
 
   AnnixTheme._() {
     // TODO: load seed from config
-    setTheme(Color.fromARGB(255, 184, 253, 127), false);
+    setPresetTheme();
+    // setTheme(Color.fromARGB(255, 184, 253, 127), false);
+  }
+
+  void setPresetTheme() {
+    _theme = ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        colorScheme: anniLightColorScheme);
+    _darkTheme = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorScheme: anniDarkColorScheme,
+    );
   }
 
   void setTheme(Color seed, [bool apply = true]) {
