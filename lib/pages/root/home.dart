@@ -1,6 +1,8 @@
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/pages/playlist_detail.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/widgets/buttons/theme_button.dart';
+import 'package:annix/widgets/icon_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,21 +30,22 @@ class HomeView extends StatelessWidget {
             crossAxisSpacing: 4,
             children: [
               // Random mode
-              InkWell(
-                onTap: () => playing.fullShuffleMode(),
-                child: Card(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.shuffle),
-                      SizedBox(width: 8),
-                      Text(
-                        'Random songs',
-                        style: context.textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
+              IconCard(
+                icon: Icon(Icons.shuffle),
+                child: Text(
+                  'Random songs',
+                  style: context.textTheme.titleSmall,
                 ),
+                onTap: () => playing.fullShuffleMode(),
+              ),
+              // My favorite
+              IconCard(
+                icon: Icon(Icons.favorite_outlined),
+                child: Text(
+                  'My favorite',
+                  style: context.textTheme.titleSmall,
+                ),
+                onTap: () => Get.to(() => FavoriteDetail()),
               ),
             ],
           ),
