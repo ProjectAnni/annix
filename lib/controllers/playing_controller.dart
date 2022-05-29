@@ -10,13 +10,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
 class PlayingController extends GetxController {
-  AudioPlayer player = AudioPlayer(
-    audioLoadConfiguration: AudioLoadConfiguration(
-      androidLoadControl: AndroidLoadControl(
-        enableConstantBitrateSeeking: true,
-      ),
-    ),
-  );
+  AudioPlayer player = AudioPlayer();
 
   final AnnivController anniv = Get.find();
 
