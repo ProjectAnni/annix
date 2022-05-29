@@ -1,3 +1,4 @@
+import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/settings/settings_log.dart';
 import 'package:annix/utils/store.dart';
@@ -5,11 +6,28 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
 
+typedef WidgetCallback = Widget Function();
+
+class ObxSettingsTile<T extends RxInterface> extends AbstractSettingsTile {
+  final Widget Function(T) builder;
+  final T value;
+
+  ObxSettingsTile({required this.builder, required this.value, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ObxValue<T>(builder, value);
+  }
+}
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final SettingsController settings = Get.find();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
@@ -29,6 +47,22 @@ class SettingsScreen extends StatelessWidget {
                 initialValue: true,
                 leading: Icon(Icons.format_paint),
                 title: Text('Enable custom theme'),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text('Playback'),
+            tiles: [
+              ObxSettingsTile<RxBool>(
+                value: settings.useMobileNetwork,
+                builder: (p) => SettingsTile.switchTile(
+                  onToggle: (value) {
+                    p.value = value;
+                  },
+                  initialValue: p.value,
+                  leading: Icon(Icons.mobiledata_off_outlined),
+                  title: Text('Use mobile network'),
+                ),
               ),
             ],
           ),

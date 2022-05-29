@@ -5,6 +5,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
 
   try {
     Get.put(NetworkController());
+    Get.put(SettingsController());
     Get.put(await AnnilController.init());
     Get.put(await AnnivController.init());
     Get.put(PlayingController());

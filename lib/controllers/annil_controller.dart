@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:annix/controllers/network_controller.dart';
+import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -83,7 +84,6 @@ class CombinedOnlineAnnilClient {
     required int discId,
     required int trackId,
   }) {
-    // TODO: add option to not use mobile network
     final list = clients.values.toList();
     list.sort((a, b) => b.priority - a.priority);
     for (final client in list) {
@@ -133,6 +133,7 @@ class AnnilController extends GetxController {
   bool get hasClient => clients.value.isNotEmpty;
 
   NetworkController _network = Get.find();
+  SettingsController _settings = Get.find();
 
   static Future<AnnilController> init() async {
     return AnnilController._(await CombinedOnlineAnnilClient.load());
@@ -186,7 +187,8 @@ class AnnilController extends GetxController {
     required int discId,
     required int trackId,
   }) {
-    if (!_network.isOnline.value) {
+    if (!_network.isOnline.value ||
+        (_network.isMobile.value && !_settings.useMobileNetwork.value)) {
       return AnnilAudioSource.local(
         albumId: albumId,
         discId: discId,
