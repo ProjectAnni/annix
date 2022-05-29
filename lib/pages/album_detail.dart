@@ -1,6 +1,7 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/settings_controller.dart';
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
@@ -177,7 +178,7 @@ class AlbumDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Album"),
+        title: Text(I18n.ALBUMS.tr),
         actions: [
           IconButton(
             icon: Icon(Icons.search_outlined),
