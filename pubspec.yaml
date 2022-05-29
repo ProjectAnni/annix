@@ -13,11 +13,11 @@ dependencies:
   f_logs:
     git:
       url: https://github.com/ProjectAnni/Flogs
-  get: ^4.6.1
-  shared_preferences: ^2.0.9
+  get: ^4.6.5
+  shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.0
 
-  dio: ^4.0.4
+  dio: ^4.0.6
   dio_cookie_manager: ^2.0.0
   dio_http2_adapter: ^2.0.0
   cookie_jar: ^3.0.1
