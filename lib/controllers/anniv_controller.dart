@@ -94,6 +94,9 @@ class AnnivController extends GetxController {
       // reload favorite list
       await this.syncFavorite();
 
+      // reload playlist list
+      await this.syncPlaylist();
+
       this.client = client;
     }
   }
@@ -203,6 +206,18 @@ class AnnivController extends GetxController {
           list.map((e) => MapEntry(e.track.toSlashedString(), e)));
       favorites.value = map;
       await _saveFavorites();
+    }
+  }
+
+  //////////////////////////////// Playlist ///////////////////////////////
+  RxMap<String, PlaylistInfo> playlists = RxMap();
+  Map<String, Playlist> playlistDetail = Map();
+
+  Future<void> syncPlaylist() async {
+    if (this.client != null) {
+      final list = await this.client!.getOwnedPlaylists();
+      final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
+      playlists.value = map;
     }
   }
 

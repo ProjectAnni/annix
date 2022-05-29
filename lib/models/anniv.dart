@@ -253,7 +253,7 @@ class TrackInfoWithAlbum {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class PlaylistIntro {
+class PlaylistInfo {
   String id;
   String name;
   String? description;
@@ -261,7 +261,7 @@ class PlaylistIntro {
   bool isPublic;
   DiscIdentifier cover;
 
-  PlaylistIntro({
+  PlaylistInfo({
     required this.id,
     required this.name,
     this.description,
@@ -270,19 +270,19 @@ class PlaylistIntro {
     required this.cover,
   });
 
-  factory PlaylistIntro.fromJson(Map<String, dynamic> json) =>
-      _$PlaylistIntroFromJson(json);
+  factory PlaylistInfo.fromJson(Map<String, dynamic> json) =>
+      _$PlaylistInfoFromJson(json);
 }
 
 class Playlist {
-  PlaylistIntro intro;
+  PlaylistInfo intro;
 
   List<PlaylistItem> items;
 
   Playlist({required this.intro, required this.items});
 
   factory Playlist.fromJson(Map<String, dynamic> json) {
-    final intro = PlaylistIntro.fromJson(json);
+    final intro = PlaylistInfo.fromJson(json);
     final items =
         (json['items'] as List).map((e) => PlaylistItem.fromJson(e)).toList();
     return Playlist(intro: intro, items: items);
@@ -372,7 +372,7 @@ class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
 class SearchResult {
   List<AlbumInfo>? albums;
   List<TrackInfoWithAlbum>? tracks;
-  List<PlaylistIntro>? playlists;
+  List<PlaylistInfo>? playlists;
 
   SearchResult({this.albums, this.tracks, this.playlists});
 

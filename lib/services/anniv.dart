@@ -200,6 +200,21 @@ class AnnivClient {
     });
   }
 
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E7%94%A8%E6%88%B7%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<List<PlaylistInfo>> getOwnedPlaylists([String? userId]) async {
+    // TODO: userId
+    final response = await _client.get('/api/playlists');
+    return (response.data as List<dynamic>)
+        .map((e) => PlaylistInfo.fromJson(e))
+        .toList();
+  }
+
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<Playlist> getPlaylistDetail(String id) async {
+    final response = await _client.get('/api/playlist?id=$id');
+    return Playlist.fromJson(response.data);
+  }
+
   Future<LyricResponse?> getLyric(String id) async {
     TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
     try {

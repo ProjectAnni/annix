@@ -151,8 +151,7 @@ Map<String, dynamic> _$TrackInfoWithAlbumToJson(TrackInfoWithAlbum instance) =>
       'type': _$TrackTypeEnumMap[instance.type],
     };
 
-PlaylistIntro _$PlaylistIntroFromJson(Map<String, dynamic> json) =>
-    PlaylistIntro(
+PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
@@ -169,7 +168,7 @@ SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
           ?.map((e) => TrackInfoWithAlbum.fromJson(e as Map<String, dynamic>))
           .toList(),
       playlists: (json['playlists'] as List<dynamic>?)
-          ?.map((e) => PlaylistIntro.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => PlaylistInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
