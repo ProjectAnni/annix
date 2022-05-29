@@ -44,8 +44,8 @@ dependencies:
   auto_size_text: ^3.0.0
 
   toml: ^0.12.0
-  json_serializable: ^6.1.1
-  json_annotation: ^4.4.0
+  json_serializable: ^6.2.0
+  json_annotation: ^4.5.0
   sqflite: ^2.0.1
   uuid: ^3.0.5
 

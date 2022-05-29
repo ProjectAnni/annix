@@ -118,6 +118,20 @@ TrackInfo _$TrackInfoFromJson(Map<String, dynamic> json) => TrackInfo(
       type: $enumDecodeNullable(_$TrackTypeEnumMap, json['type']),
     );
 
+RequiredTrackInfo _$RequiredTrackInfoFromJson(Map<String, dynamic> json) =>
+    RequiredTrackInfo(
+      title: json['title'] as String,
+      artist: json['artist'] as String,
+      type: $enumDecode(_$TrackTypeEnumMap, json['type']),
+    );
+
+Map<String, dynamic> _$RequiredTrackInfoToJson(RequiredTrackInfo instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'artist': instance.artist,
+      'type': _$TrackTypeEnumMap[instance.type],
+    };
+
 TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
     TrackInfoWithAlbum(
       track: TrackInfoWithAlbum._trackFromJson(
@@ -143,34 +157,8 @@ PlaylistIntro _$PlaylistIntroFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       description: json['description'] as String?,
       owner: json['owner'] as String,
-      cover: Cover.fromJson(json['cover'] as Map<String, dynamic>),
-    );
-
-Playlist _$PlaylistFromJson(Map<String, dynamic> json) => Playlist(
-      intro: Playlist._introFromJson(
-          readValueFlatten(json, 'intro') as Map<String, dynamic>),
       isPublic: json['is_public'] as bool,
-      songs: (json['songs'] as List<dynamic>)
-          .map((e) => PlaylistSongWithId.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-PlaylistSong _$PlaylistSongFromJson(Map<String, dynamic> json) => PlaylistSong(
-      track: PlaylistSong._trackFromJson(
-          readValueFlatten(json, 'track') as Map<String, dynamic>),
-      description: json['description'] as String?,
-    );
-
-PlaylistSongWithId _$PlaylistSongWithIdFromJson(Map<String, dynamic> json) =>
-    PlaylistSongWithId(
-      id: json['id'] as String,
-      song: PlaylistSongWithId._songFromJson(
-          readValueFlatten(json, 'song') as Map<String, dynamic>),
-    );
-
-Cover _$CoverFromJson(Map<String, dynamic> json) => Cover(
-      albumId: json['album_id'] as String,
-      discId: json['disc_id'] as int?,
+      cover: DiscIdentifier.fromJson(json['cover'] as Map<String, dynamic>),
     );
 
 SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(

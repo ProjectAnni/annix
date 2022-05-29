@@ -191,8 +191,8 @@ class TrackInfo {
 
   TrackInfo({
     required this.title,
-    required this.artist,
-    required this.type,
+    this.artist,
+    this.type,
   });
 
   factory TrackInfo.fromJson(Map<String, dynamic> json) =>
@@ -205,6 +205,24 @@ class TrackInfo {
       type: type,
     );
   }
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class RequiredTrackInfo {
+  String title;
+  String artist;
+  TrackType type;
+
+  RequiredTrackInfo({
+    required this.title,
+    required this.artist,
+    required this.type,
+  });
+
+  factory RequiredTrackInfo.fromJson(Map<String, dynamic> json) =>
+      _$RequiredTrackInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RequiredTrackInfoToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -240,13 +258,15 @@ class PlaylistIntro {
   String name;
   String? description;
   String owner;
-  Cover cover;
+  bool isPublic;
+  DiscIdentifier cover;
 
   PlaylistIntro({
     required this.id,
     required this.name,
     this.description,
     required this.owner,
+    required this.isPublic,
     required this.cover,
   });
 
@@ -254,72 +274,98 @@ class PlaylistIntro {
       _$PlaylistIntroFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Playlist {
-  @JsonKey(fromJson: _introFromJson, readValue: readValueFlatten)
   PlaylistIntro intro;
 
-  bool isPublic;
-  List<PlaylistSongWithId> songs;
+  List<PlaylistItem> items;
 
-  Playlist({
-    required this.intro,
-    required this.isPublic,
-    required this.songs,
-  });
+  Playlist({required this.intro, required this.items});
 
-  factory Playlist.fromJson(Map<String, dynamic> json) =>
-      _$PlaylistFromJson(json);
-
-  static PlaylistIntro _introFromJson(Map<String, dynamic> json) =>
-      PlaylistIntro.fromJson(json);
+  factory Playlist.fromJson(Map<String, dynamic> json) {
+    final intro = PlaylistIntro.fromJson(json);
+    final items =
+        (json['items'] as List).map((e) => PlaylistItem.fromJson(e)).toList();
+    return Playlist(intro: intro, items: items);
+  }
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class PlaylistSong {
-  @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
-  TrackIdentifier track;
+enum PlaylistItemType { normal, dummy, album }
 
+abstract class PlaylistItem<T> {
+  PlaylistItemType type;
   String? description;
+  T info;
 
-  PlaylistSong({
-    required this.track,
+  PlaylistItem({
+    required this.type,
     this.description,
+    required this.info,
   });
 
-  factory PlaylistSong.fromJson(Map<String, dynamic> json) =>
-      _$PlaylistSongFromJson(json);
-
-  static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
-      TrackIdentifier.fromJson(json);
+  static PlaylistItem<dynamic> fromJson(Map<String, dynamic> json) {
+    final type = json['type'] as String;
+    switch (type) {
+      case 'normal':
+        return PlaylistItemTrack.fromJson(json);
+      case 'dummy':
+        return PlaylistItemDummyTrack.fromJson(json);
+      case 'album':
+        return PlaylistItemAlbum.fromJson(json);
+      default:
+        throw Exception('Unknown playlist item type: $type');
+    }
+  }
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class PlaylistSongWithId {
-  String id;
-  @JsonKey(fromJson: _songFromJson, readValue: readValueFlatten)
-  PlaylistSong song;
+class PlaylistItemTrack extends PlaylistItem<TrackInfoWithAlbum> {
+  PlaylistItemTrack({
+    String? description,
+    required TrackInfoWithAlbum info,
+  }) : super(
+          type: PlaylistItemType.normal,
+          description: description,
+          info: info,
+        );
 
-  PlaylistSongWithId({
-    required this.id,
-    required this.song,
-  });
-
-  factory PlaylistSongWithId.fromJson(Map<String, dynamic> json) =>
-      _$PlaylistSongWithIdFromJson(json);
-
-  static PlaylistSong _songFromJson(Map<String, dynamic> json) =>
-      PlaylistSong.fromJson(json);
+  factory PlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
+      PlaylistItemTrack(
+        info: TrackInfoWithAlbum.fromJson(json),
+        description: json['description'],
+      );
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class Cover {
-  String albumId;
-  int? discId;
+class PlaylistItemDummyTrack extends PlaylistItem<RequiredTrackInfo> {
+  PlaylistItemDummyTrack({
+    String? description,
+    required RequiredTrackInfo info,
+  }) : super(
+          type: PlaylistItemType.dummy,
+          description: description,
+          info: info,
+        );
 
-  Cover({required this.albumId, this.discId});
+  factory PlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
+      PlaylistItemDummyTrack(
+        info: RequiredTrackInfo.fromJson(json),
+        description: json['description'],
+      );
+}
 
-  factory Cover.fromJson(Map<String, dynamic> json) => _$CoverFromJson(json);
+class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
+  PlaylistItemAlbum({
+    String? description,
+    required String albumId,
+  }) : super(
+          type: PlaylistItemType.album,
+          description: description,
+          info: albumId,
+        );
+
+  factory PlaylistItemAlbum.fromJson(Map<String, dynamic> json) =>
+      PlaylistItemAlbum(
+        albumId: json['info'],
+        description: json['description'],
+      );
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
