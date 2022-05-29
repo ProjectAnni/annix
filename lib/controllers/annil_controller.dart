@@ -103,12 +103,16 @@ class CombinedOnlineAnnilClient {
   }
 
   Widget? cover({
-    required String albumId,
+    String? albumId,
     int? discId,
     BoxFit? fit,
     double? scale,
     String? tag,
   }) {
+    if (albumId == null) {
+      return null;
+    }
+
     final list = clients.values.toList();
     list.sort((a, b) => b.priority - a.priority);
     for (final client in list) {
@@ -205,7 +209,7 @@ class AnnilController extends GetxController {
   }
 
   Widget cover({
-    required String albumId,
+    String? albumId,
     int? discId,
     BoxFit? fit,
     double? scale,

@@ -329,7 +329,7 @@ class PlaylistItemTrack extends PlaylistItem<TrackInfoWithAlbum> {
 
   factory PlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
       PlaylistItemTrack(
-        info: TrackInfoWithAlbum.fromJson(json),
+        info: TrackInfoWithAlbum.fromJson(json["info"]),
         description: json['description'],
       );
 }
@@ -346,7 +346,7 @@ class PlaylistItemDummyTrack extends PlaylistItem<RequiredTrackInfo> {
 
   factory PlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
       PlaylistItemDummyTrack(
-        info: RequiredTrackInfo.fromJson(json),
+        info: RequiredTrackInfo.fromJson(json["info"]),
         description: json['description'],
       );
 }

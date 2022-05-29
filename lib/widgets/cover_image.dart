@@ -16,7 +16,7 @@ String getCoverCachePath(String albumId, int? discId) {
 class CoverImage extends StatelessWidget {
   static final client = HttpPlusClient(enableHttp2: false);
 
-  final String albumId;
+  final String? albumId;
   final int? discId;
   final String? remoteUrl;
 
@@ -28,7 +28,7 @@ class CoverImage extends StatelessWidget {
   const CoverImage({
     Key? key,
     this.remoteUrl,
-    required this.albumId,
+    this.albumId,
     this.discId,
     this.fit,
     this.filterQuality = FilterQuality.low,
@@ -36,7 +36,7 @@ class CoverImage extends StatelessWidget {
   }) : super(key: key);
 
   Future<File> getCoverImage() async {
-    final coverImagePath = getCoverCachePath(albumId, discId);
+    final coverImagePath = getCoverCachePath(albumId!, discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
       if (remoteUrl == null) {
@@ -60,8 +60,21 @@ class CoverImage extends StatelessWidget {
     return file;
   }
 
+  Widget dummy() {
+    return Container(
+      color: Colors.black87,
+      child: Center(
+        child: Icon(Icons.music_note, color: Colors.white, size: 32),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (albumId == null) {
+      return dummy();
+    }
+
     return FutureBuilder<File>(
       future: getCoverImage(),
       builder: (context, snapshot) {
@@ -81,12 +94,8 @@ class CoverImage extends StatelessWidget {
         } else if (snapshot.hasError) {
           FLog.error(text: "Failed to load cover", exception: snapshot.error);
         }
-        return Container(
-          color: Colors.black87,
-          child: Center(
-            child: Icon(Icons.music_note, color: Colors.white, size: 32),
-          ),
-        );
+
+        return dummy();
       },
     );
   }
