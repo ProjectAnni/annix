@@ -36,7 +36,7 @@ class CoverImage extends StatelessWidget {
     this.tag,
   }) : super(key: key);
 
-  Future<File> getCoverImage() async {
+  Future<File?> getCoverImage() async {
     if (downloadingMap.containsKey(remoteUrl!)) {
       await downloadingMap[remoteUrl!];
     }
@@ -46,7 +46,7 @@ class CoverImage extends StatelessWidget {
     if (!await file.exists()) {
       if (remoteUrl == null) {
         // offline mode
-        throw Exception("No remote url");
+        return null;
       }
 
       // fetch remote cover
@@ -82,7 +82,7 @@ class CoverImage extends StatelessWidget {
       return dummy();
     }
 
-    return FutureBuilder<File>(
+    return FutureBuilder<File?>(
       future: getCoverImage(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
