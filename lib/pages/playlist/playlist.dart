@@ -116,14 +116,15 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   void _playFullList(bool shuffle) async {
     final AnnilController annil = Get.find();
+    final trackList = tracks;
     if (shuffle) {
-      tracks.shuffle();
+      trackList.shuffle();
     }
 
     final PlayingController playing = Get.find();
     await playing.setPlayingQueue(
       await Future.wait(
-        tracks.map<Future<IndexedAudioSource>>(
+        trackList.map<Future<IndexedAudioSource>>(
           (s) => annil.getAudio(
             albumId: s.albumId,
             discId: s.discId,
