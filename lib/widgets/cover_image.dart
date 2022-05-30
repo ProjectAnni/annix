@@ -22,6 +22,8 @@ class CoverItem {
     this.discId,
     required this.uri,
   });
+
+  String get key => '$albumId/$discId';
 }
 
 class CoverReverseProxy {
@@ -37,10 +39,12 @@ class CoverReverseProxy {
       proxy = server;
       proxy.listen((request) async {
         if (request.method == 'GET') {
-          final uriPath = _requestKey(request.uri);
-          final coverItem = _urlMap[uriPath];
+          var path = request.uri.path;
+          if (path.startsWith('/')) {
+            path = path.substring(1);
+          }
+          final coverItem = _urlMap[path];
           if (coverItem != null) {
-            print(coverItem.albumId);
             final cover = await getCoverImage(coverItem);
             if (cover != null) {
               request.response.statusCode = 200;
@@ -72,10 +76,8 @@ class CoverReverseProxy {
     return _instance!;
   }
 
-  String _requestKey(Uri uri) => '${uri.path}';
-
   Uri url(CoverItem remote) {
-    final key = _requestKey(remote.uri);
+    final key = remote.key;
     _urlMap[key] ??= remote;
     return Uri(scheme: 'http', host: "127.0.0.1", port: proxy.port, path: key);
   }

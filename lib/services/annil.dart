@@ -209,7 +209,12 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
         album: track?.disc.album.title ?? "Unknown Album",
         artist: track?.artist,
         // TODO: use disc cover
-        artUri: File(getCoverCachePath(albumId, null)).uri,
+        artUri: CoverReverseProxy().url(
+          CoverItem(
+            uri: annil.getCoverUrl(albumId: albumId),
+            albumId: albumId,
+          ),
+        ),
         displayDescription: track?.type.toText() ?? "normal",
         rating: Rating.newHeartRating(false),
       ),
