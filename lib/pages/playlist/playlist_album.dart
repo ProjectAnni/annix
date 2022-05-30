@@ -12,9 +12,9 @@ class AlbumDetailScreen extends PlaylistScreen {
   final AnnilController _annil = Get.find();
 
   final Album album;
-  final String tag;
+  final String? tag;
 
-  AlbumDetailScreen({required this.album, required this.tag, Key? key})
+  AlbumDetailScreen({required this.album, this.tag, Key? key})
       : super(key: key, pageTitle: Text(I18n.ALBUMS.tr));
 
   String get title => album.title;

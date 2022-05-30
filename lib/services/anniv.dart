@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
@@ -7,8 +8,9 @@ import 'package:annix/utils/hash.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:get/get.dart' show ExtensionSnackbar, Get;
+import 'package:get/get.dart' show ExtensionSnackbar, Get, Inst;
 import 'package:path_provider/path_provider.dart';
 
 class AnnivClient {
@@ -20,7 +22,17 @@ class AnnivClient {
     required CookieJar cookieJar,
   })  : _client = Dio(
           BaseOptions(baseUrl: url, responseType: ResponseType.json),
-        ),
+        )..httpClientAdapter = Http2Adapter(
+            ConnectionManager(
+              idleTimeout: 60000,
+              onClientCreate: (_, config) {
+                final SettingsController settings = Get.find();
+                config.onBadCertificate = (_) {
+                  return settings.skipCertificateVerification.value;
+                };
+              },
+            ),
+          ),
         _cookieJar = cookieJar {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(

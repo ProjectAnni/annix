@@ -37,7 +37,7 @@ class SettingsScreen extends StatelessWidget {
         sections: [
           SettingsSection(
             title: Text('Common'),
-            tiles: <SettingsTile>[
+            tiles: [
               SettingsTile.navigation(
                 leading: Icon(Icons.language),
                 title: Text('Language'),
@@ -48,6 +48,17 @@ class SettingsScreen extends StatelessWidget {
                 initialValue: true,
                 leading: Icon(Icons.format_paint),
                 title: Text('Enable custom theme'),
+              ),
+              ObxSettingsTileBuilder<RxBool>(
+                value: settings.skipCertificateVerification,
+                builder: (p) => SettingsTile.switchTile(
+                  onToggle: (value) {
+                    p.value = value;
+                  },
+                  initialValue: p.value,
+                  leading: Icon(Icons.security_outlined),
+                  title: Text('Skip certification verification'),
+                ),
               ),
             ],
           ),
