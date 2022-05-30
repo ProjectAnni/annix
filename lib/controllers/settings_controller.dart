@@ -20,14 +20,36 @@ class SettingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // TODO: persist settings
+
     useMobileNetwork =
         (Global.preferences.getBool("annix_use_mobile_network") ?? true).obs;
+    useMobileNetwork.listen(saveChangedVariable("annix_use_mobile_network"));
+
     shufflePlayButton =
         (Global.preferences.getBool("annix_shuffle_play_button") ?? false).obs;
+    shufflePlayButton.listen(saveChangedVariable("annix_shuffle_play_button"));
+
     skipCertificateVerification =
         (Global.preferences.getBool("annix_skip_certificate_verification") ??
                 false)
             .obs;
+    skipCertificateVerification
+        .listen(saveChangedVariable("annix_skip_certificate_verification"));
+  }
+
+  void Function(T) saveChangedVariable<T>(String key) {
+    return (value) {
+      if (value is String) {
+        Global.preferences.setString(key, value);
+      } else if (value is bool) {
+        Global.preferences.setBool(key, value);
+      } else if (value is int) {
+        Global.preferences.setInt(key, value);
+      } else if (value is double) {
+        Global.preferences.setDouble(key, value);
+      } else {
+        throw Exception("Unsupported type");
+      }
+    };
   }
 }
