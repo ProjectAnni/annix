@@ -15,6 +15,7 @@ String getCoverCachePath(String albumId, int? discId) {
 
 class CoverImage extends StatelessWidget {
   static final client = HttpPlusClient(enableHttp2: false);
+  static final downloadingMap = Map();
 
   final String? albumId;
   final int? discId;
@@ -36,6 +37,10 @@ class CoverImage extends StatelessWidget {
   }) : super(key: key);
 
   Future<File> getCoverImage() async {
+    if (downloadingMap.containsKey(remoteUrl!)) {
+      await downloadingMap[remoteUrl!];
+    }
+
     final coverImagePath = getCoverCachePath(albumId!, discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
@@ -45,7 +50,9 @@ class CoverImage extends StatelessWidget {
       }
 
       // fetch remote cover
-      final response = await client.get(Uri.parse(remoteUrl!));
+      final getRequest = client.get(Uri.parse(remoteUrl!));
+      downloadingMap[remoteUrl!] = getRequest;
+      final response = await getRequest;
       if (response.statusCode == 200) {
         // create folder
         await file.parent.create(recursive: true);
