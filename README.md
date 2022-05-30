@@ -23,7 +23,7 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 - [ ] Metadata Sources
   - [x] Anniv
   - [x] Local sqlite file
-  - [ ] Remote sqlite file
+  - [x] Remote sqlite file
   - [ ] Metadata repository
 - [ ] Anniv
   - [x] Server Info
@@ -31,10 +31,10 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
     - [x] Login
       - [ ] 2FA
     - [ ] Register
-    - [ ] Logout
+    - [x] Logout
     - [ ] ~~Revoke account~~ (Would not be implemented in Annix)
   - [ ] Playlist
-    - [ ] List playlist
+    - [x] List playlist
     - [ ] Create playlist
     - [ ] Remove playlist
     - [ ] Edit playlist
@@ -45,11 +45,11 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
   - [ ] Favorite
     - [x] Add favorite
     - [x] Remove favorite
-    - [ ] Favorite list
+    - [x] Favorite list
   - [ ] Credentials
     - [x] Get credentials
     - [ ] Add credential
     - [ ] Edit credential
     - [ ] Delete credential
-  - [ ] Lyric
+  - [x] Lyric
   - [x] Search
