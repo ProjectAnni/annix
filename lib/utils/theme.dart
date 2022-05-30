@@ -17,9 +17,10 @@ class AnnixTheme {
 
   void setPresetTheme() {
     _theme = ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorScheme: anniLightColorScheme);
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: anniLightColorScheme,
+    );
     _darkTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,

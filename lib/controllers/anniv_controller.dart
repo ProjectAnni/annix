@@ -71,8 +71,12 @@ class AnnivController extends GetxController {
   Future<void> checkLogin(AnnivClient? client) async {
     if (client != null) {
       try {
-        final site = await client.getSiteInfo();
-        final user = await client.getUserInfo();
+        var site;
+        var user;
+        await Future.wait([
+          client.getSiteInfo().then((s) => site = s),
+          client.getUserInfo().then((u) => user = u),
+        ]);
         this.info.value = SiteUserInfo(site: site, user: user);
         await this._saveInfo();
       } catch (e) {
@@ -85,19 +89,20 @@ class AnnivController extends GetxController {
           rethrow;
         }
       }
-
-      // reload annil client
-      final annilTokens = await client.getCredentials();
-      _annil.syncWithRemote(annilTokens);
-      await _annil.refresh();
-
-      // reload favorite list
-      await this.syncFavorite();
-
-      // reload playlist list
-      await this.syncPlaylist();
-
       this.client = client;
+
+      await Future.wait([
+        // reload annil client
+        (() async {
+          final annilTokens = await client.getCredentials();
+          _annil.syncWithRemote(annilTokens);
+          _annil.refresh();
+        })(),
+        // reload favorite list
+        this.syncFavorite(),
+        // reload playlist list
+        this.syncPlaylist()
+      ]);
     }
   }
 

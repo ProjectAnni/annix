@@ -142,6 +142,7 @@ class AnnivClient {
 
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
+    // do not wait here
     _client.post("/api/user/logout");
     return this._cookieJar.deleteAll();
   }

@@ -1,6 +1,7 @@
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/settings/settings_log.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,21 +35,16 @@ class SettingsScreen extends StatelessWidget {
         title: Text("Settings"),
       ),
       body: SettingsList(
+        lightTheme: SettingsThemeData(
+          settingsListBackground: context.colorScheme.background,
+        ),
+        darkTheme: SettingsThemeData(
+          settingsListBackground: context.colorScheme.background,
+        ),
         sections: [
           SettingsSection(
             title: Text('Common'),
             tiles: [
-              SettingsTile.navigation(
-                leading: Icon(Icons.language),
-                title: Text('Language'),
-                value: Text('English'),
-              ),
-              SettingsTile.switchTile(
-                onToggle: (value) {},
-                initialValue: true,
-                leading: Icon(Icons.format_paint),
-                title: Text('Enable custom theme'),
-              ),
               ObxSettingsTileBuilder<RxBool>(
                 value: settings.skipCertificateVerification,
                 builder: (p) => SettingsTile.switchTile(
@@ -57,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                   initialValue: p.value,
                   leading: Icon(Icons.security_outlined),
-                  title: Text('Skip certification verification'),
+                  title: Text(I18n.SETTINGS_SKIP_CERT.tr),
                 ),
               ),
             ],
@@ -73,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                   initialValue: p.value,
                   leading: Icon(Icons.mobiledata_off_outlined),
-                  title: Text('Use mobile network'),
+                  title: Text(I18n.SETTINGS_USE_MOBILE_NETWORK.tr),
                 ),
               ),
             ],
