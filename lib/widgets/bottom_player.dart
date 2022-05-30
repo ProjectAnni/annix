@@ -44,7 +44,8 @@ class BottomPlayer extends StatelessWidget {
                         color: Colors.grey,
                       );
                     } else {
-                      return annil.cover(albumId: item.id.split('/')[0]);
+                      return annil.cover(
+                          albumId: item.id.split('/')[0], tag: "playing");
                     }
                   }),
                 ),

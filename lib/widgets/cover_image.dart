@@ -118,6 +118,7 @@ class CoverImage extends StatelessWidget {
 
   final BoxFit? fit;
   final FilterQuality filterQuality;
+  final String? tag;
 
   const CoverImage({
     Key? key,
@@ -126,6 +127,7 @@ class CoverImage extends StatelessWidget {
     this.discId,
     this.fit,
     this.filterQuality = FilterQuality.low,
+    this.tag,
   }) : super(key: key);
 
   Widget dummy() {
@@ -143,7 +145,7 @@ class CoverImage extends StatelessWidget {
       return dummy();
     } else {
       return Hero(
-        tag: "$albumId/$discId",
+        tag: "${tag ?? ""}/$albumId/$discId",
         child: ExtendedImage.network(
           CoverReverseProxy()
               .url(

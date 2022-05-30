@@ -123,6 +123,7 @@ class CombinedOnlineAnnilClient {
           remoteUrl: client.getCoverUrl(albumId: albumId, discId: discId),
           fit: fit ?? BoxFit.scaleDown,
           filterQuality: FilterQuality.medium,
+          tag: tag,
         );
       }
     }
@@ -212,12 +213,14 @@ class AnnilController extends GetxController {
     int? discId,
     BoxFit? fit,
     double? scale,
+    String? tag,
   }) {
     var cover;
     if (_network.isOnline.value) {
       cover = clients.value.cover(
         albumId: albumId,
         discId: discId,
+        tag: tag,
       );
     }
 
