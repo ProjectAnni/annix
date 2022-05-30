@@ -12,13 +12,12 @@ class AlbumDetailScreen extends PlaylistScreen {
   final AnnilController _annil = Get.find();
 
   final Album album;
-  final String? tag;
 
-  AlbumDetailScreen({required this.album, this.tag, Key? key})
+  AlbumDetailScreen({required this.album, Key? key})
       : super(key: key, pageTitle: Text(I18n.ALBUMS.tr));
 
   String get title => album.title;
-  Widget get cover => _annil.cover(albumId: album.albumId, tag: tag);
+  Widget get cover => _annil.cover(albumId: album.albumId);
 
   @override
   List<Widget> get intro => [

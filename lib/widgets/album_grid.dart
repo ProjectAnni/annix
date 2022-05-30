@@ -38,7 +38,7 @@ class AlbumGrid extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                annil.cover(albumId: albumId, tag: tag),
+                annil.cover(albumId: albumId),
                 snapshot.hasData
                     ? Container(
                         alignment: Alignment.bottomLeft,
@@ -60,10 +60,7 @@ class AlbumGrid extends StatelessWidget {
             onTap: () {
               if (snapshot.hasData) {
                 Get.to(
-                  () => AlbumDetailScreen(
-                    album: snapshot.data!,
-                    tag: tag,
-                  ),
+                  () => AlbumDetailScreen(album: snapshot.data!),
                   duration: Duration(milliseconds: 300),
                 );
               }

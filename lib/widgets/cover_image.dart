@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:io' show File;
+import 'dart:io' show File, HttpServer, InternetAddress, ContentType;
 
 import 'package:annix/services/global.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:http_plus/http_plus.dart';
 import 'package:path/path.dart' as p;
@@ -13,45 +12,85 @@ String getCoverCachePath(String albumId, int? discId) {
   return p.join(Global.storageRoot, "cover", fileName);
 }
 
-class CoverImage extends StatelessWidget {
-  static final client = HttpPlusClient(enableHttp2: false);
-  static final downloadingMap = Map();
-
-  final String? albumId;
+class CoverItem {
+  final String albumId;
   final int? discId;
-  final String? remoteUrl;
+  final Uri uri;
 
-  final BoxFit? fit;
-  final FilterQuality filterQuality;
-
-  final String? tag;
-
-  const CoverImage({
-    Key? key,
-    this.remoteUrl,
-    this.albumId,
+  CoverItem({
+    required this.albumId,
     this.discId,
-    this.fit,
-    this.filterQuality = FilterQuality.low,
-    this.tag,
-  }) : super(key: key);
+    required this.uri,
+  });
+}
 
-  Future<File?> getCoverImage() async {
-    if (downloadingMap.containsKey(remoteUrl!)) {
-      await downloadingMap[remoteUrl!];
+class CoverReverseProxy {
+  static final client = HttpPlusClient(enableHttp2: false);
+  static CoverReverseProxy? _instance;
+
+  late HttpServer proxy;
+  final Map<String, CoverItem> _urlMap = Map();
+  final downloadingMap = Map();
+
+  Future<void> setup() {
+    return HttpServer.bind(InternetAddress.loopbackIPv4, 0).then((server) {
+      proxy = server;
+      proxy.listen((request) async {
+        if (request.method == 'GET') {
+          final uriPath = _requestKey(request.uri);
+          final coverItem = _urlMap[uriPath];
+          if (coverItem != null) {
+            print(coverItem.albumId);
+            final cover = await getCoverImage(coverItem);
+            if (cover != null) {
+              request.response.statusCode = 200;
+              request.response.headers.contentType =
+                  ContentType.parse('image/jpg');
+              try {
+                await request.response.addStream(cover.openRead());
+              } finally {
+                await request.response.close();
+              }
+              return;
+            }
+          }
+
+          request.response.statusCode = 404;
+          request.response.close();
+          return;
+        }
+      });
+    });
+  }
+
+  CoverReverseProxy._();
+
+  factory CoverReverseProxy() {
+    if (_instance == null) {
+      _instance = CoverReverseProxy._();
+    }
+    return _instance!;
+  }
+
+  String _requestKey(Uri uri) => '${uri.path}';
+
+  Uri url(CoverItem remote) {
+    final key = _requestKey(remote.uri);
+    _urlMap[key] ??= remote;
+    return Uri(scheme: 'http', host: "127.0.0.1", port: proxy.port, path: key);
+  }
+
+  Future<File?> getCoverImage(CoverItem cover) async {
+    if (downloadingMap.containsKey(cover.uri.toString())) {
+      await downloadingMap[cover.uri.toString()];
     }
 
-    final coverImagePath = getCoverCachePath(albumId!, discId);
+    final coverImagePath = getCoverCachePath(cover.albumId, cover.discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
-      if (remoteUrl == null) {
-        // offline mode
-        return null;
-      }
-
       // fetch remote cover
-      final getRequest = client.get(Uri.parse(remoteUrl!));
-      downloadingMap[remoteUrl!] = getRequest;
+      final getRequest = client.get(cover.uri);
+      downloadingMap[cover.uri.toString()] = getRequest;
       final response = await getRequest;
       if (response.statusCode == 200) {
         // create folder
@@ -60,12 +99,31 @@ class CoverImage extends StatelessWidget {
         // response stream to Uint8List
         final data = response.bodyBytes;
         await file.writeAsBytes(data);
+        downloadingMap.remove(cover.uri.toString());
       } else {
         throw Exception("Failed to fetch cover image");
       }
     }
     return file;
   }
+}
+
+class CoverImage extends StatelessWidget {
+  final String? albumId;
+  final int? discId;
+  final Uri? remoteUrl;
+
+  final BoxFit? fit;
+  final FilterQuality filterQuality;
+
+  const CoverImage({
+    Key? key,
+    this.remoteUrl,
+    this.albumId,
+    this.discId,
+    this.fit,
+    this.filterQuality = FilterQuality.low,
+  }) : super(key: key);
 
   Widget dummy() {
     return Container(
@@ -80,30 +138,26 @@ class CoverImage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (albumId == null) {
       return dummy();
+    } else {
+      return Hero(
+        tag: "$albumId/$discId",
+        child: ExtendedImage.network(
+          CoverReverseProxy()
+              .url(
+                CoverItem(
+                  uri: remoteUrl!,
+                  albumId: albumId!,
+                  discId: discId,
+                ),
+              )
+              .toString(),
+          fit: fit,
+          filterQuality: filterQuality,
+          cacheHeight: 800,
+          gaplessPlayback: true,
+          cache: false,
+        ),
+      );
     }
-
-    return FutureBuilder<File?>(
-      future: getCoverImage(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final image = ExtendedImage.file(
-            snapshot.data!,
-            fit: fit,
-            filterQuality: filterQuality,
-            cacheHeight: 800,
-            gaplessPlayback: true,
-          );
-          if (tag != null) {
-            return Hero(tag: tag!, child: image);
-          } else {
-            return image;
-          }
-        } else if (snapshot.hasError) {
-          FLog.error(text: "Failed to load cover", exception: snapshot.error);
-        }
-
-        return dummy();
-      },
-    );
   }
 }

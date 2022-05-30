@@ -7,6 +7,7 @@ import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/widgets/cover_image.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,7 @@ Future<void> main() async {
   FLog.getDefaultConfigurations()..isDevelopmentDebuggingEnabled = true;
 
   await Global.init();
+  await CoverReverseProxy().setup();
 
   try {
     Get.put(NetworkController());

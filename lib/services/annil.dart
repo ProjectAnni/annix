@@ -21,7 +21,7 @@ abstract class BaseAnnilClient {
     required PreferQuality preferBitrate,
   });
 
-  String getCoverUrl({required String albumId, int? discId});
+  Uri getCoverUrl({required String albumId, int? discId});
 }
 
 class OnlineAnnilClient implements BaseAnnilClient {
@@ -157,11 +157,11 @@ class OnlineAnnilClient implements BaseAnnilClient {
     );
   }
 
-  String getCoverUrl({required String albumId, int? discId}) {
+  Uri getCoverUrl({required String albumId, int? discId}) {
     if (discId == null) {
-      return '$url/$albumId/cover';
+      return Uri.parse('$url/$albumId/cover');
     } else {
-      return '$url/$albumId/$discId/cover';
+      return Uri.parse('$url/$albumId/$discId/cover');
     }
   }
 }
@@ -296,7 +296,7 @@ class OfflineAnnilClient implements BaseAnnilClient {
   }
 
   @override
-  String getCoverUrl({required String albumId, int? discId}) {
+  Uri getCoverUrl({required String albumId, int? discId}) {
     // placeholder, would never be called
     throw UnimplementedError();
   }

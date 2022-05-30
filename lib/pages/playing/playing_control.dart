@@ -36,10 +36,7 @@ class PlayingControl extends StatelessWidget {
                 if (item == null) {
                   return Container();
                 } else {
-                  return annil.cover(
-                    albumId: item.id.split('/')[0],
-                    tag: "playing-cover",
-                  );
+                  return annil.cover(albumId: item.id.split('/')[0]);
                 }
               }),
             ),
