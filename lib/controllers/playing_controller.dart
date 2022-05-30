@@ -20,9 +20,18 @@ class PlayingController extends GetxController {
 
     this.isPlaying.bindStream(player.playingStream);
     this.progress.bindStream(player.positionStream);
-    // FIXME: buffered stream should reflect the download progress instead of player decode buffer
-    this.buffered.bindStream(player.bufferedPositionStream);
     this.duration.bindStream(player.durationStream);
+    this.bufferedMap.listen((map) {
+      final id = this.currentPlaying.value?.id;
+      if (id != null) {
+        final buffered = map[id];
+        if (buffered != null) {
+          this.buffered.value = buffered;
+          return;
+        }
+      }
+      this.buffered.value = Duration.zero;
+    });
 
     this.loopMode.bindStream(player.loopModeStream);
     this.shuffleEnabled.bindStream(player.shuffleModeEnabledStream);
@@ -62,6 +71,7 @@ class PlayingController extends GetxController {
 
   Rx<Duration> progress = Duration.zero.obs;
   Rx<Duration> buffered = Duration.zero.obs;
+  RxMap<String, Duration> bufferedMap = RxMap<String, Duration>();
   Rxn<Duration> duration = Rxn();
   RxBool favorited = false.obs;
 

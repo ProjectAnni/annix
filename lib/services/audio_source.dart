@@ -467,6 +467,8 @@ class ModifiedLockCachingAudioSource extends StreamAudioSource {
     void updateProgress(int newPercentProgress) {
       if (newPercentProgress != percentProgress) {
         percentProgress = newPercentProgress;
+        playing.bufferedMap[id] =
+            Duration(seconds: percentProgress * duration ~/ 100);
         _downloadProgressSubject.add(percentProgress / 100);
       }
     }
