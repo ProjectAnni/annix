@@ -15,12 +15,12 @@ String getCoverCachePath(String albumId, int? discId) {
 class CoverItem {
   final String albumId;
   final int? discId;
-  final Uri uri;
+  final Uri? uri;
 
   CoverItem({
     required this.albumId,
     this.discId,
-    required this.uri,
+    this.uri,
   });
 
   String get key => '$albumId/$discId';
@@ -90,21 +90,22 @@ class CoverReverseProxy {
     final coverImagePath = getCoverCachePath(cover.albumId, cover.discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
-      // fetch remote cover
-      final getRequest = client.get(cover.uri);
-      downloadingMap[cover.uri.toString()] = getRequest;
-      final response = await getRequest;
-      if (response.statusCode == 200) {
-        // create folder
-        await file.parent.create(recursive: true);
+      if (cover.uri != null) {
+        // fetch remote cover
+        final getRequest = client.get(cover.uri!);
+        downloadingMap[cover.uri.toString()] = getRequest;
+        final response = await getRequest;
+        if (response.statusCode == 200) {
+          // create folder
+          await file.parent.create(recursive: true);
 
-        // response stream to Uint8List
-        final data = response.bodyBytes;
-        await file.writeAsBytes(data);
-        downloadingMap.remove(cover.uri.toString());
-      } else {
-        throw Exception("Failed to fetch cover image");
+          // response stream to Uint8List
+          final data = response.bodyBytes;
+          await file.writeAsBytes(data);
+          downloadingMap.remove(cover.uri.toString());
+        }
       }
+      return null;
     }
     return file;
   }
@@ -147,7 +148,7 @@ class CoverImage extends StatelessWidget {
           CoverReverseProxy()
               .url(
                 CoverItem(
-                  uri: remoteUrl!,
+                  uri: remoteUrl,
                   albumId: albumId!,
                   discId: discId,
                 ),
