@@ -110,6 +110,6 @@ class AlbumDetailScreen extends PlaylistScreen {
       );
       discId++;
     });
-    return list;
+    return ListTile.divideTiles(context: Get.context, tiles: list).toList();
   }
 }
