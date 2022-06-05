@@ -27,7 +27,7 @@ dependencies:
     git:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
 
-  just_audio: ^0.9.23
+  just_audio: ^0.9.24
   audio_service: ^0.18.4
 
   ########################## Widgets ##########################
@@ -48,11 +48,14 @@ dependencies:
   json_annotation: ^4.5.0
   sqflite: ^2.0.1
   uuid: ^3.0.5
+  flutter_rust_bridge: ^1.33.0
+  freezed_annotation: ^2.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.1.5
+  freezed: ^2.0.3+1
 
 flutter:
   uses-material-design: true

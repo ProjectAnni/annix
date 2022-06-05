@@ -5,7 +5,22 @@ Desktop / Mobile client for Project Anni.
 ## Build
 
 ```bash
+# For player
+cargo install flutter_rust_bridge_codegen
+dart pub global activate ffigen
+
+# For Android
+cargo install cargo-ndk
+rustup target add \
+    aarch64-linux-android \
+    armv7-linux-androideabi \
+    x86_64-linux-android \
+    i686-linux-android
+
+# Build models & ffi
 flutter pub run build_runner build
+
+# Build apk
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 ```
 
