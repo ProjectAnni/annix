@@ -41,11 +41,7 @@ class AnnivController extends GetxController {
     // 4. metadata
     try {
       await controller.loadDatabase();
-    } finally {
-      if (controller.client != null && Global.metadataSource == null) {
-        Global.metadataSource = AnnivMetadataSource(controller.client!);
-      }
-    }
+    } finally {}
 
     return controller;
   }
@@ -90,6 +86,10 @@ class AnnivController extends GetxController {
         }
       }
       this.client = client;
+
+      if (Global.metadataSource == null) {
+        Global.metadataSource = AnnivMetadataSource(client);
+      }
 
       await Future.wait([
         // reload annil client
