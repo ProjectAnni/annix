@@ -24,7 +24,10 @@ class ObxSettingsTileBuilder<T extends RxInterface>
 }
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  final bool automaticallyImplyLeading;
+
+  const SettingsScreen({Key? key, this.automaticallyImplyLeading = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,9 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text(I18n.SETTINGS.tr),
+        centerTitle: true,
+        automaticallyImplyLeading: automaticallyImplyLeading,
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(
