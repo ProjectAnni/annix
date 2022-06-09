@@ -9,7 +9,10 @@ import 'package:get/get.dart';
 const double kPreviouNextMove = 150.0;
 
 class BottomPlayer extends StatelessWidget {
-  BottomPlayer({Key? key}) : super(key: key);
+  final int? id;
+  final double height;
+
+  BottomPlayer({Key? key, this.id, this.height = 60}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,20 +21,20 @@ class BottomPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/playing');
+        Get.toNamed('/playing', id: id);
       },
       child: Material(
         elevation: 16,
         child: Container(
-          height: 60,
+          height: height,
           color: ElevationOverlay.colorWithOverlay(
               context.colorScheme.surface, context.colorScheme.primary, 3.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: 60,
-                width: 60,
+                height: height,
+                width: height,
                 padding: EdgeInsets.all(8.0),
                 child: Card(
                   clipBehavior: Clip.hardEdge,

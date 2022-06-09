@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
@@ -26,33 +27,45 @@ class PlayingDesktopScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Expanded(
-              flex: 1,
-              child: Card(
-                elevation: 4,
-                clipBehavior: Clip.hardEdge,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: SizedBox(
-                  // height: 200,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Obx(() {
-                      final item = playing.currentPlaying.value;
-                      if (item == null) {
-                        return Container();
-                      } else {
-                        return annil.cover(
-                            albumId: item.id.split('/')[0], tag: "playing");
-                      }
-                    }),
+              flex: 4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 256,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Card(
+                        elevation: 4,
+                        clipBehavior: Clip.hardEdge,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Obx(() {
+                          final item = playing.currentPlaying.value;
+                          if (item == null) {
+                            return Container();
+                          } else {
+                            return annil.cover(
+                                albumId: item.id.split('/')[0], tag: "playing");
+                          }
+                        }),
+                      ),
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 64),
+                      child: PlayingQueue(),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
-              flex: 1,
+              flex: 6,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Obx(
                     () => Marquee(

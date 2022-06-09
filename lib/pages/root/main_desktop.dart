@@ -1,9 +1,12 @@
+import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/pages/playing/playing_desktop.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/settings/settings.dart';
+import 'package:annix/widgets/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -75,6 +78,13 @@ class MainDesktopScreenController extends GetxController {
         curve: Curves.easeIn,
       );
 
+    if (settings.name == '/playing')
+      return GetPageRoute(
+        settings: settings,
+        page: () => PlayingDesktopScreen(),
+        transition: Transition.fadeIn,
+      );
+
     return null;
   }
 }
@@ -85,6 +95,7 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
   @override
   Widget build(BuildContext context) {
     RxBool extended = false.obs;
+    PlayingController playing = Get.find();
 
     return Scaffold(
       body: Row(
@@ -130,10 +141,38 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
           }),
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(
-            child: Navigator(
-              key: Get.nestedKey(1),
-              initialRoute: '/home',
-              onGenerateRoute: controller.onGenerateRoute,
+            child: LayoutBuilder(
+              builder: (context, constriants) => Container(
+                width: constriants.maxWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: constriants.maxHeight - 81,
+                      child: Navigator(
+                        key: Get.nestedKey(1),
+                        initialRoute: '/home',
+                        onGenerateRoute: controller.onGenerateRoute,
+                      ),
+                    ),
+                    Obx(
+                      (() => playing.currentPlaying.value != null
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Divider(thickness: 1, height: 1),
+                                BottomPlayer(
+                                  id: 1,
+                                  height: 80,
+                                )
+                              ],
+                            )
+                          : Container()),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
