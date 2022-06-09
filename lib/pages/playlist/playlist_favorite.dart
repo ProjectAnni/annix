@@ -14,8 +14,9 @@ class FavoriteScreen extends PlaylistScreen {
   FavoriteScreen({Key? key}) : super(key: key);
 
   String get title => I18n.MY_FAVORITE.tr;
-  Widget get cover =>
-      _annil.cover(albumId: _anniv.favorites.keys.first.split('/')[0]);
+  Widget get cover => _anniv.favorites.keys.isNotEmpty
+      ? _annil.cover(albumId: _anniv.favorites.keys.first.split('/')[0])
+      : _annil.cover();
 
   Widget get body => Obx(() {
         return ListView.builder(
