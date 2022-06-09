@@ -144,20 +144,22 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
             child: LayoutBuilder(
               builder: (context, constriants) => Container(
                 width: constriants.maxWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: constriants.maxHeight - 81,
-                      child: Navigator(
-                        key: Get.nestedKey(1),
-                        initialRoute: '/home',
-                        onGenerateRoute: controller.onGenerateRoute,
+                child: Obx(() {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: playing.currentPlaying.value != null
+                            ? constriants.maxHeight - 81
+                            : constriants.maxHeight,
+                        child: Navigator(
+                          key: Get.nestedKey(1),
+                          initialRoute: '/home',
+                          onGenerateRoute: controller.onGenerateRoute,
+                        ),
                       ),
-                    ),
-                    Obx(
-                      (() => playing.currentPlaying.value != null
+                      playing.currentPlaying.value != null
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -168,10 +170,10 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                                 )
                               ],
                             )
-                          : Container()),
-                    ),
-                  ],
-                ),
+                          : Container(),
+                    ],
+                  );
+                }),
               ),
             ),
           ),
