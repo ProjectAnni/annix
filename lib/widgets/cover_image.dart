@@ -90,22 +90,23 @@ class CoverReverseProxy {
     final coverImagePath = getCoverCachePath(cover.albumId, cover.discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
-      if (cover.uri != null) {
-        // fetch remote cover
-        final getRequest = client.get(cover.uri!);
-        downloadingMap[cover.uri.toString()] = getRequest;
-        final response = await getRequest;
-        if (response.statusCode == 200) {
-          // create folder
-          await file.parent.create(recursive: true);
-
-          // response stream to Uint8List
-          final data = response.bodyBytes;
-          await file.writeAsBytes(data);
-          downloadingMap.remove(cover.uri.toString());
-        }
+      if (cover.uri == null) {
+        return null;
       }
-      return null;
+
+      // fetch remote cover
+      final getRequest = client.get(cover.uri!);
+      downloadingMap[cover.uri.toString()] = getRequest;
+      final response = await getRequest;
+      if (response.statusCode == 200) {
+        // create folder
+        await file.parent.create(recursive: true);
+
+        // response stream to Uint8List
+        final data = response.bodyBytes;
+        await file.writeAsBytes(data);
+        downloadingMap.remove(cover.uri.toString());
+      }
     }
     return file;
   }
