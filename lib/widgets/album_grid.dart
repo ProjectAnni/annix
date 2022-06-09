@@ -25,7 +25,8 @@ class AlbumGrid extends StatelessWidget {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: FutureBuilder<Album?>(
-        future: Global.metadataSource!.getAlbum(albumId: albumId),
+        future: Global.metadataSource.future
+            .then((meta) => meta.getAlbum(albumId: albumId)),
         builder: (ctx, snapshot) {
           if (snapshot.hasError) {
             FLog.error(

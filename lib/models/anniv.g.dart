@@ -142,15 +142,6 @@ TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
     );
 
-Map<String, dynamic> _$TrackInfoWithAlbumToJson(TrackInfoWithAlbum instance) =>
-    <String, dynamic>{
-      'track': instance.track,
-      'title': instance.title,
-      'artist': instance.artist,
-      'album_title': instance.albumTitle,
-      'type': _$TrackTypeEnumMap[instance.type],
-    };
-
 PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
       id: json['id'] as String,
       name: json['name'] as String,

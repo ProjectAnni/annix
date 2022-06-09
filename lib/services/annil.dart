@@ -194,7 +194,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required int trackId,
     required PreferQuality preferBitrate,
   }) async {
-    var track = await Global.metadataSource!
+    var track = await (await Global.metadataSource.future)
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource._(
       uri: Uri.parse(
@@ -226,7 +226,7 @@ class AnnilAudioSource extends ModifiedLockCachingAudioSource {
     required int discId,
     required int trackId,
   }) async {
-    var track = await Global.metadataSource!
+    var track = await (await Global.metadataSource.future)
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AudioSource.uri(
       Uri.file(getAudioCachePath(albumId, discId, trackId)),

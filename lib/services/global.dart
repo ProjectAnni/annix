@@ -1,13 +1,17 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/metadata/metadata_source.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class Global {
   static late SharedPreferences preferences;
 
-  static MetadataSource? metadataSource;
+  static Completer<MetadataSource> metadataSource = Completer();
 
   static late String storageRoot;
 
@@ -16,6 +20,13 @@ class Global {
 
     if (Platform.isIOS) {
       storageRoot = (await getApplicationDocumentsDirectory()).path;
+    } else if (Platform.isLinux || Platform.isWindows || Platform.isWindows) {
+      storageRoot =
+          p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
+
+      // sqflite on desktop
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
     } else {
       storageRoot = (await getExternalStorageDirectory())!.path;
     }

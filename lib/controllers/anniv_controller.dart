@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -87,8 +88,8 @@ class AnnivController extends GetxController {
       }
       this.client = client;
 
-      if (Global.metadataSource == null) {
-        Global.metadataSource = AnnivMetadataSource(client);
+      if (!Global.metadataSource.isCompleted) {
+        Global.metadataSource.complete(AnnivMetadataSource(client));
       }
 
       await Future.wait([
@@ -162,7 +163,7 @@ class AnnivController extends GetxController {
   Future<void> addFavorite(String id) async {
     if (this.client != null) {
       final track = TrackIdentifier.fromSlashSplitedString(id);
-      final trackMetadata = await Global.metadataSource!.getTrack(
+      final trackMetadata = await (await Global.metadataSource.future).getTrack(
           albumId: track.albumId, discId: track.discId, trackId: track.trackId);
       favorites[id] = TrackInfoWithAlbum(
         track: track,
@@ -238,7 +239,11 @@ class AnnivController extends GetxController {
     if (File(_databasePath).existsSync()) {
       final db = SqliteMetadataSource(_databasePath);
       await db.prepare();
-      Global.metadataSource = db;
+
+      if (Global.metadataSource.isCompleted) {
+        Global.metadataSource = Completer();
+      }
+      Global.metadataSource.complete(db);
     }
   }
 }

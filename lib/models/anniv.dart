@@ -225,7 +225,7 @@ class RequiredTrackInfo {
   Map<String, dynamic> toJson() => _$RequiredTrackInfoToJson(this);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class TrackInfoWithAlbum {
   @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
   TrackIdentifier track;
@@ -249,7 +249,15 @@ class TrackInfoWithAlbum {
   static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
       TrackIdentifier.fromJson(json);
 
-  Map<String, dynamic> toJson() => _$TrackInfoWithAlbumToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'album_id': track.albumId,
+        'disc_id': track.discId,
+        'track_id': track.trackId,
+        'title': title,
+        'artist': artist,
+        'album_title': albumTitle,
+        'type': _$TrackTypeEnumMap[type],
+      };
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

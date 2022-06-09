@@ -57,7 +57,7 @@ class PlayingController extends GetxController {
       }
     });
     this.anniv.favorites.listen((favoriteMap) {
-      if (this.playingIndex.value != null) {
+      if (this.playingIndex.value != null && queue.isNotEmpty) {
         final currentId = queue[this.playingIndex.value!].id;
         favorited.value = favoriteMap.containsKey(currentId);
       }
@@ -160,7 +160,8 @@ class PlayingController extends GetxController {
       albumIds.add(albumId);
     }
 
-    final metadataMap = await Global.metadataSource!.getAlbums(albumIds);
+    final metadataMap =
+        await (await Global.metadataSource.future).getAlbums(albumIds);
     for (final albumId in albumIds) {
       final metadata = metadataMap[albumId];
       if (metadata != null) {
