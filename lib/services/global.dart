@@ -13,6 +13,9 @@ class Global {
 
   static Completer<MetadataSource> metadataSource = Completer();
 
+  static bool isDesktop =
+      Platform.isLinux || Platform.isWindows || Platform.isWindows;
+
   static late String storageRoot;
 
   static Future<void> init() async {
@@ -20,7 +23,7 @@ class Global {
 
     if (Platform.isIOS) {
       storageRoot = (await getApplicationDocumentsDirectory()).path;
-    } else if (Platform.isLinux || Platform.isWindows || Platform.isWindows) {
+    } else if (isDesktop) {
       storageRoot =
           p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
 
