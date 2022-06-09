@@ -7,7 +7,9 @@ Desktop / Mobile client for Project Anni.
 ```bash
 # For player
 cargo install flutter_rust_bridge_codegen
-dart pub global activate ffigen
+# https://github.com/fzyzcjy/flutter_rust_bridge/issues/478#issuecomment-1146719017
+# Upgrade to 6.0 if possible
+dart pub global activate ffigen 5.0.1
 
 # For Android
 cargo install cargo-ndk
@@ -18,7 +20,7 @@ rustup target add \
     i686-linux-android
 
 # Build models & ffi
-flutter pub run build_runner build
+flutter pub run build_runner build --delete-conflicting-outputs
 
 # Build apk
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate

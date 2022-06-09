@@ -31,8 +31,7 @@ Future<void> main() async {
 
   FLog.getDefaultConfigurations()..isDevelopmentDebuggingEnabled = true;
 
-  await Global.init();
-  await CoverReverseProxy().setup();
+  await Future.wait([Global.init(), CoverReverseProxy().setup()]);
 
   try {
     Get.put(NetworkController());
