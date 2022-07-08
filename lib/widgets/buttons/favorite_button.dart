@@ -19,11 +19,9 @@ class FavoriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => IconButton(
-        icon: Icon(
-          favorited.value
-              ? Icons.favorite_outlined
-              : Icons.favorite_border_outlined,
-        ),
+        isSelected: favorited.value,
+        icon: Icon(Icons.favorite_border_outlined),
+        selectedIcon: Icon(Icons.favorite_outlined),
         onPressed: () async {
           this.anniv.toggleFavorite(id);
         },

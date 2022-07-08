@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(runner LANGUAGES CXX)
 
 set(BINARY_NAME "annix")
@@ -57,6 +57,9 @@ set_target_properties(${BINARY_NAME}
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
+
+# Rust
+include(./rust.cmake)
 
 
 # === Installation ===

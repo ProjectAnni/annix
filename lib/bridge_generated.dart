@@ -64,19 +64,20 @@ class PlayerWire implements FlutterRustBridgeWireBase {
       .asFunction<void Function(WireSyncReturnStruct)>();
 
   void store_dart_post_cobject(
-    ffi.Pointer<
-            ffi.NativeFunction<
-                ffi.Uint8 Function(ffi.Int64, ffi.Pointer<ffi.Void>)>>
-        ptr,
+    DartPostCObjectFnType ptr,
   ) {
     return _store_dart_post_cobject(
-      ptr as int,
+      ptr,
     );
   }
 
   late final _store_dart_post_cobjectPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int)>>(
+      _lookup<ffi.NativeFunction<ffi.Void Function(DartPostCObjectFnType)>>(
           'store_dart_post_cobject');
-  late final _store_dart_post_cobject =
-      _store_dart_post_cobjectPtr.asFunction<void Function(int)>();
+  late final _store_dart_post_cobject = _store_dart_post_cobjectPtr
+      .asFunction<void Function(DartPostCObjectFnType)>();
 }
+
+typedef DartPostCObjectFnType = ffi.Pointer<
+    ffi.NativeFunction<ffi.Bool Function(DartPort, ffi.Pointer<ffi.Void>)>>;
+typedef DartPort = ffi.Int64;

@@ -6,10 +6,9 @@ Desktop / Mobile client for Project Anni.
 
 ```bash
 # For player
+# http://cjycode.com/flutter_rust_bridge/integrate/deps.html
 cargo install flutter_rust_bridge_codegen
-# https://github.com/fzyzcjy/flutter_rust_bridge/issues/478#issuecomment-1146719017
-# Upgrade to 6.0 if possible
-dart pub global activate ffigen 5.0.1
+dart pub global activate ffigen
 
 # For Android
 cargo install cargo-ndk
@@ -21,8 +20,14 @@ rustup target add \
 
 # Build models & ffi
 flutter pub run build_runner build --delete-conflicting-outputs
+flutter_rust_bridge_codegen \
+    -r player/src/api.rs \
+    -d lib/bridge_generated.dart \
+    -c ios/Runner/bridge_generated.h \
+    -c macos/Runner/bridge_generated.h 
 
 # Build apk
+export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 ```
 
