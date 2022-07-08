@@ -82,9 +82,8 @@ class RootScreen extends GetView<RootScreenController> {
           ),
           Container(
             alignment: Alignment.bottomCenter,
-            child: Obx((() => playing.currentPlaying.value != null
-                ? BottomPlayer()
-                : Container())),
+            child: Obx((() =>
+                playing.queue.isNotEmpty ? BottomPlayer() : Container())),
           ),
         ],
       ),
