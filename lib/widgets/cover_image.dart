@@ -45,17 +45,17 @@ class CoverReverseProxy {
           }
           final coverItem = _urlMap[path];
           if (coverItem != null) {
-            final cover = await getCoverImage(coverItem);
-            if (cover != null) {
-              request.response.statusCode = 200;
-              request.response.headers.contentType =
-                  ContentType.parse('image/jpg');
-              try {
+            try {
+              final cover = await getCoverImage(coverItem);
+              if (cover != null) {
+                request.response.statusCode = 200;
+                request.response.headers.contentType =
+                    ContentType.parse('image/jpg');
                 await request.response.addStream(cover.openRead());
-              } finally {
-                await request.response.close();
+                return;
               }
-              return;
+            } finally {
+              await request.response.close();
             }
           }
 
