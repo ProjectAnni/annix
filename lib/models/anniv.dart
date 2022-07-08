@@ -427,3 +427,27 @@ class RepoDatabaseDecsription {
   factory RepoDatabaseDecsription.fromJson(Map<String, dynamic> json) =>
       _$RepoDatabaseDecsriptionFromJson(json);
 }
+
+@JsonEnum(fieldRename: FieldRename.snake)
+enum TagType {
+  Artist,
+  Group,
+  Animation,
+  Series,
+  Project,
+  Game,
+  Organization,
+  Default,
+  Category,
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class TagInfo {
+  final String name;
+  final TagType type;
+
+  TagInfo({required this.name, required this.type});
+
+  factory TagInfo.fromJson(Map<String, dynamic> json) =>
+      _$TagInfoFromJson(json);
+}

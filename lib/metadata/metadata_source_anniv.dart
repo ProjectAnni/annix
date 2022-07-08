@@ -24,4 +24,17 @@ class AnnivMetadataSource extends MetadataSource {
 
   @override
   bool get needPersist => true;
+
+  @override
+  Future<List<String>> getAlbumsByTag(String tag) async {
+    if (_network.isOnline.value) {
+      final albums = await this.anniv.getAlbumsByTag(tag);
+      albums.forEach((album) {
+        this.persist(album.toAlbum());
+      });
+      return albums.map((e) => e.albumId).toList();
+    } else {
+      return [];
+    }
+  }
 }

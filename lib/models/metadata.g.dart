@@ -39,7 +39,7 @@ Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'edition': instance.edition,
       'catalog': instance.catalog,
       'artist': instance.artist,
-      'type': _$TrackTypeEnumMap[instance.type],
+      'type': _$TrackTypeEnumMap[instance.type]!,
       'date': instance.date.toJson(),
       'tags': instance.tags,
       'discs': instance.discs.map((e) => e.toJson()).toList(),
@@ -71,7 +71,7 @@ Map<String, dynamic> _$DiscToJson(Disc instance) => <String, dynamic>{
       'tracks': instance.tracks.map((e) => e.toJson()).toList(),
       'title': instance.title,
       'artist': instance.artist,
-      'type': _$TrackTypeEnumMap[instance.type],
+      'type': _$TrackTypeEnumMap[instance.type]!,
     };
 
 Track _$TrackFromJson(Map<String, dynamic> json) => Track(
@@ -87,5 +87,5 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'title': instance.title,
       'tags': instance.tags,
       'artist': instance.artist,
-      'type': _$TrackTypeEnumMap[instance.type],
+      'type': _$TrackTypeEnumMap[instance.type]!,
     };

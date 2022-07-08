@@ -4,6 +4,7 @@ import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
+import 'package:annix/pages/root/tags.dart';
 import 'package:annix/widgets/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,7 +42,7 @@ class RootScreenController extends GetxController {
     if (settings.name == '/albums')
       return GetPageRoute(
         settings: settings,
-        page: () => AlbumsView(),
+        page: () => TagsView(),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
       );

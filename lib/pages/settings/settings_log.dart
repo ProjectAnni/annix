@@ -92,11 +92,7 @@ class SettingsLogView extends StatelessWidget {
               },
             );
           } else {
-            return Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            );
+            return Center(child: CircularProgressIndicator(strokeWidth: 2));
           }
         },
       ),

@@ -5,8 +5,9 @@ import 'package:annix/utils/context_extension.dart';
 class BaseAppBar extends StatelessWidget {
   final Widget title;
   final List<Widget>? actions;
+  final PreferredSizeWidget? bottom;
 
-  const BaseAppBar({Key? key, required this.title, this.actions})
+  const BaseAppBar({Key? key, required this.title, this.actions, this.bottom})
       : super(key: key);
 
   @override
@@ -16,6 +17,7 @@ class BaseAppBar extends StatelessWidget {
       centerTitle: true,
       automaticallyImplyLeading: false,
       actions: actions,
+      bottom: bottom,
     );
   }
 }
@@ -23,8 +25,10 @@ class BaseAppBar extends StatelessWidget {
 class BaseSliverAppBar extends StatelessWidget {
   final Widget title;
   final List<Widget>? actions;
+  final PreferredSizeWidget? bottom;
 
-  const BaseSliverAppBar({Key? key, required this.title, this.actions})
+  const BaseSliverAppBar(
+      {Key? key, required this.title, this.actions, this.bottom})
       : super(key: key);
 
   @override
@@ -37,6 +41,7 @@ class BaseSliverAppBar extends StatelessWidget {
       centerTitle: true,
       automaticallyImplyLeading: false,
       actions: actions,
+      bottom: bottom,
     );
   }
 }

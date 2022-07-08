@@ -1,5 +1,6 @@
 import 'package:annix/models/metadata.dart';
 import 'package:annix/utils/store.dart';
+import 'package:flutter/foundation.dart';
 
 /// MetadataSource is the source of local metadata need by the whole application.
 ///
@@ -44,6 +45,9 @@ abstract class MetadataSource {
   /// Get detail of multiple albums
   Future<Map<String, Album>> getAlbumsDetail(List<String> albums);
 
+  /// Get album id by tag name
+  Future<List<String>> getAlbumsByTag(String tag);
+
   /// Private album object cache for album object reading
   static final _albumStore = AnnixStore().category('album');
 
@@ -60,7 +64,7 @@ abstract class MetadataSource {
       final album = albums[albumId]!;
       if (this.needPersist) {
         // album need persist
-        await _albumStore.set(albumId, album.toJson());
+        await this.persist(album);
       }
       return album;
     }
@@ -88,7 +92,7 @@ abstract class MetadataSource {
       for (final albumId in toFetch) {
         final album = got[albumId];
         if (album != null) {
-          await _albumStore.set(albumId, album.toJson());
+          await this.persist(album);
         }
       }
     }
@@ -104,5 +108,10 @@ abstract class MetadataSource {
   }) async {
     Album? album = await getAlbum(albumId: albumId);
     return album?.discs[discId - 1].tracks[trackId - 1];
+  }
+
+  @protected
+  Future<void> persist(Album album) async {
+    await _albumStore.set(album.albumId, album.toJson());
   }
 }

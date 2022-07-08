@@ -143,7 +143,7 @@ class _SearchScreenState extends State<SearchScreen> {
               alignment: Alignment.topCenter,
               padding: EdgeInsets.only(top: 8),
               child: isLoading
-                  ? CircularProgressIndicator()
+                  ? CircularProgressIndicator(strokeWidth: 2)
                   : Text("Search results would display here"),
             )
           : buildSearchResult(),

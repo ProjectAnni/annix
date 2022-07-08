@@ -224,7 +224,8 @@ class AnnivClient {
 
   // https://book.anni.rs/06.anniv/03.playlist.html#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
   Future<Playlist> getPlaylistDetail(String id) async {
-    final response = await _client.get('/api/playlist?id=$id');
+    final response =
+        await _client.get('/api/playlist', queryParameters: {'id': id});
     return Playlist.fromJson(response.data);
   }
 
@@ -263,5 +264,26 @@ class AnnivClient {
     await _client.download('/api/meta/db/repo.db', savePath + ".downloading");
     final file = File(savePath + ".downloading");
     await file.rename(savePath);
+  }
+
+  Future<List<TagInfo>> getTags() async {
+    final response = await _client.get('/api/meta/tags');
+    return (response.data as List<dynamic>)
+        .map((e) => TagInfo.fromJson(e))
+        .toList();
+  }
+
+  Future<Map<String, List<String>>> getTagsRelationship() async {
+    final response = await _client.get('/api/meta/tag-graph');
+    return (response.data as Map<String, dynamic>).map((key, value) => MapEntry(
+        key, (value as List<dynamic>).map((e) => e.toString()).toList()));
+  }
+
+  Future<List<AlbumInfo>> getAlbumsByTag(String tag) async {
+    final response = await _client
+        .get('/api/meta/albums/by-tag', queryParameters: {'tag': tag});
+    return (response.data as List<dynamic>)
+        .map((e) => AlbumInfo.fromJson(e))
+        .toList();
   }
 }

@@ -86,4 +86,11 @@ class SqliteMetadataSource extends MetadataSource {
 
   @override
   bool get needPersist => false;
+
+  @override
+  Future<List<String>> getAlbumsByTag(String tag) async {
+    // TODO: implement getAlbumsByTag
+    // throw UnimplementedError();
+    return [];
+  }
 }

@@ -129,7 +129,7 @@ Map<String, dynamic> _$RequiredTrackInfoToJson(RequiredTrackInfo instance) =>
     <String, dynamic>{
       'title': instance.title,
       'artist': instance.artist,
-      'type': _$TrackTypeEnumMap[instance.type],
+      'type': _$TrackTypeEnumMap[instance.type]!,
     };
 
 TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
@@ -190,3 +190,20 @@ RepoDatabaseDecsription _$RepoDatabaseDecsriptionFromJson(
     RepoDatabaseDecsription(
       lastModified: json['last_modified'] as int,
     );
+
+TagInfo _$TagInfoFromJson(Map<String, dynamic> json) => TagInfo(
+      name: json['name'] as String,
+      type: $enumDecode(_$TagTypeEnumMap, json['type']),
+    );
+
+const _$TagTypeEnumMap = {
+  TagType.Artist: 'artist',
+  TagType.Group: 'group',
+  TagType.Animation: 'animation',
+  TagType.Series: 'series',
+  TagType.Project: 'project',
+  TagType.Game: 'game',
+  TagType.Organization: 'organization',
+  TagType.Default: 'default',
+  TagType.Category: 'category',
+};

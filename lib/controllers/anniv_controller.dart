@@ -102,7 +102,9 @@ class AnnivController extends GetxController {
         // reload favorite list
         this.syncFavorite(),
         // reload playlist list
-        this.syncPlaylist()
+        this.syncPlaylist(),
+        // reload tags
+        this.syncTags(),
       ]);
     }
   }
@@ -244,6 +246,19 @@ class AnnivController extends GetxController {
         Global.metadataSource = Completer();
       }
       Global.metadataSource.complete(db);
+    }
+  }
+
+  /////////////////////////////// Tags ///////////////////////////////
+  RxMap<String, TagInfo> tags = RxMap();
+  RxMap<String, List<String>> tagsRelationship = RxMap();
+  Future<void> syncTags() async {
+    if (this.client != null) {
+      final newTags = await this.client!.getTags();
+      tags.value = Map.fromEntries(newTags.map((e) => MapEntry(e.name, e)));
+
+      final newTagsRelation = await this.client!.getTagsRelationship();
+      tagsRelationship.value = newTagsRelation;
     }
   }
 }
