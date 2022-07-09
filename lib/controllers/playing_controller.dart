@@ -8,6 +8,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:async/async.dart';
 
 class PlayingController extends GetxController {
   AudioPlayer player = AudioPlayer();
@@ -37,32 +38,31 @@ class PlayingController extends GetxController {
     this.shuffleEnabled.bindStream(player.shuffleModeEnabledStream);
     this.playingIndex.bindStream(player.currentIndexStream);
 
-    this.queue.listen((queue) {
-      final index = this.playingIndex.value;
-      if (index == null || index >= queue.length) {
-        currentPlaying.value = null;
-      } else {
-        final now = this.queue[this.playingIndex.value!];
-        currentPlaying.value = now;
-        favorited.value = this.anniv.favorites.containsKey(now.id);
-      }
-    });
-    this.playingIndex.listen((index) {
-      if (index == null || index >= this.queue.length) {
-        currentPlaying.value = null;
-      } else {
-        final now = this.queue[index];
-        currentPlaying.value = now;
-        favorited.value = this.anniv.favorites.containsKey(now.id);
-      }
-    });
-    this.anniv.favorites.listen((favoriteMap) {
-      if (this.playingIndex.value != null && queue.isNotEmpty) {
-        final currentId = queue[this.playingIndex.value!].id;
-        favorited.value = favoriteMap.containsKey(currentId);
-      }
-    });
     this.player.setAudioSource(ConcatenatingAudioSource(children: []));
+
+    currentPlaying.bindStream(StreamZip([
+      queue.stream,
+      playingIndex.stream,
+    ]).map((e) {
+      final queue = e[0] as List<MediaItem>;
+      final index = e[1] as int?;
+      if (queue.isEmpty || index == null || queue.length < index + 1) {
+        return null;
+      }
+      return queue[index];
+    }));
+
+    this.favorited.bindStream(StreamZip([
+          currentPlaying.stream,
+          anniv.favorites.stream,
+        ]).map((e) {
+          final item = e[0] as MediaItem?;
+          final favorites = e[1] as List<MediaItem>;
+          if (item == null) {
+            return false;
+          }
+          return favorites.contains(item);
+        }));
   }
 
   Rx<bool> isPlaying = false.obs;
@@ -73,7 +73,6 @@ class PlayingController extends GetxController {
   Rx<Duration> buffered = Duration.zero.obs;
   RxMap<String, Duration> bufferedMap = RxMap<String, Duration>();
   Rxn<Duration> duration = Rxn();
-  RxBool favorited = false.obs;
 
   RxMap<String, Duration> durationMap = RxMap();
 
@@ -129,6 +128,7 @@ class PlayingController extends GetxController {
   RxList<MediaItem> queue = RxList.empty(growable: true);
   Rxn<int> playingIndex = Rxn();
   Rxn<MediaItem> currentPlaying = Rxn();
+  RxBool favorited = false.obs;
 
   Future<void> setPlayingQueue(List<IndexedAudioSource> songs,
       {int? initialIndex}) async {
