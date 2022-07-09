@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:audio_service/audio_service.dart';
@@ -40,28 +41,28 @@ class PlayingController extends GetxController {
 
     this.player.setAudioSource(ConcatenatingAudioSource(children: []));
 
-    currentPlaying.bindStream(StreamZip([
-      queue.stream,
-      playingIndex.stream,
-    ]).map((e) {
-      final queue = e[0] as List<MediaItem>;
-      final index = e[1] as int?;
-      if (queue.isEmpty || index == null || queue.length < index + 1) {
-        return null;
-      }
-      return queue[index];
-    }));
+    this.currentPlaying.bindStream(StreamZip([
+          queue.stream,
+          playingIndex.stream,
+        ]).map((e) {
+          final queue = e[0] as List<MediaItem>;
+          final index = e[1] as int?;
+          if (queue.isEmpty || index == null || queue.length < index + 1) {
+            return null;
+          }
+          return queue[index];
+        }));
 
     this.favorited.bindStream(StreamZip([
           currentPlaying.stream,
           anniv.favorites.stream,
         ]).map((e) {
           final item = e[0] as MediaItem?;
-          final favorites = e[1] as List<MediaItem>;
+          final favorites = e[1] as Map<String, TrackInfoWithAlbum>;
           if (item == null) {
             return false;
           }
-          return favorites.contains(item);
+          return favorites.containsKey(item.id);
         }));
   }
 
