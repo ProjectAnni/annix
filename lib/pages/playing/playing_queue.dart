@@ -11,14 +11,14 @@ class PlayingQueue extends StatelessWidget {
 
     return Obx(
       () => ListView.builder(
-        itemCount: playing.queue.length,
+        itemCount: playing.queue.value?.length ?? 0,
         itemBuilder: (context, index) {
-          var song = playing.queue[index];
+          var song = playing.queue.value?.queue[index];
           return Obx(
             () => ListTile(
               leading: Text("${index + 1}"),
-              title: Text('${song.title}', overflow: TextOverflow.ellipsis),
-              trailing: playing.playingIndex.value == index
+              title: Text('${song?.title}', overflow: TextOverflow.ellipsis),
+              trailing: playing.queue.value?.index == index
                   ? Icon(Icons.play_arrow)
                   : null,
               minLeadingWidth: 16,

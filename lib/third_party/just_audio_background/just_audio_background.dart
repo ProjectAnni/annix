@@ -456,8 +456,8 @@ class _PlayerAudioHandler extends BaseAudioHandler
         });
 
     final PlayingController playingController = Get.find();
-    playingController.favorited.listen((favorited) {
-      isFavorited = favorited;
+    playingController.queue.listen((queue) {
+      isFavorited = queue?.isPlayingFavorited ?? false;
       _broadcastState();
     });
   }
