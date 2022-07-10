@@ -42,6 +42,14 @@ class RootScreenController extends GetxController {
     if (settings.name == '/albums')
       return GetPageRoute(
         settings: settings,
+        page: () => AlbumsView(),
+        transition: Transition.fadeIn,
+        curve: Curves.easeIn,
+      );
+
+    if (settings.name == '/tags')
+      return GetPageRoute(
+        settings: settings,
         page: () => TagsView(),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
@@ -70,7 +78,7 @@ class RootScreenController extends GetxController {
 class RootScreen extends GetView<RootScreenController> {
   @override
   Widget build(BuildContext context) {
-    PlayingController playing = Get.find();
+    final PlayingController playing = Get.find();
 
     return Scaffold(
       body: Stack(

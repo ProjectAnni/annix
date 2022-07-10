@@ -3,6 +3,7 @@ import 'package:annix/i18n/i18n.dart';
 const Map<String, String> I18N_en_US = {
   I18n.PROGRESS: "Progress",
   I18n.HOME: "Home",
+  I18n.CATEGORY: "Categories",
   I18n.ALBUMS: "Albums",
   I18n.PLAYLISTS: "Playlists",
 

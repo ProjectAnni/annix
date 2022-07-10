@@ -19,7 +19,7 @@ class TagsView extends StatelessWidget {
       child: Column(
         children: [
           BaseAppBar(
-            title: Text(I18n.ALBUMS.tr),
+            title: Text(I18n.CATEGORY.tr),
           ),
           TabBar(
             labelColor: context.textTheme.titleMedium?.color,

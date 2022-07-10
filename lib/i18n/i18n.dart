@@ -6,6 +6,7 @@ class I18n extends Translations {
   static const PROGRESS = "progress";
 
   static const HOME = "home";
+  static const CATEGORY = "category";
   static const ALBUMS = "albums";
   static const PLAYLISTS = "playlists";
 

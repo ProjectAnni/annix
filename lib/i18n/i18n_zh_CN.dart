@@ -4,6 +4,7 @@ const Map<String, String> I18N_zh_CN = {
   I18n.PROGRESS: "进度",
 
   I18n.HOME: "首页",
+  I18n.CATEGORY: "分类",
   I18n.ALBUMS: "专辑",
   I18n.PLAYLISTS: "播放列表",
 

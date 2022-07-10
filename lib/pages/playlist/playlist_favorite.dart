@@ -18,14 +18,22 @@ class FavoriteScreen extends PlaylistScreen {
       ? _annil.cover(albumId: _anniv.favorites.keys.first.split('/')[0])
       : _annil.cover();
 
+  @override
+  List<Widget> get intro => [
+        Text("${_anniv.favorites.length} songs"),
+      ];
+
   Widget get body => Obx(() {
-        return ListView.builder(
+        return ListView.separated(
           itemCount: _anniv.favorites.length,
           padding: EdgeInsets.zero,
           itemBuilder: (context, index) {
             return Obx(() {
               final favorite = _anniv.favorites.values.elementAt(index);
               return ListTile(
+                leading: Text("${index + 1}"),
+                minLeadingWidth: 16,
+                visualDensity: VisualDensity.compact,
                 title: Text(
                   favorite.title,
                   overflow: TextOverflow.ellipsis,
@@ -37,6 +45,7 @@ class FavoriteScreen extends PlaylistScreen {
               );
             });
           },
+          separatorBuilder: (context, index) => Divider(),
         );
       });
 

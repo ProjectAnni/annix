@@ -27,26 +27,29 @@ class PlaylistDetailScreen extends PlaylistScreen {
             : []),
       ];
 
-  Widget get body => ListView(
-        children: playlist.items.map(
-          (item) {
-            final track = item as PlaylistItemTrack;
-            return ListTile(
-              title:
-                  Text('${track.info.title}', overflow: TextOverflow.ellipsis),
-              subtitle: track.description != null
-                  ? ArtistText(track.description!)
-                  : null,
-              minLeadingWidth: 16,
-              enabled: _annil.isAvailable(
-                albumId: track.info.track.albumId,
-                discId: track.info.track.discId,
-                trackId: track.info.track.trackId,
-              ),
-            );
-          },
-        ).toList(),
-      );
+  Widget get body {
+    return ListView.separated(
+      itemCount: playlist.items.length,
+      itemBuilder: (context, index) {
+        final track = playlist.items[index];
+        return ListTile(
+          leading: Text("${index + 1}"),
+          minLeadingWidth: 16,
+          visualDensity: VisualDensity.compact,
+          title: Text('${track.info.title}', overflow: TextOverflow.ellipsis),
+          subtitle: track.description != null && track.description!.isNotEmpty
+              ? ArtistText(track.description!)
+              : null,
+          enabled: _annil.isAvailable(
+            albumId: track.info.track.albumId,
+            discId: track.info.track.discId,
+            trackId: track.info.track.trackId,
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => Divider(),
+    );
+  }
 
   List<TrackIdentifier> get tracks => playlist.items
       .map<TrackIdentifier?>(

@@ -2,6 +2,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/playing_controller.dart';
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
+import 'package:annix/widgets/bottom_player.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,6 +84,7 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PlayingController playing = Get.find();
     final SettingsController settings = Get.find();
 
     return Scaffold(
@@ -94,6 +96,10 @@ abstract class PlaylistScreen extends StatelessWidget {
         children: [
           _albumIntro(context),
           Expanded(child: body),
+          // bottom player
+          Obx((() => playing.currentPlaying.value != null
+              ? BottomPlayer()
+              : Container()))
         ],
       ),
       floatingActionButton: GestureDetector(
