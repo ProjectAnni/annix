@@ -33,6 +33,7 @@ class FavoriteScreen extends PlaylistScreen {
               return ListTile(
                 leading: Text("${index + 1}"),
                 minLeadingWidth: 16,
+                dense: true,
                 visualDensity: VisualDensity.compact,
                 title: Text(
                   favorite.title,
@@ -45,7 +46,7 @@ class FavoriteScreen extends PlaylistScreen {
               );
             });
           },
-          separatorBuilder: (context, index) => Divider(),
+          separatorBuilder: (context, index) => Divider(height: 8),
         );
       });
 

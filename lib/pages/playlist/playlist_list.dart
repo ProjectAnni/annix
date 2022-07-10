@@ -35,6 +35,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
         return ListTile(
           leading: Text("${index + 1}"),
           minLeadingWidth: 16,
+          dense: true,
           visualDensity: VisualDensity.compact,
           title: Text('${track.info.title}', overflow: TextOverflow.ellipsis),
           subtitle: track.description != null && track.description!.isNotEmpty
@@ -47,7 +48,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
           ),
         );
       },
-      separatorBuilder: (context, index) => Divider(),
+      separatorBuilder: (context, index) => Divider(height: 8),
     );
   }
 

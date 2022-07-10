@@ -38,9 +38,7 @@ class AlbumDetailScreen extends PlaylistScreen {
         // ),
       ];
 
-  Widget get body => ListView(
-        children: getAlbumTracks(),
-      );
+  Widget get body => getAlbumTracks();
 
   List<TrackIdentifier> get tracks {
     List<TrackIdentifier> songs = [];
@@ -69,7 +67,7 @@ class AlbumDetailScreen extends PlaylistScreen {
     return songs;
   }
 
-  List<Widget> getAlbumTracks() {
+  ListView getAlbumTracks() {
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -96,9 +94,11 @@ class AlbumDetailScreen extends PlaylistScreen {
             // TODO: indicate playing track
             return ListTile(
               leading: Text("$trackIndex"),
+              minLeadingWidth: 16,
+              dense: true,
+              visualDensity: VisualDensity.compact,
               title: Text('${track.title}', overflow: TextOverflow.ellipsis),
               subtitle: ArtistText(track.artist),
-              minLeadingWidth: 16,
               enabled: _annil.isAvailable(
                 albumId: album.albumId,
                 discId: discId,
@@ -110,6 +110,15 @@ class AlbumDetailScreen extends PlaylistScreen {
       );
       discId++;
     });
-    return ListTile.divideTiles(context: Get.context, tiles: list).toList();
+
+    return ListView.separated(
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return list[index];
+      },
+      separatorBuilder: (context, index) => Divider(
+        height: 8,
+      ),
+    );
   }
 }

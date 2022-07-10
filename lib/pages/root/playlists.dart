@@ -21,30 +21,33 @@ class PlaylistsView extends StatelessWidget {
         ];
       },
       body: Obx(
-        () => ListView(
-          children: anniv.playlists.values
-              .map(
-                (e) => ListTile(
-                  leading: Container(
-                    padding: EdgeInsets.all(4),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: annil.cover(
-                        albumId: e.cover.albumId == "" ? null : e.cover.albumId,
-                      ),
-                    ),
-                  ),
-                  title: Text(e.name),
-                  onTap: () async {
-                    final playlist =
-                        await anniv.client!.getPlaylistDetail(e.id);
-                    Get.to(
-                      () => PlaylistDetailScreen(playlist: playlist),
-                    );
-                  },
+        () => ListView.separated(
+          itemCount: anniv.playlists.length,
+          itemBuilder: (context, index) {
+            final playlistId = anniv.playlists.keys.toList()[index];
+            final playlist = anniv.playlists[playlistId]!;
+            return ListTile(
+              leading: AspectRatio(
+                aspectRatio: 1,
+                child: annil.cover(
+                  albumId: playlist.cover.albumId == ""
+                      ? null
+                      : playlist.cover.albumId,
                 ),
-              )
-              .toList(),
+              ),
+              title: Text(playlist.name),
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              onTap: () async {
+                final playlist =
+                    await anniv.client!.getPlaylistDetail(playlistId);
+                Get.to(
+                  () => PlaylistDetailScreen(playlist: playlist),
+                );
+              },
+            );
+          },
+          separatorBuilder: (context, index) => Divider(),
         ),
       ),
     );
