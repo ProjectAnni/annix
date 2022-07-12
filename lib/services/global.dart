@@ -14,7 +14,7 @@ class Global {
   static Completer<MetadataSource> metadataSource = Completer();
 
   static bool isDesktop =
-      Platform.isLinux || Platform.isWindows || Platform.isWindows;
+      Platform.isLinux || Platform.isWindows || Platform.isMacOS;
 
   static late String storageRoot;
 
@@ -24,8 +24,12 @@ class Global {
     if (Platform.isIOS) {
       storageRoot = (await getApplicationDocumentsDirectory()).path;
     } else if (isDesktop) {
-      storageRoot =
-          p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
+      if (Platform.isMacOS) {
+        storageRoot = p.join((await getLibraryDirectory()).path, 'data');
+      } else {
+        storageRoot =
+            p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
+      }
 
       // sqflite on desktop
       sqfliteFfiInit();

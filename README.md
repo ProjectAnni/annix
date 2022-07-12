@@ -24,11 +24,24 @@ flutter_rust_bridge_codegen \
     -r player/src/api.rs \
     -d lib/bridge_generated.dart \
     -c ios/Runner/bridge_generated.h \
-    -c macos/Runner/bridge_generated.h 
+    -c macos/Runner/bridge_generated.h
 
 # Build apk
 export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
+```
+
+## For macOS
+
+Because of [#294](https://github.com/ryanheise/just_audio/issues/294), `macOS` users should edit `pubspec.yaml` to:
+
+```diff
+- just_audio: ^0.9.24
++ just_audio:
++   git:
++     url: https://github.com/ryanheise/just_audio.git
++     path: just_audio
++     ref: feature/treadmill
 ```
 
 ## TODOs

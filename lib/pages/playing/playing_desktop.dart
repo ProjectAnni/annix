@@ -55,7 +55,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 64),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
                       child: PlayingQueue(),
                     ),
                   ),
