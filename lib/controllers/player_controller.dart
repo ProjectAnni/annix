@@ -82,7 +82,37 @@ class PlayerController extends GetxController {
 
   Future<void> previous() async {
     FLog.trace(text: "Seek to previous");
-    // TODO
+    if (this.queue.isNotEmpty && this.playingIndex != null) {
+      switch (this.loopMode.value) {
+        case LoopMode.off:
+          // to the next song / stop
+          if (this.playingIndex! > 0) {
+            this.playingIndex = this.playingIndex! - 1;
+            await this.play(true);
+          }
+          break;
+        case LoopMode.all:
+          // to the previous song / last song
+          this.playingIndex = (this.playingIndex! > 0
+                  ? this.playingIndex!
+                  : this.queue.length) -
+              1;
+          await this.play(true);
+          break;
+        case LoopMode.one:
+          // replay this song
+          await this.seek(Duration.zero);
+          await this.play();
+          break;
+        case LoopMode.random:
+          // to a random song
+          final rng = Random();
+          this.playingIndex = rng.nextInt(this.queue.length);
+          await this.play(true);
+          break;
+      }
+      this.refresh();
+    }
   }
 
   Future<void> next() async {
@@ -113,8 +143,8 @@ class PlayerController extends GetxController {
           await this.play(true);
           break;
       }
+      this.refresh();
     }
-    this.refresh();
   }
 
   Future<void> seek(Duration position) async {

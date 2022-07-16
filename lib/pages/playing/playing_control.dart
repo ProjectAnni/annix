@@ -42,16 +42,16 @@ class PlayingControl extends StatelessWidget {
           ),
           Column(
             children: [
-              Obx(
-                () => Marquee(
+              GetBuilder<PlayerController>(
+                builder: (player) => Marquee(
                   child: Text(
                     player.playing?.track.title ?? "",
                     style: context.textTheme.titleLarge,
                   ),
                 ),
               ),
-              Obx(
-                () => ArtistText(
+              GetBuilder<PlayerController>(
+                builder: (player) => ArtistText(
                   player.playing?.track.artist ?? "",
                   style: context.textTheme.subtitle1,
                   overflow: TextOverflow.ellipsis,
@@ -70,10 +70,11 @@ class PlayingControl extends StatelessWidget {
                   LoopModeButton(),
                 ],
               ),
-              Obx(
-                () {
+              GetBuilder<PlayerController>(
+                builder: (player) {
                   var position = player.progress.value;
-                  final total = player.durationMap[player.playing!.id]!;
+                  final total =
+                      player.durationMap[player.playing!.id] ?? Duration.zero;
 
                   return ProgressBar(
                     progress: position,

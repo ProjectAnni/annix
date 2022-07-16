@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:annix/controllers/network_controller.dart';
-import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -130,7 +129,6 @@ class AnnilController extends GetxController {
   bool get hasClient => clients.value.isNotEmpty;
 
   NetworkController _network = Get.find();
-  SettingsController _settings = Get.find();
 
   static Future<AnnilController> init() async {
     return AnnilController._(await CombinedOnlineAnnilClient.load());

@@ -78,8 +78,6 @@ class RootScreenController extends GetxController {
 class RootScreen extends GetView<RootScreenController> {
   @override
   Widget build(BuildContext context) {
-    final PlayerController player = Get.find();
-
     return Scaffold(
       body: Stack(
         children: [
@@ -90,14 +88,15 @@ class RootScreen extends GetView<RootScreenController> {
           ),
           Container(
             alignment: Alignment.bottomCenter,
-            child: Obx(
-              (() => player.playing != null ? BottomPlayer() : Container()),
+            child: GetBuilder<PlayerController>(
+              builder: (player) =>
+                  player.playing != null ? BottomPlayer() : Container(),
             ),
           ),
         ],
       ),
-      floatingActionButton: Obx(
-        () => Padding(
+      floatingActionButton: GetBuilder<PlayerController>(builder: (player) {
+        return Padding(
           padding: EdgeInsets.only(
             bottom: player.playing != null ? 56.0 : 0.0,
           ),
@@ -108,8 +107,8 @@ class RootScreen extends GetView<RootScreenController> {
             },
             isExtended: true,
           ),
-        ),
-      ),
+        );
+      }),
       bottomNavigationBar: Obx(
         () => NavigationBar(
           destinations: [
