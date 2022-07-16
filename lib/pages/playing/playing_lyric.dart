@@ -56,10 +56,8 @@ class PlayingLyric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController player = Get.find();
-
-    return Obx(
-      () => player.playing?.track.type == TrackType.Normal
+    return GetBuilder<PlayerController>(
+      builder: (player) => player.playing?.track.type == TrackType.Normal
           ? FutureBuilder<LyricLanguage?>(
               future: getLyric(player.playing!),
               builder: (context, snapshot) {
