@@ -210,8 +210,9 @@ class AnnivController extends GetxController {
   Future<void> syncFavorite() async {
     if (this.client != null) {
       final list = await this.client!.getFavoriteList();
+      // reverse favorite map here
       final map = Map.fromEntries(
-          list.map((e) => MapEntry(e.track.toSlashedString(), e)));
+          list.reversed.map((e) => MapEntry(e.track.toSlashedString(), e)));
       favorites.value = map;
       await _saveFavorites();
     }

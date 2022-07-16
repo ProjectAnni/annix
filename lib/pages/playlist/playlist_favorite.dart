@@ -24,27 +24,26 @@ class FavoriteScreen extends PlaylistScreen {
       ];
 
   Widget get body => Obx(() {
+        final favorites = _anniv.favorites.values.toList().reversed;
         return ListView.separated(
           itemCount: _anniv.favorites.length,
           padding: EdgeInsets.zero,
           itemBuilder: (context, index) {
-            return Obx(() {
-              final favorite = _anniv.favorites.values.elementAt(index);
-              return ListTile(
-                leading: Text("${index + 1}"),
-                minLeadingWidth: 16,
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                title: Text(
-                  favorite.title,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: ArtistText(
-                  favorite.artist,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              );
-            });
+            final favorite = favorites.elementAt(index);
+            return ListTile(
+              leading: Text("${index + 1}"),
+              minLeadingWidth: 16,
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              title: Text(
+                favorite.title,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: ArtistText(
+                favorite.artist,
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
           },
           separatorBuilder: (context, index) => Divider(height: 8),
         );
