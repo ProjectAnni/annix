@@ -185,7 +185,7 @@ class AnnivController extends GetxController {
 
   Future<void> removeFavorite(TrackIdentifier id) async {
     if (this.client != null) {
-      final got = favorites.remove(id);
+      final got = favorites.remove(id.toSlashedString());
       try {
         await this.client?.removeFavorite(id);
         await _saveFavorites();
