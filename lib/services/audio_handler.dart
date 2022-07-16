@@ -191,9 +191,7 @@ class LinuxAudioService extends AudioServicePlatform {
   }
 
   @override
-  Future<void> stopService(StopServiceRequest request) async {
-    await mpris.dispose();
-  }
+  Future<void> stopService(StopServiceRequest request) async {}
 
   @override
   Future<void> androidForceEnableMediaButtons(
