@@ -26,7 +26,7 @@ class RootScreenController extends GetxController {
   void changePage(int index) {
     if (currentIndex.value != index) {
       currentIndex.value = index;
-      Get.toNamed(pages[index], id: 1, preventDuplicates: true);
+      Get.toNamed(pages[index], id: 1);
     }
   }
 

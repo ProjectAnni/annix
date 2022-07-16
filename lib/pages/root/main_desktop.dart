@@ -33,7 +33,7 @@ class MainDesktopScreenController extends GetxController {
   void changePage(int index) {
     if (currentIndex.value != index) {
       currentIndex.value = index;
-      Get.toNamed(pages[index], id: 1, preventDuplicates: true);
+      Get.toNamed(pages[index], id: 1);
     }
   }
 
@@ -83,6 +83,7 @@ class MainDesktopScreenController extends GetxController {
         settings: settings,
         page: () => PlayingDesktopScreen(),
         transition: Transition.fadeIn,
+        curve: Curves.easeIn,
       );
 
     return null;

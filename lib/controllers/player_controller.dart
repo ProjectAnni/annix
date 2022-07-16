@@ -169,6 +169,7 @@ class PlayerController extends GetxController {
       final to = index % this.queue.length;
       if (to != this.playingIndex) {
         // index changed, set new audio source
+        await this.pause();
         this.playingIndex = to;
         this.refresh();
         await this.play(true);
