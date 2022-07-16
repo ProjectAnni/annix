@@ -29,7 +29,7 @@ dependencies:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
 
   audioplayers: ^1.0.1
-  audio_service: ^0.18.4
+  audio_service: ^0.18.6
 
   ########################## Widgets ##########################
   # https://github.com/suragch/audio_video_progress_bar/issues/23

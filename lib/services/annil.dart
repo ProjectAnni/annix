@@ -11,6 +11,8 @@ import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 
 class AnnilAudioSource extends Source {
+  static final Dio _client = Dio();
+
   final AnnilController annil = Get.find();
 
   AnnilAudioSource({
@@ -44,6 +46,8 @@ class AnnilAudioSource extends Source {
   final PreferQuality quality;
   final Track track;
 
+  Future<void>? preloadFuture;
+
   String get id {
     return "$albumId/$discId/$trackId";
   }
@@ -52,14 +56,30 @@ class AnnilAudioSource extends Source {
   Future<void> setOnPlayer(AudioPlayer player) async {
     final offlinePath = getAudioCachePath(albumId, discId, trackId);
     if (await File(offlinePath).exists()) {
-      final path = getAudioCachePath(albumId, discId, trackId);
-      await player.setSourceDeviceFile(path);
+      await player.setSourceDeviceFile(offlinePath);
     } else {
       // download full audio first
+      if (this.preloadFuture == null) {
+        this.preload();
+      }
+      await this.preloadFuture;
+      await player.setSourceDeviceFile(offlinePath);
+    }
+  }
+
+  void preload() {
+    this.preloadFuture = _preload();
+  }
+
+  Future<void> _preload() async {
+    final offlinePath = getAudioCachePath(albumId, discId, trackId);
+    if (!await File(offlinePath).exists()) {
       final url = annil.clients.value.getAudioUrl(
           albumId: albumId, discId: discId, trackId: trackId, quality: quality);
       if (url != null) {
-        await player.setSourceUrl(url);
+        final tmpPath = offlinePath + ".tmp";
+        await _client.download(url, tmpPath);
+        File(tmpPath).rename(offlinePath);
       } else {
         throw UnsupportedError("No available annil server found");
       }

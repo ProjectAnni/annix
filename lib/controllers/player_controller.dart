@@ -57,6 +57,9 @@ class PlayerController extends GetxController {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
         FLog.trace(text: "Start playing");
         await this.player.play(this.queue[this.playingIndex!]);
+        if (this.queue.length > this.playingIndex! + 1) {
+          this.queue[this.playingIndex! + 1].preload();
+        }
       } else {
         FLog.trace(text: "Stop playing");
         await this.player.stop();
@@ -88,6 +91,7 @@ class PlayerController extends GetxController {
           // to the next song / stop
           if (this.playingIndex! > 0) {
             this.playingIndex = this.playingIndex! - 1;
+            this.refresh();
             await this.play(true);
           }
           break;
@@ -97,6 +101,7 @@ class PlayerController extends GetxController {
                   ? this.playingIndex!
                   : this.queue.length) -
               1;
+          this.refresh();
           await this.play(true);
           break;
         case LoopMode.one:
@@ -108,10 +113,10 @@ class PlayerController extends GetxController {
           // to a random song
           final rng = Random();
           this.playingIndex = rng.nextInt(this.queue.length);
+          this.refresh();
           await this.play(true);
           break;
       }
-      this.refresh();
     }
   }
 
@@ -123,12 +128,14 @@ class PlayerController extends GetxController {
           // to the next song / stop
           if (this.playingIndex! < this.queue.length - 1) {
             this.playingIndex = this.playingIndex! + 1;
+            this.refresh();
             await this.play(true);
           }
           break;
         case LoopMode.all:
           // to the next song / first song
           this.playingIndex = (this.playingIndex! + 1) % this.queue.length;
+          this.refresh();
           await this.play(true);
           break;
         case LoopMode.one:
@@ -140,10 +147,10 @@ class PlayerController extends GetxController {
           // to a random song
           final rng = Random();
           this.playingIndex = rng.nextInt(this.queue.length);
+          this.refresh();
           await this.play(true);
           break;
       }
-      this.refresh();
     }
   }
 
