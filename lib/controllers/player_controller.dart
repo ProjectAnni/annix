@@ -130,6 +130,8 @@ class PlayerController extends GetxController {
             this.playingIndex = this.playingIndex! + 1;
             this.refresh();
             await this.play(true);
+          } else {
+            await this.player.stop();
           }
           break;
         case LoopMode.all:
