@@ -216,6 +216,7 @@ class AnnixMPRISService extends MPRISService {
       : super(
           "annix",
           identity: "Annix",
+          emitSeekedSignal: true,
           canPlay: true,
           canPause: true,
           canGoPrevious: true,

@@ -571,7 +571,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f3f131e4d7e1d72cd2af8be5a2a8a7b3d883a8de
+      resolved-ref: "2139ea70cee822cff2cbe456458f869548332c29"
       url: "https://github.com/ProjectAnni/mpris_service.git"
     source: git
     version: "0.0.1"
