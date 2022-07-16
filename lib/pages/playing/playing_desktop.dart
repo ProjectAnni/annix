@@ -92,13 +92,10 @@ class PlayingDesktopScreen extends StatelessWidget {
                   ),
                   GetBuilder<PlayerController>(
                     builder: (player) {
-                      final total = player.durationMap[player.playing!.id] ??
-                          Duration.zero;
-
                       return Obx(() {
                         return ProgressBar(
                           progress: player.progress.value,
-                          total: total,
+                          total: player.duration.value,
                           onSeek: (position) {
                             player.seek(position);
                           },

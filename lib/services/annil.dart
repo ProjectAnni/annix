@@ -46,7 +46,7 @@ class AnnilAudioSource extends Source {
   final PreferQuality quality;
   final Track track;
 
-  Future<void>? preloadFuture;
+  Future<void>? _preloadFuture;
 
   String get id {
     return "$albumId/$discId/$trackId";
@@ -59,16 +59,20 @@ class AnnilAudioSource extends Source {
       await player.setSourceDeviceFile(offlinePath);
     } else {
       // download full audio first
-      if (this.preloadFuture == null) {
+      if (this._preloadFuture == null) {
         this.preload();
       }
-      await this.preloadFuture;
+      await this._preloadFuture;
       await player.setSourceDeviceFile(offlinePath);
     }
   }
 
   void preload() {
-    this.preloadFuture = _preload();
+    if (this._preloadFuture != null) {
+      return;
+    }
+
+    this._preloadFuture = _preload();
   }
 
   Future<void> _preload() async {

@@ -72,20 +72,21 @@ class PlayingControl extends StatelessWidget {
               ),
               GetBuilder<PlayerController>(
                 builder: (player) {
-                  var position = player.progress.value;
                   final total =
                       player.durationMap[player.playing!.id] ?? Duration.zero;
 
-                  return ProgressBar(
-                    progress: position,
-                    total: total,
-                    onSeek: (position) {
-                      player.seek(position);
-                    },
-                    barHeight: 2.0,
-                    thumbRadius: 5.0,
-                    thumbCanPaintOutsideBar: false,
-                  );
+                  return Obx(() {
+                    return ProgressBar(
+                      progress: player.progress.value,
+                      total: total,
+                      onSeek: (position) {
+                        player.seek(position);
+                      },
+                      barHeight: 2.0,
+                      thumbRadius: 5.0,
+                      thumbCanPaintOutsideBar: false,
+                    );
+                  });
                 },
               ),
               Row(

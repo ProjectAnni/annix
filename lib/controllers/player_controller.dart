@@ -166,6 +166,7 @@ class PlayerController extends GetxController {
       if (to != this.playingIndex) {
         // index changed, set new audio source
         this.playingIndex = to;
+        this.refresh();
         await this.play(true);
       } else {
         // index not changed, seek to start
@@ -181,6 +182,7 @@ class PlayerController extends GetxController {
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
       {int initialIndex = 0}) async {
+    await this.player.stop();
     this.queue = songs;
     this.playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
     this.refresh();
