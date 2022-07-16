@@ -79,10 +79,12 @@ class AnnilAudioSource extends Source {
 
   Future<void> _preload() async {
     final offlinePath = getAudioCachePath(albumId, discId, trackId);
-    if (!await File(offlinePath).exists()) {
+    final file = File(offlinePath);
+    if (!await file.exists()) {
       final url = annil.clients.value.getAudioUrl(
           albumId: albumId, discId: discId, trackId: trackId, quality: quality);
       if (url != null) {
+        await file.parent.create(recursive: true);
         final tmpPath = offlinePath + ".tmp";
         final response = await _client.download(url, tmpPath);
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
