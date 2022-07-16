@@ -1,16 +1,16 @@
 import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:audio_service/audio_service.dart';
+import 'package:annix/services/annil.dart';
 import 'package:get/get.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 
 class LyricProviderNetease extends LyricProvider {
   @override
-  Future<List<LyricSearchResponse>> search(MediaItem item) async {
+  Future<List<LyricSearchResponse>> search(AnnilAudioSource item) async {
     await NeteaseMusicApi.init();
     final api = NeteaseMusicApi();
 
-    final searchResult = await api.searchSong('${item.title}');
+    final searchResult = await api.searchSong('${item.track.title}');
     if (searchResult.codeEnum != RetCode.Ok) {
       Get.snackbar('Lyric Request', searchResult.realMsg);
       return [];

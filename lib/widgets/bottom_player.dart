@@ -1,5 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -16,7 +16,7 @@ class BottomPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
+    final PlayerController player = Get.find();
     final AnnilController annil = Get.find();
 
     return GestureDetector(
@@ -41,23 +41,22 @@ class BottomPlayer extends StatelessWidget {
                   elevation: 4,
                   margin: EdgeInsets.zero,
                   child: Obx(() {
-                    final item = playing.currentPlaying.value;
+                    final item = player.playing;
                     if (item == null) {
                       return Container(
                         color: Colors.grey,
                       );
                     } else {
-                      return annil.cover(
-                          albumId: item.id.split('/')[0], tag: "playing");
+                      return annil.cover(albumId: item.albumId, tag: "playing");
                     }
                   }),
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: Obx(
-                  () => Marquee(
-                    child: Text(playing.currentPlaying.value?.title ?? ""),
+                child: GetBuilder<PlayerController>(
+                  builder: (player) => Marquee(
+                    child: Text(player.playing?.track.title ?? ""),
                   ),
                 ),
               ),

@@ -28,13 +28,7 @@ dependencies:
     git:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
 
-  just_audio: ^0.9.24
-  #just_audio:
-  #  git:
-  #    url: https://github.com/ryanheise/just_audio.git
-  #    path: just_audio
-  #    ref: feature/treadmill
-  just_audio_mpv: ^0.1.4
+  audioplayers: ^1.0.1
   audio_service: ^0.18.4
 
   ########################## Widgets ##########################

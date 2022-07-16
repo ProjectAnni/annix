@@ -1,4 +1,5 @@
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +10,7 @@ class PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
+    final PlayerController playing = Get.find();
 
     return Hero(
       tag: "play-pause-button",
@@ -18,7 +19,9 @@ class PlayPauseButton extends StatelessWidget {
           type: MaterialType.transparency,
           child: IconButton(
             icon: Icon(
-              playing.isPlaying.value ? Icons.pause : Icons.play_arrow,
+              playing.playerState.value == PlayerState.playing
+                  ? Icons.pause
+                  : Icons.play_arrow,
             ),
             iconSize: iconSize,
             onPressed: () => playing.playOrPause(),

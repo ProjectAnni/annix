@@ -1,12 +1,11 @@
-import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
+import 'package:annix/services/annil.dart';
 import 'package:annix/widgets/bottom_player.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 
 abstract class PlaylistScreen extends StatelessWidget {
   /// Page title
@@ -84,7 +83,6 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
     final SettingsController settings = Get.find();
 
     return Scaffold(
@@ -97,9 +95,10 @@ abstract class PlaylistScreen extends StatelessWidget {
           _albumIntro(context),
           Expanded(child: body),
           // bottom player
-          Obx((() => playing.currentPlaying.value != null
-              ? BottomPlayer()
-              : Container()))
+          GetBuilder<PlayerController>(
+            builder: (player) =>
+                player.playing != null ? BottomPlayer() : Container(),
+          )
         ],
       ),
       floatingActionButton: GestureDetector(
@@ -121,23 +120,20 @@ abstract class PlaylistScreen extends StatelessWidget {
   }
 
   void _playFullList(bool shuffle) async {
-    final AnnilController annil = Get.find();
     final trackList = tracks;
     if (shuffle) {
       trackList.shuffle();
     }
 
-    final PlayingController playing = Get.find();
+    final PlayerController playing = Get.find();
     await playing.setPlayingQueue(
-      await Future.wait(
-        trackList.map<Future<IndexedAudioSource>>(
-          (s) => annil.getAudio(
-            albumId: s.albumId,
-            discId: s.discId,
-            trackId: s.trackId,
-          ),
+      await Future.wait<AnnilAudioSource>(trackList.map(
+        (s) => AnnilAudioSource.from(
+          albumId: s.albumId,
+          discId: s.discId,
+          trackId: s.trackId,
         ),
-      ),
+      )),
     );
   }
 }

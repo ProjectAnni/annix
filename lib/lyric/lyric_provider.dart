@@ -1,12 +1,12 @@
 import 'package:annix/models/anniv.dart';
+import 'package:annix/services/annil.dart';
 import 'package:annix/utils/store.dart';
-import 'package:audio_service/audio_service.dart';
 
 /// [LyricProvider] is an abstract class that provides methods to search and fetch lyrics.
 ///
 /// The [search] method returns a list of handles that can be used to fetch the lyrics.
 abstract class LyricProvider {
-  Future<List<LyricSearchResponse>> search(MediaItem item);
+  Future<List<LyricSearchResponse>> search(AnnilAudioSource item);
 
   static final _store = AnnixStore().category('lyric');
   static Future<LyricLanguage?> getLocal(String id) => _store

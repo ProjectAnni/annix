@@ -1,4 +1,4 @@
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
@@ -78,7 +78,7 @@ class RootScreenController extends GetxController {
 class RootScreen extends GetView<RootScreenController> {
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
+    final PlayerController player = Get.find();
 
     return Scaffold(
       body: Stack(
@@ -90,16 +90,16 @@ class RootScreen extends GetView<RootScreenController> {
           ),
           Container(
             alignment: Alignment.bottomCenter,
-            child: Obx((() => playing.currentPlaying.value != null
-                ? BottomPlayer()
-                : Container())),
+            child: Obx(
+              (() => player.playing != null ? BottomPlayer() : Container()),
+            ),
           ),
         ],
       ),
       floatingActionButton: Obx(
         () => Padding(
           padding: EdgeInsets.only(
-            bottom: playing.currentPlaying.value != null ? 56.0 : 0.0,
+            bottom: player.playing != null ? 56.0 : 0.0,
           ),
           child: FloatingActionButton(
             child: Icon(Icons.search),

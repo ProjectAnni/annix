@@ -1,4 +1,4 @@
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,25 +7,20 @@ class PlayingQueue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PlayingController playing = Get.find();
-
-    return Obx(
-      () => ListView.builder(
-        itemCount: playing.queue.value?.length ?? 0,
+    return GetBuilder<PlayerController>(
+      builder: (player) => ListView.builder(
+        itemCount: player.queue.length,
         itemBuilder: (context, index) {
-          var song = playing.queue.value?.queue[index];
-          return Obx(
-            () => ListTile(
-              leading: Text("${index + 1}"),
-              title: Text('${song?.title}', overflow: TextOverflow.ellipsis),
-              trailing: playing.queue.value?.index == index
-                  ? Icon(Icons.play_arrow)
-                  : null,
-              minLeadingWidth: 16,
-              onTap: () async {
-                await playing.jump(index);
-              },
-            ),
+          var song = player.queue[index];
+          return ListTile(
+            leading: Text("${index + 1}"),
+            title: Text('${song.track.title}', overflow: TextOverflow.ellipsis),
+            trailing:
+                player.playingIndex == index ? Icon(Icons.play_arrow) : null,
+            minLeadingWidth: 16,
+            onTap: () async {
+              await player.jump(index);
+            },
           );
         },
       ),

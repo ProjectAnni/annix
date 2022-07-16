@@ -1,9 +1,10 @@
 import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/lyric/lyric_provider_netease.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:audio_service/audio_service.dart';
+import 'package:annix/models/metadata.dart';
+import 'package:annix/services/annil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:get/get.dart';
@@ -24,15 +25,16 @@ class PlayingLyricUI extends UINetease {
 class PlayingLyric extends StatelessWidget {
   const PlayingLyric({Key? key}) : super(key: key);
 
-  Future<LyricLanguage?> getLyric(MediaItem item) async {
+  Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
     final AnnivController anniv = Get.find();
+    final id = item.id;
 
     // 1. local cache
-    var lyric = await LyricProvider.getLocal(item.id);
+    var lyric = await LyricProvider.getLocal(id);
 
     // 2. anniv
     if (lyric == null) {
-      final lyricResult = await anniv.client!.getLyric(item.id);
+      final lyricResult = await anniv.client!.getLyric(id);
       lyric = lyricResult?.source;
     }
 
@@ -54,12 +56,12 @@ class PlayingLyric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
+    final PlayerController player = Get.find();
 
     return Obx(
-      () => playing.currentPlaying.value!.displayDescription == "normal"
+      () => player.playing?.track.type == TrackType.Normal
           ? FutureBuilder<LyricLanguage?>(
-              future: getLyric(playing.currentPlaying.value!),
+              future: getLyric(player.playing!),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   final lyric = snapshot.data;
@@ -74,7 +76,7 @@ class PlayingLyric extends StatelessWidget {
                         return LyricsReader(
                           model: model,
                           lyricUi: PlayingLyricUI(),
-                          position: playing.progress.value.inMilliseconds,
+                          position: player.progress.value.inMilliseconds,
                         );
                       });
                     } else {
@@ -92,7 +94,8 @@ class PlayingLyric extends StatelessWidget {
               },
             )
           : Center(
-              child: Text(playing.currentPlaying.value!.displayDescription!),
+              child:
+                  Text(player.playing?.track.type.toString() ?? "Unknown type"),
             ),
     );
   }

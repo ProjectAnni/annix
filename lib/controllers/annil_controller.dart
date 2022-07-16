@@ -9,7 +9,6 @@ import 'package:annix/widgets/cover_image.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 
 class CombinedOnlineAnnilClient {
   final Map<String, OnlineAnnilClient> clients;
@@ -79,27 +78,21 @@ class CombinedOnlineAnnilClient {
     );
   }
 
-  Future<IndexedAudioSource> getAudio({
+  String? getAudioUrl({
     required String albumId,
     required int discId,
     required int trackId,
+    required PreferQuality quality,
   }) {
     final list = clients.values.toList();
     list.sort((a, b) => b.priority - a.priority);
     for (final client in list) {
       if (client.albums.contains(albumId)) {
-        return AnnilAudioSource.create(
-          annil: client,
-          albumId: albumId,
-          discId: discId,
-          trackId: trackId,
-          // TODO: select quality
-          preferBitrate: PreferQuality.Medium,
-        );
+        return '${client.url}/$albumId/$discId/$trackId?auth=${client.token}&quality=${quality.toQualityString()}';
       }
     }
 
-    throw new UnsupportedError("No annil client found for album $albumId");
+    return null;
   }
 
   Widget? cover({
@@ -185,27 +178,6 @@ class AnnilController extends GetxController {
       albums.replaceRange(0, this.albums.length, newAlbums);
     }
     albums.refresh();
-  }
-
-  Future<IndexedAudioSource> getAudio({
-    required String albumId,
-    required int discId,
-    required int trackId,
-  }) {
-    if (!_network.isOnline.value ||
-        (_network.isMobile.value && !_settings.useMobileNetwork.value)) {
-      return AnnilAudioSource.local(
-        albumId: albumId,
-        discId: discId,
-        trackId: trackId,
-      );
-    } else {
-      return clients.value.getAudio(
-        albumId: albumId,
-        discId: discId,
-        trackId: trackId,
-      );
-    }
   }
 
   Widget cover({

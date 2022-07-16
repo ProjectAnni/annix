@@ -1,4 +1,4 @@
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playing/playing_desktop.dart';
 import 'package:annix/pages/root/albums.dart';
@@ -95,7 +95,6 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
   @override
   Widget build(BuildContext context) {
     RxBool extended = false.obs;
-    PlayingController playing = Get.find();
 
     return Scaffold(
       body: Row(
@@ -144,13 +143,13 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
             child: LayoutBuilder(
               builder: (context, constriants) => Container(
                 width: constriants.maxWidth,
-                child: Obx(() {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: playing.currentPlaying.value != null
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GetBuilder<PlayerController>(
+                      builder: (player) => SizedBox(
+                        height: player.playing != null
                             ? constriants.maxHeight - 81
                             : constriants.maxHeight,
                         child: Navigator(
@@ -159,7 +158,9 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                           onGenerateRoute: controller.onGenerateRoute,
                         ),
                       ),
-                      playing.currentPlaying.value != null
+                    ),
+                    GetBuilder<PlayerController>(
+                      builder: (player) => player.playing != null
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -171,9 +172,9 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                               ],
                             )
                           : Container(),
-                    ],
-                  );
-                }),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

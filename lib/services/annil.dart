@@ -1,25 +1,74 @@
 import 'dart:io';
 
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/metadata.dart';
-import 'package:annix/services/audio_source.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/cover_image.dart';
-import 'package:audio_service/audio_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 
-abstract class BaseAnnilClient {
-  Future<List<String>> getAlbums();
+class AnnilAudioSource extends Source {
+  final AnnilController annil = Get.find();
 
-  Future<AudioSource> getAudio({
+  AnnilAudioSource({
+    required this.albumId,
+    required this.discId,
+    required this.trackId,
+    required this.quality,
+    required this.track,
+  });
+
+  static Future<AnnilAudioSource> from({
     required String albumId,
     required int discId,
     required int trackId,
-    required PreferQuality preferBitrate,
-  });
+    PreferQuality quality = PreferQuality.Medium,
+  }) async {
+    final track = await (await Global.metadataSource.future)
+        .getTrack(albumId: albumId, discId: discId, trackId: trackId);
+    return AnnilAudioSource(
+      albumId: albumId,
+      discId: discId,
+      trackId: trackId,
+      quality: quality,
+      track: track!,
+    );
+  }
+
+  final String albumId;
+  final int discId;
+  final int trackId;
+  final PreferQuality quality;
+  final Track track;
+
+  String get id {
+    return "$albumId/$discId/$trackId";
+  }
+
+  @override
+  Future<void> setOnPlayer(AudioPlayer player) async {
+    final offlinePath = getAudioCachePath(albumId, discId, trackId);
+    if (await File(offlinePath).exists()) {
+      final path = getAudioCachePath(albumId, discId, trackId);
+      await player.setSourceDeviceFile(path);
+    } else {
+      // download full audio first
+      final url = annil.clients.value.getAudioUrl(
+          albumId: albumId, discId: discId, trackId: trackId, quality: quality);
+      if (url != null) {
+        await player.setSourceUrl(url);
+      } else {
+        throw UnsupportedError("No available annil server found");
+      }
+    }
+  }
+}
+
+abstract class BaseAnnilClient {
+  Future<List<String>> getAlbums();
 
   Uri getCoverUrl({required String albumId, int? discId});
 }
@@ -142,21 +191,6 @@ class OnlineAnnilClient implements BaseAnnilClient {
     return List.unmodifiable(albums);
   }
 
-  Future<AudioSource> getAudio({
-    required String albumId,
-    required int discId,
-    required int trackId,
-    required PreferQuality preferBitrate,
-  }) {
-    return AnnilAudioSource.create(
-      annil: this,
-      albumId: albumId,
-      discId: discId,
-      trackId: trackId,
-      preferBitrate: preferBitrate,
-    );
-  }
-
   Uri getCoverUrl({required String albumId, int? discId}) {
     if (discId == null) {
       return Uri.parse('$url/$albumId/cover');
@@ -170,79 +204,6 @@ String getAudioCachePath(String albumId, int discId, int trackId) {
   return p.join(Global.storageRoot, 'audio', albumId, "${discId}_$trackId");
 }
 
-class AnnilAudioSource extends ModifiedLockCachingAudioSource {
-  final String albumId;
-  final int discId;
-  final int trackId;
-
-  AnnilAudioSource._({
-    required Uri uri,
-    required this.albumId,
-    required this.discId,
-    required this.trackId,
-    required MediaItem tag,
-  }) : super(
-          uri,
-          cacheFile: File(getAudioCachePath(albumId, discId, trackId)),
-          tag: tag,
-        );
-
-  static Future<IndexedAudioSource> create({
-    required OnlineAnnilClient annil,
-    required String albumId,
-    required int discId,
-    required int trackId,
-    required PreferQuality preferBitrate,
-  }) async {
-    var track = await (await Global.metadataSource.future)
-        .getTrack(albumId: albumId, discId: discId, trackId: trackId);
-    return AnnilAudioSource._(
-      uri: Uri.parse(
-        '${annil.url}/$albumId/$discId/$trackId?auth=${annil.token}&quality=${preferBitrate.toBitrateString()}',
-      ),
-      albumId: albumId,
-      discId: discId,
-      trackId: trackId,
-      tag: MediaItem(
-        id: '$albumId/$discId/$trackId',
-        title: track?.title ?? "Unknown Title",
-        album: track?.disc.album.title ?? "Unknown Album",
-        artist: track?.artist,
-        // TODO: use disc cover
-        artUri: CoverReverseProxy().url(
-          CoverItem(
-            uri: annil.getCoverUrl(albumId: albumId),
-            albumId: albumId,
-          ),
-        ),
-        displayDescription: track?.type.toText() ?? "normal",
-        rating: Rating.newHeartRating(false),
-      ),
-    );
-  }
-
-  static Future<IndexedAudioSource> local({
-    required String albumId,
-    required int discId,
-    required int trackId,
-  }) async {
-    var track = await (await Global.metadataSource.future)
-        .getTrack(albumId: albumId, discId: discId, trackId: trackId);
-    return AudioSource.uri(
-      Uri.file(getAudioCachePath(albumId, discId, trackId)),
-      tag: MediaItem(
-        id: '$albumId/$discId/$trackId',
-        title: track?.title ?? "Unknown Title",
-        album: track?.disc.album.title ?? "Unknown Album",
-        artist: track?.artist,
-        // TODO: use disc cover
-        artUri: File(getCoverCachePath(albumId, null)).uri,
-        displayDescription: track?.type.toText() ?? "normal",
-      ),
-    );
-  }
-}
-
 enum PreferQuality {
   Low,
   Medium,
@@ -250,8 +211,8 @@ enum PreferQuality {
   Lossless,
 }
 
-extension PreferBitrateToString on PreferQuality {
-  String toBitrateString() {
+extension PreferQualityToString on PreferQuality {
+  String toQualityString() {
     switch (this) {
       case PreferQuality.Low:
         return "low";
@@ -287,17 +248,6 @@ class OfflineAnnilClient implements BaseAnnilClient {
         })
         .map((entry) => p.basename(entry.path))
         .toList();
-  }
-
-  @override
-  Future<AudioSource> getAudio({
-    required String albumId,
-    required int discId,
-    required int trackId,
-    required PreferQuality preferBitrate,
-  }) async {
-    final path = getAudioCachePath(albumId, discId, trackId);
-    return AudioSource.uri(Uri.file(path));
   }
 
   @override

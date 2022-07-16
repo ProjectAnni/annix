@@ -1,12 +1,11 @@
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 
 class LoopModeButton extends StatelessWidget {
   const LoopModeButton({Key? key}) : super(key: key);
 
-  Icon getIcon(BuildContext context, PlayingController playing) {
+  Icon getIcon(BuildContext context, PlayerController playing) {
     switch (playing.loopMode.value) {
       case LoopMode.off:
         return Icon(
@@ -17,6 +16,8 @@ class LoopModeButton extends StatelessWidget {
         return Icon(Icons.repeat);
       case LoopMode.one:
         return Icon(Icons.repeat_one);
+      case LoopMode.random:
+        return Icon(Icons.shuffle);
     }
   }
 
@@ -27,13 +28,15 @@ class LoopModeButton extends StatelessWidget {
       case LoopMode.all:
         return LoopMode.one;
       case LoopMode.one:
+        return LoopMode.random;
+      case LoopMode.random:
         return LoopMode.off;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
+    final PlayerController playing = Get.find();
 
     return Obx(
       () => IconButton(

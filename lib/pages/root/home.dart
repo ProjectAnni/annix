@@ -1,4 +1,4 @@
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist/playlist_favorite.dart';
 import 'package:annix/pages/root/base.dart';
@@ -12,7 +12,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PlayingController playing = Get.find();
+    PlayerController player = Get.find();
 
     return BaseView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
                   I18n.SHUFFLE_MODE.tr,
                   style: context.textTheme.titleSmall,
                 ),
-                onTap: () => playing.fullShuffleMode(),
+                onTap: () => player.fullShuffleMode(),
               ),
               // My favorite
               IconCard(

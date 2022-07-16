@@ -1,18 +1,19 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/annil.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FavoriteButton extends StatelessWidget {
   final AnnivController anniv = Get.find();
-  final String id;
+  final AnnilAudioSource audio;
   final RxBool favorited = false.obs;
 
-  FavoriteButton({Key? key, required this.id}) : super(key: key) {
+  FavoriteButton(this.audio, {Key? key}) : super(key: key) {
     // listen further updates
-    favorited.bindStream(
-        anniv.favorites.stream.map((favorites) => favorites.containsKey(id)));
+    favorited.bindStream(anniv.favorites.stream
+        .map((favorites) => favorites.containsKey(audio.id)));
     // initialize current status
-    favorited.value = anniv.favorites.containsKey(id);
+    favorited.value = anniv.favorites.containsKey(audio.id);
   }
 
   @override
@@ -23,7 +24,7 @@ class FavoriteButton extends StatelessWidget {
         icon: Icon(Icons.favorite_border_outlined),
         selectedIcon: Icon(Icons.favorite_outlined),
         onPressed: () async {
-          this.anniv.toggleFavorite(id);
+          this.anniv.toggleFavorite(audio.id);
         },
       ),
     );

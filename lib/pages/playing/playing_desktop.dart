@@ -1,12 +1,11 @@
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/playing_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
-import 'package:annix/widgets/buttons/shuffle_button.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +15,7 @@ class PlayingDesktopScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayingController playing = Get.find();
+    final PlayerController player = Get.find();
     final AnnilController annil = Get.find();
 
     return Scaffold(
@@ -42,12 +41,12 @@ class PlayingDesktopScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Obx(() {
-                          final item = playing.currentPlaying.value;
+                          final item = player.playing;
                           if (item == null) {
                             return Container();
                           } else {
                             return annil.cover(
-                                albumId: item.id.split('/')[0], tag: "playing");
+                                albumId: item.albumId, tag: "playing");
                           }
                         }),
                       ),
@@ -67,17 +66,17 @@ class PlayingDesktopScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Obx(
-                    () => Marquee(
+                  GetBuilder<PlayerController>(
+                    builder: (player) => Marquee(
                       child: Text(
-                        playing.currentPlaying.value?.title ?? "",
+                        player.playing?.track.title ?? "",
                         style: context.textTheme.titleLarge,
                       ),
                     ),
                   ),
-                  Obx(
-                    () => ArtistText(
-                      playing.currentPlaying.value?.artist ?? "",
+                  GetBuilder<PlayerController>(
+                    builder: (player) => ArtistText(
+                      player.playing?.track.artist ?? "",
                       style: context.textTheme.subtitle1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -85,45 +84,29 @@ class PlayingDesktopScreen extends StatelessWidget {
                   ButtonBar(
                     alignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Obx(
-                        () => FavoriteButton(
-                            id: playing.currentPlaying.value!.id),
+                      GetBuilder<PlayerController>(
+                        builder: (player) => FavoriteButton(player.playing!),
                       ),
                       LoopModeButton(),
-                      ShuffleButton(),
                     ],
                   ),
-                  Obx(
-                    () {
-                      var position = playing.progress.value;
-                      final total = playing.getDuration(
-                        playing.currentPlaying.value!.id,
-                      );
-                      if (position.compareTo(total) > 0) {
-                        // seek to next
-                        playing
-                            .pause()
-                            .then((value) => playing.next())
-                            .then((value) => playing.play());
-                        // limit progress to total
-                        position = total;
-                      }
+                  GetBuilder<PlayerController>(
+                    builder: (player) {
+                      final total = player.durationMap[player.playing!.id] ??
+                          Duration.zero;
 
-                      var buffered = playing.buffered.value;
-                      if (position.compareTo(total) > 0) {
-                        buffered = total;
-                      }
-                      return ProgressBar(
-                        progress: position,
-                        buffered: buffered,
-                        total: total,
-                        onSeek: (position) {
-                          playing.seek(position);
-                        },
-                        barHeight: 2.0,
-                        thumbRadius: 5.0,
-                        thumbCanPaintOutsideBar: false,
-                      );
+                      return Obx(() {
+                        return ProgressBar(
+                          progress: player.progress.value,
+                          total: total,
+                          onSeek: (position) {
+                            player.seek(position);
+                          },
+                          barHeight: 2.0,
+                          thumbRadius: 5.0,
+                          thumbCanPaintOutsideBar: false,
+                        );
+                      });
                     },
                   ),
                   Row(
@@ -132,13 +115,13 @@ class PlayingDesktopScreen extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.skip_previous),
                         iconSize: 32,
-                        onPressed: () => playing.previous(),
+                        onPressed: () => player.previous(),
                       ),
                       PlayPauseButton(iconSize: 48),
                       IconButton(
                         icon: Icon(Icons.skip_next),
                         iconSize: 32,
-                        onPressed: () => playing.next(),
+                        onPressed: () => player.next(),
                       ),
                     ],
                   ),
