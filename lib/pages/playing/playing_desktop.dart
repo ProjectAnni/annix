@@ -40,15 +40,17 @@ class PlayingDesktopScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Obx(() {
-                          final item = player.playing;
-                          if (item == null) {
-                            return Container();
-                          } else {
-                            return annil.cover(
-                                albumId: item.albumId, tag: "playing");
-                          }
-                        }),
+                        child: GetBuilder<PlayerController>(
+                          builder: (player) {
+                            final item = player.playing;
+                            if (item == null) {
+                              return Container();
+                            } else {
+                              return annil.cover(
+                                  albumId: item.albumId, tag: "playing");
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -90,22 +92,18 @@ class PlayingDesktopScreen extends StatelessWidget {
                       LoopModeButton(),
                     ],
                   ),
-                  GetBuilder<PlayerController>(
-                    builder: (player) {
-                      return Obx(() {
-                        return ProgressBar(
-                          progress: player.progress.value,
-                          total: player.duration.value,
-                          onSeek: (position) {
-                            player.seek(position);
-                          },
-                          barHeight: 2.0,
-                          thumbRadius: 5.0,
-                          thumbCanPaintOutsideBar: false,
-                        );
-                      });
-                    },
-                  ),
+                  Obx(() {
+                    return ProgressBar(
+                      progress: player.progress.value,
+                      total: player.duration.value,
+                      onSeek: (position) {
+                        player.seek(position);
+                      },
+                      barHeight: 2.0,
+                      thumbRadius: 5.0,
+                      thumbCanPaintOutsideBar: false,
+                    );
+                  }),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

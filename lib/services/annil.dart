@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -82,7 +83,11 @@ class AnnilAudioSource extends Source {
           albumId: albumId, discId: discId, trackId: trackId, quality: quality);
       if (url != null) {
         final tmpPath = offlinePath + ".tmp";
-        await _client.download(url, tmpPath);
+        final response = await _client.download(url, tmpPath);
+        final duration = int.parse(response.headers['x-duration-seconds']![0]);
+        PlayerController player = Get.find();
+        player.durationMap[id] =
+            Duration(seconds: duration + 1); // +1 to avoid duration exceeding
         File(tmpPath).rename(offlinePath);
       } else {
         throw UnsupportedError("No available annil server found");

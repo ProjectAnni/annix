@@ -27,7 +27,7 @@ class PlayerController extends GetxController {
   Rx<Duration> buffered = Duration.zero.obs;
   Rx<Duration> duration = Duration.zero.obs;
 
-  RxMap<String, Duration> durationMap = RxMap();
+  Map<String, Duration> durationMap = Map();
 
   // Playing queue
   List<AnnilAudioSource> queue = [];

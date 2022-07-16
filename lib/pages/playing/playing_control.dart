@@ -30,14 +30,16 @@ class PlayingControl extends StatelessWidget {
             ),
             child: AspectRatio(
               aspectRatio: 1,
-              child: Obx(() {
-                final item = player.playing;
-                if (item == null) {
-                  return Container();
-                } else {
-                  return annil.cover(albumId: item.albumId, tag: "playing");
-                }
-              }),
+              child: GetBuilder<PlayerController>(
+                builder: (player) {
+                  final item = player.playing;
+                  if (item == null) {
+                    return Container();
+                  } else {
+                    return annil.cover(albumId: item.albumId, tag: "playing");
+                  }
+                },
+              ),
             ),
           ),
           Column(
@@ -64,31 +66,24 @@ class PlayingControl extends StatelessWidget {
               ButtonBar(
                 alignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Obx(
-                    () => FavoriteButton(player.playing!),
+                  GetBuilder<PlayerController>(
+                    builder: (player) => FavoriteButton(player.playing!),
                   ),
                   LoopModeButton(),
                 ],
               ),
-              GetBuilder<PlayerController>(
-                builder: (player) {
-                  final total =
-                      player.durationMap[player.playing!.id] ?? Duration.zero;
-
-                  return Obx(() {
-                    return ProgressBar(
-                      progress: player.progress.value,
-                      total: total,
-                      onSeek: (position) {
-                        player.seek(position);
-                      },
-                      barHeight: 2.0,
-                      thumbRadius: 5.0,
-                      thumbCanPaintOutsideBar: false,
-                    );
-                  });
-                },
-              ),
+              Obx(() {
+                return ProgressBar(
+                  progress: player.progress.value,
+                  total: player.duration.value,
+                  onSeek: (position) {
+                    player.seek(position);
+                  },
+                  barHeight: 2.0,
+                  thumbRadius: 5.0,
+                  thumbCanPaintOutsideBar: false,
+                );
+              }),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
