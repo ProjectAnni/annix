@@ -162,12 +162,11 @@ class AnnivController extends GetxController {
         .setString("anniv_favorites", jsonEncode(favorites.values.toList()));
   }
 
-  Future<void> addFavorite(String id) async {
+  Future<void> addFavorite(TrackIdentifier track) async {
     if (this.client != null) {
-      final track = TrackIdentifier.fromSlashSplitedString(id);
       final trackMetadata = await (await Global.metadataSource.future).getTrack(
           albumId: track.albumId, discId: track.discId, trackId: track.trackId);
-      favorites[id] = TrackInfoWithAlbum(
+      favorites[track.toSlashedString()] = TrackInfoWithAlbum(
         track: track,
         title: trackMetadata!.title,
         artist: trackMetadata.artist,
@@ -175,16 +174,16 @@ class AnnivController extends GetxController {
         type: trackMetadata.type,
       );
       try {
-        await this.client?.addFavorite(id);
+        await this.client?.addFavorite(track);
         await _saveFavorites();
       } catch (e) {
-        favorites.remove(id);
-        rethrow;
+        favorites.remove(track.toSlashedString());
+        throw e;
       }
     }
   }
 
-  Future<void> removeFavorite(String id) async {
+  Future<void> removeFavorite(TrackIdentifier id) async {
     if (this.client != null) {
       final got = favorites.remove(id);
       try {
@@ -192,15 +191,15 @@ class AnnivController extends GetxController {
         await _saveFavorites();
       } catch (e) {
         if (got != null) {
-          favorites[id] = got;
+          favorites[id.toSlashedString()] = got;
         }
         rethrow;
       }
     }
   }
 
-  Future<void> toggleFavorite(String id) async {
-    if (favorites.containsKey(id)) {
+  Future<void> toggleFavorite(TrackIdentifier id) async {
+    if (favorites.containsKey(id.toSlashedString())) {
       await this.removeFavorite(id);
     } else {
       await this.addFavorite(id);

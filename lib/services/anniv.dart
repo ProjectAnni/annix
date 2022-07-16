@@ -195,8 +195,7 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E6%B7%BB%E5%8A%A0%E5%8D%95%E6%9B%B2
-  Future<void> addFavorite(String id) async {
-    TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
+  Future<void> addFavorite(TrackIdentifier track) async {
     await _client.put('/api/favorite/music', data: {
       'album_id': track.albumId,
       'disc_id': track.discId,
@@ -204,8 +203,7 @@ class AnnivClient {
     });
   }
 
-  Future<void> removeFavorite(String id) async {
-    TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
+  Future<void> removeFavorite(TrackIdentifier track) async {
     await _client.delete('/api/favorite/music', data: {
       'album_id': track.albumId,
       'disc_id': track.discId,

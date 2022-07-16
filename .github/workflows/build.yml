@@ -21,7 +21,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'beta'
+          channel: master
           cache: true
           cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
       

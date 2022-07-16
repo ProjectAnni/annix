@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -18,7 +17,6 @@ enum LoopMode {
 
 class PlayerController extends GetxController {
   final AudioPlayer player = AudioPlayer();
-  final AnnivController anniv = Get.find();
 
   Rx<PlayerState> playerState = PlayerState.stopped.obs;
   Rx<LoopMode> loopMode = LoopMode.off.obs;
@@ -62,7 +60,7 @@ class PlayerController extends GetxController {
         }
       } else {
         FLog.trace(text: "Stop playing");
-        await this.player.stop();
+        await this.stop();
       }
     } else {
       FLog.trace(text: "Resume playing");
@@ -81,6 +79,10 @@ class PlayerController extends GetxController {
     } else {
       await this.play();
     }
+  }
+
+  Future<void> stop() {
+    return this.player.stop();
   }
 
   Future<void> previous() async {
@@ -131,7 +133,7 @@ class PlayerController extends GetxController {
             this.refresh();
             await this.play(true);
           } else {
-            await this.player.stop();
+            await this.stop();
           }
           break;
         case LoopMode.all:
@@ -184,7 +186,7 @@ class PlayerController extends GetxController {
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
       {int initialIndex = 0}) async {
-    await this.player.stop();
+    await this.stop();
     this.queue = songs;
     this.playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
     this.refresh();

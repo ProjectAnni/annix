@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -94,6 +95,9 @@ class AnnilAudioSource extends Source {
       }
     }
   }
+
+  TrackIdentifier get identifier =>
+      TrackIdentifier(albumId: albumId, discId: discId, trackId: trackId);
 }
 
 abstract class BaseAnnilClient {
