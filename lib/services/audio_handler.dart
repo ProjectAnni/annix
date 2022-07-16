@@ -1,17 +1,29 @@
 import 'dart:io';
 
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
+import 'package:mpris_service/mpris_service.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
   final PlayerController player = Get.find();
+  final AnnilController annil = Get.find();
   final AnnivController anniv = Get.find();
 
   static Future<void> init() async {
-    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
+    if (Platform.isAndroid ||
+        Platform.isIOS ||
+        Platform.isMacOS ||
+        Platform.isLinux) {
+      if (Platform.isLinux) {
+        AudioServicePlatform.instance = LinuxAudioService();
+      }
+
       await AudioService.init(
         builder: () => AnnixAudioHandler._(),
         config: AudioServiceConfig(
@@ -120,7 +132,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
             PlayerState.completed: AudioProcessingState.completed,
           }[this.player.playerState.value]!,
           playing: isPlaying,
-          // updatePosition: this.player.progress.value,
+          updatePosition: this.player.progress.value,
           queueIndex: this.player.playingIndex,
         ));
 
@@ -131,7 +143,109 @@ class AnnixAudioHandler extends BaseAudioHandler {
             title: playing.track.title,
             album: playing.track.disc.album.title,
             artist: playing.track.artist,
+            duration: player.duration.value,
+            artUri: CoverReverseProxy().url(
+              CoverItem(
+                uri: annil.clients.value.getCoverUrl(albumId: playing.albumId),
+                albumId: playing.albumId,
+                // discId: discId,
+              ),
+            ),
           ));
     }
+  }
+}
+
+class LinuxAudioService extends AudioServicePlatform {
+  final AnnixMPRISService mpris = AnnixMPRISService();
+  final PlayerController player = Get.find();
+
+  LinuxAudioService() {
+    this.player.progress.listen((position) {
+      mpris.position = position;
+    });
+  }
+
+  @override
+  Future<void> configure(ConfigureRequest request) async {}
+
+  @override
+  Future<void> setState(SetStateRequest request) async {
+    mpris.playingStatus =
+        request.state.playing ? PlaybackStatus.playing : PlaybackStatus.stopped;
+  }
+
+  @override
+  Future<void> setQueue(SetQueueRequest request) async {}
+
+  @override
+  Future<void> setMediaItem(SetMediaItemRequest request) async {
+    mpris.metadata = Metadata(
+      trackId: "/${request.mediaItem.id.replaceAll('-', '')}",
+      trackTitle: request.mediaItem.title,
+      trackArtist: [request.mediaItem.artist!],
+      artUrl: request.mediaItem.artUri.toString(),
+      trackLength: request.mediaItem.duration,
+      albumName: request.mediaItem.album!,
+    );
+  }
+
+  @override
+  Future<void> stopService(StopServiceRequest request) async {
+    await mpris.dispose();
+  }
+
+  @override
+  Future<void> androidForceEnableMediaButtons(
+      AndroidForceEnableMediaButtonsRequest request) async {}
+
+  @override
+  Future<void> notifyChildrenChanged(
+      NotifyChildrenChangedRequest request) async {}
+
+  @override
+  Future<void> setAndroidPlaybackInfo(
+      SetAndroidPlaybackInfoRequest request) async {}
+
+  @override
+  void setHandlerCallbacks(AudioHandlerCallbacks callbacks) {}
+}
+
+class AnnixMPRISService extends MPRISService {
+  final PlayerController player = Get.find();
+
+  AnnixMPRISService()
+      : super(
+          "annix",
+          identity: "Annix",
+          canPlay: true,
+          canPause: true,
+          canGoPrevious: true,
+          canGoNext: true,
+        );
+
+  @override
+  Future<void> doPlayPause() async {
+    await player.playOrPause();
+  }
+
+  @override
+  Future<void> doPlay() async {
+    await player.play();
+  }
+
+  @override
+  Future<void> doPause() async {
+    await player.pause();
+  }
+
+  @override
+  Future<void> doPrevious() async {
+    await player.previous();
+  }
+
+  @override
+  Future<void> doNext() async {
+    await player.next();
   }
 }

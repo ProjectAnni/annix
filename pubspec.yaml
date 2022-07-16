@@ -16,7 +16,7 @@ dependencies:
       url: https://github.com/ProjectAnni/Flogs
   get: ^4.6.5
   shared_preferences: ^2.0.15
-  connectivity_plus: ^2.3.0
+  connectivity_plus: ^2.3.5
 
   dio: ^4.0.6
   dio_cookie_manager: ^2.0.0
@@ -30,6 +30,10 @@ dependencies:
 
   audioplayers: ^1.0.1
   audio_service: ^0.18.6
+  audio_service_platform_interface: ^0.1.0
+  mpris_service:
+    git:
+      url: https://github.com/ProjectAnni/mpris_service.git
 
   ########################## Widgets ##########################
   # https://github.com/suragch/audio_video_progress_bar/issues/23
@@ -44,7 +48,7 @@ dependencies:
   settings_ui: ^2.0.2
   auto_size_text: ^3.0.0
 
-  toml: ^0.12.0
+  toml: ^0.13.1
   json_serializable: ^6.2.0
   json_annotation: ^4.5.0
   sqflite: ^2.0.1

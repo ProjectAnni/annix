@@ -94,6 +94,17 @@ class CombinedOnlineAnnilClient {
     return null;
   }
 
+  Uri? getCoverUrl({required String albumId, int? discId}) {
+    final list = clients.values.toList();
+    list.sort((a, b) => b.priority - a.priority);
+    for (final client in list) {
+      if (client.albums.contains(albumId)) {
+        return client.getCoverUrl(albumId: albumId, discId: discId);
+      }
+    }
+    return null;
+  }
+
   Widget? cover({
     String? albumId,
     int? discId,
@@ -105,21 +116,19 @@ class CombinedOnlineAnnilClient {
       return null;
     }
 
-    final list = clients.values.toList();
-    list.sort((a, b) => b.priority - a.priority);
-    for (final client in list) {
-      if (client.albums.contains(albumId)) {
-        return CoverImage(
-          albumId: albumId,
-          discId: discId,
-          remoteUrl: client.getCoverUrl(albumId: albumId, discId: discId),
-          fit: fit ?? BoxFit.scaleDown,
-          filterQuality: FilterQuality.medium,
-          tag: tag,
-        );
-      }
+    final url = this.getCoverUrl(albumId: albumId, discId: discId);
+    if (url == null) {
+      return null;
     }
-    return null;
+
+    return CoverImage(
+      albumId: albumId,
+      discId: discId,
+      remoteUrl: url,
+      fit: fit ?? BoxFit.scaleDown,
+      filterQuality: FilterQuality.medium,
+      tag: tag,
+    );
   }
 }
 

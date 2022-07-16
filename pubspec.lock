@@ -44,7 +44,7 @@ packages:
     source: hosted
     version: "0.18.6"
   audio_service_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: audio_service_platform_interface
       url: "https://pub.dartlang.org"
@@ -303,7 +303,7 @@ packages:
       name: dbus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.6"
   dio:
     dependency: "direct main"
     description:
@@ -368,7 +368,7 @@ packages:
       name: ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "2.0.1"
   file:
     dependency: transitive
     description:
@@ -566,6 +566,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  mpris_service:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: e4c73dd265b0628a8b37b147bbda5ad1f1f8744d
+      url: "https://github.com/ProjectAnni/mpris_service.git"
+    source: git
+    version: "0.0.1"
   netease_music_api:
     dependency: "direct main"
     description:
@@ -644,7 +653,7 @@ packages:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.7"
+    version: "2.1.0"
   pedantic:
     dependency: transitive
     description:
@@ -658,7 +667,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.0"
+    version: "5.0.0"
   platform:
     dependency: transitive
     description:
@@ -715,13 +724,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.0"
   rxdart:
     dependency: transitive
     description:
@@ -936,7 +938,7 @@ packages:
       name: toml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.0"
+    version: "0.13.1"
   typed_data:
     dependency: transitive
     description:
@@ -978,7 +980,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.1"
+    version: "2.7.0"
   xdg_directories:
     dependency: transitive
     description:
@@ -992,7 +994,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.3.1"
+    version: "6.1.0"
   xxtea:
     dependency: transitive
     description:
@@ -1008,5 +1010,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.17.0 <3.0.0"
+  dart: ">=2.18.0-265.0.dev <3.0.0"
   flutter: ">=3.0.0"
