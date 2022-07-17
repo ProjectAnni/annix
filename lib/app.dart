@@ -8,6 +8,7 @@ import 'package:annix/services/global.dart';
 import 'package:annix/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
 
 class AnnixApp extends StatelessWidget {
   const AnnixApp({Key? key}) : super(key: key);
@@ -50,6 +51,16 @@ class AnnixApp extends StatelessWidget {
           page: () => SettingsScreen(),
         ),
       ],
+      builder: (context, child) => ResponsiveWrapper.builder(
+        child,
+        defaultScale: true,
+        breakpoints: [
+          ResponsiveBreakpoint.resize(480, name: MOBILE),
+          ResponsiveBreakpoint.autoScale(800, name: TABLET),
+          ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
+          ResponsiveBreakpoint.autoScale(2460, name: '4K'),
+        ],
+      ),
     );
   }
 }
