@@ -19,9 +19,8 @@ class PlayingDesktopScreen extends StatelessWidget {
     final AnnilController annil = Get.find();
 
     return Scaffold(
-      appBar: AppBar(),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.all(24),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
