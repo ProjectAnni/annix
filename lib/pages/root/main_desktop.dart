@@ -5,6 +5,7 @@ import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
+import 'package:annix/pages/root/tags.dart';
 import 'package:annix/pages/settings/settings.dart';
 import 'package:annix/widgets/bottom_player.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class MainDesktopScreenController extends GetxController {
 
   final pages = <String>[
     '/home',
-    '/albums',
+    '/tags',
     '/playlists',
     '/server',
     '/settings'
@@ -50,6 +51,14 @@ class MainDesktopScreenController extends GetxController {
       return GetPageRoute(
         settings: settings,
         page: () => AlbumsView(),
+        transition: Transition.fadeIn,
+        curve: Curves.easeIn,
+      );
+
+    if (settings.name == '/tags')
+      return GetPageRoute(
+        settings: settings,
+        page: () => TagsView(),
         transition: Transition.fadeIn,
         curve: Curves.easeIn,
       );

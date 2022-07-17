@@ -1,7 +1,6 @@
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class TagScreen extends StatelessWidget {
   final String name;
@@ -31,7 +30,6 @@ class TagScreen extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               Navigator.of(context).pop();
-              Get.snackbar('Error', "Error loading albums");
               return Center(child: Text('Error'));
             } else {
               return Center(

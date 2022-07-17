@@ -57,9 +57,10 @@ class CoverReverseProxy {
             } finally {
               await request.response.close();
             }
+          } else {
+            request.response.statusCode = 404;
           }
 
-          request.response.statusCode = 404;
           request.response.close();
           return;
         }
