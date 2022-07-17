@@ -6,7 +6,6 @@ import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:mpris_service/mpris_service.dart';
 
@@ -216,6 +215,7 @@ class AnnixMPRISService extends MPRISService {
           canPause: true,
           canGoPrevious: true,
           canGoNext: true,
+          canSeek: true,
         );
 
   @override
@@ -241,5 +241,15 @@ class AnnixMPRISService extends MPRISService {
   @override
   Future<void> onNext() async {
     await player.next();
+  }
+
+  @override
+  Future<void> onSeek(int offset) async {
+    await player.seek(player.progress.value + Duration(microseconds: offset));
+  }
+
+  @override
+  Future<void> onSetPosition(String trackId, int position) async {
+    await player.seek(Duration(microseconds: position));
   }
 }
