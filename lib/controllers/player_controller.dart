@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
@@ -15,10 +16,29 @@ enum LoopMode {
   random,
 }
 
+enum PlayerStatus {
+  buffering,
+  playing,
+  paused,
+  stopped;
+
+  factory PlayerStatus.fromPlayingStatus(PlayerState state) {
+    switch (state) {
+      case PlayerState.playing:
+        return PlayerStatus.playing;
+      case PlayerState.paused:
+        return PlayerStatus.paused;
+      case PlayerState.stopped:
+      case PlayerState.completed:
+        return PlayerStatus.stopped;
+    }
+  }
+}
+
 class PlayerController extends GetxController {
   final AudioPlayer player = AudioPlayer();
 
-  Rx<PlayerState> playerState = PlayerState.stopped.obs;
+  Rx<PlayerStatus> playerStatus = PlayerStatus.stopped.obs;
   Rx<LoopMode> loopMode = LoopMode.off.obs;
 
   Rx<Duration> progress = Duration.zero.obs;
@@ -37,7 +57,8 @@ class PlayerController extends GetxController {
   onInit() {
     super.onInit();
 
-    this.playerState.bindStream(player.onPlayerStateChanged);
+    this.playerStatus.bindStream(player.onPlayerStateChanged
+        .map((s) => PlayerStatus.fromPlayingStatus(s)));
     this.progress.bindStream(player.onPositionChanged);
     this.duration.bindStream(player.onDurationChanged.map((duration) {
       if (duration > Duration.zero) {
@@ -50,12 +71,27 @@ class PlayerController extends GetxController {
     this.player.onPlayerComplete.listen((event) => this.next());
   }
 
-  Future<void> play([bool reload = false]) async {
+  Future<void> play({bool reload = false}) async {
     if (reload) {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
         FLog.trace(text: "Start playing");
+
         await this.stop();
-        await this.player.play(this.queue[this.playingIndex!]);
+        final stopStatus = Completer();
+        late StreamSubscription<PlayerStatus> listener;
+        listener = playerStatus.listen((status) {
+          if (status == PlayerStatus.stopped && !stopStatus.isCompleted) {
+            stopStatus.complete();
+            listener.cancel();
+          }
+        });
+        await stopStatus.future;
+
+        final source = this.queue[this.playingIndex!];
+        if (!source.preloaded) {
+          this.playerStatus.value = PlayerStatus.buffering;
+        }
+        await this.player.play(source);
         if (this.queue.length > this.playingIndex! + 1) {
           this.queue[this.playingIndex! + 1].preload();
         }
@@ -75,7 +111,7 @@ class PlayerController extends GetxController {
   }
 
   Future<void> playOrPause() async {
-    if (this.playerState.value == PlayerState.playing) {
+    if (this.playerStatus.value == PlayerStatus.playing) {
       await this.pause();
     } else {
       await this.play();
@@ -96,7 +132,7 @@ class PlayerController extends GetxController {
           if (this.playingIndex! > 0) {
             this.playingIndex = this.playingIndex! - 1;
             this.refresh();
-            await this.play(true);
+            await this.play(reload: true);
           }
           break;
         case LoopMode.all:
@@ -106,7 +142,7 @@ class PlayerController extends GetxController {
                   : this.queue.length) -
               1;
           this.refresh();
-          await this.play(true);
+          await this.play(reload: true);
           break;
         case LoopMode.one:
           // replay this song
@@ -118,7 +154,7 @@ class PlayerController extends GetxController {
           final rng = Random();
           this.playingIndex = rng.nextInt(this.queue.length);
           this.refresh();
-          await this.play(true);
+          await this.play(reload: true);
           break;
       }
     }
@@ -133,7 +169,7 @@ class PlayerController extends GetxController {
           if (this.playingIndex! < this.queue.length - 1) {
             this.playingIndex = this.playingIndex! + 1;
             this.refresh();
-            await this.play(true);
+            await this.play(reload: true);
           } else {
             await this.stop();
           }
@@ -142,7 +178,7 @@ class PlayerController extends GetxController {
           // to the next song / first song
           this.playingIndex = (this.playingIndex! + 1) % this.queue.length;
           this.refresh();
-          await this.play(true);
+          await this.play(reload: true);
           break;
         case LoopMode.one:
           // replay this song
@@ -154,7 +190,7 @@ class PlayerController extends GetxController {
           final rng = Random();
           this.playingIndex = rng.nextInt(this.queue.length);
           this.refresh();
-          await this.play(true);
+          await this.play(reload: true);
           break;
       }
     }
@@ -173,7 +209,7 @@ class PlayerController extends GetxController {
         // index changed, set new audio source
         this.playingIndex = to;
         this.refresh();
-        await this.play(true);
+        await this.play(reload: true);
       } else {
         // index not changed, seek to start
         await this.seek(Duration.zero);
@@ -188,16 +224,19 @@ class PlayerController extends GetxController {
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
       {int initialIndex = 0}) async {
-    await this.stop();
     this.queue = songs;
     this.playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
     this.refresh();
-    await this.play(true);
+    await this.play(reload: true);
   }
 
   Future<void> fullShuffleMode({int count = 30}) async {
     AnnilController annil = Get.find();
     final albums = annil.albums.toList();
+    if (albums.isEmpty) {
+      return;
+    }
+
     final rand = Random();
 
     final songs = <Future<AnnilAudioSource>>[];

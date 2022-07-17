@@ -47,7 +47,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   AnnixAudioHandler._() {
     this.player.addListener(() => this._updatePlaybackState());
-    this.player.playerState.listen((_) => this._updatePlaybackState());
+    this.player.playerStatus.listen((_) => this._updatePlaybackState());
     this.player.progress.listen((_) => this._updatePlaybackState());
     this.anniv.favorites.listen((_) => this._updatePlaybackState());
   }
@@ -87,7 +87,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
   }
 
   void _updatePlaybackState() {
-    final isPlaying = this.player.playerState.value == PlayerState.playing;
+    final isPlaying = this.player.playerStatus.value == PlayerStatus.playing;
     final hasPrevious = (this.player.playingIndex ?? 0) > 0;
     final hasNext = (this.player.playingIndex ?? this.player.queue.length) <
         this.player.queue.length - 1;
@@ -126,11 +126,11 @@ class AnnixAudioHandler extends BaseAudioHandler {
             MediaAction.seekBackward,
           },
           processingState: {
-            PlayerState.playing: AudioProcessingState.ready,
-            PlayerState.stopped: AudioProcessingState.idle,
-            PlayerState.paused: AudioProcessingState.ready,
-            PlayerState.completed: AudioProcessingState.completed,
-          }[this.player.playerState.value]!,
+            PlayerStatus.playing: AudioProcessingState.ready,
+            PlayerStatus.stopped: AudioProcessingState.idle,
+            PlayerStatus.paused: AudioProcessingState.ready,
+            PlayerStatus.buffering: AudioProcessingState.buffering,
+          }[this.player.playerStatus.value]!,
           playing: isPlaying,
           updatePosition: this.player.progress.value,
           queueIndex: this.player.playingIndex,

@@ -77,6 +77,8 @@ class AnnilAudioSource extends Source {
     this._preloadFuture = _preload();
   }
 
+  bool preloaded = false;
+
   Future<void> _preload() async {
     final offlinePath = getAudioCachePath(albumId, discId, trackId);
     final file = File(offlinePath);
@@ -96,6 +98,7 @@ class AnnilAudioSource extends Source {
         throw UnsupportedError("No available annil server found");
       }
     }
+    preloaded = true;
   }
 
   TrackIdentifier get identifier =>
