@@ -1,6 +1,8 @@
+import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TagScreen extends StatelessWidget {
   final String name;
@@ -9,13 +11,23 @@ class TagScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AnnilController annil = Get.find();
+
     return Scaffold(
       appBar: AppBar(title: Text("$name")),
       body: FutureBuilder<List<String>>(
           future: Global.metadataSource.future
-              .then((metadata) => metadata.getAlbumsByTag(name)),
+              .then((metadata) => metadata.getAlbumsByTag(name))
+              .then((albums) => albums
+                ..removeWhere((album) => !annil.albums.contains(album))),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text("No available album."),
+                );
+              }
+
               return GridView.builder(
                 padding: EdgeInsets.all(4.0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
