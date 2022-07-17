@@ -1,3 +1,4 @@
+import 'package:annix/metadata/metadata_types.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter/foundation.dart';
@@ -44,6 +45,9 @@ abstract class MetadataSource {
 
   /// Get detail of multiple albums
   Future<Map<String, Album>> getAlbumsDetail(List<String> albums);
+
+  /// Get info of all tags
+  Future<Map<String, TagEntry>> getTags();
 
   /// Get album id by tag name
   Future<List<String>> getAlbumsByTag(String tag);

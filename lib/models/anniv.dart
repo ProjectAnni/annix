@@ -438,7 +438,31 @@ enum TagType {
   Game,
   Organization,
   Default,
-  Category,
+  Category;
+
+  factory TagType.fromString(String type) {
+    switch (type) {
+      case 'artist':
+        return TagType.Artist;
+      case 'group':
+        return TagType.Group;
+      case 'animation':
+        return TagType.Animation;
+      case 'series':
+        return TagType.Series;
+      case 'project':
+        return TagType.Project;
+      case 'game':
+        return TagType.Game;
+      case 'organization':
+        return TagType.Organization;
+      case 'category':
+        return TagType.Category;
+      case 'default':
+      default:
+        return TagType.Default;
+    }
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

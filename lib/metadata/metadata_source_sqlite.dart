@@ -1,3 +1,5 @@
+import 'package:annix/metadata/metadata_types.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/metadata/metadata_source.dart';
 import 'package:sqflite/sqflite.dart';
@@ -109,5 +111,35 @@ SELECT lower(hex(album_id)) album_id FROM repo_album WHERE album_id IN (
         .map((str) =>
             "${str.substring(0, 8)}-${str.substring(8, 12)}-${str.substring(12, 16)}-${str.substring(16, 20)}-${str.substring(20, 32)}")
         .toList();
+  }
+
+  @override
+  Future<Map<String, TagEntry>> getTags() async {
+    final tags = await database.rawQuery(
+      "SELECT tag_id, name, tag_type, children FROM repo_tag LEFT JOIN (SELECT parent_id, group_concat(tag_id) children FROM repo_tag_relation GROUP BY parent_id) ON repo_tag.tag_id = parent_id",
+    );
+    final tagsMap = Map.fromEntries(tags.map(
+      (e) => MapEntry(
+        e["tag_id"] as int,
+        TagEntry(
+          name: e["name"] as String,
+          type: TagType.fromString(e["tag_type"] as String),
+          children: [(e["children"] as String?) ?? ""],
+        ),
+      ),
+    ));
+    tagsMap.forEach((tagId, tag) {
+      final children = tag.children.removeLast();
+      if (children.isNotEmpty) {
+        tag.children.addAll(
+          children
+              .split(',')
+              .map((e) => int.parse(e))
+              .map((e) => tagsMap[e]!.name),
+        );
+      }
+    });
+
+    return Map.fromEntries(tagsMap.values.map((e) => MapEntry(e.name, e)));
   }
 }
