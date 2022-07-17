@@ -8,10 +8,13 @@ class FavoriteButton extends StatelessWidget {
   final AnnivController anniv = Get.find();
   final PlayerController player = Get.find();
 
-  final Rxn<AnnilAudioSource> audio;
+  final Rxn<AnnilAudioSource> audio = Rxn();
   final RxBool favorited = false.obs;
 
-  FavoriteButton([AnnilAudioSource? audio]) : audio = Rxn(audio) {
+  FavoriteButton([AnnilAudioSource? audio]) {
+    if (audio == null) {
+      this.audio.value = player.playing;
+    }
     player.addListener(() {
       this.audio.value = player.playing;
     });

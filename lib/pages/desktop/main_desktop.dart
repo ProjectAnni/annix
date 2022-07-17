@@ -121,7 +121,7 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                         //
                       },
                     ),
-                    groupAlignment: 0,
+                    groupAlignment: -0.7,
                     destinations: <NavigationRailDestination>[
                       NavigationRailDestination(
                         icon: Icon(Icons.music_note_outlined),

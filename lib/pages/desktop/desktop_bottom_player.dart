@@ -99,9 +99,8 @@ class DesktopBottomPlayer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    FavoriteButton(),
                     Expanded(child: Container()),
-                    LoopModeButton(),
+                    FavoriteButton(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -118,6 +117,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                         ),
                       ],
                     ),
+                    LoopModeButton(),
                   ],
                 ),
               ),
