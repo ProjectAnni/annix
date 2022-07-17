@@ -171,7 +171,7 @@ class LinuxAudioService extends AudioServicePlatform {
 
   @override
   Future<void> setState(SetStateRequest request) async {
-    mpris.playingStatus =
+    mpris.playbackStatus =
         request.state.playing ? PlaybackStatus.playing : PlaybackStatus.stopped;
   }
 
@@ -224,27 +224,27 @@ class AnnixMPRISService extends MPRISService {
         );
 
   @override
-  Future<void> doPlayPause() async {
+  Future<void> onPlayPause() async {
     await player.playOrPause();
   }
 
   @override
-  Future<void> doPlay() async {
+  Future<void> onPlay() async {
     await player.play();
   }
 
   @override
-  Future<void> doPause() async {
+  Future<void> onPause() async {
     await player.pause();
   }
 
   @override
-  Future<void> doPrevious() async {
+  Future<void> onPrevious() async {
     await player.previous();
   }
 
   @override
-  Future<void> doNext() async {
+  Future<void> onNext() async {
     await player.next();
   }
 }

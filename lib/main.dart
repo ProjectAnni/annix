@@ -19,8 +19,8 @@ Future<void> main() async {
   await Global.init();
   Get.put(NetworkController());
   Get.put(SettingsController());
-  Get.put(await AnnilController.init());
-  Get.put(await AnnivController.init());
+  await Get.putAsync(() => AnnilController.init());
+  await Get.putAsync(() => AnnivController.init());
   Get.put(PlayerController());
 
   await Future.wait([

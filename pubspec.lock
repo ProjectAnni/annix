@@ -42,7 +42,7 @@ packages:
       name: audio_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.6"
+    version: "0.18.7"
   audio_service_platform_interface:
     dependency: "direct main"
     description:
@@ -63,7 +63,7 @@ packages:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.9"
+    version: "0.1.10"
   audio_video_progress_bar:
     dependency: "direct main"
     description:
@@ -571,7 +571,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "2139ea70cee822cff2cbe456458f869548332c29"
+      resolved-ref: b275826764bd2103094255abf4771f27477d19e9
       url: "https://github.com/ProjectAnni/mpris_service.git"
     source: git
     version: "0.0.1"
