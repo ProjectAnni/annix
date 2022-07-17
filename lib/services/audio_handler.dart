@@ -216,7 +216,30 @@ class AnnixMPRISService extends MPRISService {
           canGoPrevious: true,
           canGoNext: true,
           canSeek: true,
-        );
+          supportLoopStatus: true,
+          supportShuffle: true,
+        ) {
+    player.loopMode.listen((loopMode) {
+      switch (loopMode) {
+        case LoopMode.off:
+          this.loopStatus = LoopStatus.none;
+          this.shuffle = false;
+          break;
+        case LoopMode.all:
+          this.loopStatus = LoopStatus.playlist;
+          this.shuffle = false;
+          break;
+        case LoopMode.one:
+          this.loopStatus = LoopStatus.track;
+          this.shuffle = false;
+          break;
+        case LoopMode.random:
+          this.loopStatus = LoopStatus.playlist;
+          this.shuffle = true;
+          break;
+      }
+    });
+  }
 
   @override
   Future<void> onPlayPause() async {
@@ -251,5 +274,27 @@ class AnnixMPRISService extends MPRISService {
   @override
   Future<void> onSetPosition(String trackId, int position) async {
     await player.seek(Duration(microseconds: position));
+  }
+
+  @override
+  Future<void> onLoopStatus(LoopStatus loopStatus) async {
+    switch (loopStatus) {
+      case LoopStatus.none:
+        await player.setLoopMode(LoopMode.off);
+        break;
+      case LoopStatus.track:
+        await player.setLoopMode(LoopMode.one);
+        break;
+      case LoopStatus.playlist:
+        await player.setLoopMode(LoopMode.all);
+        break;
+    }
+    this.loopStatus = loopStatus;
+  }
+
+  @override
+  Future<void> onShuffle(bool shuffle) async {
+    await player.setLoopMode(LoopMode.random);
+    this.shuffle = shuffle;
   }
 }
