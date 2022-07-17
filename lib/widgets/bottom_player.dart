@@ -6,13 +6,10 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-const double kPreviouNextMove = 150.0;
-
 class BottomPlayer extends StatelessWidget {
-  final int? id;
   final double height;
 
-  BottomPlayer({Key? key, this.id, this.height = 60}) : super(key: key);
+  BottomPlayer({Key? key, this.height = 60}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +18,7 @@ class BottomPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/playing', id: id);
+        Get.toNamed('/playing');
       },
       child: Material(
         elevation: 16,

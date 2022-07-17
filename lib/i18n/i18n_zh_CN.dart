@@ -1,6 +1,7 @@
 import 'package:annix/i18n/i18n.dart';
 
 const Map<String, String> I18N_zh_CN = {
+  I18n.PLAYING: "播放",
   I18n.PROGRESS: "进度",
 
   I18n.HOME: "首页",

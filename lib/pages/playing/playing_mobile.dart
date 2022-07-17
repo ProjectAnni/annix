@@ -1,4 +1,4 @@
-import 'package:annix/pages/keepalive.dart';
+import 'package:annix/widgets/keepalive.dart';
 import 'package:annix/pages/playing/playing_control.dart';
 import 'package:annix/pages/playing/playing_lyric.dart';
 import 'package:annix/pages/playing/playing_queue.dart';

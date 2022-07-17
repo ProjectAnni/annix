@@ -1,4 +1,3 @@
-import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playing/playing_desktop.dart';
 import 'package:annix/pages/root/albums.dart';
@@ -7,7 +6,7 @@ import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/root/tags.dart';
 import 'package:annix/pages/settings/settings.dart';
-import 'package:annix/widgets/bottom_player.dart';
+import 'package:annix/widgets/desktop_bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,11 +23,11 @@ class MainDesktopScreenController extends GetxController {
   var currentIndex = 0.obs;
 
   final pages = <String>[
+    '/playing',
     '/home',
     '/tags',
     '/playlists',
     '/server',
-    '/settings'
   ];
 
   void changePage(int index) {
@@ -104,90 +103,70 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    RxBool extended = false.obs;
-
     return Scaffold(
-      body: Row(
-        children: <Widget>[
-          Obx(() {
-            return NavigationRail(
-              selectedIndex: controller.currentIndex.value,
-              onDestinationSelected: controller.changePage,
-              extended: extended.value,
-              labelType: extended.value
-                  ? NavigationRailLabelType.none
-                  : NavigationRailLabelType.all,
-              leading: IconButton(
-                icon: Icon(Icons.menu),
-                padding: EdgeInsets.symmetric(vertical: 16),
-                onPressed: () {
-                  extended.value = !extended.value;
-                },
-              ),
-              destinations: <NavigationRailDestination>[
-                NavigationRailDestination(
-                  icon: Icon(Icons.casino_outlined),
-                  label: Text(I18n.HOME.tr),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.album_outlined),
-                  label: Text(I18n.ALBUMS.tr),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.queue_music_outlined),
-                  label: Text(I18n.PLAYLISTS.tr),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.dns_outlined),
-                  label: Text(I18n.SERVER.tr),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.settings_outlined),
-                  label: Text(I18n.SETTINGS.tr),
-                ),
-              ],
-            );
-          }),
-          const VerticalDivider(thickness: 1, width: 1),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           Expanded(
-            child: LayoutBuilder(
-              builder: (context, constriants) => Container(
-                width: constriants.maxWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GetBuilder<PlayerController>(
-                      builder: (player) => SizedBox(
-                        height: player.playing != null
-                            ? constriants.maxHeight - 81
-                            : constriants.maxHeight,
+            child: Row(
+              children: <Widget>[
+                Obx(() {
+                  return NavigationRail(
+                    selectedIndex: controller.currentIndex.value,
+                    onDestinationSelected: controller.changePage,
+                    labelType: NavigationRailLabelType.all,
+                    leading: FloatingActionButton(
+                      child: Icon(Icons.search_outlined),
+                      onPressed: () {
+                        //
+                      },
+                    ),
+                    groupAlignment: 0,
+                    destinations: <NavigationRailDestination>[
+                      NavigationRailDestination(
+                        icon: Icon(Icons.music_note_outlined),
+                        selectedIcon: Icon(Icons.music_note_sharp),
+                        label: Text(I18n.PLAYING.tr),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.casino_outlined),
+                        label: Text(I18n.HOME.tr),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.album_outlined),
+                        label: Text(I18n.ALBUMS.tr),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.queue_music_outlined),
+                        label: Text(I18n.PLAYLISTS.tr),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.dns_outlined),
+                        label: Text(I18n.SERVER.tr),
+                      ),
+                    ],
+                  );
+                }),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
                         child: Navigator(
                           key: Get.nestedKey(1),
-                          initialRoute: '/home',
+                          initialRoute: '/playing',
                           onGenerateRoute: controller.onGenerateRoute,
                         ),
                       ),
-                    ),
-                    GetBuilder<PlayerController>(
-                      builder: (player) => player.playing != null
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Divider(thickness: 1, height: 1),
-                                BottomPlayer(
-                                  id: 1,
-                                  height: 80,
-                                )
-                              ],
-                            )
-                          : Container(),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
+          DesktopBottomPlayer(),
         ],
       ),
     );

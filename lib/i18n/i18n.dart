@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 class I18n extends Translations {
   static const PROGRESS = "progress";
 
+  static const PLAYING = "playing";
   static const HOME = "home";
   static const CATEGORY = "category";
   static const ALBUMS = "albums";

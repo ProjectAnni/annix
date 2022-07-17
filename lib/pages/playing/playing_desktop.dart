@@ -29,6 +29,20 @@ class PlayingDesktopScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: PlayingQueue(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 6,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Container(
                     height: 256,
                     child: AspectRatio(
@@ -53,20 +67,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: PlayingQueue(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                  SizedBox(height: 24),
                   GetBuilder<PlayerController>(
                     builder: (player) => Marquee(
                       child: Text(
@@ -78,46 +79,9 @@ class PlayingDesktopScreen extends StatelessWidget {
                   GetBuilder<PlayerController>(
                     builder: (player) => ArtistText(
                       player.playing?.track.artist ?? "",
-                      style: context.textTheme.subtitle1,
+                      style: context.textTheme.subtitle2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GetBuilder<PlayerController>(
-                        builder: (player) => FavoriteButton(player.playing!),
-                      ),
-                      LoopModeButton(),
-                    ],
-                  ),
-                  Obx(() {
-                    return ProgressBar(
-                      progress: player.progress.value,
-                      total: player.duration.value,
-                      onSeek: (position) {
-                        player.seek(position);
-                      },
-                      barHeight: 2.0,
-                      thumbRadius: 5.0,
-                      thumbCanPaintOutsideBar: false,
-                    );
-                  }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.skip_previous),
-                        iconSize: 32,
-                        onPressed: () => player.previous(),
-                      ),
-                      PlayPauseButton(iconSize: 48),
-                      IconButton(
-                        icon: Icon(Icons.skip_next),
-                        iconSize: 32,
-                        onPressed: () => player.next(),
-                      ),
-                    ],
                   ),
                 ],
               ),

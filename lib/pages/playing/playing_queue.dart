@@ -15,9 +15,8 @@ class PlayingQueue extends StatelessWidget {
           return ListTile(
             leading: Text("${index + 1}"),
             title: Text('${song.track.title}', overflow: TextOverflow.ellipsis),
-            trailing:
-                player.playingIndex == index ? Icon(Icons.play_arrow) : null,
             minLeadingWidth: 16,
+            selected: player.playingIndex == index,
             onTap: () async {
               await player.jump(index);
             },
