@@ -294,7 +294,21 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onShuffle(bool shuffle) async {
-    await player.setLoopMode(LoopMode.random);
+    if (shuffle) {
+      await player.setLoopMode(LoopMode.random);
+    } else {
+      switch (this.loopStatus) {
+        case LoopStatus.none:
+          await player.setLoopMode(LoopMode.off);
+          break;
+        case LoopStatus.track:
+          await player.setLoopMode(LoopMode.one);
+          break;
+        case LoopStatus.playlist:
+          await player.setLoopMode(LoopMode.all);
+          break;
+      }
+    }
     this.shuffle = shuffle;
   }
 }
