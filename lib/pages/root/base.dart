@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -12,6 +14,10 @@ class BaseAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      return Container();
+    }
+
     return AppBar(
       title: title,
       centerTitle: true,

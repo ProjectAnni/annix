@@ -3,10 +3,6 @@ import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/widgets/artist_text.dart';
-import 'package:annix/widgets/buttons/favorite_button.dart';
-import 'package:annix/widgets/buttons/loop_mode_button.dart';
-import 'package:annix/widgets/buttons/play_pause_button.dart';
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +11,6 @@ class PlayingDesktopScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController player = Get.find();
     final AnnilController annil = Get.find();
 
     return Scaffold(

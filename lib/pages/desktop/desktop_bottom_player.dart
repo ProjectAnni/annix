@@ -1,6 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
-import 'package:annix/pages/root/main_desktop.dart';
+import 'package:annix/pages/desktop/main_desktop.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
@@ -64,7 +64,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 180),
+                        constraints: BoxConstraints(maxWidth: 300),
                         child: GetBuilder<PlayerController>(
                           builder: (player) {
                             return Column(
@@ -99,9 +99,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    GetBuilder<PlayerController>(
-                      builder: (player) => FavoriteButton(player.playing!),
-                    ),
+                    FavoriteButton(),
                     Expanded(child: Container()),
                     LoopModeButton(),
                     Row(

@@ -66,9 +66,7 @@ class PlayingControl extends StatelessWidget {
               ButtonBar(
                 alignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GetBuilder<PlayerController>(
-                    builder: (player) => FavoriteButton(player.playing!),
-                  ),
+                  FavoriteButton(),
                   LoopModeButton(),
                 ],
               ),

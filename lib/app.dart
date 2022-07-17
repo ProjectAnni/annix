@@ -1,6 +1,6 @@
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playing/playing.dart';
-import 'package:annix/pages/root/main_desktop.dart';
+import 'package:annix/pages/desktop/main_desktop.dart';
 import 'package:annix/pages/root/root.dart';
 import 'package:annix/pages/search.dart';
 import 'package:annix/pages/settings/settings.dart';

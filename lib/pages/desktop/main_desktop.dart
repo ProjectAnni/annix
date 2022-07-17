@@ -1,12 +1,12 @@
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/pages/playing/playing_desktop.dart';
+import 'package:annix/pages/desktop/playing_desktop.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/root/tags.dart';
 import 'package:annix/pages/settings/settings.dart';
-import 'package:annix/widgets/desktop_bottom_player.dart';
+import 'package:annix/pages/desktop/desktop_bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -147,7 +147,6 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                     ],
                   );
                 }),
-                const VerticalDivider(thickness: 1, width: 1),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

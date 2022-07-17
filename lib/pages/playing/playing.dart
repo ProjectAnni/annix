@@ -1,4 +1,4 @@
-import 'package:annix/pages/playing/playing_desktop.dart';
+import 'package:annix/pages/desktop/playing_desktop.dart';
 import 'package:annix/pages/playing/playing_mobile.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/cupertino.dart';
