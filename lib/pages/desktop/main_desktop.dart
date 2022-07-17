@@ -132,9 +132,13 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                         icon: Icon(Icons.casino_outlined),
                         label: Text(I18n.HOME.tr),
                       ),
+                      // NavigationRailDestination(
+                      //   icon: Icon(Icons.album_outlined),
+                      //   label: Text(I18n.ALBUMS.tr),
+                      // ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.album_outlined),
-                        label: Text(I18n.ALBUMS.tr),
+                        icon: Icon(Icons.local_offer_outlined),
+                        label: Text(I18n.CATEGORY.tr),
                       ),
                       NavigationRailDestination(
                         icon: Icon(Icons.queue_music_outlined),
@@ -153,10 +157,13 @@ class MainDesktopScreen extends GetView<MainDesktopScreenController> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: Navigator(
-                          key: Get.nestedKey(1),
-                          initialRoute: '/playing',
-                          onGenerateRoute: controller.onGenerateRoute,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Navigator(
+                            key: Get.nestedKey(1),
+                            initialRoute: '/playing',
+                            onGenerateRoute: controller.onGenerateRoute,
+                          ),
                         ),
                       ),
                     ],

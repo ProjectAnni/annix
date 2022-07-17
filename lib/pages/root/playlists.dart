@@ -14,42 +14,42 @@ class PlaylistsView extends StatelessWidget {
     final AnnivController anniv = Get.find();
     final AnnilController annil = Get.find();
 
-    return BaseView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return <Widget>[
-          BaseSliverAppBar(title: Text(I18n.PLAYLISTS.tr)),
-        ];
-      },
-      body: Obx(
-        () => ListView.separated(
-          itemCount: anniv.playlists.length,
-          itemBuilder: (context, index) {
-            final playlistId = anniv.playlists.keys.toList()[index];
-            final playlist = anniv.playlists[playlistId]!;
-            return ListTile(
-              leading: AspectRatio(
-                aspectRatio: 1,
-                child: annil.cover(
-                  albumId: playlist.cover.albumId == ""
-                      ? null
-                      : playlist.cover.albumId,
-                ),
-              ),
-              title: Text(playlist.name),
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              onTap: () async {
-                final playlist =
-                    await anniv.client!.getPlaylistDetail(playlistId);
-                Get.to(
-                  () => PlaylistDetailScreen(playlist: playlist),
+    return Column(
+      children: [
+        BaseAppBar(title: Text(I18n.PLAYLISTS.tr)),
+        Expanded(
+          child: Obx(
+            () => ListView.separated(
+              itemCount: anniv.playlists.length,
+              itemBuilder: (context, index) {
+                final playlistId = anniv.playlists.keys.toList()[index];
+                final playlist = anniv.playlists[playlistId]!;
+                return ListTile(
+                  leading: AspectRatio(
+                    aspectRatio: 1,
+                    child: annil.cover(
+                      albumId: playlist.cover.albumId == ""
+                          ? null
+                          : playlist.cover.albumId,
+                    ),
+                  ),
+                  title: Text(playlist.name),
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  onTap: () async {
+                    final playlist =
+                        await anniv.client!.getPlaylistDetail(playlistId);
+                    Get.to(
+                      () => PlaylistDetailScreen(playlist: playlist),
+                    );
+                  },
                 );
               },
-            );
-          },
-          separatorBuilder: (context, index) => Divider(),
+              separatorBuilder: (context, index) => Divider(),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
