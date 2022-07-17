@@ -160,12 +160,6 @@ class LinuxAudioService extends AudioServicePlatform {
   final AnnixMPRISService mpris = AnnixMPRISService();
   final PlayerController player = Get.find();
 
-  LinuxAudioService() {
-    this.player.progress.listen((position) {
-      mpris.position = position;
-    });
-  }
-
   @override
   Future<void> configure(ConfigureRequest request) async {}
 
@@ -173,6 +167,7 @@ class LinuxAudioService extends AudioServicePlatform {
   Future<void> setState(SetStateRequest request) async {
     mpris.playbackStatus =
         request.state.playing ? PlaybackStatus.playing : PlaybackStatus.stopped;
+    mpris.position = request.state.updatePosition;
   }
 
   @override

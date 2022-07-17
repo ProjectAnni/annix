@@ -54,6 +54,7 @@ class PlayerController extends GetxController {
     if (reload) {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
         FLog.trace(text: "Start playing");
+        await this.stop();
         await this.player.play(this.queue[this.playingIndex!]);
         if (this.queue.length > this.playingIndex! + 1) {
           this.queue[this.playingIndex! + 1].preload();
@@ -81,8 +82,9 @@ class PlayerController extends GetxController {
     }
   }
 
-  Future<void> stop() {
-    return this.player.stop();
+  Future<void> stop() async {
+    await this.player.stop();
+    this.progress.value = Duration.zero;
   }
 
   Future<void> previous() async {
@@ -169,7 +171,6 @@ class PlayerController extends GetxController {
       final to = index % this.queue.length;
       if (to != this.playingIndex) {
         // index changed, set new audio source
-        await this.pause();
         this.playingIndex = to;
         this.refresh();
         await this.play(true);
