@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.0"
+  anni_mpris_service:
+    dependency: "direct main"
+    description:
+      name: anni_mpris_service
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   args:
     dependency: transitive
     description:
@@ -616,15 +623,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  mpris_service:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: b275826764bd2103094255abf4771f27477d19e9
-      url: "https://github.com/ProjectAnni/mpris_service.git"
-    source: git
-    version: "0.0.1"
   netease_music_api:
     dependency: "direct main"
     description:
@@ -1067,5 +1065,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.0-265.0.dev <3.0.0"
+  dart: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"

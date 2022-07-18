@@ -7,7 +7,7 @@ import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:get/get.dart';
-import 'package:mpris_service/mpris_service.dart';
+import 'package:anni_mpris_service/anni_mpris_service.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
   final PlayerController player = Get.find();
