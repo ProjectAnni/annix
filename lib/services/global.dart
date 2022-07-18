@@ -38,7 +38,7 @@ class Global {
         storageRoot = p.join((await getLibraryDirectory()).path, 'data');
       } else {
         storageRoot =
-            p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
+            p.normalize(p.join(Platform.resolvedExecutable, '..', 'cache'));
       }
 
       // sqflite on desktop

@@ -52,7 +52,8 @@ static void my_application_activate(GApplication* application) {
   }
 
   //gtk_window_set_decorated(window, FALSE);
-  gtk_window_set_icon_from_file(window, "./linux/icon.png", NULL);
+  if (gtk_window_set_icon_from_file(window, "./assets/icon.png", NULL) == FALSE)
+    gtk_window_set_icon_from_file(window, "./data/flutter_assets/assets/icon.png", NULL);
 
   auto bdw = bitsdojo_window_from(window);
   // use custom frame if environment variable ANNIX_NO_FRAME is set to 1

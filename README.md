@@ -2,6 +2,12 @@
 
 Desktop / Mobile client for Project Anni.
 
+## Features
+
+- Cross-platform player designed for Project Anni
+  - Test on Linux(Manjaro KDE), macOS and Android
+- Control through MPRIS on Linux
+
 ## Build
 
 ```bash
