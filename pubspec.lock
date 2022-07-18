@@ -129,6 +129,49 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  bitsdojo_window:
+    dependency: "direct main"
+    description:
+      path: bitsdojo_window
+      ref: prod
+      resolved-ref: f4863f289284bc4e98df17458df3e6d61b21605b
+      url: "https://github.com/ProjectAnni/bitsdojo_window"
+    source: git
+    version: "0.1.2"
+  bitsdojo_window_linux:
+    dependency: transitive
+    description:
+      path: bitsdojo_window_linux
+      ref: prod
+      resolved-ref: f4863f289284bc4e98df17458df3e6d61b21605b
+      url: "https://github.com/ProjectAnni/bitsdojo_window"
+    source: git
+    version: "0.1.2"
+  bitsdojo_window_macos:
+    dependency: transitive
+    description:
+      path: bitsdojo_window_macos
+      ref: prod
+      resolved-ref: f4863f289284bc4e98df17458df3e6d61b21605b
+      url: "https://github.com/ProjectAnni/bitsdojo_window"
+    source: git
+    version: "0.1.2"
+  bitsdojo_window_platform_interface:
+    dependency: transitive
+    description:
+      name: bitsdojo_window_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
+  bitsdojo_window_windows:
+    dependency: transitive
+    description:
+      path: bitsdojo_window_windows
+      ref: prod
+      resolved-ref: f4863f289284bc4e98df17458df3e6d61b21605b
+      url: "https://github.com/ProjectAnni/bitsdojo_window"
+    source: git
+    version: "0.1.2"
   boolean_selector:
     dependency: transitive
     description:

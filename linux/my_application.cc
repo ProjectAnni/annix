@@ -7,6 +7,9 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
+#include <bitsdojo_window_linux/bitsdojo_window_plugin.h>
+#include <cstdlib>
+
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
@@ -50,6 +53,16 @@ static void my_application_activate(GApplication* application) {
 
   //gtk_window_set_decorated(window, FALSE);
   gtk_window_set_icon_from_file(window, "./linux/icon.png", NULL);
+
+  auto bdw = bitsdojo_window_from(window);
+  // use custom frame if environment variable ANNIX_NO_FRAME is set to 1
+  const char* env_annix_no_frame = std::getenv("ANNIX_NO_FRAME");
+  bool no_frame = false;
+  if (env_annix_no_frame && env_annix_no_frame[0] == '1' && env_annix_no_frame[1] == '\0') {
+    no_frame = true;
+  }
+  bdw->setCustomFrame(no_frame);
+
   gtk_window_set_default_size(window, 1280, 800);
   gtk_widget_show(GTK_WIDGET(window));
 

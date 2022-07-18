@@ -30,6 +30,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
           androidNotificationChannelName: 'Annix Audio playback',
           androidNotificationIcon: 'drawable/ic_notification',
           androidNotificationOngoing: true,
+          androidStopForegroundOnPause: true,
           artDownscaleHeight: 300,
           artDownscaleWidth: 300,
           preloadArtwork: true,

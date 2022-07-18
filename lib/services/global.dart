@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/metadata/metadata_source.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -24,6 +26,14 @@ class Global {
     if (Platform.isIOS) {
       storageRoot = (await getApplicationDocumentsDirectory()).path;
     } else if (isDesktop) {
+      doWhenWindowReady(() {
+        const initialSize = Size(1280, 800);
+        appWindow.minSize = initialSize;
+        appWindow.size = initialSize;
+        appWindow.alignment = Alignment.center;
+        appWindow.show();
+      });
+
       if (Platform.isMacOS) {
         storageRoot = p.join((await getLibraryDirectory()).path, 'data');
       } else {
