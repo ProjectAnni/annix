@@ -55,10 +55,10 @@ class AnnixApp extends StatelessWidget {
         child,
         defaultScale: true,
         breakpoints: [
-          ResponsiveBreakpoint.resize(480, name: MOBILE),
+          ResponsiveBreakpoint.resize(600, name: MOBILE),
           ResponsiveBreakpoint.autoScale(800, name: TABLET),
-          ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
-          ResponsiveBreakpoint.autoScale(2460, name: '4K'),
+          ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
+          ResponsiveBreakpoint.autoScale(2400, name: '4K'),
         ],
       ),
     );

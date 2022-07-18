@@ -17,6 +17,7 @@ class Global {
 
   static bool isDesktop =
       Platform.isLinux || Platform.isWindows || Platform.isMacOS;
+  static bool isApple = Platform.isMacOS || Platform.isIOS;
 
   static late String storageRoot;
 

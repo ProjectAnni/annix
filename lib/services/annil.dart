@@ -239,7 +239,13 @@ class OnlineAnnilClient implements BaseAnnilClient {
 }
 
 String getAudioCachePath(String albumId, int discId, int trackId) {
-  return p.join(Global.storageRoot, 'audio', albumId, "${discId}_$trackId");
+  return p.join(
+    Global.storageRoot,
+    'audio',
+    albumId,
+    /* extension is required on macOS for playback */
+    "${discId}_$trackId" + (Global.isApple ? ".flac" : ""),
+  );
 }
 
 enum PreferQuality {

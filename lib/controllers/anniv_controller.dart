@@ -196,11 +196,13 @@ class AnnivController extends GetxController {
     }
   }
 
-  Future<void> toggleFavorite(TrackIdentifier id) async {
+  Future<bool> toggleFavorite(TrackIdentifier id) async {
     if (favorites.containsKey(id.toSlashedString())) {
       await this.removeFavorite(id);
+      return false;
     } else {
       await this.addFavorite(id);
+      return true;
     }
   }
 
