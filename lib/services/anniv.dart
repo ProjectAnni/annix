@@ -11,7 +11,6 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:get/get.dart' show ExtensionSnackbar, Get, Inst;
-import 'package:path_provider/path_provider.dart';
 
 class AnnivClient {
   final Dio _client;
@@ -78,9 +77,8 @@ class AnnivClient {
     ));
   }
 
-  static Future<PersistCookieJar> _loadCookieJar() async {
-    final dir = await getApplicationDocumentsDirectory();
-    return PersistCookieJar(storage: FileStorage(dir.path));
+  static PersistCookieJar _loadCookieJar() {
+    return PersistCookieJar(storage: FileStorage(Global.dataRoot));
   }
 
   static Future<AnnivClient> login({
@@ -88,7 +86,7 @@ class AnnivClient {
     required String email,
     required String password,
   }) async {
-    final client = AnnivClient(url: url, cookieJar: await _loadCookieJar());
+    final client = AnnivClient(url: url, cookieJar: _loadCookieJar());
     await client._login(email: email, password: password);
     await client._save();
     return client;
@@ -96,12 +94,12 @@ class AnnivClient {
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static Future<AnnivClient?> load() async {
+  static AnnivClient? load() {
     String? annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      return AnnivClient(url: annivUrl, cookieJar: await _loadCookieJar());
+      return AnnivClient(url: annivUrl, cookieJar: _loadCookieJar());
     }
   }
 

@@ -20,13 +20,12 @@ class Global {
   static bool isApple = Platform.isMacOS || Platform.isIOS;
 
   static late String storageRoot;
+  static late String dataRoot;
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
 
-    if (Platform.isIOS) {
-      storageRoot = (await getApplicationDocumentsDirectory()).path;
-    } else if (isDesktop) {
+    if (isDesktop) {
       doWhenWindowReady(() {
         const initialSize = Size(1280, 800);
         appWindow.minSize = initialSize;
@@ -37,16 +36,25 @@ class Global {
 
       if (Platform.isMacOS) {
         storageRoot = p.join((await getLibraryDirectory()).path, 'data');
+        dataRoot = storageRoot;
       } else {
         storageRoot =
             p.normalize(p.join(Platform.resolvedExecutable, '..', 'cache'));
+        dataRoot =
+            p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
       }
 
       // sqflite on desktop
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
     } else {
-      storageRoot = (await getExternalStorageDirectory())!.path;
+      // save data in getApplicationDocumentsDirectory() on mobile
+      dataRoot = (await getApplicationDocumentsDirectory()).path;
+      if (Platform.isIOS) {
+        storageRoot = (await getApplicationDocumentsDirectory()).path;
+      } else {
+        storageRoot = (await getExternalStorageDirectory())!.path;
+      }
     }
   }
 }

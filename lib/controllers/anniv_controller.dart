@@ -31,7 +31,7 @@ class AnnivController extends GetxController {
 
   static Future<AnnivController> init() async {
     // 1. init client
-    final controller = AnnivController._(await AnnivClient.load());
+    final controller = AnnivController._(AnnivClient.load());
 
     // 2. load cached site info & user info
     controller._loadInfo();
