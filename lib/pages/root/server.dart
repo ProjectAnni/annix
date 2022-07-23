@@ -248,11 +248,12 @@ class AnnilListTile extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(Icons.edit_outlined),
         onPressed: () {
-          Get.generalDialog(
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return Container();
-            },
-          );
+          // FIXME: edit annil
+          // Get.generalDialog(
+          //   pageBuilder: (context, animation, secondaryAnimation) {
+          //     return Container();
+          //   },
+          // );
         },
       ),
       dense: true,
