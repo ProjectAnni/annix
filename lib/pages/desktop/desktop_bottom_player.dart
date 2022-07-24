@@ -1,6 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
-import 'package:annix/pages/desktop/main_desktop.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
@@ -20,7 +19,7 @@ class DesktopBottomPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        MainDesktopScreenController.to.changePage(0);
+        Get.toNamed('/playing', id: 1);
       },
       child: Container(
         height: 80,
