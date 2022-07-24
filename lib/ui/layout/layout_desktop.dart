@@ -59,7 +59,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
                       leading: FloatingActionButton(
                         child: Icon(Icons.search_outlined),
                         onPressed: () {
-                          //
+                          AnnixBodyPageRouter.toNamed("/search");
                         },
                       ),
                       groupAlignment: -0.7,
