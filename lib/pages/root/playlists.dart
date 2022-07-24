@@ -41,6 +41,7 @@ class PlaylistsView extends StatelessWidget {
                         await anniv.client!.getPlaylistDetail(playlistId);
                     Get.to(
                       () => PlaylistDetailScreen(playlist: playlist),
+                      id: 1,
                     );
                   },
                 );

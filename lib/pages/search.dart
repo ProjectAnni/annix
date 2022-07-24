@@ -101,6 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         () => AlbumDetailScreen(
                           album: _result!.albums![index].toAlbum(),
                         ),
+                        id: 1,
                       );
                     },
                   ),

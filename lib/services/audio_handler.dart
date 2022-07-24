@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/ui/route/route.dart';
 import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
@@ -39,7 +40,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
       AudioService.notificationClicked.listen((clicked) {
         if (clicked) {
-          Get.toNamed('/playing');
+          AnnixBodyPageRouter.toNamed('/playing');
         }
       });
     }

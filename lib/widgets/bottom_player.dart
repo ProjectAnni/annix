@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/pages/playing/playing_mobile.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -18,7 +19,7 @@ class BottomPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/playing');
+        Get.to(() => PlayingMobileScreen());
       },
       child: Material(
         elevation: 16,

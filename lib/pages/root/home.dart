@@ -1,7 +1,7 @@
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/pages/playlist/playlist_favorite.dart';
 import 'package:annix/pages/root/base.dart';
+import 'package:annix/ui/route/route.dart';
 import 'package:annix/widgets/buttons/theme_button.dart';
 import 'package:annix/widgets/icon_card.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class HomeView extends StatelessWidget {
                   I18n.MY_FAVORITE.tr,
                   style: context.textTheme.titleSmall,
                 ),
-                onTap: () => Get.to(() => FavoriteScreen()),
+                onTap: () => AnnixBodyPageRouter.toNamed("/favorite"),
               ),
             ],
           ),

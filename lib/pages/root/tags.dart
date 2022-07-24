@@ -49,7 +49,7 @@ class TagsView extends StatelessWidget {
                                     onTap: () {
                                       Get.to(
                                         () => TagScreen(name: e.name),
-                                        duration: Duration(milliseconds: 300),
+                                        id: 1,
                                       );
                                     },
                                   ))

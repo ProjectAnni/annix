@@ -62,7 +62,7 @@ class AlbumGrid extends StatelessWidget {
               if (snapshot.hasData) {
                 Get.to(
                   () => AlbumDetailScreen(album: snapshot.data!),
-                  duration: Duration(milliseconds: 300),
+                  // id: 1,
                 );
               }
             },

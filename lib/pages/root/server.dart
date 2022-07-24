@@ -3,6 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil.dart';
+import 'package:annix/ui/route/route.dart';
 import 'package:annix/widgets/simple_text_field.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -348,7 +349,7 @@ class ServerView extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                Get.toNamed('/settings');
+                AnnixBodyPageRouter.toNamed('/settings');
               },
             ),
           ],

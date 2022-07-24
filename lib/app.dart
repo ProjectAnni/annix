@@ -21,13 +21,7 @@ class AnnixApp extends StatelessWidget {
       translations: I18n(),
       fallbackLocale: const Locale('en', 'US'),
       // routes
-      initialRoute: '/',
-      getPages: [
-        GetPage(
-          name: '/',
-          page: () => AnnixLayout.build(),
-        ),
-      ],
+      home: AnnixLayout.build(),
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         defaultScale: true,
