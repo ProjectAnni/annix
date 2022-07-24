@@ -7,6 +7,7 @@ import 'package:annix/ui/route/route.dart';
 import 'package:annix/widgets/cover_image.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:get/get.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
 
@@ -16,34 +17,62 @@ class AnnixAudioHandler extends BaseAudioHandler {
   final AnnivController anniv = Get.find();
 
   static Future<void> init() async {
-    if (Platform.isAndroid ||
-        Platform.isIOS ||
-        Platform.isMacOS ||
-        Platform.isLinux) {
-      if (Platform.isLinux) {
-        AudioServicePlatform.instance = LinuxAudioService();
-      }
+    if (Platform.isLinux) {
+      AudioServicePlatform.instance = LinuxAudioService();
+    }
 
-      await AudioService.init(
-        builder: () => AnnixAudioHandler._(),
-        config: AudioServiceConfig(
-          androidNotificationChannelId: 'rs.anni.annix.audio',
-          androidNotificationChannelName: 'Annix Audio playback',
-          androidNotificationIcon: 'drawable/ic_notification',
-          androidNotificationOngoing: true,
-          androidStopForegroundOnPause: true,
-          artDownscaleHeight: 300,
-          artDownscaleWidth: 300,
-          preloadArtwork: true,
-        ),
-      );
+    final service = await AudioService.init(
+      builder: () => AnnixAudioHandler._(),
+      config: AudioServiceConfig(
+        androidNotificationChannelId: 'rs.anni.annix.audio',
+        androidNotificationChannelName: 'Annix Audio playback',
+        androidNotificationIcon: 'drawable/ic_notification',
+        androidNotificationOngoing: true,
+        androidStopForegroundOnPause: true,
+        artDownscaleHeight: 300,
+        artDownscaleWidth: 300,
+        preloadArtwork: true,
+      ),
+    );
 
-      AudioService.notificationClicked.listen((clicked) {
-        if (clicked) {
-          AnnixBodyPageRouter.toNamed('/playing');
+    AudioSession.instance.then((session) async {
+      // configure
+      await session.configure(AudioSessionConfiguration.music());
+
+      // unplugged
+      session.becomingNoisyEventStream.listen((_) => service.pause());
+      // interruption
+      session.interruptionEventStream.listen((event) {
+        if (event.begin) {
+          switch (event.type) {
+            case AudioInterruptionType.duck:
+              // TODO: duck
+              break;
+            case AudioInterruptionType.pause:
+            case AudioInterruptionType.unknown:
+              service.pause();
+              break;
+          }
+        } else {
+          switch (event.type) {
+            case AudioInterruptionType.duck:
+              // TODO: unduck
+              break;
+            case AudioInterruptionType.pause:
+              service.play();
+              break;
+            case AudioInterruptionType.unknown:
+              break;
+          }
         }
       });
-    }
+    });
+
+    AudioService.notificationClicked.listen((clicked) {
+      if (clicked) {
+        AnnixBodyPageRouter.toNamed('/playing');
+      }
+    });
   }
 
   AnnixAudioHandler._() {
