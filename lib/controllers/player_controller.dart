@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';

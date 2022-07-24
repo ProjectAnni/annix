@@ -78,6 +78,8 @@ class AlbumDetailScreen extends PlaylistScreen {
       needDiscId = true;
     }
 
+    var totalTrackId = 0;
+
     var discId = 1;
     album.discs.forEach((disc) {
       if (needDiscId) {
@@ -94,7 +96,9 @@ class AlbumDetailScreen extends PlaylistScreen {
           (track) {
             final trackIndex = trackId;
             trackId++;
-            // TODO: indicate playing track
+
+            final totalTrackIndex = totalTrackId;
+            totalTrackId++;
             return ListTile(
               leading: Text("$trackIndex"),
               minLeadingWidth: 16,
@@ -107,6 +111,10 @@ class AlbumDetailScreen extends PlaylistScreen {
                 discId: discId,
                 trackId: trackIndex,
               ),
+              onTap: () {
+                this.playFullList(initialIndex: totalTrackIndex);
+              },
+              // selected: TODO: indicate playing track,
             );
           },
         ),
