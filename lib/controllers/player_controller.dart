@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -78,16 +79,19 @@ class PlayerController extends GetxController {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
         FLog.trace(text: "Start playing");
 
-        await this.stop();
-        final stopStatus = Completer();
-        late StreamSubscription<PlayerStatus> listener;
-        listener = playerStatus.listen((status) {
-          if (status == PlayerStatus.stopped && !stopStatus.isCompleted) {
-            stopStatus.complete();
-            listener.cancel();
-          }
-        });
-        await stopStatus.future;
+        // FIXME: stop playing before reload
+        // We did not stop here because the stop event would interrupt the `buffering` event.
+
+        // await this.stop();
+        // final stopStatus = Completer();
+        // late StreamSubscription<PlayerStatus> listener;
+        // listener = playerStatus.listen((status) {
+        //   if (status == PlayerStatus.stopped && !stopStatus.isCompleted) {
+        //     stopStatus.complete();
+        //     listener.cancel();
+        //   }
+        // });
+        // await stopStatus.future;
 
         final source = this.queue[this.playingIndex!];
         if (!source.preloaded) {

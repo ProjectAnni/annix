@@ -124,14 +124,22 @@ abstract class PlaylistScreen extends StatelessWidget {
                   ? Icons.shuffle
                   : Icons.play_arrow,
             ),
-            onPressed: () => _playFullList(settings.shufflePlayButton.value),
+            onPressed: () =>
+                playFullList(shuffle: settings.shufflePlayButton.value),
           );
         }),
       ),
     );
   }
 
-  void _playFullList(bool shuffle) async {
+  void playFullList({bool shuffle = false, int initialIndex = 0}) async {
+    assert(
+      // when shuffle is on, initialIndex can only be zero
+      (shuffle && initialIndex == 0) ||
+          // or disable shuffle
+          !shuffle,
+    );
+
     final trackList = tracks;
     if (shuffle) {
       trackList.shuffle();
@@ -146,6 +154,7 @@ abstract class PlaylistScreen extends StatelessWidget {
           trackId: s.trackId,
         ),
       )),
+      initialIndex: initialIndex,
     );
   }
 }
