@@ -10,7 +10,11 @@ class PlaylistDetailScreen extends PlaylistScreen {
 
   final Playlist playlist;
 
-  PlaylistDetailScreen({required this.playlist, Key? key}) : super(key: key);
+  final Widget? pageTitle = null;
+  final List<Widget>? pageActions = null;
+  final RefreshCallback? refresh = null;
+
+  PlaylistDetailScreen({required this.playlist});
 
   String get title => playlist.intro.name;
   Widget get cover => _annil.cover(

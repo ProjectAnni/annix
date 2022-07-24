@@ -13,8 +13,11 @@ class AlbumDetailScreen extends PlaylistScreen {
 
   final Album album;
 
-  AlbumDetailScreen({required this.album, Key? key})
-      : super(key: key, pageTitle: Text(I18n.ALBUMS.tr));
+  Widget? get pageTitle => Text(I18n.ALBUMS.tr);
+  final List<Widget>? pageActions = null;
+  final RefreshCallback? refresh = null;
+
+  AlbumDetailScreen({required this.album});
 
   String get title => album.title;
   Widget get cover => _annil.cover(albumId: album.albumId);

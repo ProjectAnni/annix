@@ -11,7 +11,10 @@ class FavoriteScreen extends PlaylistScreen {
   final AnnilController _annil = Get.find();
   final AnnivController _anniv = Get.find();
 
-  FavoriteScreen({Key? key}) : super(key: key);
+  final Widget? pageTitle = null;
+  final List<Widget>? pageActions = null;
+
+  RefreshCallback? get refresh => () => _anniv.syncFavorite();
 
   String get title => I18n.MY_FAVORITE.tr;
   Widget get cover => _anniv.favorites.keys.isNotEmpty
