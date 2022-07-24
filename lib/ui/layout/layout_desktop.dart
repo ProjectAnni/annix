@@ -30,7 +30,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
   static const INITIAL_DESKTOP_PAGE = "/playing";
 
   onDestinationSelected(int index) {
-    Get.toNamed(pages[index], id: 1);
+    Get.offNamed(pages[index], id: 1);
   }
 
   @override

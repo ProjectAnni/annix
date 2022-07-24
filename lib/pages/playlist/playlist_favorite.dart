@@ -51,5 +51,7 @@ class FavoriteScreen extends PlaylistScreen {
 
   List<TrackIdentifier> get tracks => _anniv.favorites.keys
       .map((t) => TrackIdentifier.fromSlashSplitedString(t))
+      .toList()
+      .reversed
       .toList();
 }

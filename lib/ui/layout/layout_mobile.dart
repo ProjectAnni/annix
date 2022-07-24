@@ -17,7 +17,7 @@ class AnnixLayoutMobile extends AnnixLayout {
   static const INITIAL_MOBILE_PAGE = "/home";
 
   onDestinationSelected(int index) {
-    Get.toNamed(pages[index], id: 1);
+    Get.offNamed(pages[index], id: 1);
   }
 
   const AnnixLayoutMobile({super.key});
@@ -28,52 +28,51 @@ class AnnixLayoutMobile extends AnnixLayout {
         Get.put(AnnixBodyPageRouter(INITIAL_MOBILE_PAGE));
 
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          WillPopScope(
-            onWillPop: () async {
-              final shouldCancel =
-                  await Get.nestedKey(1)?.currentState?.maybePop();
-              if (shouldCancel == null) {
-                // failed to pop
-                return true;
-              } else {
-                return !shouldCancel;
-              }
-            },
-            child: Navigator(
-              key: Get.nestedKey(1),
-              initialRoute: INITIAL_MOBILE_PAGE,
-              onGenerateRoute: router.onGenerateRoute,
+          Expanded(
+            child: WillPopScope(
+              onWillPop: () async {
+                final shouldCancel =
+                    await Get.nestedKey(1)?.currentState?.maybePop();
+                if (shouldCancel == null) {
+                  // failed to pop
+                  return true;
+                } else {
+                  return !shouldCancel;
+                }
+              },
+              child: Navigator(
+                key: Get.nestedKey(1),
+                initialRoute: INITIAL_MOBILE_PAGE,
+                onGenerateRoute: router.onGenerateRoute,
+              ),
             ),
           ),
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: GetBuilder<PlayerController>(
-              builder: (player) =>
-                  player.playing != null ? BottomPlayer() : SizedBox.shrink(),
-            ),
+          GetBuilder<PlayerController>(
+            builder: (player) =>
+                player.playing != null ? BottomPlayer() : SizedBox.shrink(),
           ),
         ],
       ),
-      floatingActionButton: Builder(builder: (context) {
-        return GetBuilder<PlayerController>(
-          builder: (player) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: player.playing != null ? 56.0 : 0.0,
-              ),
-              child: FloatingActionButton(
-                child: Icon(Icons.search),
-                onPressed: () {
-                  AnnixBodyPageRouter.toNamed("/search");
-                },
-                isExtended: true,
-              ),
-            );
-          },
-        );
-      }),
+      // floatingActionButton: Builder(builder: (context) {
+      //   return GetBuilder<PlayerController>(
+      //     builder: (player) {
+      //       return Padding(
+      //         padding: EdgeInsets.only(
+      //           bottom: player.playing != null ? 56.0 : 0.0,
+      //         ),
+      //         child: FloatingActionButton(
+      //           child: Icon(Icons.search),
+      //           onPressed: () {
+      //             AnnixBodyPageRouter.toNamed("/search");
+      //           },
+      //           isExtended: true,
+      //         ),
+      //       );
+      //     },
+      //   );
+      // }),
       bottomNavigationBar: GetBuilder<AnnixBodyPageRouter>(
         builder: (router) {
           final route = router.currentPage;
