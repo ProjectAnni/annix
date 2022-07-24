@@ -4,6 +4,7 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist_album.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/anniv.dart';
+import 'package:annix/ui/route/route.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -97,11 +98,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     title: Text(_result!.albums![index].title),
                     subtitle: ArtistText(_result!.albums![index].artist),
                     onTap: () {
-                      Get.to(
+                      AnnixBodyPageRouter.to(
                         () => AlbumDetailScreen(
                           album: _result!.albums![index].toAlbum(),
                         ),
-                        id: 1,
                       );
                     },
                   ),

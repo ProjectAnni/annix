@@ -13,7 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class AnnixBodyPageRouter extends GetxController {
-  static AnnixBodyPageRouter get to => Get.find();
+  static AnnixBodyPageRouter get instance => Get.find();
 
   final Map<String, AnnixPage> pages = new Map();
 
@@ -72,10 +72,44 @@ class AnnixBodyPageRouter extends GetxController {
   }
 
   static toNamed(String page) {
-    final last = to.currentPage;
+    final last = instance.currentPage;
     Get.toNamed(page, id: 1)?.then((_) {
-      to._currentPage = last;
-      to.refresh();
+      instance._currentPage = last;
+      instance.refresh();
+    });
+  }
+
+  static to<T>(
+    dynamic page, {
+    bool? opaque,
+    Transition? transition,
+    Curve? curve,
+    Duration? duration,
+    int? id,
+    String? routeName,
+    bool fullscreenDialog = false,
+    dynamic arguments,
+    Bindings? binding,
+    bool preventDuplicates = true,
+    bool? popGesture,
+    double Function(BuildContext context)? gestureWidth,
+  }) {
+    final last = instance.currentPage;
+    instance._currentPage = "";
+    instance.refresh();
+
+    return Get.to<T>(
+      page,
+      id: 1,
+      opaque: opaque,
+      transition: transition,
+      curve: curve,
+      duration: duration,
+      fullscreenDialog: fullscreenDialog,
+      arguments: arguments,
+    )?.then((value) {
+      instance._currentPage = last;
+      instance.refresh();
     });
   }
 }

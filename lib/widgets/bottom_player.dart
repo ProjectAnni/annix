@@ -19,6 +19,7 @@ class BottomPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
+        // use Get.to to use root navigator
         Get.to(() => PlayingMobileScreen());
       },
       child: Material(

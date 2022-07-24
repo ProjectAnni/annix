@@ -3,6 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist/playlist_list.dart';
 import 'package:annix/pages/root/base.dart';
+import 'package:annix/ui/route/route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,9 +40,8 @@ class PlaylistsView extends StatelessWidget {
                   onTap: () async {
                     final playlist =
                         await anniv.client!.getPlaylistDetail(playlistId);
-                    Get.to(
+                    AnnixBodyPageRouter.to(
                       () => PlaylistDetailScreen(playlist: playlist),
-                      id: 1,
                     );
                   },
                 );
