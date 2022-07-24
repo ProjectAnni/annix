@@ -1,6 +1,7 @@
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/widgets/buttons/theme_button.dart';
 import 'package:annix/widgets/icon_card.dart';
@@ -26,8 +27,8 @@ class HomeView extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverGrid.count(
-            crossAxisCount: 2,
-            childAspectRatio: 4 * 0.618,
+            crossAxisCount: Global.isDesktop ? 4 : 2,
+            childAspectRatio: Global.isDesktop ? 1 : 4 * 0.618,
             children: [
               // Random mode
               IconCard(

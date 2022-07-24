@@ -99,13 +99,10 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Navigator(
-                            key: Get.nestedKey(1),
-                            initialRoute: INITIAL_DESKTOP_PAGE,
-                            onGenerateRoute: router.onGenerateRoute,
-                          ),
+                        child: Navigator(
+                          key: Get.nestedKey(1),
+                          initialRoute: INITIAL_DESKTOP_PAGE,
+                          onGenerateRoute: router.onGenerateRoute,
                         ),
                       ),
                     ],

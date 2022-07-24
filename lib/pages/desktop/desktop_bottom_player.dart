@@ -19,7 +19,7 @@ class DesktopBottomPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/playing', id: 1);
+        Get.offNamed('/playing', id: 1);
       },
       child: Container(
         height: 80,

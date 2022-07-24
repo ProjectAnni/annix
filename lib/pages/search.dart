@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  Widget buildSearchResult() {
+  Widget _buildSearchResult() {
     final PlayerController playing = Get.find();
 
     return DefaultTabController(
@@ -122,20 +122,17 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: TextField(
-            // autofocus: true,
-            controller: _controller,
-            decoration: InputDecoration(
-              hintText: "Search",
-              contentPadding:
-                  EdgeInsets.only(left: 8, right: 0, top: 8, bottom: 8),
-              border: InputBorder.none,
-              isDense: true,
-            ),
-            onSubmitted: (_) => search(anniv.client!),
+        title: TextField(
+          autofocus: true,
+          controller: _controller,
+          decoration: InputDecoration(
+            hintText: "Search",
+            contentPadding:
+                EdgeInsets.only(left: 8, right: 0, top: 8, bottom: 8),
+            border: InputBorder.none,
+            isDense: true,
           ),
+          onSubmitted: (_) => search(anniv.client!),
         ),
       ),
       body: _result == null
@@ -146,7 +143,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ? CircularProgressIndicator(strokeWidth: 2)
                   : Text("Search results would display here"),
             )
-          : buildSearchResult(),
+          : _buildSearchResult(),
     );
   }
 }
