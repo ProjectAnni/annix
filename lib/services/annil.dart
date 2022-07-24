@@ -16,6 +16,7 @@ class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
 
   final AnnilController annil = Get.find();
+  final PlayerController controller = Get.find();
 
   AnnilAudioSource({
     required this.albumId,
@@ -65,7 +66,10 @@ class AnnilAudioSource extends Source {
         this.preload();
       }
       await this._preloadFuture;
-      await player.setSourceDeviceFile(offlinePath);
+      // double check whether current song is still this track
+      if (controller.playing == this) {
+        await player.setSourceDeviceFile(offlinePath);
+      }
     }
   }
 

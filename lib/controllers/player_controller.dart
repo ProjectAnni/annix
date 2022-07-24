@@ -72,6 +72,8 @@ class PlayerController extends GetxController {
   }
 
   Future<void> play({bool reload = false}) async {
+    if (this.queue.isEmpty) return;
+
     if (reload) {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
         FLog.trace(text: "Start playing");
@@ -119,8 +121,10 @@ class PlayerController extends GetxController {
   }
 
   Future<void> stop() async {
-    await this.player.stop();
-    this.progress.value = Duration.zero;
+    if (this.playerStatus.value != PlayerStatus.stopped) {
+      await this.player.stop();
+      this.progress.value = Duration.zero;
+    }
   }
 
   Future<void> previous() async {
