@@ -1,5 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/pages/playing/playing_lyric.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/widgets/artist_text.dart';
@@ -76,6 +77,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                Expanded(child: PlayingLyric()),
               ],
             ),
           ),

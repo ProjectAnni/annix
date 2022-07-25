@@ -2,6 +2,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/lyric/lyric_provider_netease.dart';
+import 'package:annix/lyric/lyric_provider_petitlyrics.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
@@ -40,8 +41,8 @@ class PlayingLyric extends StatelessWidget {
 
     // 3. lyric provider
     if (lyric == null) {
-      LyricProvider provider = LyricProviderNetease();
-      final songs = await provider.search(item);
+      LyricProvider provider = LyricProviderPetitLyrics();
+      final songs = await provider.search(item.track);
       if (songs.isNotEmpty) {
         lyric = await songs.first.lyric;
       }
