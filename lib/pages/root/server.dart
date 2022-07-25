@@ -150,6 +150,12 @@ class AnnivDialog extends StatelessWidget {
 
   AnnivDialog({Key? key}) : super(key: key);
 
+  void _showSnackBar(BuildContext context, String text) {
+    final snackBar = SnackBar(content: Text(text));
+    ScaffoldMessenger.of(Get.nestedKey(1)!.currentContext!)
+        .showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     final AnnivController anniv = Get.find();
@@ -202,23 +208,21 @@ class AnnivDialog extends StatelessWidget {
             var email = this._controller.emailController.text;
             final password = this._controller.passwordController.text;
             if (url.isEmpty) {
-              Get.snackbar("Error", "Please enter a valid URL");
+              _showSnackBar(context, "Please enter a valid URL");
             } else if (email.isEmpty || !email.contains('@')) {
-              Get.snackbar("Error", "Please enter a valid email");
+              _showSnackBar(context, "Please enter a valid email");
             } else if (password.isEmpty) {
-              Get.snackbar("Error", "Please enter a password");
+              _showSnackBar(context, "Please enter a password");
             } else {
               email = email.trim();
               if (!url.startsWith("http://") && !url.startsWith("https://")) {
                 url = "https://$url";
               }
-              // login
-              Get.snackbar("Logging in", "Please wait...");
               try {
                 await anniv.login(url, email, password);
                 Navigator.of(Get.overlayContext!).pop();
               } catch (e) {
-                Get.snackbar("Failed to login", e.toString());
+                _showSnackBar(context, e.toString());
               }
             }
           },

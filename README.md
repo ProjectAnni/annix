@@ -5,7 +5,7 @@ Desktop / Mobile client for Project Anni.
 ## Features
 
 - Cross-platform player designed for Project Anni
-  - Test on Linux(Manjaro KDE), macOS and Android
+  - Test on Linux(Manjaro KDE), macOS, Windows and Android
 - Control through MPRIS on Linux
 
 ## Build
@@ -17,6 +17,12 @@ flutter pub run build_runner build --delete-conflicting-outputs
 # Build apk
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 ```
+
+### For Windows Users
+
+Windows users should download [`sqlite3.dll`](https://github.com/tekartik/sqflite/raw/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll) manually and put it in the directory which includes `annix.exe`.
+
+At this moment, annix does not work as expected. [#1221](https://github.com/bluefireteam/audioplayers/pull/1221)
 
 ## TODOs
 

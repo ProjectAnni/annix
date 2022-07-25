@@ -1,7 +1,6 @@
 import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
-import 'package:get/get.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 
 class LyricProviderNetease extends LyricProvider {
@@ -12,12 +11,10 @@ class LyricProviderNetease extends LyricProvider {
 
     final searchResult = await api.searchSong('${track.title}');
     if (searchResult.codeEnum != RetCode.Ok) {
-      Get.snackbar('Lyric Request', searchResult.realMsg);
       return [];
     }
     final songs = searchResult.result.songs;
     if (songs.isEmpty) {
-      Get.snackbar('Lyric Request', 'No result');
       return [];
     }
 
