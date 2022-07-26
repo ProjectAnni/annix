@@ -63,7 +63,6 @@ class PetitLyricsClient {
       final timeCs = timeRaw ^ projectionKey;
 
       final line = "[" + cs2mmssff(timeCs + offset * 65536) + "] " + lyric[i];
-      print(line);
       time.add(line);
       offset += timeCs ~/ 65536;
     }

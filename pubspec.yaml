@@ -47,6 +47,7 @@ dependencies:
   flutter_lyric: ^2.0.3
   settings_ui: ^2.0.2
   auto_size_text: ^3.0.0
+  material_color_utilities: ^0.1.5
 
   toml: ^0.13.1
   json_serializable: ^6.2.0

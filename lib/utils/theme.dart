@@ -42,8 +42,13 @@ class AnnixTheme {
     );
 
     if (apply) {
-      Get.changeTheme(_theme);
-      Get.changeTheme(_darkTheme);
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        if (Get.isDarkMode) {
+          Get.changeTheme(_darkTheme);
+        } else {
+          Get.changeTheme(_theme);
+        }
+      });
     }
   }
 

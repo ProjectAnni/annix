@@ -53,12 +53,13 @@ class Marquee extends StatelessWidget {
     do {
       if (_scrollController.hasClients) {
         await Future.delayed(pauseDuration);
-        if (_scrollController.hasClients) {
+        if (_scrollController.hasClients &&
+            _scrollController.position.maxScrollExtent > 0) {
           await _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: Duration(
               milliseconds:
-                  _scrollController.position.maxScrollExtent.toInt() * 20,
+                  (_scrollController.position.maxScrollExtent * 20).toInt(),
             ),
             curve: forwardAnimation,
           );
