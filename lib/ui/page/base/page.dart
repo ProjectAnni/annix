@@ -1,4 +1,4 @@
-import 'package:annix/ui/page/page_wrapper.dart';
+import 'package:annix/ui/page/base/page_wrapper.dart';
 import 'package:flutter/material.dart';
 
 abstract class AnnixPage extends StatelessWidget {

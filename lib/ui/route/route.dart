@@ -1,15 +1,13 @@
-import 'package:annix/ui/page/home/home_desktop.dart';
+import 'package:annix/ui/page/home.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/pages/playlist/playlist_favorite.dart';
 import 'package:annix/pages/root/albums.dart';
-import 'package:annix/pages/root/home.dart';
-import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/root/tags.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/pages/settings/settings.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/ui/page/page.dart';
+import 'package:annix/ui/page/base/page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -23,13 +21,9 @@ class AnnixBodyPageRouter extends GetxController {
 
   AnnixBodyPageRouter(String initialPage) : _currentPage = initialPage {
     this.registerPages([
-      AnnixPage.wrap(
-        route: "/home",
-        page: () => Global.isDesktop ? DesktopHomePage() : HomeView(),
-      ),
+      AnnixPage.wrap(route: "/home", page: () => HomePage()),
       AnnixPage.wrap(route: "/albums", page: () => AlbumsView()),
       AnnixPage.wrap(route: "/tags", page: () => TagsView()),
-      AnnixPage.wrap(route: "/playlists", page: () => PlaylistsView()),
       AnnixPage.wrap(route: "/server", page: () => ServerView()),
       AnnixPage.wrap(
         route: "/settings",

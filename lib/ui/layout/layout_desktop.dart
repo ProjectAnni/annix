@@ -23,7 +23,6 @@ class AnnixLayoutDesktop extends AnnixLayout {
     '/playing',
     '/home',
     '/tags',
-    '/playlists',
     '/server',
   ];
 
@@ -80,10 +79,6 @@ class AnnixLayoutDesktop extends AnnixLayout {
                         NavigationRailDestination(
                           icon: Icon(Icons.local_offer_outlined),
                           label: Text(I18n.CATEGORY.tr),
-                        ),
-                        NavigationRailDestination(
-                          icon: Icon(Icons.queue_music_outlined),
-                          label: Text(I18n.PLAYLISTS.tr),
                         ),
                         NavigationRailDestination(
                           icon: Icon(Icons.dns_outlined),

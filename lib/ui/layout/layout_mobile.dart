@@ -10,7 +10,6 @@ class AnnixLayoutMobile extends AnnixLayout {
   static const pages = <String>[
     '/home',
     '/albums',
-    '/playlists',
     '/server',
   ];
 
@@ -94,10 +93,6 @@ class AnnixLayoutMobile extends AnnixLayout {
               NavigationDestination(
                 icon: Icon(Icons.album_outlined),
                 label: I18n.ALBUMS.tr,
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.queue_music_outlined),
-                label: I18n.PLAYLISTS.tr,
               ),
               NavigationDestination(
                 icon: Icon(Icons.dns_outlined),

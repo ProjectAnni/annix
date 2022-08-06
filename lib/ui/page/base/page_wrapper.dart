@@ -1,4 +1,4 @@
-import 'package:annix/ui/page/page.dart';
+import 'package:annix/ui/page/base/page.dart';
 import 'package:flutter/material.dart';
 
 typedef AnnixPageBuilder = Widget Function();
