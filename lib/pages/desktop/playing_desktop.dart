@@ -66,7 +66,7 @@ class PlayingDesktopScreen extends StatelessWidget {
               ),
             ],
           ),
-          Container(
+          Expanded(
             child: PlayingLyric(alignment: LyricAlign.LEFT),
           ),
         ],

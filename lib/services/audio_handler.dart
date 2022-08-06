@@ -4,7 +4,7 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/pages/playing/playing_mobile.dart';
-import 'package:annix/widgets/cover_image.dart';
+import 'package:annix/services/cover.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';

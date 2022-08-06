@@ -1,4 +1,3 @@
-import 'package:annix/utils/theme.preset.anni.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,26 +8,33 @@ class AnnixTheme {
     return _instance;
   }
 
-  AnnixTheme._() {
-    // TODO: load seed from config
-    setPresetTheme();
-    // setTheme(Color.fromARGB(255, 184, 253, 127), false);
-  }
+  AnnixTheme._({
+    Color seed = const Color.fromARGB(0xff, 0xbe, 0x08, 0x73),
+  })  : _seed = seed,
+        _theme = ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.light,
+          colorSchemeSeed: seed,
+        ),
+        _darkTheme = ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.dark,
+          colorSchemeSeed: seed,
+        );
 
-  void setPresetTheme() {
-    _theme = ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      colorScheme: anniLightColorScheme,
-    );
-    _darkTheme = ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      colorScheme: anniDarkColorScheme,
-    );
-  }
+  Color _seed;
+
+  ThemeData _theme;
+  ThemeData get theme => _theme;
+
+  ThemeData _darkTheme;
+  ThemeData get darkTheme => _darkTheme;
 
   void setTheme(Color seed, [bool apply = true]) {
+    if (_seed == seed) {
+      return;
+    }
+
     _seed = seed;
     _theme = ThemeData(
       useMaterial3: true,
@@ -51,12 +57,4 @@ class AnnixTheme {
       });
     }
   }
-
-  late Color _seed;
-
-  late ThemeData _theme;
-  ThemeData get theme => _theme;
-
-  late ThemeData _darkTheme;
-  ThemeData get darkTheme => _darkTheme;
 }
