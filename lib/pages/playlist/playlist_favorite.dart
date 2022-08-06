@@ -30,7 +30,7 @@ class FavoriteScreen extends PlaylistScreen {
 
   Widget get body => Obx(() {
         final favorites = _anniv.favorites.values.toList().reversed;
-        return ListView.separated(
+        return ListView.builder(
           itemCount: _anniv.favorites.length,
           padding: EdgeInsets.zero,
           itemBuilder: (context, index) {
@@ -53,7 +53,6 @@ class FavoriteScreen extends PlaylistScreen {
               },
             );
           },
-          separatorBuilder: (context, index) => Divider(height: 8),
         );
       });
 

@@ -123,14 +123,11 @@ class AlbumDetailScreen extends PlaylistScreen {
       discId++;
     });
 
-    return ListView.separated(
+    return ListView.builder(
       itemCount: list.length,
       itemBuilder: (context, index) {
         return list[index];
       },
-      separatorBuilder: (context, index) => Divider(
-        height: 8,
-      ),
     );
   }
 }

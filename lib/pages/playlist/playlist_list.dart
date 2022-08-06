@@ -49,7 +49,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
       ];
 
   Widget get body {
-    return ListView.separated(
+    return ListView.builder(
       itemCount: playlist.items.length,
       itemBuilder: (context, index) {
         final track = playlist.items[index];
@@ -69,7 +69,6 @@ class PlaylistDetailScreen extends PlaylistScreen {
           ),
         );
       },
-      separatorBuilder: (context, index) => Divider(height: 8),
     );
   }
 

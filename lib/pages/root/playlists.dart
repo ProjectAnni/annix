@@ -19,7 +19,7 @@ class PlaylistsView extends StatelessWidget {
         BaseAppBar(title: Text(I18n.PLAYLISTS.tr)),
         Expanded(
           child: Obx(
-            () => ListView.separated(
+            () => ListView.builder(
               itemCount: anniv.playlists.length,
               itemBuilder: (context, index) {
                 final playlistId = anniv.playlists.keys.toList()[index];
@@ -47,7 +47,6 @@ class PlaylistsView extends StatelessWidget {
                   },
                 );
               },
-              separatorBuilder: (context, index) => Divider(),
             ),
           ),
         ),
