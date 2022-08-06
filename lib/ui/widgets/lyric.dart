@@ -64,6 +64,9 @@ class PlayingLyricUI extends LyricUI {
   Color getLyricHightlightColor() {
     return Get.theme.colorScheme.primary;
   }
+
+  @override
+  bool enableLineAnimation() => true;
 }
 
 class LyricView extends StatelessWidget {
@@ -112,7 +115,7 @@ class _LyricView extends StatelessWidget {
                 return LyricsReader(
                   model: model,
                   lyricUi: PlayingLyricUI(align: alignment),
-                  position: (position.data ?? Duration.zero)
+                  position: (position.data ?? player.progress.value)
                       .inMilliseconds /* + 500 as offset */,
                   // don't know why only playing = false has highlight
                   playing: false,

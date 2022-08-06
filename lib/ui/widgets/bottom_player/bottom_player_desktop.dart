@@ -1,6 +1,7 @@
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
@@ -93,6 +94,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                     // right
                     Row(
                       children: [
+                        VolumeController(),
                         FavoriteButton(),
                         IconButton(
                           icon: Icon(Icons.skip_previous),

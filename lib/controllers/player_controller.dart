@@ -50,6 +50,8 @@ class PlayerController extends GetxController {
   Rx<Duration> buffered = Duration.zero.obs;
   Rx<Duration> duration = Duration.zero.obs;
 
+  Rx<double> volume = 1.0.obs;
+
   Map<String, Duration> durationMap = Map();
 
   // Playing queue
@@ -118,7 +120,7 @@ class PlayerController extends GetxController {
           }
         });
 
-        await this.player.play(source);
+        await this.player.play(source, volume: volume.value);
         if (this.queue.length > this.playingIndex! + 1) {
           this.queue[this.playingIndex! + 1].preload();
         }
@@ -258,6 +260,11 @@ class PlayerController extends GetxController {
     this.playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
     this.refresh();
     await this.play(reload: true);
+  }
+
+  Future<void> setVolume(double volume) async {
+    this.volume.value = volume;
+    await this.player.setVolume(volume);
   }
 
   Future<void> fullShuffleMode({int count = 30}) async {
