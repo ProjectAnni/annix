@@ -4,6 +4,7 @@ import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/pages/playlist/playlist_album.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
@@ -65,29 +66,50 @@ class PlayingDesktopScreen extends StatelessWidget {
                 Spacer(flex: 3),
                 GetBuilder<PlayerController>(
                   builder: (player) {
-                    return Text(
-                      player.playing?.track.title ?? "",
-                      style: context.textTheme.titleLarge,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    return TextButton(
+                      child: Text(
+                        player.playing?.track.title ?? "",
+                        style: context.textTheme.titleLarge!.copyWith(
+                          color: context.theme.colorScheme.onPrimaryContainer,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onPressed: () {
+                        // TODO: copy track title
+                      },
                     );
                   },
                 ),
                 SizedBox(height: 4),
                 GetBuilder<PlayerController>(
-                  builder: (player) => TextButton.icon(
-                    icon: Icon(
-                      Icons.album_outlined,
-                      size: 20,
-                    ),
-                    label: Text(player.playing?.track.disc.album.title ?? ""),
-                    onPressed: () {
-                      AnnixBodyPageRouter.to(
-                        () => AlbumDetailScreen(
-                          album: player.playing!.track.disc.album,
+                  builder: (player) => ButtonBar(
+                    buttonPadding: EdgeInsets.zero,
+                    alignment: MainAxisAlignment.start,
+                    children: [
+                      TextButton.icon(
+                        icon: Icon(Icons.person_outline),
+                        label: ArtistText(player.playing?.track.artist ?? "", expandable: false),
+                        onPressed: () {
+                          // TODO: jump to tag if exists
+                        },
+                      ),
+                      TextButton.icon(
+                        icon: Icon(
+                          Icons.album_outlined,
+                          size: 20,
                         ),
-                      );
-                    },
+                        label:
+                            Text(player.playing?.track.disc.album.title ?? ""),
+                        onPressed: () {
+                          AnnixBodyPageRouter.to(
+                            () => AlbumDetailScreen(
+                              album: player.playing!.track.disc.album,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 Spacer(),

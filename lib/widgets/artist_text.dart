@@ -65,15 +65,21 @@ class ArtistText extends StatelessWidget {
   final List<Artist> artists;
   final TextStyle? style;
   final TextOverflow? overflow;
+  final bool expandable;
 
   bool get isExtensible =>
+      expandable &&
       artists.firstWhereOrNull((artist) => artist.children.isNotEmpty) != null;
 
   final fullArtist = false.obs;
 
-  ArtistText(String artist,
-      {Key? key, this.overflow = TextOverflow.ellipsis, this.style})
-      : artist = artist,
+  ArtistText(
+    String artist, {
+    Key? key,
+    this.overflow = TextOverflow.ellipsis,
+    this.style,
+    this.expandable = true,
+  })  : artist = artist,
         artists = readArtists(_ArtistParser(data: artist, idx: 0)),
         super(key: key);
 
