@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:annix/services/cover.dart';
-import 'package:annix/utils/theme.dart';
+import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:material_color_utilities/score/score.dart';
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class PlayingMusicCover extends StatelessWidget {
   final AnnilController annil = Get.find();
@@ -250,8 +251,8 @@ class ThemedImage extends StatelessWidget {
         assert(cacheHeight == null || cacheHeight > 0) {
     final color = colors[url];
     if (color != null) {
-      // TODO: on error
-      color.future.then((c) => AnnixTheme().setTheme(c));
+      color.future.then((c) =>
+          Provider.of<AnnixTheme>(Get.context!, listen: false).setTheme(c));
       return;
     }
 
@@ -266,7 +267,8 @@ class ThemedImage extends StatelessWidget {
         print(top.toRadixString(16));
 
         completer.complete(Color(top));
-        AnnixTheme().setTheme(Color(top));
+        Provider.of<AnnixTheme>(Get.context!, listen: false)
+            .setTheme(Color(top));
       },
       onError: (exception, stackTrace) =>
           completer.completeError(exception, stackTrace),

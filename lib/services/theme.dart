@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class AnnixTheme {
-  static AnnixTheme _instance = AnnixTheme._();
-
-  factory AnnixTheme() {
-    return _instance;
-  }
-
-  AnnixTheme._({
-    Color seed = const Color.fromARGB(0xff, 0xbe, 0x08, 0x73),
-  })  : _seed = seed,
+class AnnixTheme extends ChangeNotifier {
+  AnnixTheme({Color seed = const Color.fromARGB(0xff, 0xbe, 0x08, 0x73)})
+      : _seed = seed,
         _theme = ThemeData(
           useMaterial3: true,
           brightness: Brightness.light,
@@ -30,7 +22,7 @@ class AnnixTheme {
   ThemeData _darkTheme;
   ThemeData get darkTheme => _darkTheme;
 
-  void setTheme(Color seed, [bool apply = true]) {
+  void setTheme(Color seed) {
     if (_seed == seed) {
       return;
     }
@@ -46,15 +38,6 @@ class AnnixTheme {
       brightness: Brightness.dark,
       colorSchemeSeed: _seed,
     );
-
-    if (apply) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        if (Get.isDarkMode) {
-          Get.changeTheme(_darkTheme);
-        } else {
-          Get.changeTheme(_theme);
-        }
-      });
-    }
+    notifyListeners();
   }
 }
