@@ -1,9 +1,9 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
-import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -85,15 +85,11 @@ class DesktopBottomPlayer extends StatelessWidget {
                                             ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      Text(
-                                        player.playing?.track.artist ??
-                                            "", // not playing, hide artist field
+                                      ArtistText(
+                                        player.playing?.track.artist ?? "",
                                         style: DefaultTextStyle.of(context)
                                             .style
-                                            .apply(
-                                              fontSizeFactor: 0.75,
-                                            ),
-                                        overflow: TextOverflow.ellipsis,
+                                            .apply(fontSizeFactor: 0.75),
                                       ),
                                     ],
                                   );

@@ -91,7 +91,6 @@ class ArtistText extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Flexible(
-              flex: 90,
               child: Text(
                 fullArtist.value
                     ? artist
@@ -102,15 +101,15 @@ class ArtistText extends StatelessWidget {
               ),
             ),
             if (this.isExtensible)
-              Flexible(
-                child: IconButton(
-                  onPressed: this.toggleExtend,
-                  isSelected: fullArtist.value,
-                  icon: Icon(Icons.arrow_forward_ios_outlined),
-                  selectedIcon: Icon(Icons.arrow_back_ios_outlined),
-                  iconSize: 12,
-                  padding: EdgeInsets.zero,
-                ),
+              IconButton(
+                onPressed: this.toggleExtend,
+                isSelected: fullArtist.value,
+                icon: Icon(Icons.arrow_forward_ios_outlined),
+                selectedIcon: Icon(Icons.arrow_back_ios_outlined),
+                iconSize: 12,
+                constraints: BoxConstraints(),
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
               ),
           ],
         ),
