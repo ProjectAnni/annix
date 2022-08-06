@@ -79,6 +79,12 @@ class AnnixBodyPageRouter extends GetxController {
     });
   }
 
+  static offNamed(String page) async {
+    if (page != instance.currentPage) {
+      await Get.offNamed(page, id: 1);
+    }
+  }
+
   static to<T>(
     dynamic page, {
     bool? opaque,

@@ -17,7 +17,7 @@ class AnnixLayoutMobile extends AnnixLayout {
   static const INITIAL_MOBILE_PAGE = "/home";
 
   onDestinationSelected(int index) {
-    Get.offNamed(pages[index], id: 1);
+    AnnixBodyPageRouter.offNamed(pages[index]);
   }
 
   const AnnixLayoutMobile({super.key});
