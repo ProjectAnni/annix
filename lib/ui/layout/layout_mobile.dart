@@ -60,7 +60,7 @@ class AnnixLayoutMobile extends AnnixLayout {
           builder: (player) {
             return Padding(
               padding: EdgeInsets.only(
-                bottom: player.playing != null ? 56.0 : 0.0,
+                bottom: player.playing != null ? 48.0 : 0.0,
               ),
               child: FloatingActionButton(
                 child: Icon(Icons.search),

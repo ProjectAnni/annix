@@ -15,6 +15,17 @@ extension on LyricAlign {
         return TextAlign.center;
     }
   }
+
+  Alignment get alignment {
+    switch (this) {
+      case LyricAlign.LEFT:
+        return Alignment.centerLeft;
+      case LyricAlign.CENTER:
+        return Alignment.center;
+      case LyricAlign.RIGHT:
+        return Alignment.centerRight;
+    }
+  }
 }
 
 class PlayingLyricUI extends LyricUI {
@@ -83,28 +94,34 @@ class LyricView extends StatelessWidget {
     return Obx(
       () => _LyricView(
         lyric: player.playingLyric.value,
-        alignment: alignment,
+        lyricAlign: alignment,
       ),
     );
   }
 }
 
 class _LyricView extends StatelessWidget {
-  final LyricAlign alignment;
+  final LyricAlign lyricAlign;
   final String? lyric;
 
   const _LyricView({
     Key? key,
     this.lyric,
-    this.alignment = LyricAlign.CENTER,
+    this.lyricAlign = LyricAlign.CENTER,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (lyric == null) {
-      return Text("Loading...");
+      return Align(
+        alignment: lyricAlign.alignment,
+        child: Text("Loading..."),
+      );
     } else if (lyric!.isEmpty) {
-      return Text("No lyrics found");
+      return Align(
+        alignment: lyricAlign.alignment,
+        child: Text("No lyrics found"),
+      );
     } else {
       return GetBuilder<PlayerController>(
         builder: (player) {
@@ -117,7 +134,7 @@ class _LyricView extends StatelessWidget {
               builder: (context, position) {
                 return LyricsReader(
                   model: model,
-                  lyricUi: PlayingLyricUI(align: alignment),
+                  lyricUi: PlayingLyricUI(align: lyricAlign),
                   position: (position.data ?? player.progress.value)
                       .inMilliseconds /* + 500 as offset */,
                   // don't know why only playing = false has highlight
@@ -128,7 +145,7 @@ class _LyricView extends StatelessWidget {
                         widthFactor: 1,
                         child: Text(
                           lyric!,
-                          textAlign: alignment.textAlign,
+                          textAlign: lyricAlign.textAlign,
                           style:
                               context.textTheme.bodyText1!.copyWith(height: 2),
                         ),

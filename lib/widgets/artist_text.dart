@@ -1,3 +1,4 @@
+import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -106,7 +107,7 @@ class ArtistText extends StatelessWidget {
                 maxLines: 1,
               ),
             ),
-            if (this.isExtensible)
+            if (this.isExtensible && Global.isDesktop)
               IconButton(
                 onPressed: this.toggleExtend,
                 isSelected: fullArtist.value,
