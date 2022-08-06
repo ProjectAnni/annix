@@ -120,41 +120,37 @@ class PlayingLyric extends StatelessWidget {
                   if (lyric == null) {
                     return Center(child: Text("No lyrics"));
                   } else {
-                    if (lyric.type == "lrc") {
-                      final model = LyricsModelBuilder.create()
-                          .bindLyricToMain(lyric.data)
-                          // .bindLyricToExt(lyric) // TODO: translation
-                          .getModel();
-                      return Obx(() {
-                        return LyricsReader(
-                          model: model,
-                          lyricUi: PlayingLyricUI(align: alignment),
-                          position: player.progress.value
-                              .inMilliseconds /* + 500 as offset */,
-                          // don't know why only playing = false has highlight
-                          playing: false,
-                        );
-                      });
-                    } else {
-                      return SingleChildScrollView(
-                        child: Text(
-                          lyric.data,
-                          textAlign: alignment.textAlign,
-                          style: context.textTheme.bodyText1!
-                              .copyWith(height: 1.5),
-                        ),
+                    final model = LyricsModelBuilder.create()
+                        .bindLyricToMain(lyric.data)
+                        // .bindLyricToExt(lyric) // TODO: translation
+                        .getModel();
+                    return Obx(() {
+                      return LyricsReader(
+                        model: model,
+                        lyricUi: PlayingLyricUI(align: alignment),
+                        position: player.progress.value
+                            .inMilliseconds /* + 500 as offset */,
+                        // don't know why only playing = false has highlight
+                        playing: false,
+                        emptyBuilder: () {
+                          return SingleChildScrollView(
+                            child: Text(
+                              lyric.data,
+                              textAlign: alignment.textAlign,
+                              style: context.textTheme.bodyText1!
+                                  .copyWith(height: 1.5),
+                            ),
+                          );
+                        },
                       );
-                    }
+                    });
                   }
                 } else {
-                  return Center(child: Text("Loading..."));
+                  return Text("Loading...");
                 }
               },
             )
-          : Center(
-              child:
-                  Text(player.playing?.track.type.toString() ?? "Unknown type"),
-            ),
+          : Text(player.playing?.track.type.toString() ?? "Unknown type"),
     );
   }
 }
