@@ -11,7 +11,7 @@ const Map<String, String> I18N_zh_CN = {
 
   // home
   I18n.SHUFFLE_MODE: "随机模式",
-  I18n.MY_FAVORITE: "喜欢",
+  I18n.MY_FAVORITE: "我的收藏",
 
   // server
   I18n.SERVER: "服务器",

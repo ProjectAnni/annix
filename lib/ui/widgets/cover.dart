@@ -94,7 +94,7 @@ class MusicCover extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cover = Hero(
-      tag: "${tag ?? ""}/$albumId/$discId",
+      tag: "$tag/$albumId/$discId",
       child: ExtendedImage.network(
         CoverReverseProxy()
             .url(

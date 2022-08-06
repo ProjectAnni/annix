@@ -1,3 +1,4 @@
+import 'package:annix/ui/page/home/home_desktop.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/pages/playlist/playlist_favorite.dart';
 import 'package:annix/pages/root/albums.dart';
@@ -22,7 +23,10 @@ class AnnixBodyPageRouter extends GetxController {
 
   AnnixBodyPageRouter(String initialPage) : _currentPage = initialPage {
     this.registerPages([
-      AnnixPage.wrap(route: "/home", page: () => HomeView()),
+      AnnixPage.wrap(
+        route: "/home",
+        page: () => Global.isDesktop ? DesktopHomePage() : HomeView(),
+      ),
       AnnixPage.wrap(route: "/albums", page: () => AlbumsView()),
       AnnixPage.wrap(route: "/tags", page: () => TagsView()),
       AnnixPage.wrap(route: "/playlists", page: () => PlaylistsView()),
@@ -88,7 +92,7 @@ class AnnixBodyPageRouter extends GetxController {
   static to<T>(
     dynamic page, {
     bool? opaque,
-    Transition? transition,
+    Transition? transition = Transition.fadeIn,
     Curve? curve,
     Duration? duration,
     String? routeName,

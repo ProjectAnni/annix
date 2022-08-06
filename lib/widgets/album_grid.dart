@@ -21,51 +21,56 @@ class AlbumGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: FutureBuilder<Album?>(
-        future: Global.metadataSource.future
-            .then((meta) => meta.getAlbum(albumId: albumId)),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasError) {
-            FLog.error(
-              text: "Failed to fetch metadata",
-              exception: snapshot.error,
-            );
-          }
-
-          return InkWell(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                MusicCover(albumId: albumId),
-                snapshot.hasData
-                    ? Container(
-                        alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.all(4.0),
-                        child: Text(
-                          '${snapshot.data?.title}',
-                          style: context.textTheme.bodyLarge?.copyWith(
-                            backgroundColor: context
-                                .theme.colorScheme.secondaryContainer
-                                .withOpacity(0.8),
-                          ),
-                          softWrap: false,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
-            onTap: () {
-              if (snapshot.hasData) {
-                AnnixBodyPageRouter.to(
-                  () => AlbumDetailScreen(album: snapshot.data!),
+    return Center(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Card(
+          clipBehavior: Clip.hardEdge,
+          child: FutureBuilder<Album?>(
+            future: Global.metadataSource.future
+                .then((meta) => meta.getAlbum(albumId: albumId)),
+            builder: (ctx, snapshot) {
+              if (snapshot.hasError) {
+                FLog.error(
+                  text: "Failed to fetch metadata",
+                  exception: snapshot.error,
                 );
               }
+
+              return InkWell(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    MusicCover(albumId: albumId),
+                    snapshot.hasData
+                        ? Container(
+                            alignment: Alignment.bottomLeft,
+                            padding: EdgeInsets.all(4.0),
+                            child: Text(
+                              '${snapshot.data?.title}',
+                              style: context.textTheme.bodyLarge?.copyWith(
+                                backgroundColor: context
+                                    .theme.colorScheme.secondaryContainer
+                                    .withOpacity(0.8),
+                              ),
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
+                onTap: () {
+                  if (snapshot.hasData) {
+                    AnnixBodyPageRouter.to(
+                      () => AlbumDetailScreen(album: snapshot.data!),
+                    );
+                  }
+                },
+              );
             },
-          );
-        },
+          ),
+        ),
       ),
     );
   }
