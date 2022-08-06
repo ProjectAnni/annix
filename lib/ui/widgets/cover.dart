@@ -64,18 +64,7 @@ class PlayingMusicCover extends StatelessWidget {
     if (!card) {
       return cover;
     } else {
-      return Card(
-        clipBehavior: Clip.hardEdge,
-        elevation: 4,
-        margin: EdgeInsets.zero,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: cover,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      );
+      return _CoverCard(child: cover);
     }
   }
 }
@@ -86,6 +75,7 @@ class MusicCover extends StatelessWidget {
   final String albumId;
   final int? discId;
 
+  final bool card;
   final BoxFit? fit;
   final FilterQuality filterQuality;
   final String? tag;
@@ -94,6 +84,7 @@ class MusicCover extends StatelessWidget {
     super.key,
     required this.albumId,
     this.discId,
+    this.card = false,
     this.fit,
     this.filterQuality = FilterQuality.low,
     this.tag,
@@ -101,7 +92,7 @@ class MusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
+    final cover = Hero(
       tag: "${tag ?? ""}/$albumId/$discId",
       child: ExtendedImage.network(
         CoverReverseProxy()
@@ -121,6 +112,33 @@ class MusicCover extends StatelessWidget {
         cacheHeight: 800,
         gaplessPlayback: true,
         cache: false,
+      ),
+    );
+
+    if (!card) {
+      return cover;
+    } else {
+      return _CoverCard(child: cover);
+    }
+  }
+}
+
+class _CoverCard extends StatelessWidget {
+  final Widget child;
+  const _CoverCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: child,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

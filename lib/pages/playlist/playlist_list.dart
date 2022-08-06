@@ -25,7 +25,10 @@ class PlaylistDetailScreen extends PlaylistScreen {
     if (albumId == null) {
       return DummyMusicCover();
     } else {
-      return MusicCover(albumId: albumId);
+      return MusicCover(
+        albumId: albumId,
+        card: true,
+      );
     }
   }
 

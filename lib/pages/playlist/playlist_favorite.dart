@@ -17,7 +17,10 @@ class FavoriteScreen extends PlaylistScreen {
 
   String get title => I18n.MY_FAVORITE.tr;
   Widget get cover => _anniv.favorites.keys.isNotEmpty
-      ? MusicCover(albumId: _anniv.favorites.keys.last.split('/')[0])
+      ? MusicCover(
+          albumId: _anniv.favorites.keys.last.split('/')[0],
+          card: true,
+        )
       : DummyMusicCover();
 
   @override

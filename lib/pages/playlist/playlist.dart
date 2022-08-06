@@ -44,13 +44,7 @@ abstract class PlaylistScreen extends StatelessWidget {
           Container(
             height: 150,
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Card(
-              elevation: 8,
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: cover,
-              ),
-            ),
+            child: cover,
           ),
           // intro text
           Flexible(

@@ -21,7 +21,7 @@ class AlbumDetailScreen extends PlaylistScreen {
   AlbumDetailScreen({required this.album});
 
   String get title => album.title;
-  Widget get cover => MusicCover(albumId: album.albumId);
+  Widget get cover => MusicCover(albumId: album.albumId, card: true);
 
   @override
   List<Widget> get intro => [
