@@ -13,7 +13,7 @@ class TwoSideSliver extends MultiChildRenderObjectWidget {
     this.leftPercentage = 0.5,
     required this.left,
     required this.right,
-  })  : assert(leftPercentage > 0 && leftPercentage < 1),
+  })  : assert(leftPercentage >= 0 && leftPercentage <= 1),
         super(children: [left, right]);
 
   @override

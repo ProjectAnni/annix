@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 class AnnixLayoutMobile extends AnnixLayout {
   static const pages = <String>[
     '/home',
-    '/albums',
+    '/tags',
     '/server',
   ];
 
@@ -91,8 +91,8 @@ class AnnixLayoutMobile extends AnnixLayout {
                 label: I18n.HOME.tr,
               ),
               NavigationDestination(
-                icon: Icon(Icons.album_outlined),
-                label: I18n.ALBUMS.tr,
+                icon: Icon(Icons.local_offer_outlined),
+                label: I18n.CATEGORY.tr,
               ),
               NavigationDestination(
                 icon: Icon(Icons.dns_outlined),

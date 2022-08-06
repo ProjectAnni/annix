@@ -3,6 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist/playlist_list.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
@@ -30,7 +31,9 @@ class PlaylistView extends StatelessWidget {
                   child: anniv.favorites.isEmpty
                       ? DummyMusicCover()
                       : MusicCover(
-                          albumId: anniv.favorites.values.last.track.albumId),
+                          albumId: anniv.favorites.values.last.track.albumId,
+                          card: true,
+                        ),
                 ),
                 title: Text(I18n.MY_FAVORITE.tr),
                 visualDensity: VisualDensity.comfortable,
@@ -53,7 +56,10 @@ class PlaylistView extends StatelessWidget {
               aspectRatio: 1,
               child: albumId == null
                   ? DummyMusicCover()
-                  : MusicCover(albumId: albumId),
+                  : MusicCover(
+                      albumId: albumId,
+                      card: true,
+                    ),
             ),
             title: Text(playlist.name),
             visualDensity: VisualDensity.comfortable,
@@ -135,6 +141,7 @@ class HomePage extends StatelessWidget {
           SliverPadding(
             padding: EdgeInsets.only(top: 16, left: 16, bottom: 12),
             sliver: TwoSideSliver(
+              leftPercentage: Global.isDesktop ? 0.5 : 1,
               left: _SimpleTitle(
                 sliver: true,
                 title: I18n.PLAYLISTS.tr,
@@ -148,10 +155,9 @@ class HomePage extends StatelessWidget {
             ),
           ),
           TwoSideSliver(
+            leftPercentage: Global.isDesktop ? 0.5 : 1,
             left: PlaylistView(),
-            right: SliverList(
-              delegate: SliverChildListDelegate([]),
-            ),
+            right: SliverToBoxAdapter(),
           ),
         ],
       ),
@@ -176,14 +182,11 @@ class _SimpleTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = Row(
       children: [
-        Icon(
-          icon,
-          size: 28,
-        ),
+        Icon(icon, size: 28),
         SizedBox(width: 8),
         Text(
           this.title,
-          style: context.textTheme.titleLarge,
+          style: context.textTheme.headline5,
         ),
       ],
     );

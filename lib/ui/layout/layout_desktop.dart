@@ -72,10 +72,6 @@ class AnnixLayoutDesktop extends AnnixLayout {
                           icon: Icon(Icons.casino_outlined),
                           label: Text(I18n.HOME.tr),
                         ),
-                        // NavigationRailDestination(
-                        //   icon: Icon(Icons.album_outlined),
-                        //   label: Text(I18n.ALBUMS.tr),
-                        // ),
                         NavigationRailDestination(
                           icon: Icon(Icons.local_offer_outlined),
                           label: Text(I18n.CATEGORY.tr),

@@ -1,7 +1,6 @@
 import 'package:annix/ui/page/home.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/pages/playlist/playlist_favorite.dart';
-import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/root/tags.dart';
 import 'package:annix/ui/page/search.dart';
@@ -22,7 +21,6 @@ class AnnixBodyPageRouter extends GetxController {
   AnnixBodyPageRouter(String initialPage) : _currentPage = initialPage {
     this.registerPages([
       AnnixPage.wrap(route: "/home", page: () => HomePage()),
-      AnnixPage.wrap(route: "/albums", page: () => AlbumsView()),
       AnnixPage.wrap(route: "/tags", page: () => TagsView()),
       AnnixPage.wrap(route: "/server", page: () => ServerView()),
       AnnixPage.wrap(
