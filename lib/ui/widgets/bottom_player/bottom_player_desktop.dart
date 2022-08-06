@@ -108,6 +108,12 @@ class DesktopBottomPlayer extends StatelessWidget {
                           onPressed: () => player.next(),
                         ),
                         LoopModeButton(),
+                        IconButton(
+                          icon: Icon(Icons.queue_music_outlined),
+                          onPressed: () {
+                            AnnixBodyPageRouter.toNamed('/playing-queue');
+                          },
+                        ),
                       ],
                     ),
                   ],
