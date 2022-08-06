@@ -3,7 +3,6 @@ import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,7 +33,7 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   Widget _albumIntro(BuildContext context) {
     return Container(
-      height: 150,
+      height: 180,
       padding: EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -56,15 +55,33 @@ abstract class PlaylistScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AutoSizeText(
+                  Text(
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: context.textTheme.titleMedium,
                     textScaleFactor: 1.2,
-                    minFontSize: context.textTheme.titleSmall!.fontSize!,
                   ),
                   ...intro,
+                  ButtonBar(
+                    alignment: MainAxisAlignment.start,
+                    children: [
+                      TextButton.icon(
+                        icon: Icon(Icons.play_arrow),
+                        label: Text("Play All"),
+                        onPressed: () {
+                          playFullList(shuffle: false);
+                        },
+                      ),
+                      OutlinedButton.icon(
+                        icon: Icon(Icons.shuffle),
+                        label: Text("Shuffle"),
+                        onPressed: () {
+                          playFullList(shuffle: true);
+                        },
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -109,22 +126,6 @@ abstract class PlaylistScreen extends StatelessWidget {
           _albumIntro(context),
           Expanded(child: child),
         ],
-      ),
-      floatingActionButton: GestureDetector(
-        onLongPress: () {
-          settings.shufflePlayButton.value = !settings.shufflePlayButton.value;
-        },
-        child: Obx(() {
-          return FloatingActionButton(
-            child: Icon(
-              settings.shufflePlayButton.value
-                  ? Icons.shuffle
-                  : Icons.play_arrow,
-            ),
-            onPressed: () =>
-                playFullList(shuffle: settings.shufflePlayButton.value),
-          );
-        }),
       ),
     );
   }

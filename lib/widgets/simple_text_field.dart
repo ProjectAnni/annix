@@ -21,9 +21,6 @@ class SimpleTextField extends StatelessWidget {
         obscureText: password,
         decoration: InputDecoration(
           labelText: label,
-          isDense: true,
-          filled: true,
-          fillColor: context.colorScheme.surfaceVariant,
         ),
         controller: controller,
       ),

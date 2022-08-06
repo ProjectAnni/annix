@@ -202,7 +202,7 @@ class AnnivDialog extends StatelessWidget {
           style: TextButton.styleFrom(
             textStyle: context.textTheme.labelLarge,
           ),
-          child: const Text('Add'),
+          child: const Text('Login'),
           onPressed: () async {
             var url = this._controller.serverUrlController.text;
             var email = this._controller.emailController.text;
@@ -219,6 +219,7 @@ class AnnivDialog extends StatelessWidget {
                 url = "https://$url";
               }
               try {
+                // TODO: alert progress
                 await anniv.login(url, email, password);
                 Navigator.of(Get.overlayContext!).pop();
               } catch (e) {
@@ -228,12 +229,6 @@ class AnnivDialog extends StatelessWidget {
           },
         ),
       ],
-      titlePadding: EdgeInsets.only(top: 8),
-      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-      actionsPadding: EdgeInsets.zero,
-      insetPadding: EdgeInsets.zero,
-      buttonPadding: EdgeInsets.zero,
-      elevation: 16,
     );
   }
 }

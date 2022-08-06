@@ -1,4 +1,5 @@
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:get/get.dart';
@@ -57,7 +58,9 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   double getPlayingLineBias() {
-    return 0.2;
+    return Global.isDesktop
+        ? 0.2 // on desk, we tend to make lyric display at top
+        : 0.5; // but on mobile phone, it would look better at the center of the screen
   }
 
   @override

@@ -56,24 +56,24 @@ class AnnixLayoutMobile extends AnnixLayout {
           ),
         ],
       ),
-      // floatingActionButton: Builder(builder: (context) {
-      //   return GetBuilder<PlayerController>(
-      //     builder: (player) {
-      //       return Padding(
-      //         padding: EdgeInsets.only(
-      //           bottom: player.playing != null ? 56.0 : 0.0,
-      //         ),
-      //         child: FloatingActionButton(
-      //           child: Icon(Icons.search),
-      //           onPressed: () {
-      //             AnnixBodyPageRouter.toNamed("/search");
-      //           },
-      //           isExtended: true,
-      //         ),
-      //       );
-      //     },
-      //   );
-      // }),
+      floatingActionButton: Builder(builder: (context) {
+        return GetBuilder<PlayerController>(
+          builder: (player) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: player.playing != null ? 56.0 : 0.0,
+              ),
+              child: FloatingActionButton(
+                child: Icon(Icons.search),
+                onPressed: () {
+                  AnnixBodyPageRouter.toNamed("/search");
+                },
+                isExtended: true,
+              ),
+            );
+          },
+        );
+      }),
       bottomNavigationBar: GetBuilder<AnnixBodyPageRouter>(
         builder: (router) {
           final route = router.currentPage;

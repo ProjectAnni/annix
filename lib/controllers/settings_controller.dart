@@ -7,11 +7,6 @@ class SettingsController extends GetxController {
   /// Default: true
   late RxBool useMobileNetwork;
 
-  /// Show shuffle button as FAB instead of play button
-  ///
-  /// Default value: false
-  late RxBool shufflePlayButton;
-
   /// Whether to skip certification check
   ///
   /// Default value: false
@@ -24,10 +19,6 @@ class SettingsController extends GetxController {
     useMobileNetwork =
         (Global.preferences.getBool("annix_use_mobile_network") ?? true).obs;
     useMobileNetwork.listen(saveChangedVariable("annix_use_mobile_network"));
-
-    shufflePlayButton =
-        (Global.preferences.getBool("annix_shuffle_play_button") ?? false).obs;
-    shufflePlayButton.listen(saveChangedVariable("annix_shuffle_play_button"));
 
     skipCertificateVerification =
         (Global.preferences.getBool("annix_skip_certificate_verification") ??

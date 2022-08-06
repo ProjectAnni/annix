@@ -41,7 +41,7 @@ dependencies:
 
   ########################## Widgets ##########################
   # https://github.com/suragch/audio_video_progress_bar/issues/23
-  # use official version if https://github.com/suragch/audio_video_progress_bar/pull/29 was merged
+  # use official version until https://github.com/suragch/audio_video_progress_bar/pull/29 was merged
   audio_video_progress_bar:
     git:
       url: https://github.com/Hwan-seok/audio_video_progress_bar
@@ -50,7 +50,6 @@ dependencies:
   extended_image: ^7.0.0-dev.1
   flutter_lyric: ^2.0.3
   settings_ui: ^2.0.2
-  auto_size_text: ^3.0.0
   material_color_utilities: ^0.2.0
 
   toml: ^0.13.1
@@ -59,7 +58,6 @@ dependencies:
   sqflite: ^2.0.1
   sqflite_common_ffi: ^2.1.1
   uuid: ^3.0.5
-  freezed_annotation: ^2.0.3
   cupertino_icons: ^1.0.5
 
   responsive_framework: ^0.2.0
@@ -73,7 +71,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.1.5
-  freezed: ^2.0.3+1
 
 flutter:
   uses-material-design: true
