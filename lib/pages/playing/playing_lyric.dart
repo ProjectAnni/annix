@@ -10,7 +10,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:get/get.dart';
 
-class PlayingLyricUI extends UINetease {
+extension on LyricAlign {
+  TextAlign get textAlign {
+    switch (this) {
+      case LyricAlign.LEFT:
+        return TextAlign.left;
+      case LyricAlign.RIGHT:
+        return TextAlign.right;
+      case LyricAlign.CENTER:
+        return TextAlign.center;
+    }
+  }
+}
+
+class PlayingLyricUI extends LyricUI {
+  final LyricAlign align;
+
+  PlayingLyricUI({this.align = LyricAlign.CENTER});
+
   @override
   TextStyle getPlayingMainTextStyle() {
     return Get.textTheme.bodyText1!;
@@ -21,10 +38,46 @@ class PlayingLyricUI extends UINetease {
     return Get.textTheme.bodyText2!
         .copyWith(color: Get.textTheme.bodyText2?.color?.withOpacity(0.5));
   }
+
+  @override
+  double getInlineSpace() => 20;
+
+  @override
+  double getLineSpace() => 20;
+
+  @override
+  LyricAlign getLyricHorizontalAlign() {
+    return this.align;
+  }
+
+  @override
+  TextStyle getPlayingExtTextStyle() {
+    // TODO: custom style
+    return TextStyle(color: Colors.grey[300], fontSize: 14);
+  }
+
+  @override
+  TextStyle getOtherExtTextStyle() {
+    // TODO: custom style
+    return TextStyle(color: Colors.grey[300], fontSize: 14);
+  }
+
+  @override
+  double getPlayingLineBias() {
+    return 0.5;
+  }
+
+  @override
+  Color getLyricHightlightColor() {
+    return Get.theme.colorScheme.primary;
+  }
 }
 
 class PlayingLyric extends StatelessWidget {
-  const PlayingLyric({Key? key}) : super(key: key);
+  final LyricAlign alignment;
+
+  const PlayingLyric({Key? key, this.alignment = LyricAlign.CENTER})
+      : super(key: key);
 
   Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
     final AnnivController anniv = Get.find();
@@ -70,19 +123,25 @@ class PlayingLyric extends StatelessWidget {
                     if (lyric.type == "lrc") {
                       final model = LyricsModelBuilder.create()
                           .bindLyricToMain(lyric.data)
+                          // .bindLyricToExt(lyric) // TODO: translation
                           .getModel();
                       return Obx(() {
                         return LyricsReader(
                           model: model,
-                          lyricUi: PlayingLyricUI(),
-                          position: player.progress.value.inMilliseconds,
+                          lyricUi: PlayingLyricUI(align: alignment),
+                          position: player.progress.value
+                              .inMilliseconds /* + 500 as offset */,
+                          // don't know why only playing = false has highlight
+                          playing: false,
                         );
                       });
                     } else {
                       return SingleChildScrollView(
                         child: Text(
                           lyric.data,
-                          textAlign: TextAlign.center,
+                          textAlign: alignment.textAlign,
+                          style: context.textTheme.bodyText1!
+                              .copyWith(height: 1.5),
                         ),
                       );
                     }

@@ -6,6 +6,7 @@ import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 
 class PlayingDesktopScreen extends StatelessWidget {
   PlayingDesktopScreen({Key? key}) : super(key: key);
@@ -77,7 +78,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Expanded(child: PlayingLyric()),
+                Expanded(child: PlayingLyric(alignment: LyricAlign.LEFT)),
               ],
             ),
           ),

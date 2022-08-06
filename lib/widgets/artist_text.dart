@@ -66,24 +66,53 @@ class ArtistText extends StatelessWidget {
   final TextStyle? style;
   final TextOverflow? overflow;
 
+  bool get isExtensible =>
+      artists.firstWhereOrNull((artist) => artist.children.isNotEmpty) != null;
+
   final fullArtist = false.obs;
 
-  ArtistText(String artist, {Key? key, this.overflow, this.style})
+  ArtistText(String artist,
+      {Key? key, this.overflow = TextOverflow.ellipsis, this.style})
       : artist = artist,
         artists = readArtists(_ArtistParser(data: artist, idx: 0)),
         super(key: key);
 
+  void toggleExtend() {
+    fullArtist.value = !fullArtist.value;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () {
-        fullArtist.value = !fullArtist.value;
-      },
+      onLongPress: this.toggleExtend,
       child: Obx(
-        () => Text(
-          fullArtist.value ? artist : artists.map((e) => e.name).join("、"),
-          style: style,
-          overflow: overflow,
+        () => Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              flex: 90,
+              child: Text(
+                fullArtist.value
+                    ? artist
+                    : artists.map((e) => e.name).join("、"),
+                style: style,
+                overflow: overflow,
+                maxLines: 1,
+              ),
+            ),
+            if (this.isExtensible)
+              Flexible(
+                child: IconButton(
+                  onPressed: this.toggleExtend,
+                  isSelected: fullArtist.value,
+                  icon: Icon(Icons.arrow_forward_ios_outlined),
+                  selectedIcon: Icon(Icons.arrow_back_ios_outlined),
+                  iconSize: 12,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+          ],
         ),
       ),
     );

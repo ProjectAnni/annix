@@ -127,10 +127,10 @@ class _SearchScreenState extends State<SearchScreen> {
           controller: _controller,
           decoration: InputDecoration(
             hintText: "Search",
-            contentPadding:
-                EdgeInsets.only(left: 8, right: 0, top: 8, bottom: 8),
-            border: InputBorder.none,
-            isDense: true,
+            // contentPadding:
+            //     EdgeInsets.only(left: 8, right: 0, top: 8, bottom: 8),
+            // border: InputBorder.none,
+            // isDense: true,
           ),
           onSubmitted: (_) => search(anniv.client!),
         ),

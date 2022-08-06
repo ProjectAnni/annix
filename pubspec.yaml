@@ -15,6 +15,10 @@ dependencies:
     git:
       url: https://github.com/ProjectAnni/Flogs
   get: ^4.6.5
+  # use provier in some performance-critical situations such as current playing state
+  # I just don't belive in the performance of GetX.
+  # Would replace it with provider completely in the future.
+  provider: ^6.0.3
   shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.5
 
@@ -47,7 +51,7 @@ dependencies:
   flutter_lyric: ^2.0.3
   settings_ui: ^2.0.2
   auto_size_text: ^3.0.0
-  material_color_utilities: ^0.1.5
+  material_color_utilities: ^0.2.0
 
   toml: ^0.13.1
   json_serializable: ^6.2.0
