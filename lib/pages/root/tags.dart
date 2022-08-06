@@ -50,7 +50,6 @@ class TagsView extends StatelessWidget {
                                     onTap: () {
                                       AnnixBodyPageRouter.to(
                                         () => TagScreen(name: e.name),
-                                        id: 1,
                                       );
                                     },
                                   ))

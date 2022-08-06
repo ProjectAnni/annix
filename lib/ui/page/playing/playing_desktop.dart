@@ -1,4 +1,5 @@
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/pages/tag.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/pages/playlist/playlist_album.dart';
 import 'package:annix/ui/route/route.dart';
@@ -65,7 +66,11 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   player.playing?.track.artist ?? "",
                                   expandable: false),
                               onPressed: () {
-                                // TODO: jump to tag if exists
+                                AnnixBodyPageRouter.to(
+                                  () => TagScreen(
+                                    name: player.playing!.track.artist,
+                                  ),
+                                );
                               },
                             ),
                             TextButton.icon(

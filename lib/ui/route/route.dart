@@ -91,7 +91,6 @@ class AnnixBodyPageRouter extends GetxController {
     Transition? transition,
     Curve? curve,
     Duration? duration,
-    int? id,
     String? routeName,
     bool fullscreenDialog = false,
     dynamic arguments,
