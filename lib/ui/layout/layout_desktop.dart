@@ -1,5 +1,5 @@
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/pages/desktop/desktop_bottom_player.dart';
+import 'package:annix/ui/widgets/bottom_player/bottom_player.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:flutter/material.dart';

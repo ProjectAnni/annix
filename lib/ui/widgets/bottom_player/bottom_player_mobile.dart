@@ -7,10 +7,10 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BottomPlayer extends StatelessWidget {
+class MobileBottomPlayer extends StatelessWidget {
   final double height;
 
-  BottomPlayer({Key? key, this.height = 60}) : super(key: key);
+  MobileBottomPlayer({Key? key, this.height = 60}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

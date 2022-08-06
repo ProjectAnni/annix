@@ -2,7 +2,7 @@ import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/route/route.dart';
-import 'package:annix/widgets/bottom_player.dart';
+import 'package:annix/ui/widgets/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,8 +50,9 @@ class AnnixLayoutMobile extends AnnixLayout {
             ),
           ),
           GetBuilder<PlayerController>(
-            builder: (player) =>
-                player.playing != null ? BottomPlayer() : SizedBox.shrink(),
+            builder: (player) => player.playing != null
+                ? MobileBottomPlayer()
+                : SizedBox.shrink(),
           ),
         ],
       ),
