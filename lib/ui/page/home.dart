@@ -26,17 +26,17 @@ class PlaylistView extends StatelessWidget {
           if (index == 0) {
             // fav
             return ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                 leading: AspectRatio(
                   aspectRatio: 1,
                   child: anniv.favorites.isEmpty
                       ? DummyMusicCover()
                       : MusicCover(
-                          albumId: anniv.favorites.values.last.track.albumId,
-                          card: true,
-                        ),
+                          albumId: anniv.favorites.values.last.track.albumId),
                 ),
                 title: Text(I18n.MY_FAVORITE.tr),
-                visualDensity: VisualDensity.comfortable,
+                visualDensity: VisualDensity.standard,
                 onTap: () {
                   AnnixBodyPageRouter.toNamed(
                     "/favorite",
@@ -52,17 +52,18 @@ class PlaylistView extends StatelessWidget {
           final albumId =
               playlist.cover.albumId == "" ? null : playlist.cover.albumId;
           return ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             leading: AspectRatio(
               aspectRatio: 1,
               child: albumId == null
                   ? DummyMusicCover()
-                  : MusicCover(
-                      albumId: albumId,
-                      card: true,
-                    ),
+                  : MusicCover(albumId: albumId),
             ),
-            title: Text(playlist.name),
-            visualDensity: VisualDensity.comfortable,
+            title: Text(
+              playlist.name,
+              overflow: TextOverflow.ellipsis,
+            ),
+            visualDensity: VisualDensity.standard,
             onTap: () async {
               final playlist =
                   await anniv.client!.getPlaylistDetail(playlistId);

@@ -3,7 +3,7 @@ import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/services/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:responsive_framework/responsive_wrapper.dart';
+// import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:provider/provider.dart';
 
 class AnnixApp extends StatelessWidget {
@@ -26,16 +26,16 @@ class AnnixApp extends StatelessWidget {
           fallbackLocale: const Locale('en', 'US'),
           // routes
           home: child,
-          builder: (context, child) => ResponsiveWrapper.builder(
-            child,
-            defaultScale: true,
-            breakpoints: [
-              ResponsiveBreakpoint.resize(600, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
-              ResponsiveBreakpoint.autoScale(2400, name: '4K'),
-            ],
-          ),
+          // builder: (context, child) => ResponsiveWrapper.builder(
+          //   child,
+          //   defaultScale: true,
+          //   breakpoints: [
+          //     ResponsiveBreakpoint.resize(600, name: MOBILE),
+          //     ResponsiveBreakpoint.autoScale(800, name: TABLET),
+          //     ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
+          //     ResponsiveBreakpoint.autoScale(2400, name: '4K'),
+          //   ],
+          // ),
         );
       },
       child: AnnixLayout.build(),

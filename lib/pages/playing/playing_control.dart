@@ -21,7 +21,7 @@ class PlayingControl extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          PlayingMusicCover(card: true),
+          PlayingMusicCover(),
           Column(
             children: [
               GetBuilder<PlayerController>(

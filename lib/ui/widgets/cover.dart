@@ -21,7 +21,7 @@ class PlayingMusicCover extends StatelessWidget {
 
   PlayingMusicCover({
     super.key,
-    this.card = false,
+    this.card = true,
     this.fit,
     this.filterQuality = FilterQuality.medium,
   });
@@ -85,7 +85,7 @@ class MusicCover extends StatelessWidget {
     super.key,
     required this.albumId,
     this.discId,
-    this.card = false,
+    this.card = true,
     this.fit,
     this.filterQuality = FilterQuality.low,
     this.tag,
@@ -146,16 +146,24 @@ class _CoverCard extends StatelessWidget {
 }
 
 class DummyMusicCover extends StatelessWidget {
-  const DummyMusicCover({super.key});
+  final bool card;
+
+  const DummyMusicCover({this.card = true});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final cover = Container(
       color: Colors.black87,
       child: Center(
         child: Icon(Icons.music_note, color: Colors.white, size: 32),
       ),
     );
+
+    if (!card) {
+      return cover;
+    } else {
+      return _CoverCard(child: cover);
+    }
   }
 }
 
