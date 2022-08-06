@@ -42,9 +42,11 @@ abstract class PlaylistScreen extends StatelessWidget {
         children: [
           // cover
           Container(
-            height: 150,
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: cover,
+            child: FractionallySizedBox(
+              heightFactor: 1,
+              child: cover,
+            ),
           ),
           // intro text
           Flexible(
@@ -99,6 +101,7 @@ abstract class PlaylistScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: pageTitle,
+        scrolledUnderElevation: 0,
         actions: actions,
       ),
       body: Column(
