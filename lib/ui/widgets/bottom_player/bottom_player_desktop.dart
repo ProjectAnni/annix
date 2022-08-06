@@ -52,7 +52,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           // cover
                           Container(
                             padding: EdgeInsets.only(bottom: 8, top: 4),
-                            child: _card(child: PlayingMusicCover()),
+                            child: PlayingMusicCover(card: true),
                           ),
                           // track info
                           Expanded(
@@ -117,19 +117,6 @@ class DesktopBottomPlayer extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _card({required Widget child}) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      elevation: 4,
-      margin: EdgeInsets.zero,
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: child,
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );
   }
 }

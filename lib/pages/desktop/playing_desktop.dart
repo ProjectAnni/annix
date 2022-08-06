@@ -25,19 +25,7 @@ class PlayingDesktopScreen extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 5,
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Card(
-                        elevation: 4,
-                        clipBehavior: Clip.hardEdge,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: PlayingMusicCover(),
-                      ),
-                    ),
-                  ),
+                  child: Center(child: PlayingMusicCover(card: true)),
                 ),
                 SizedBox(width: 16),
                 Expanded(

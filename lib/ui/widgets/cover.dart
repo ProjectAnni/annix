@@ -14,18 +14,20 @@ import 'package:get/get.dart';
 class PlayingMusicCover extends StatelessWidget {
   final AnnilController annil = Get.find();
 
+  final bool card;
   final BoxFit? fit;
   final FilterQuality filterQuality;
 
   PlayingMusicCover({
     super.key,
+    this.card = false,
     this.fit,
     this.filterQuality = FilterQuality.medium,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
+    final cover = Hero(
       tag: "playing",
       child: GetBuilder<PlayerController>(
         builder: (player) {
@@ -58,6 +60,23 @@ class PlayingMusicCover extends StatelessWidget {
         },
       ),
     );
+
+    if (!card) {
+      return cover;
+    } else {
+      return Card(
+        clipBehavior: Clip.hardEdge,
+        elevation: 4,
+        margin: EdgeInsets.zero,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: cover,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      );
+    }
   }
 }
 

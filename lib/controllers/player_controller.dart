@@ -88,9 +88,6 @@ class PlayerController extends GetxController {
       return;
     }
 
-    // set lyric to null as loading
-    this.playingLyric.value = null;
-
     if (reload) {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
         FLog.trace(text: "Start playing");
@@ -108,6 +105,9 @@ class PlayerController extends GetxController {
         //   }
         // });
         // await stopStatus.future;
+
+        // set lyric to null as loading
+        this.playingLyric.value = null;
 
         final source = this.queue[this.playingIndex!];
         if (!source.preloaded) {
