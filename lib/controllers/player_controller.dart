@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/lyric/lyric_provider.dart';
+import 'package:annix/lyric/lyric_provider_petitlyrics.dart';
+import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -53,6 +57,7 @@ class PlayerController extends GetxController {
   int? playingIndex;
   AnnilAudioSource? get playing =>
       this.playingIndex != null ? this.queue[this.playingIndex!] : null;
+  Rxn<String> playingLyric = Rxn();
 
   @override
   onInit() {
@@ -75,10 +80,14 @@ class PlayerController extends GetxController {
   Future<void> play({bool reload = false}) async {
     if (this.queue.isEmpty) return;
 
+    // activate audio session
     if (!await (await AudioSession.instance).setActive(true)) {
       // request denied
       return;
     }
+
+    // set lyric to null as loading
+    this.playingLyric.value = null;
 
     if (reload) {
       if (this.playingIndex != null && this.playingIndex! < this.queue.length) {
@@ -102,6 +111,13 @@ class PlayerController extends GetxController {
         if (!source.preloaded) {
           this.playerStatus.value = PlayerStatus.buffering;
         }
+
+        this.getLyric(source).then((lyric) {
+          if (this.playing == source) {
+            this.playingLyric.value = lyric?.data ?? "";
+          }
+        });
+
         await this.player.play(source);
         if (this.queue.length > this.playingIndex! + 1) {
           this.queue[this.playingIndex! + 1].preload();
@@ -285,5 +301,34 @@ class PlayerController extends GetxController {
 
     await this.setLoopMode(LoopMode.off);
     await this.setPlayingQueue(await Future.wait(songs));
+  }
+
+  Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
+    final AnnivController anniv = Get.find();
+    final id = item.id;
+
+    // 1. local cache
+    var lyric = await LyricProvider.getLocal(id);
+
+    // 2. anniv
+    if (lyric == null) {
+      final lyricResult = await anniv.client!.getLyric(id);
+      lyric = lyricResult?.source;
+    }
+
+    // 3. lyric provider
+    if (lyric == null) {
+      LyricProvider provider = LyricProviderPetitLyrics();
+      final songs = await provider.search(item.track);
+      if (songs.isNotEmpty) {
+        lyric = await songs.first.lyric;
+      }
+    }
+
+    // 4. save to local cache
+    if (lyric != null) {
+      LyricProvider.saveLocal(item.id, lyric);
+    }
+    return lyric;
   }
 }

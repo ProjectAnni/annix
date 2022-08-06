@@ -1,11 +1,4 @@
-import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
-import 'package:annix/lyric/lyric_provider.dart';
-import 'package:annix/lyric/lyric_provider_netease.dart';
-import 'package:annix/lyric/lyric_provider_petitlyrics.dart';
-import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
-import 'package:annix/services/annil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:get/get.dart';
@@ -76,84 +69,70 @@ class PlayingLyricUI extends LyricUI {
 class LyricView extends StatelessWidget {
   final LyricAlign alignment;
 
-  const LyricView({Key? key, this.alignment = LyricAlign.CENTER})
-      : super(key: key);
-
-  Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
-    final AnnivController anniv = Get.find();
-    final id = item.id;
-
-    // 1. local cache
-    var lyric = await LyricProvider.getLocal(id);
-
-    // 2. anniv
-    if (lyric == null) {
-      final lyricResult = await anniv.client!.getLyric(id);
-      lyric = lyricResult?.source;
-    }
-
-    // 3. lyric provider
-    if (lyric == null) {
-      LyricProvider provider = LyricProviderPetitLyrics();
-      final songs = await provider.search(item.track);
-      if (songs.isNotEmpty) {
-        lyric = await songs.first.lyric;
-      }
-    }
-
-    // 4. save to local cache
-    if (lyric != null) {
-      LyricProvider.saveLocal(item.id, lyric);
-    }
-    return lyric;
-  }
+  const LyricView({super.key, this.alignment = LyricAlign.CENTER});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PlayerController>(
-      builder: (player) => player.playing?.track.type == TrackType.Normal
-          ? FutureBuilder<LyricLanguage?>(
-              future: getLyric(player.playing!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  final lyric = snapshot.data;
-                  if (lyric == null) {
-                    return Center(child: Text("No lyrics"));
-                  } else {
-                    final model = LyricsModelBuilder.create()
-                        .bindLyricToMain(lyric.data)
-                        // .bindLyricToExt(lyric) // TODO: translation
-                        .getModel();
-                    return Obx(() {
-                      return LyricsReader(
-                        model: model,
-                        lyricUi: PlayingLyricUI(align: alignment),
-                        position: player.progress.value
-                            .inMilliseconds /* + 500 as offset */,
-                        // don't know why only playing = false has highlight
-                        playing: false,
-                        emptyBuilder: () {
-                          return SingleChildScrollView(
-                            child: FractionallySizedBox(
-                              widthFactor: 1,
-                              child: Text(
-                                lyric.data,
-                                textAlign: alignment.textAlign,
-                                style: context.textTheme.bodyText1!
-                                    .copyWith(height: 2),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    });
-                  }
-                } else {
-                  return Text("Loading...");
-                }
-              },
-            )
-          : Text(player.playing?.track.type.toString() ?? "Unknown type"),
+    final PlayerController player = Get.find();
+    return Obx(
+      () => _LyricView(
+        lyric: player.playingLyric.value,
+        alignment: alignment,
+      ),
     );
+  }
+}
+
+class _LyricView extends StatelessWidget {
+  final LyricAlign alignment;
+  final String? lyric;
+
+  const _LyricView({
+    Key? key,
+    this.lyric,
+    this.alignment = LyricAlign.CENTER,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (lyric == null) {
+      return Text("Loading...");
+    } else if (lyric!.isEmpty) {
+      return Text("No lyrics found");
+    } else {
+      return GetBuilder<PlayerController>(
+        builder: (player) {
+          final model = LyricsModelBuilder.create()
+              .bindLyricToMain(lyric!)
+              // .bindLyricToExt(lyric) // TODO: translation
+              .getModel();
+          return StreamBuilder<Duration>(
+              stream: player.progress.stream,
+              builder: (context, position) {
+                return LyricsReader(
+                  model: model,
+                  lyricUi: PlayingLyricUI(align: alignment),
+                  position: (position.data ?? Duration.zero)
+                      .inMilliseconds /* + 500 as offset */,
+                  // don't know why only playing = false has highlight
+                  playing: false,
+                  emptyBuilder: () {
+                    return SingleChildScrollView(
+                      child: FractionallySizedBox(
+                        widthFactor: 1,
+                        child: Text(
+                          lyric!,
+                          textAlign: alignment.textAlign,
+                          style:
+                              context.textTheme.bodyText1!.copyWith(height: 2),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              });
+        },
+      );
+    }
   }
 }
