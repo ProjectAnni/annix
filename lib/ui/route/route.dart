@@ -1,4 +1,4 @@
-import 'package:annix/pages/desktop/playing_desktop.dart';
+import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/pages/playlist/playlist_favorite.dart';
 import 'package:annix/pages/root/albums.dart';
 import 'package:annix/pages/root/home.dart';
