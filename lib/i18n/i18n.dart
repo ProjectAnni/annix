@@ -31,6 +31,9 @@ class I18n extends Translations {
   static const SETTINGS_CLEAR_LYRIC_CACHE_DESC =
       "settings_clear_lyric_cache_desc";
 
+  static const SEARCH = "search";
+  static const TRACKS = "tracks";
+
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': I18N_en_US,

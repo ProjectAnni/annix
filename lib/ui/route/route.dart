@@ -5,7 +5,7 @@ import 'package:annix/pages/root/home.dart';
 import 'package:annix/pages/root/playlists.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/root/tags.dart';
-import 'package:annix/pages/search.dart';
+import 'package:annix/ui/page/search.dart';
 import 'package:annix/pages/settings/settings.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/ui/page/page.dart';

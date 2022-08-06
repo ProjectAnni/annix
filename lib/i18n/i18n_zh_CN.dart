@@ -30,4 +30,8 @@ const Map<String, String> I18N_zh_CN = {
       "当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。",
   I18n.SETTINGS_CLEAR_LYRIC_CACHE: "清除歌词缓存",
   I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC: "删除本地缓存的所有歌词。",
+
+  // search
+  I18n.SEARCH: "搜索",
+  I18n.TRACKS: "单曲",
 };

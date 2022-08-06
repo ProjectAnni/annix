@@ -29,4 +29,8 @@ const Map<String, String> I18N_en_US = {
       "You might need to refetch metadata from metadata source for local playback.",
   I18n.SETTINGS_CLEAR_LYRIC_CACHE: "Clear lyric cache",
   I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC: "Delete all lyric cache.",
+
+  // search
+  I18n.SEARCH: "Search",
+  I18n.TRACKS: "Track",
 };

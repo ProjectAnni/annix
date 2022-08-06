@@ -1,4 +1,5 @@
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -16,6 +17,13 @@ class PlaylistDetailScreen extends PlaylistScreen {
   final RefreshCallback? refresh = null;
 
   PlaylistDetailScreen({required this.playlist});
+
+  static Future<PlaylistDetailScreen?> remote(String id) async {
+    final AnnivController anniv = Get.find();
+    final playlist = await anniv.client?.getPlaylistDetail(id);
+    if (playlist == null) return null;
+    return PlaylistDetailScreen(playlist: playlist);
+  }
 
   String get title => playlist.intro.name;
   Widget get cover {
