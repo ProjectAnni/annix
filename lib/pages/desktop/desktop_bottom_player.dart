@@ -45,64 +45,69 @@ class DesktopBottomPlayer extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // cover
-                    Container(
-                      padding: EdgeInsets.only(bottom: 8, top: 4),
-                      child: _card(
-                        child: GetBuilder<PlayerController>(
-                          builder: (player) {
-                            return annil.cover(
-                              albumId: player.playing?.albumId,
-                              tag: "playing",
-                            );
-                          },
-                        ),
+                    // left
+                    Expanded(
+                      child: Row(
+                        children: [
+                          // cover
+                          Container(
+                            padding: EdgeInsets.only(bottom: 8, top: 4),
+                            child: _card(
+                              child: GetBuilder<PlayerController>(
+                                builder: (player) {
+                                  return annil.cover(
+                                    albumId: player.playing?.albumId,
+                                    tag: "playing",
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          // track info
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: GetBuilder<PlayerController>(
+                                builder: (player) {
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        player.playing?.track.title ??
+                                            "Not playing",
+                                        style: DefaultTextStyle.of(context)
+                                            .style
+                                            .apply(
+                                              fontSizeFactor: 1,
+                                              fontWeightDelta: 2,
+                                            ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        player.playing?.track.artist ??
+                                            "", // not playing, hide artist field
+                                        style: DefaultTextStyle.of(context)
+                                            .style
+                                            .apply(
+                                              fontSizeFactor: 0.75,
+                                            ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // track info
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 300),
-                        child: GetBuilder<PlayerController>(
-                          builder: (player) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Marquee(
-                                  child: Text(
-                                    player.playing?.track.title ??
-                                        "Not playing",
-                                    style: DefaultTextStyle.of(context)
-                                        .style
-                                        .apply(
-                                          fontSizeFactor: 1,
-                                          fontWeightDelta: 2,
-                                        ),
-                                  ),
-                                ),
-                                Marquee(
-                                  child: Text(
-                                    player.playing?.track.artist ?? "No artist",
-                                    style: DefaultTextStyle.of(context)
-                                        .style
-                                        .apply(
-                                          fontSizeFactor: 0.75,
-                                        ),
-                                  ),
-                                )
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Expanded(child: Container()),
-                    FavoriteButton(),
+                    // right
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        FavoriteButton(),
                         IconButton(
                           icon: Icon(Icons.skip_previous),
                           iconSize: 28,
@@ -114,9 +119,9 @@ class DesktopBottomPlayer extends StatelessWidget {
                           iconSize: 28,
                           onPressed: () => player.next(),
                         ),
+                        LoopModeButton(),
                       ],
                     ),
-                    LoopModeButton(),
                   ],
                 ),
               ),
