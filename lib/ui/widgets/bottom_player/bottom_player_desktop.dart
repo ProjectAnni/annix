@@ -1,4 +1,5 @@
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/volume.dart';
@@ -111,7 +112,23 @@ class DesktopBottomPlayer extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.queue_music_outlined),
                           onPressed: () {
-                            AnnixBodyPageRouter.toNamed('/playing-queue');
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.transparent,
+                              builder: (context) {
+                                return Container(
+                                  alignment: Alignment.bottomRight,
+                                  padding: EdgeInsets.only(bottom: 76),
+                                  child: FractionallySizedBox(
+                                    heightFactor: 0.4,
+                                    widthFactor: 0.3,
+                                    child: Material(
+                                      child: Card(child: PlayingQueue()),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
                           },
                         ),
                       ],

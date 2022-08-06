@@ -20,6 +20,7 @@ class PlayingQueue extends StatelessWidget {
             onTap: () async {
               await player.jump(index);
             },
+            dense: true,
           );
         },
       ),

@@ -1,4 +1,3 @@
-import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/pages/playlist/playlist_favorite.dart';
 import 'package:annix/pages/root/albums.dart';
@@ -41,7 +40,6 @@ class AnnixBodyPageRouter extends GetxController {
     if (Global.isDesktop) {
       this.registerPages([
         AnnixPage.wrap(route: "/playing", page: () => PlayingDesktopScreen()),
-        AnnixPage.wrap(route: "/playing-queue", page: () => PlayingQueue())
       ]);
     }
   }
