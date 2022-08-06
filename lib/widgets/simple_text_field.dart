@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:annix/utils/context_extension.dart';
 
 class SimpleTextField extends StatelessWidget {
   final String label;

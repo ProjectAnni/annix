@@ -27,7 +27,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
     '/server',
   ];
 
-  static const INITIAL_DESKTOP_PAGE = "/playing";
+  static const INITIAL_DESKTOP_PAGE = "/home";
 
   onDestinationSelected(int index) {
     AnnixBodyPageRouter.offNamed(pages[index]);

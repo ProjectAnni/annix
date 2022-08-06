@@ -130,7 +130,7 @@ class _SearchResult extends StatelessWidget {
                     onTap: () {
                       AnnixBodyPageRouter.to(
                         () => AlbumDetailScreen(
-                          album: result.albums![index].toAlbum(),
+                          album: result.albums![index],
                         ),
                       );
                     },

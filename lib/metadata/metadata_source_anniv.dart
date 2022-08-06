@@ -32,7 +32,7 @@ class AnnivMetadataSource extends MetadataSource {
     if (_network.isOnline.value) {
       final albums = await this.anniv.getAlbumsByTag(tag);
       albums.forEach((album) {
-        this.persist(album.toAlbum());
+        this.persist(album);
       });
       return albums.map((e) => e.albumId).toList();
     } else {

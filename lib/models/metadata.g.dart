@@ -6,12 +6,6 @@ part of 'metadata.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ReleaseDate _$ReleaseDateFromJson(Map<String, dynamic> json) => ReleaseDate(
-      year: json['year'] as int,
-      month: json['month'] as int?,
-      day: json['day'] as int?,
-    );
-
 Map<String, dynamic> _$ReleaseDateToJson(ReleaseDate instance) =>
     <String, dynamic>{
       'year': instance.year,
@@ -20,13 +14,13 @@ Map<String, dynamic> _$ReleaseDateToJson(ReleaseDate instance) =>
     };
 
 Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
-      albumId: json['albumId'] as String,
+      albumId: json['album_id'] as String,
       title: json['title'] as String,
       edition: json['edition'] as String?,
       catalog: json['catalog'] as String,
       artist: json['artist'] as String,
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
-      date: ReleaseDate.fromJson(json['date'] as Map<String, dynamic>),
+      date: ReleaseDate.fromJson(ReleaseDate.readValue(json, 'date')),
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       discs: (json['discs'] as List<dynamic>)
           .map((e) => Disc.fromJson(e as Map<String, dynamic>))
@@ -34,7 +28,7 @@ Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
     );
 
 Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
-      'albumId': instance.albumId,
+      'album_id': instance.albumId,
       'title': instance.title,
       'edition': instance.edition,
       'catalog': instance.catalog,

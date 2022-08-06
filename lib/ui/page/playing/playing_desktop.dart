@@ -56,40 +56,59 @@ class PlayingDesktopScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 4),
                       GetBuilder<PlayerController>(
-                        builder: (player) => ButtonBar(
-                          buttonPadding: EdgeInsets.zero,
-                          alignment: MainAxisAlignment.start,
-                          children: [
-                            TextButton.icon(
-                              icon: Icon(Icons.person_outline),
-                              label: ArtistText(
-                                  player.playing?.track.artist ?? "",
-                                  expandable: false),
-                              onPressed: () {
-                                AnnixBodyPageRouter.to(
-                                  () => TagScreen(
-                                    name: player.playing!.track.artist,
-                                  ),
-                                );
-                              },
-                            ),
-                            TextButton.icon(
-                              icon: Icon(
-                                Icons.album_outlined,
-                                size: 20,
+                        builder: (player) {
+                          final metadata = player.playing?.track;
+                          if (metadata == null) {
+                            return SizedBox.shrink();
+                          }
+
+                          return ButtonBar(
+                            buttonPadding: EdgeInsets.zero,
+                            alignment: MainAxisAlignment.start,
+                            children: [
+                              TextButton.icon(
+                                icon: Icon(Icons.person_outline),
+                                label: ArtistText(
+                                  metadata.artist,
+                                  expandable: false,
+                                ),
+                                onPressed: () {},
                               ),
-                              label: Text(
-                                  player.playing?.track.disc.album.title ?? ""),
-                              onPressed: () {
-                                AnnixBodyPageRouter.to(
-                                  () => AlbumDetailScreen(
-                                    album: player.playing!.track.disc.album,
+                              TextButton.icon(
+                                icon: Icon(
+                                  Icons.album_outlined,
+                                  size: 20,
+                                ),
+                                label: Text(metadata.disc.album.title),
+                                onPressed: () {
+                                  AnnixBodyPageRouter.to(
+                                    () => AlbumDetailScreen(
+                                      album: metadata.disc.album,
+                                    ),
+                                  );
+                                },
+                              ),
+                              ...Set.from([
+                                ...(metadata.tags ?? []),
+                                ...(metadata.disc.tags ?? []),
+                                ...(metadata.disc.album.tags ?? [])
+                              ]).map(
+                                (tag) => TextButton.icon(
+                                  icon: Icon(
+                                    Icons.local_offer_outlined,
+                                    size: 20,
                                   ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                                  label: Text(tag),
+                                  onPressed: () {
+                                    AnnixBodyPageRouter.to(
+                                      () => TagScreen(name: tag),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                       SizedBox(height: 16),
                       Expanded(

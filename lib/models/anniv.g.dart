@@ -153,7 +153,7 @@ PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
 
 SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
       albums: (json['albums'] as List<dynamic>?)
-          ?.map((e) => AlbumInfo.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => Album.fromJson(e as Map<String, dynamic>))
           .toList(),
       tracks: (json['tracks'] as List<dynamic>?)
           ?.map((e) => TrackInfoWithAlbum.fromJson(e as Map<String, dynamic>))

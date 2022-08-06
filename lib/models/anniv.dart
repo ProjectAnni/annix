@@ -93,19 +93,6 @@ class AlbumInfo {
 
   factory AlbumInfo.fromJson(Map<String, dynamic> json) =>
       _$AlbumInfoFromJson(json);
-
-  Album toAlbum() {
-    return Album(
-      albumId: albumId,
-      title: title,
-      edition: edition,
-      catalog: catalog,
-      artist: artist,
-      date: ReleaseDate.fromDynamic(date),
-      type: type,
-      discs: discs.map((e) => e.toDisc()).toList(),
-    );
-  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -378,7 +365,7 @@ class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class SearchResult {
-  List<AlbumInfo>? albums;
+  List<Album>? albums;
   List<TrackInfoWithAlbum>? tracks;
   List<PlaylistInfo>? playlists;
 

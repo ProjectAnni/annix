@@ -167,7 +167,7 @@ class AnnivClient {
         .map(
           (albumId, album) => MapEntry(
             albumId,
-            AlbumInfo.fromJson(album).toAlbum(),
+            Album.fromJson(album),
           ),
         );
   }
@@ -279,11 +279,11 @@ class AnnivClient {
         key, (value as List<dynamic>).map((e) => e.toString()).toList()));
   }
 
-  Future<List<AlbumInfo>> getAlbumsByTag(String tag) async {
+  Future<List<Album>> getAlbumsByTag(String tag) async {
     final response = await _client
         .get('/api/meta/albums/by-tag', queryParameters: {'tag': tag});
     return (response.data as List<dynamic>)
-        .map((e) => AlbumInfo.fromJson(e))
+        .map((e) => Album.fromJson(e))
         .toList();
   }
 }

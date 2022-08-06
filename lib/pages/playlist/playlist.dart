@@ -1,5 +1,4 @@
 import 'package:annix/controllers/player_controller.dart';
-import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -93,8 +92,6 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController settings = Get.find();
-
     final actions = pageActions ?? [];
     var child = body;
     if (this.refresh != null) {

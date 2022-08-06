@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'metadata.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createFactory: false)
 class ReleaseDate {
   final int year;
   final int? month;
@@ -53,8 +53,9 @@ class ReleaseDate {
     return result;
   }
 
-  factory ReleaseDate.fromJson(Map<String, dynamic> json) =>
-      _$ReleaseDateFromJson(json);
+  static readValue(Map map, String key) => map[key] as dynamic;
+
+  factory ReleaseDate.fromJson(dynamic json) => fromDynamic(json);
   Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
 }
 
@@ -108,7 +109,7 @@ extension TrackTypeExtension on TrackType {
   }
 }
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class Album {
   final String albumId;
   final String title;
@@ -116,6 +117,7 @@ class Album {
   final String catalog;
   final String artist;
   final TrackType type;
+  @JsonKey(readValue: ReleaseDate.readValue)
   final ReleaseDate date;
   final List<String>? tags;
   final List<Disc> discs;
@@ -165,7 +167,7 @@ class Album {
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class Disc {
   @JsonKey(ignore: true)
   late final Album album;
@@ -219,7 +221,7 @@ class Disc {
   Map<String, dynamic> toJson() => _$DiscToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class Track {
   @JsonKey(ignore: true)
   late final Disc disc;

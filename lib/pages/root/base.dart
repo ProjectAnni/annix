@@ -1,4 +1,3 @@
-import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -13,9 +12,9 @@ class BaseAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Global.isDesktop) {
-      return Container();
-    }
+    // if (Global.isDesktop) {
+    //   return Container();
+    // }
 
     return AppBar(
       title: title,
