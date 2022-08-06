@@ -34,4 +34,5 @@ const Map<String, String> I18N_zh_CN = {
   // search
   I18n.SEARCH: "搜索",
   I18n.TRACKS: "单曲",
+  I18n.PLAYED_RECENTLY: "最近播放",
 };

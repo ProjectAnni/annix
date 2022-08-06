@@ -33,4 +33,5 @@ const Map<String, String> I18N_en_US = {
   // search
   I18n.SEARCH: "Search",
   I18n.TRACKS: "Track",
+  I18n.PLAYED_RECENTLY: "Recently played",
 };

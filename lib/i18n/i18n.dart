@@ -33,6 +33,7 @@ class I18n extends Translations {
 
   static const SEARCH = "search";
   static const TRACKS = "tracks";
+  static const PLAYED_RECENTLY = "played_recently";
 
   @override
   Map<String, Map<String, String>> get keys => {
