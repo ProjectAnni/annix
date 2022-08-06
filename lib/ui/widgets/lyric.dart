@@ -64,7 +64,7 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   double getPlayingLineBias() {
-    return 0.5;
+    return 0.2;
   }
 
   @override
@@ -73,10 +73,10 @@ class PlayingLyricUI extends LyricUI {
   }
 }
 
-class PlayingLyric extends StatelessWidget {
+class LyricView extends StatelessWidget {
   final LyricAlign alignment;
 
-  const PlayingLyric({Key? key, this.alignment = LyricAlign.CENTER})
+  const LyricView({Key? key, this.alignment = LyricAlign.CENTER})
       : super(key: key);
 
   Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
@@ -134,11 +134,14 @@ class PlayingLyric extends StatelessWidget {
                         playing: false,
                         emptyBuilder: () {
                           return SingleChildScrollView(
-                            child: Text(
-                              lyric.data,
-                              textAlign: alignment.textAlign,
-                              style: context.textTheme.bodyText1!
-                                  .copyWith(height: 1.5),
+                            child: FractionallySizedBox(
+                              widthFactor: 1,
+                              child: Text(
+                                lyric.data,
+                                textAlign: alignment.textAlign,
+                                style: context.textTheme.bodyText1!
+                                    .copyWith(height: 2),
+                              ),
                             ),
                           );
                         },

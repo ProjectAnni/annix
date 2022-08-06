@@ -1,6 +1,6 @@
 import 'package:annix/widgets/keepalive.dart';
 import 'package:annix/pages/playing/playing_control.dart';
-import 'package:annix/pages/playing/playing_lyric.dart';
+import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class PlayingMobileScreen extends StatelessWidget {
 
   final PageController controller = PageController(initialPage: 1);
   final pages = [
-    KeepAlivePage(child: PlayingLyric()),
+    KeepAlivePage(child: LyricView()),
     PlayingControl(),
     PlayingQueue()
   ];
