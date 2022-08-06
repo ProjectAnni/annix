@@ -1,14 +1,13 @@
-import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FavoriteScreen extends PlaylistScreen {
-  final AnnilController _annil = Get.find();
   final AnnivController _anniv = Get.find();
 
   final Widget? pageTitle = null;
@@ -18,8 +17,8 @@ class FavoriteScreen extends PlaylistScreen {
 
   String get title => I18n.MY_FAVORITE.tr;
   Widget get cover => _anniv.favorites.keys.isNotEmpty
-      ? _annil.cover(albumId: _anniv.favorites.keys.last.split('/')[0])
-      : _annil.cover();
+      ? MusicCover(albumId: _anniv.favorites.keys.last.split('/')[0])
+      : DummyMusicCover();
 
   @override
   List<Widget> get intro => [

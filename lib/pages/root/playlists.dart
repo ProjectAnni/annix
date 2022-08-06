@@ -1,9 +1,9 @@
-import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist/playlist_list.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +13,6 @@ class PlaylistsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AnnivController anniv = Get.find();
-    final AnnilController annil = Get.find();
 
     return Column(
       children: [
@@ -25,14 +24,16 @@ class PlaylistsView extends StatelessWidget {
               itemBuilder: (context, index) {
                 final playlistId = anniv.playlists.keys.toList()[index];
                 final playlist = anniv.playlists[playlistId]!;
+
+                final albumId = playlist.cover.albumId == ""
+                    ? null
+                    : playlist.cover.albumId;
                 return ListTile(
                   leading: AspectRatio(
                     aspectRatio: 1,
-                    child: annil.cover(
-                      albumId: playlist.cover.albumId == ""
-                          ? null
-                          : playlist.cover.albumId,
-                    ),
+                    child: albumId == null
+                        ? DummyMusicCover()
+                        : MusicCover(albumId: albumId),
                   ),
                   title: Text(playlist.name),
                   dense: true,

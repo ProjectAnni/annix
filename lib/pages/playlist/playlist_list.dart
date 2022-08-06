@@ -1,6 +1,7 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,11 +18,16 @@ class PlaylistDetailScreen extends PlaylistScreen {
   PlaylistDetailScreen({required this.playlist});
 
   String get title => playlist.intro.name;
-  Widget get cover => _annil.cover(
-        albumId: playlist.intro.cover.albumId == ""
-            ? firstAvailableCover()
-            : playlist.intro.cover.albumId,
-      );
+  Widget get cover {
+    final albumId = playlist.intro.cover.albumId == ""
+        ? firstAvailableCover()
+        : playlist.intro.cover.albumId;
+    if (albumId == null) {
+      return DummyMusicCover();
+    } else {
+      return MusicCover(albumId: albumId);
+    }
+  }
 
   @override
   List<Widget> get intro => [

@@ -4,9 +4,7 @@ import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/cover_image.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CombinedOnlineAnnilClient {
@@ -95,40 +93,17 @@ class CombinedOnlineAnnilClient {
   }
 
   Uri? getCoverUrl({required String albumId, int? discId}) {
-    final list = clients.values.toList();
-    list.sort((a, b) => b.priority - a.priority);
-    for (final client in list) {
-      if (client.albums.contains(albumId)) {
-        return client.getCoverUrl(albumId: albumId, discId: discId);
+    final NetworkController network = Get.find();
+    if (network.isOnline.value) {
+      final list = clients.values.toList();
+      list.sort((a, b) => b.priority - a.priority);
+      for (final client in list) {
+        if (client.albums.contains(albumId)) {
+          return client.getCoverUrl(albumId: albumId, discId: discId);
+        }
       }
     }
     return null;
-  }
-
-  Widget? cover({
-    String? albumId,
-    int? discId,
-    BoxFit? fit,
-    double? scale,
-    String? tag,
-  }) {
-    if (albumId == null) {
-      return null;
-    }
-
-    final url = this.getCoverUrl(albumId: albumId, discId: discId);
-    if (url == null) {
-      return null;
-    }
-
-    return CoverImage(
-      albumId: albumId,
-      discId: discId,
-      remoteUrl: url,
-      fit: fit ?? BoxFit.scaleDown,
-      filterQuality: FilterQuality.medium,
-      tag: tag,
-    );
   }
 }
 
@@ -185,33 +160,6 @@ class AnnilController extends GetxController {
       albums.replaceRange(0, this.albums.length, newAlbums);
     }
     albums.refresh();
-  }
-
-  Widget cover({
-    String? albumId,
-    int? discId,
-    BoxFit? fit,
-    double? scale,
-    String? tag,
-  }) {
-    var cover;
-    if (_network.isOnline.value) {
-      cover = clients.value.cover(
-        albumId: albumId,
-        discId: discId,
-        tag: tag,
-      );
-    }
-
-    // offline, load cached cover
-    cover ??= cover = CoverImage(
-      albumId: albumId,
-      discId: discId,
-      fit: fit ?? BoxFit.scaleDown,
-      filterQuality: FilterQuality.medium,
-    );
-
-    return cover;
   }
 
   bool isAvailable({

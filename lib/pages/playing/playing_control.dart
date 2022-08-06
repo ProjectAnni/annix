@@ -1,5 +1,5 @@
-import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
@@ -15,7 +15,6 @@ class PlayingControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PlayerController player = Get.find();
-    final AnnilController annil = Get.find();
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24),
@@ -30,16 +29,7 @@ class PlayingControl extends StatelessWidget {
             ),
             child: AspectRatio(
               aspectRatio: 1,
-              child: GetBuilder<PlayerController>(
-                builder: (player) {
-                  final item = player.playing;
-                  if (item == null) {
-                    return Container();
-                  } else {
-                    return annil.cover(albumId: item.albumId, tag: "playing");
-                  }
-                },
-              ),
+              child: PlayingMusicCover(),
             ),
           ),
           Column(

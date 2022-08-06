@@ -4,6 +4,7 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class AlbumDetailScreen extends PlaylistScreen {
   AlbumDetailScreen({required this.album});
 
   String get title => album.title;
-  Widget get cover => _annil.cover(albumId: album.albumId);
+  Widget get cover => MusicCover(albumId: album.albumId);
 
   @override
   List<Widget> get intro => [

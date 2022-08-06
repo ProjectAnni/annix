@@ -1,6 +1,6 @@
-import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/pages/playing/playing_mobile.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -14,9 +14,6 @@ class BottomPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController player = Get.find();
-    final AnnilController annil = Get.find();
-
     return GestureDetector(
       onTap: () {
         // use Get.to to use root navigator
@@ -39,16 +36,7 @@ class BottomPlayer extends StatelessWidget {
                   clipBehavior: Clip.hardEdge,
                   elevation: 4,
                   margin: EdgeInsets.zero,
-                  child: Obx(() {
-                    final item = player.playing;
-                    if (item == null) {
-                      return Container(
-                        color: Colors.grey,
-                      );
-                    } else {
-                      return annil.cover(albumId: item.albumId, tag: "playing");
-                    }
-                  }),
+                  child: PlayingMusicCover(),
                 ),
               ),
               Expanded(

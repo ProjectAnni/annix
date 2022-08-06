@@ -266,6 +266,7 @@ class ThemedImage extends StatelessWidget {
     final color = colors[url];
     if (color != null) {
       // TODO: on error
+      // FIXME: set color only on current playing changes
       color.future.then((c) => AnnixTheme().setTheme(c));
       return;
     }

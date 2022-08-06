@@ -1,6 +1,6 @@
-import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/player_controller.dart';
 import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
@@ -16,8 +16,6 @@ class DesktopBottomPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AnnilController annil = Get.find();
-
     return GestureDetector(
       onTap: () {
         AnnixBodyPageRouter.offNamed('/playing');
@@ -53,16 +51,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           // cover
                           Container(
                             padding: EdgeInsets.only(bottom: 8, top: 4),
-                            child: _card(
-                              child: GetBuilder<PlayerController>(
-                                builder: (player) {
-                                  return annil.cover(
-                                    albumId: player.playing?.albumId,
-                                    tag: "playing",
-                                  );
-                                },
-                              ),
-                            ),
+                            child: _card(child: PlayingMusicCover()),
                           ),
                           // track info
                           Expanded(
