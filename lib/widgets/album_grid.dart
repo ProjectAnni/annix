@@ -1,7 +1,6 @@
 import 'package:annix/models/metadata.dart';
-import 'package:annix/pages/playlist/playlist_album.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:f_logs/model/flog/flog.dart';
 import 'package:flutter/material.dart';
@@ -62,9 +61,8 @@ class AlbumGrid extends StatelessWidget {
                 ),
                 onTap: () {
                   if (snapshot.hasData) {
-                    AnnixBodyPageRouter.to(
-                      () => AlbumDetailScreen(album: snapshot.data!),
-                    );
+                    AnnixRouterDelegate.of(context)
+                        .to(name: '/album', arguments: snapshot.data!);
                   }
                 },
               );

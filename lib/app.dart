@@ -1,8 +1,10 @@
 import 'package:annix/services/audio_handler.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/services/theme.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:responsive_framework/responsive_wrapper.dart';
@@ -13,27 +15,35 @@ class AnnixApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.locale = Get.deviceLocale;
+    Get.fallbackLocale = const Locale('en', 'US');
+    Get.addTranslations(I18n().keys);
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AnnixTheme()),
-        ChangeNotifierProvider(create: (_) => PlayerService()),
-        ChangeNotifierProvider(create: (_) => PlayingProgress()),
-        Provider(create: (_) => AnnixAudioHandler.init(), lazy: false),
+        ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
+        ChangeNotifierProvider(create: (_) => PlayerService(), lazy: false),
+        ChangeNotifierProvider(create: (_) => PlayingProgress(), lazy: false),
+        Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
       ],
       builder: (context, child) {
+        Global.context = context;
         final theme = Provider.of<AnnixTheme>(context);
-        return GetMaterialApp(
+        return MaterialApp.router(
           title: "Annix",
           debugShowCheckedModeBanner: false,
+
           // theme
           theme: theme.theme,
           darkTheme: theme.darkTheme,
           // i18n
-          locale: Get.deviceLocale,
-          translations: I18n(),
-          fallbackLocale: const Locale('en', 'US'),
+          locale: Get.locale,
+
           // routes
-          home: child,
+          routerDelegate: AnnixRouterDelegate(
+            builder: (context, child) => AnnixLayout.build(child: child),
+          ),
+
           // builder: (context, child) => ResponsiveWrapper.builder(
           //   child,
           //   defaultScale: true,
@@ -46,7 +56,6 @@ class AnnixApp extends StatelessWidget {
           // ),
         );
       },
-      child: AnnixLayout.build(),
     );
   }
 }

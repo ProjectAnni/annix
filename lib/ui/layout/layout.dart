@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 abstract class AnnixLayout extends StatelessWidget {
   const AnnixLayout({super.key});
 
-  factory AnnixLayout.build() {
+  factory AnnixLayout.build({required Widget child}) {
     if (Global.isDesktop) {
-      return AnnixLayoutDesktop();
+      return AnnixLayoutDesktop(child: child);
     } else {
-      return AnnixLayoutMobile();
+      return AnnixLayoutMobile(child: child);
     }
   }
 }

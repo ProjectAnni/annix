@@ -22,6 +22,9 @@ class Global {
   static late String storageRoot;
   static late String dataRoot;
 
+  @deprecated
+  static late BuildContext context;
+
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
 

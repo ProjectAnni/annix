@@ -67,7 +67,7 @@ class AnnilAudioSource extends Source {
       }
       await this._preloadFuture;
       // double check whether current song is still this track
-      if (Provider.of<PlayerService>(Get.context!, listen: false).playing ==
+      if (Provider.of<PlayerService>(Global.context, listen: false).playing ==
           this) {
         await player.setSourceDeviceFile(offlinePath);
       }
@@ -95,7 +95,7 @@ class AnnilAudioSource extends Source {
         final tmpPath = offlinePath + ".tmp";
         /*final response = */ await _client.download(url, tmpPath);
         // final duration = int.parse(response.headers['x-duration-seconds']![0]);
-        // PlayerController player = Provider.of(Get.context!, listen: false);
+        // PlayerController player = Provider.of(Global.context, listen: false);
         // player.durationMap[id] =
         //     Duration(seconds: duration + 1); // +1 to avoid duration exceeding
         File(tmpPath).rename(offlinePath);

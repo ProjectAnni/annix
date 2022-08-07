@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:annix/services/cover.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
@@ -260,7 +261,7 @@ class ThemedImage extends StatelessWidget {
     final color = colors[url];
     if (color != null) {
       color.future.then((c) =>
-          Provider.of<AnnixTheme>(Get.context!, listen: false).setTheme(c));
+          Provider.of<AnnixTheme>(Global.context, listen: false).setTheme(c));
       return;
     }
 
@@ -275,7 +276,7 @@ class ThemedImage extends StatelessWidget {
         print(top.toRadixString(16));
 
         completer.complete(Color(top));
-        Provider.of<AnnixTheme>(Get.context!, listen: false)
+        Provider.of<AnnixTheme>(Global.context, listen: false)
             .setTheme(Color(top));
       },
       onError: (exception, stackTrace) =>

@@ -3,7 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/widgets/simple_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +33,7 @@ class AnnivCard extends StatelessWidget {
             alignment: Alignment.bottomRight,
             child: TextButton(
               child: Text(I18n.LOGIN.tr),
-              onPressed: () => Get.dialog(AnnivDialog()),
+              onPressed: () => Get.dialog(AnnivLoginDialog()),
             ),
           ),
         ],
@@ -140,15 +140,14 @@ class AnnivDialogController extends GetxController {
   var passwordController = TextEditingController();
 }
 
-class AnnivDialog extends StatelessWidget {
+class AnnivLoginDialog extends StatelessWidget {
   final AnnivDialogController _controller = AnnivDialogController();
 
-  AnnivDialog({Key? key}) : super(key: key);
+  AnnivLoginDialog({Key? key}) : super(key: key);
 
   void _showSnackBar(BuildContext context, String text) {
     final snackBar = SnackBar(content: Text(text));
-    ScaffoldMessenger.of(Get.nestedKey(1)!.currentContext!)
-        .showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -191,7 +190,7 @@ class AnnivDialog extends StatelessWidget {
             textStyle: context.textTheme.labelLarge,
           ),
           child: const Text('Cancel'),
-          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         TextButton(
           style: TextButton.styleFrom(
@@ -216,7 +215,7 @@ class AnnivDialog extends StatelessWidget {
               try {
                 // TODO: alert progress
                 await anniv.login(url, email, password);
-                Navigator.of(Get.overlayContext!).pop();
+                Navigator.of(context).pop();
               } catch (e) {
                 _showSnackBar(context, e.toString());
               }
@@ -343,7 +342,7 @@ class ServerView extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                AnnixBodyPageRouter.toNamed('/settings');
+                AnnixRouterDelegate.of(context).to(name: '/settings');
               },
             ),
           ],

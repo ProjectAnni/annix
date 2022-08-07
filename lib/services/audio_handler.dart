@@ -8,24 +8,25 @@ import 'package:annix/services/cover.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
 import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
-  final player = Provider.of<PlayerService>(Get.context!, listen: false);
-  final progress = Provider.of<PlayingProgress>(Get.context!, listen: false);
+  final PlayerService player;
+  final PlayingProgress progress;
 
   final AnnilController annil = Get.find();
   final AnnivController anniv = Get.find();
 
-  static Future<void> init() async {
+  static Future<void> init(BuildContext context) async {
     if (Platform.isLinux) {
-      AudioServicePlatform.instance = LinuxAudioService();
+      AudioServicePlatform.instance = LinuxAudioService(context);
     }
 
     final service = await AudioService.init(
-      builder: () => AnnixAudioHandler._(),
+      builder: () => AnnixAudioHandler._(context),
       config: AudioServiceConfig(
         androidNotificationChannelId: 'rs.anni.annix.audio',
         androidNotificationChannelName: 'Annix Audio playback',
@@ -84,7 +85,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
     });
   }
 
-  AnnixAudioHandler._() {
+  AnnixAudioHandler._(BuildContext context)
+      : player = Provider.of<PlayerService>(context, listen: false),
+        progress = Provider.of<PlayingProgress>(context, listen: false) {
     this.player.addListener(() => this._updatePlaybackState());
     this.progress.addListener(() => this._updatePlaybackState());
     this.anniv.favorites.listen((_) => this._updatePlaybackState());
@@ -195,7 +198,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
 }
 
 class LinuxAudioService extends AudioServicePlatform {
-  final AnnixMPRISService mpris = AnnixMPRISService();
+  final AnnixMPRISService mpris;
+
+  LinuxAudioService(BuildContext context) : mpris = AnnixMPRISService(context);
 
   @override
   Future<void> configure(ConfigureRequest request) async {}
@@ -242,11 +247,13 @@ class LinuxAudioService extends AudioServicePlatform {
 }
 
 class AnnixMPRISService extends MPRISService {
-  final player = Provider.of<PlayerService>(Get.context!, listen: false);
-  final progress = Provider.of<PlayingProgress>(Get.context!, listen: false);
+  final PlayerService player;
+  final PlayingProgress progress;
 
-  AnnixMPRISService()
-      : super(
+  AnnixMPRISService(BuildContext context)
+      : player = Provider.of<PlayerService>(context, listen: false),
+        progress = Provider.of<PlayingProgress>(context, listen: false),
+        super(
           "annix",
           identity: "Annix",
           emitSeekedSignal: true,

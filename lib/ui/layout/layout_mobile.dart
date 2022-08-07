@@ -1,13 +1,15 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AnnixLayoutMobile extends AnnixLayout {
+  final Widget child;
+
   static const pages = <String>[
     '/home',
     '/tags',
@@ -16,39 +18,14 @@ class AnnixLayoutMobile extends AnnixLayout {
 
   static const INITIAL_MOBILE_PAGE = "/home";
 
-  onDestinationSelected(int index) {
-    AnnixBodyPageRouter.offNamed(pages[index]);
-  }
-
-  const AnnixLayoutMobile({super.key});
+  const AnnixLayoutMobile({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final AnnixBodyPageRouter router =
-        Get.put(AnnixBodyPageRouter(INITIAL_MOBILE_PAGE));
-
     return Scaffold(
       body: Column(
         children: [
-          Expanded(
-            child: WillPopScope(
-              onWillPop: () async {
-                final shouldCancel =
-                    await Get.nestedKey(1)?.currentState?.maybePop();
-                if (shouldCancel == null) {
-                  // failed to pop
-                  return true;
-                } else {
-                  return !shouldCancel;
-                }
-              },
-              child: Navigator(
-                key: Get.nestedKey(1),
-                initialRoute: INITIAL_MOBILE_PAGE,
-                onGenerateRoute: router.onGenerateRoute,
-              ),
-            ),
-          ),
+          Expanded(child: child),
           Consumer<PlayerService>(
             builder: (context, player, child) => player.playing != null
                 ? MobileBottomPlayer()
@@ -56,28 +33,31 @@ class AnnixLayoutMobile extends AnnixLayout {
           ),
         ],
       ),
-      floatingActionButton: Builder(builder: (context) {
-        return Consumer<PlayerService>(
-          builder: (context, player, child) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: player.playing != null ? 48.0 : 0.0,
-              ),
-              child: child,
-            );
-          },
-          child: FloatingActionButton(
-            child: Icon(Icons.search),
-            onPressed: () {
-              AnnixBodyPageRouter.toNamed("/search");
+      floatingActionButton: Builder(
+        builder: (context) {
+          return Consumer<PlayerService>(
+            builder: (context, player, child) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: player.playing != null ? 48.0 : 0.0,
+                ),
+                child: child,
+              );
             },
-            isExtended: true,
-          ),
-        );
-      }),
-      bottomNavigationBar: GetBuilder<AnnixBodyPageRouter>(
-        builder: (router) {
-          final route = router.currentPage;
+            child: FloatingActionButton(
+              child: Icon(Icons.search),
+              onPressed: () {
+                AnnixRouterDelegate.of(context).to(name: "/search");
+              },
+              isExtended: true,
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: Builder(
+        builder: (context) {
+          final delegate = AnnixRouterDelegate.of(context);
+          final route = delegate.currentRoute;
           final selectedIndex =
               pages.indexOf(route) == -1 ? null : pages.indexOf(route);
           if (selectedIndex == null) {
@@ -86,7 +66,9 @@ class AnnixLayoutMobile extends AnnixLayout {
 
           return NavigationBar(
             selectedIndex: selectedIndex,
-            onDestinationSelected: onDestinationSelected,
+            onDestinationSelected: (index) {
+              delegate.off(name: pages[index]);
+            },
             destinations: [
               NavigationDestination(
                 icon: Icon(Icons.casino_outlined),

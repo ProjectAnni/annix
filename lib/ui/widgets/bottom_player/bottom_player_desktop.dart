@@ -1,6 +1,6 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/widgets/artist_text.dart';
@@ -18,7 +18,7 @@ class DesktopBottomPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AnnixBodyPageRouter.offNamed('/playing');
+        AnnixRouterDelegate.of(context).off(name: '/playing');
       },
       child: Container(
         height: 80,

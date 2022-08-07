@@ -4,11 +4,9 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/pages/playlist/playlist_album.dart';
-import 'package:annix/pages/playlist/playlist_list.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/anniv.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -129,11 +127,8 @@ class _SearchResult extends StatelessWidget {
                     title: Text(result.albums![index].title),
                     subtitle: ArtistText(result.albums![index].artist),
                     onTap: () {
-                      AnnixBodyPageRouter.to(
-                        () => AlbumDetailScreen(
-                          album: result.albums![index],
-                        ),
-                      );
+                      AnnixRouterDelegate.of(context)
+                          .to(name: '/album', arguments: result.albums![index]);
                     },
                   ),
                   itemCount: result.albums?.length ?? 0,
@@ -146,11 +141,11 @@ class _SearchResult extends StatelessWidget {
                       title: Text(item.name),
                       subtitle: Text(item.owner),
                       onTap: () async {
-                        final playlist =
-                            await PlaylistDetailScreen.remote(item.id);
-                        if (playlist != null) {
-                          AnnixBodyPageRouter.to(() => playlist);
-                        }
+                        // FIXME: jump to playlist in search
+                        //   final playlist =
+                        //       await PlaylistDetailScreen.remote(item.id);
+                        // AnnixRouterDelegate.of(context)
+                        //     .to(name: '/playlist/:id', arguments: playlist);
                       },
                     );
                   },

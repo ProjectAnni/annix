@@ -10,7 +10,6 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 
 class AnnivClient {
@@ -54,10 +53,8 @@ class AnnivClient {
           if (status != 0) {
             if (status != 902000) {
               // skip [lyric not found] error
-              final snackBar =
-                  SnackBar(content: Text(resp["message"].toString()));
-              ScaffoldMessenger.of(Get.nestedKey(1)!.currentContext!)
-                  .showSnackBar(snackBar);
+              // TODO: show error to user
+              FLog.error(text: resp["message"].toString());
             }
             // business logic error code
             handler.reject(DioError(

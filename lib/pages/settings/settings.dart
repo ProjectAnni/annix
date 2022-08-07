@@ -1,7 +1,6 @@
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/pages/settings/settings_log.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +88,7 @@ class SettingsScreen extends StatelessWidget {
                 title: Text(I18n.SETTINGS_LOGS.tr),
                 description: Text(I18n.SETTINGS_LOGS_DESC.tr),
                 onPressed: (context) {
-                  AnnixBodyPageRouter.to(() => SettingsLogView());
+                  AnnixRouterDelegate.of(context).to(name: '/settings/log');
                 },
               ),
               // clear local metadata cache

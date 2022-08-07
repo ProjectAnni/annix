@@ -3,6 +3,7 @@ import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
@@ -113,7 +114,8 @@ class AlbumDetailScreen extends PlaylistScreen {
                 trackId: trackIndex,
               ),
               onTap: () {
-                this.playFullList(Get.context!, initialIndex: totalTrackIndex);
+                this.playFullList(Global.context,
+                    initialIndex: totalTrackIndex);
               },
               // selected: TODO: indicate playing track,
             );

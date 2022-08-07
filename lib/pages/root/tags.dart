@@ -2,9 +2,8 @@ import 'package:annix/i18n/i18n.dart';
 import 'package:annix/metadata/metadata_types.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/root/base.dart';
-import 'package:annix/pages/tag.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/ui/route/route.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -48,8 +47,9 @@ class TagsView extends StatelessWidget {
                                     leading: Icon(Icons.local_offer_outlined),
                                     title: Text(e.name),
                                     onTap: () {
-                                      AnnixBodyPageRouter.to(
-                                        () => TagScreen(name: e.name),
+                                      AnnixRouterDelegate.of(context).to(
+                                        name: '/tag',
+                                        arguments: e.name,
                                       );
                                     },
                                   ))

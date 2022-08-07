@@ -1,8 +1,6 @@
 import 'package:annix/services/player.dart';
-import 'package:annix/pages/tag.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/lyric.dart';
-import 'package:annix/pages/playlist/playlist_album.dart';
-import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -82,10 +80,9 @@ class PlayingDesktopScreen extends StatelessWidget {
                                 ),
                                 label: Text(metadata.disc.album.title),
                                 onPressed: () {
-                                  AnnixBodyPageRouter.to(
-                                    () => AlbumDetailScreen(
-                                      album: metadata.disc.album,
-                                    ),
+                                  AnnixRouterDelegate.of(context).to(
+                                    name: '/album',
+                                    arguments: metadata.disc.album,
                                   );
                                 },
                               ),
@@ -101,8 +98,9 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   ),
                                   label: Text(tag),
                                   onPressed: () {
-                                    AnnixBodyPageRouter.to(
-                                      () => TagScreen(name: tag),
+                                    AnnixRouterDelegate.of(context).to(
+                                      name: '/tag',
+                                      arguments: tag,
                                     );
                                   },
                                 ),

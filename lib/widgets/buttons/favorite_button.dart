@@ -1,4 +1,5 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/annil.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class FavoriteButton extends StatelessWidget {
   final RxBool favorited = false.obs;
 
   FavoriteButton([AnnilAudioSource? audio]) {
-    final player = Provider.of<PlayerService>(Get.context!, listen: false);
+    final player = Provider.of<PlayerService>(Global.context, listen: false);
     if (audio == null) {
       this.audio.value = player.playing;
     }
