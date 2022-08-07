@@ -1,3 +1,4 @@
+import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -117,12 +118,11 @@ class DesktopBottomPlayer extends StatelessWidget {
                           icon: Icon(Icons.queue_music_outlined),
                           onPressed: () {
                             showDialog(
-                              context: context,
+                              context: Global.context,
                               barrierColor: Colors.transparent,
                               builder: (context) {
                                 return Container(
                                   alignment: Alignment.bottomRight,
-                                  padding: EdgeInsets.only(bottom: 76),
                                   child: FractionallySizedBox(
                                     heightFactor: 0.4,
                                     widthFactor: 0.3,

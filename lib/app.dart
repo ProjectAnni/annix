@@ -1,5 +1,4 @@
 import 'package:annix/services/audio_handler.dart';
-import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
@@ -33,7 +32,6 @@ class AnnixApp extends StatelessWidget {
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
       ],
       builder: (context, child) {
-        Global.context = context;
         final theme = Provider.of<AnnixTheme>(context);
         return MaterialApp.router(
           title: "Annix",
@@ -49,16 +47,18 @@ class AnnixApp extends StatelessWidget {
           routerDelegate: delegate,
 
           // TODO: add an options in the future
-          builder: (context, child) => ResponsiveWrapper.builder(
-            child,
-            defaultScale: true,
-            breakpoints: [
-              ResponsiveBreakpoint.resize(600, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
-              ResponsiveBreakpoint.autoScale(2400, name: '4K'),
-            ],
-          ),
+          builder: (context, child) {
+            return ResponsiveWrapper.builder(
+              child,
+              defaultScale: true,
+              breakpoints: [
+                ResponsiveBreakpoint.resize(600, name: MOBILE),
+                ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
+                ResponsiveBreakpoint.autoScale(2400, name: '4K'),
+              ],
+            );
+          },
         );
       },
     );
