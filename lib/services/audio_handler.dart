@@ -44,25 +44,31 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
       // unplugged
       session.becomingNoisyEventStream.listen((_) => service.pause());
+
+      bool pausedByInterrupt = false;
       // interruption
       session.interruptionEventStream.listen((event) {
         if (event.begin) {
           switch (event.type) {
             case AudioInterruptionType.duck:
-              // TODO: duck
+              // TODO
               break;
             case AudioInterruptionType.pause:
             case AudioInterruptionType.unknown:
+              pausedByInterrupt = true;
               service.pause();
               break;
           }
         } else {
           switch (event.type) {
             case AudioInterruptionType.duck:
-              // TODO: unduck
+              // TODO
               break;
             case AudioInterruptionType.pause:
-              service.play();
+              if (pausedByInterrupt) {
+                pausedByInterrupt = false;
+                service.play();
+              }
               break;
             case AudioInterruptionType.unknown:
               break;
