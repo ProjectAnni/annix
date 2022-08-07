@@ -114,8 +114,31 @@ class HomePage extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.shuffle_outlined),
                   onPressed: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) {
+                        return Center(
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(width: 12),
+                                  Text("Loading..."),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                     Provider.of<PlayerService>(context, listen: false)
-                        .fullShuffleMode();
+                        .fullShuffleMode()
+                        .then(
+                            (value) => Navigator.of(Get.overlayContext!).pop());
                   },
                 ),
                 ThemeButton(),

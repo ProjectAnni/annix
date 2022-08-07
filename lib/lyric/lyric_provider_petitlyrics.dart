@@ -55,6 +55,11 @@ class PetitLyricsClient {
     final lineCount = data.getUint32(0x38, Endian.little);
     // final lineLength = data.getUint16(0x42, Endian.little);
 
+    // add empty lines
+    while (lyric.length < lineCount) {
+      lyric.add("");
+    }
+
     final List<String> time = [];
     var offset = 0;
     for (var i = 0; i < lineCount; i++) {

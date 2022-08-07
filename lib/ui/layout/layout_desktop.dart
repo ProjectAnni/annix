@@ -20,8 +20,8 @@ class AnnixLayoutDesktop extends AnnixLayout {
   const AnnixLayoutDesktop({super.key});
 
   static const pages = <String>[
-    '/playing',
     '/home',
+    '/playing',
     '/tags',
     '/server',
   ];
@@ -64,13 +64,13 @@ class AnnixLayoutDesktop extends AnnixLayout {
                       groupAlignment: -0.7,
                       destinations: <NavigationRailDestination>[
                         NavigationRailDestination(
+                          icon: Icon(Icons.casino_outlined),
+                          label: Text(I18n.HOME.tr),
+                        ),
+                        NavigationRailDestination(
                           icon: Icon(Icons.music_note_outlined),
                           selectedIcon: Icon(Icons.music_note_sharp),
                           label: Text(I18n.PLAYING.tr),
-                        ),
-                        NavigationRailDestination(
-                          icon: Icon(Icons.casino_outlined),
-                          label: Text(I18n.HOME.tr),
                         ),
                         NavigationRailDestination(
                           icon: Icon(Icons.local_offer_outlined),

@@ -259,7 +259,8 @@ class PlayerService extends ChangeNotifier {
     await PlayerService.player.setVolume(volume);
   }
 
-  Future<void> fullShuffleMode({int count = 30}) async {
+  Future<void> fullShuffleMode(
+      {int count = 30, bool waitUntilPlayback = false}) async {
     AnnilController annil = Get.find();
     final albums = annil.albums.toList();
     if (albums.isEmpty) {
@@ -299,7 +300,13 @@ class PlayerService extends ChangeNotifier {
     }
 
     await this.setLoopMode(LoopMode.off);
-    await this.setPlayingQueue(await Future.wait(songs));
+
+    final queue = await Future.wait(songs);
+    if (waitUntilPlayback) {
+      await this.setPlayingQueue(queue);
+    } else {
+      this.setPlayingQueue(queue);
+    }
   }
 
   Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
