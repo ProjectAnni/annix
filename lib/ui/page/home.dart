@@ -21,60 +21,62 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          if (index == 0) {
-            // fav
+    return Obx(
+      () => SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (index == 0) {
+              // fav
+              return ListTile(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  leading: AspectRatio(
+                    aspectRatio: 1,
+                    child: anniv.favorites.isEmpty
+                        ? DummyMusicCover()
+                        : MusicCover(
+                            albumId: anniv.favorites.values.last.track.albumId),
+                  ),
+                  title: Text(I18n.MY_FAVORITE.tr),
+                  visualDensity: VisualDensity.standard,
+                  onTap: () {
+                    AnnixBodyPageRouter.toNamed(
+                      "/favorite",
+                    );
+                  });
+            } else {
+              index = index - 1;
+            }
+
+            final playlistId = anniv.playlists.keys.toList()[index];
+            final playlist = anniv.playlists[playlistId]!;
+
+            final albumId =
+                playlist.cover.albumId == "" ? null : playlist.cover.albumId;
             return ListTile(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                leading: AspectRatio(
-                  aspectRatio: 1,
-                  child: anniv.favorites.isEmpty
-                      ? DummyMusicCover()
-                      : MusicCover(
-                          albumId: anniv.favorites.values.last.track.albumId),
-                ),
-                title: Text(I18n.MY_FAVORITE.tr),
-                visualDensity: VisualDensity.standard,
-                onTap: () {
-                  AnnixBodyPageRouter.toNamed(
-                    "/favorite",
-                  );
-                });
-          } else {
-            index = index - 1;
-          }
-
-          final playlistId = anniv.playlists.keys.toList()[index];
-          final playlist = anniv.playlists[playlistId]!;
-
-          final albumId =
-              playlist.cover.albumId == "" ? null : playlist.cover.albumId;
-          return ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            leading: AspectRatio(
-              aspectRatio: 1,
-              child: albumId == null
-                  ? DummyMusicCover()
-                  : MusicCover(albumId: albumId),
-            ),
-            title: Text(
-              playlist.name,
-              overflow: TextOverflow.ellipsis,
-            ),
-            visualDensity: VisualDensity.standard,
-            onTap: () async {
-              final playlist =
-                  await anniv.client!.getPlaylistDetail(playlistId);
-              AnnixBodyPageRouter.to(
-                () => PlaylistDetailScreen(playlist: playlist),
-              );
-            },
-          );
-        },
-        childCount: anniv.playlists.length + 1,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading: AspectRatio(
+                aspectRatio: 1,
+                child: albumId == null
+                    ? DummyMusicCover()
+                    : MusicCover(albumId: albumId),
+              ),
+              title: Text(
+                playlist.name,
+                overflow: TextOverflow.ellipsis,
+              ),
+              visualDensity: VisualDensity.standard,
+              onTap: () async {
+                final playlist =
+                    await anniv.client!.getPlaylistDetail(playlistId);
+                AnnixBodyPageRouter.to(
+                  () => PlaylistDetailScreen(playlist: playlist),
+                );
+              },
+            );
+          },
+          childCount: anniv.playlists.length + 1,
+        ),
       ),
     );
   }
