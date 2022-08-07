@@ -18,7 +18,7 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AnnixTheme()),
         ChangeNotifierProvider(create: (_) => PlayerService()),
         ChangeNotifierProvider(create: (_) => PlayingProgress()),
-        Provider(create: (_) => AnnixAudioHandler.init())
+        Provider(create: (_) => AnnixAudioHandler.init(), lazy: false),
       ],
       builder: (context, child) {
         final theme = Provider.of<AnnixTheme>(context);
