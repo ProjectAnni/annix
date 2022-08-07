@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist_album.dart';
@@ -13,6 +13,7 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class CategoryChip extends StatelessWidget {
   final String name;
@@ -73,8 +74,6 @@ class _SearchResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController playing = Get.find();
-
     return DefaultTabController(
       length: 3,
       child: Column(
@@ -110,7 +109,9 @@ class _SearchResult extends StatelessWidget {
                       title: Text(e.title),
                       subtitle: ArtistText(e.artist),
                       onTap: () async {
-                        await playing.setPlayingQueue([
+                        final player =
+                            Provider.of<PlayerService>(context, listen: false);
+                        await player.setPlayingQueue([
                           await AnnilAudioSource.from(
                             albumId: e.track.albumId,
                             discId: e.track.discId,

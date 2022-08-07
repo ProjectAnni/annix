@@ -1,8 +1,9 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 extension on LyricAlign {
   TextAlign get textAlign {
@@ -90,10 +91,9 @@ class LyricView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController player = Get.find();
-    return Obx(
-      () => _LyricView(
-        lyric: player.playingLyric.value,
+    return Consumer<PlayerService>(
+      builder: (context, player, child) => _LyricView(
+        lyric: player.playingLyric,
         lyricAlign: alignment,
       ),
     );
@@ -123,37 +123,36 @@ class _LyricView extends StatelessWidget {
         child: Text("No lyrics found"),
       );
     } else {
-      return GetBuilder<PlayerController>(
-        builder: (player) {
+      return Consumer<PlayerService>(
+        builder: (context, player, child) {
           final model = LyricsModelBuilder.create()
               .bindLyricToMain(lyric!)
               // .bindLyricToExt(lyric) // TODO: translation
               .getModel();
-          return StreamBuilder<Duration>(
-              stream: player.progress.stream,
-              builder: (context, position) {
-                return LyricsReader(
-                  model: model,
-                  lyricUi: PlayingLyricUI(align: lyricAlign),
-                  position: (position.data ?? player.progress.value)
-                      .inMilliseconds /* + 500 as offset */,
-                  // don't know why only playing = false has highlight
-                  playing: false,
-                  emptyBuilder: () {
-                    return SingleChildScrollView(
-                      child: FractionallySizedBox(
-                        widthFactor: 1,
-                        child: Text(
-                          lyric!,
-                          textAlign: lyricAlign.textAlign,
-                          style:
-                              context.textTheme.bodyText1!.copyWith(height: 2),
-                        ),
+          return Consumer<PlayingProgress>(
+            builder: (context, progress, child) {
+              return LyricsReader(
+                model: model,
+                lyricUi: PlayingLyricUI(align: lyricAlign),
+                position:
+                    progress.position.inMilliseconds /* + 500 as offset */,
+                // don't know why only playing = false has highlight
+                playing: false,
+                emptyBuilder: () {
+                  return SingleChildScrollView(
+                    child: FractionallySizedBox(
+                      widthFactor: 1,
+                      child: Text(
+                        lyric!,
+                        textAlign: lyricAlign.textAlign,
+                        style: context.textTheme.bodyText1!.copyWith(height: 2),
                       ),
-                    );
-                  },
-                );
-              });
+                    ),
+                  );
+                },
+              );
+            },
+          );
         },
       );
     }

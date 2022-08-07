@@ -46,7 +46,7 @@ class FavoriteScreen extends PlaylistScreen {
                 overflow: TextOverflow.ellipsis,
               ),
               onTap: () {
-                super.playFullList(initialIndex: index);
+                super.playFullList(context, initialIndex: index);
               },
             );
           },

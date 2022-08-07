@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:material_color_utilities/quantize/quantizer_celebi.dart';
 import 'package:material_color_utilities/score/score.dart';
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -30,8 +30,8 @@ class PlayingMusicCover extends StatelessWidget {
   Widget build(BuildContext context) {
     final cover = Hero(
       tag: "playing",
-      child: GetBuilder<PlayerController>(
-        builder: (player) {
+      child: Consumer<PlayerService>(
+        builder: (context, player, child) {
           final playing = player.playing;
           if (playing == null) {
             // not playing

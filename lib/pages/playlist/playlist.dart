@@ -1,9 +1,10 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 abstract class PlaylistScreen extends StatelessWidget {
   /// Page title
@@ -69,14 +70,14 @@ abstract class PlaylistScreen extends StatelessWidget {
                         icon: Icon(Icons.play_arrow),
                         label: Text("Play All"),
                         onPressed: () {
-                          playFullList(shuffle: false);
+                          playFullList(context, shuffle: false);
                         },
                       ),
                       OutlinedButton.icon(
                         icon: Icon(Icons.shuffle),
                         label: Text("Shuffle"),
                         onPressed: () {
-                          playFullList(shuffle: true);
+                          playFullList(context, shuffle: true);
                         },
                       ),
                     ],
@@ -127,7 +128,8 @@ abstract class PlaylistScreen extends StatelessWidget {
     );
   }
 
-  void playFullList({bool shuffle = false, int initialIndex = 0}) async {
+  void playFullList(BuildContext context,
+      {bool shuffle = false, int initialIndex = 0}) async {
     assert(
       // when shuffle is on, initialIndex can only be zero
       (shuffle && initialIndex == 0) ||
@@ -140,8 +142,7 @@ abstract class PlaylistScreen extends StatelessWidget {
       trackList.shuffle();
     }
 
-    final PlayerController playing = Get.find();
-    await playing.setPlayingQueue(
+    await Provider.of<PlayerService>(context, listen: false).setPlayingQueue(
       await Future.wait<AnnilAudioSource>(trackList.map(
         (s) => AnnilAudioSource.from(
           albumId: s.albumId,

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
@@ -9,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 
@@ -16,7 +17,6 @@ class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
 
   final AnnilController annil = Get.find();
-  final PlayerController controller = Get.find();
 
   AnnilAudioSource({
     required this.albumId,
@@ -67,7 +67,8 @@ class AnnilAudioSource extends Source {
       }
       await this._preloadFuture;
       // double check whether current song is still this track
-      if (controller.playing == this) {
+      if (Provider.of<PlayerService>(Get.context!, listen: false).playing ==
+          this) {
         await player.setSourceDeviceFile(offlinePath);
       }
     }
@@ -92,11 +93,11 @@ class AnnilAudioSource extends Source {
       if (url != null) {
         await file.parent.create(recursive: true);
         final tmpPath = offlinePath + ".tmp";
-        final response = await _client.download(url, tmpPath);
-        final duration = int.parse(response.headers['x-duration-seconds']![0]);
-        PlayerController player = Get.find();
-        player.durationMap[id] =
-            Duration(seconds: duration + 1); // +1 to avoid duration exceeding
+        /*final response = */ await _client.download(url, tmpPath);
+        // final duration = int.parse(response.headers['x-duration-seconds']![0]);
+        // PlayerController player = Provider.of(Get.context!, listen: false);
+        // player.durationMap[id] =
+        //     Duration(seconds: duration + 1); // +1 to avoid duration exceeding
         File(tmpPath).rename(offlinePath);
       } else {
         throw UnsupportedError("No available annil server found");

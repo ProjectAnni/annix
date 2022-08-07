@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/services/cover.dart';
 import 'package:audio_service/audio_service.dart';
@@ -10,9 +10,12 @@ import 'package:audio_service_platform_interface/audio_service_platform_interfac
 import 'package:audio_session/audio_session.dart';
 import 'package:get/get.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
+import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
-  final PlayerController player = Get.find();
+  final player = Provider.of<PlayerService>(Get.context!, listen: false);
+  final progress = Provider.of<PlayingProgress>(Get.context!, listen: false);
+
   final AnnilController annil = Get.find();
   final AnnivController anniv = Get.find();
 
@@ -77,8 +80,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   AnnixAudioHandler._() {
     this.player.addListener(() => this._updatePlaybackState());
-    this.player.playerStatus.listen((_) => this._updatePlaybackState());
-    this.player.progress.listen((_) => this._updatePlaybackState());
+    this.progress.addListener(() => this._updatePlaybackState());
     this.anniv.favorites.listen((_) => this._updatePlaybackState());
   }
 
@@ -117,7 +119,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
   }
 
   void _updatePlaybackState() {
-    final isPlaying = this.player.playerStatus.value == PlayerStatus.playing;
+    final isPlaying = this.player.playerStatus == PlayerStatus.playing;
     final hasPrevious = (this.player.playingIndex ?? 0) > 0;
     final hasNext = (this.player.playingIndex ?? this.player.queue.length) <
         this.player.queue.length - 1;
@@ -160,9 +162,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
             PlayerStatus.stopped: AudioProcessingState.idle,
             PlayerStatus.paused: AudioProcessingState.ready,
             PlayerStatus.buffering: AudioProcessingState.buffering,
-          }[this.player.playerStatus.value]!,
+          }[this.player.playerStatus]!,
           playing: isPlaying,
-          updatePosition: this.player.progress.value,
+          updatePosition: this.progress.position,
           queueIndex: this.player.playingIndex,
         ));
 
@@ -173,7 +175,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
             title: playing.track.title,
             album: playing.track.disc.album.title,
             artist: playing.track.artist,
-            duration: player.duration.value,
+            duration: progress.duration,
             artUri: CoverReverseProxy().url(
               CoverItem(
                 uri: annil.clients.value.getCoverUrl(albumId: playing.albumId),
@@ -188,7 +190,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
 class LinuxAudioService extends AudioServicePlatform {
   final AnnixMPRISService mpris = AnnixMPRISService();
-  final PlayerController player = Get.find();
 
   @override
   Future<void> configure(ConfigureRequest request) async {}
@@ -235,7 +236,8 @@ class LinuxAudioService extends AudioServicePlatform {
 }
 
 class AnnixMPRISService extends MPRISService {
-  final PlayerController player = Get.find();
+  final player = Provider.of<PlayerService>(Get.context!, listen: false);
+  final progress = Provider.of<PlayingProgress>(Get.context!, listen: false);
 
   AnnixMPRISService()
       : super(
@@ -250,8 +252,8 @@ class AnnixMPRISService extends MPRISService {
           supportLoopStatus: true,
           supportShuffle: true,
         ) {
-    player.loopMode.listen((loopMode) {
-      switch (loopMode) {
+    player.addListener(() {
+      switch (player.loopMode) {
         case LoopMode.off:
           this.loopStatus = LoopStatus.none;
           this.shuffle = false;
@@ -299,7 +301,7 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onSeek(int offset) async {
-    await player.seek(player.progress.value + Duration(microseconds: offset));
+    await player.seek(progress.position + Duration(microseconds: offset));
   }
 
   @override

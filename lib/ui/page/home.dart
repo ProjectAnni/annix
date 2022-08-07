@@ -1,6 +1,6 @@
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/playlist/playlist_list.dart';
 import 'package:annix/services/global.dart';
@@ -11,6 +11,7 @@ import 'package:annix/widgets/album_grid.dart';
 import 'package:annix/widgets/buttons/theme_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistView extends StatelessWidget {
   final AnnivController anniv = Get.find();
@@ -111,8 +112,8 @@ class HomePage extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.shuffle_outlined),
                   onPressed: () {
-                    final PlayerController player = Get.find();
-                    player.fullShuffleMode();
+                    Provider.of<PlayerService>(context, listen: false)
+                        .fullShuffleMode();
                   },
                 ),
                 ThemeButton(),

@@ -12,6 +12,7 @@ import 'package:annix/services/global.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 enum LoopMode {
@@ -40,43 +41,27 @@ enum PlayerStatus {
   }
 }
 
-class PlayerController extends GetxController {
-  final AudioPlayer player = AudioPlayer();
+class PlayerService extends ChangeNotifier {
+  static final AudioPlayer player = AudioPlayer();
 
-  Rx<PlayerStatus> playerStatus = PlayerStatus.stopped.obs;
-  Rx<LoopMode> loopMode = LoopMode.off.obs;
-
-  Rx<Duration> progress = Duration.zero.obs;
-  Rx<Duration> buffered = Duration.zero.obs;
-  Rx<Duration> duration = Duration.zero.obs;
-
-  Rx<double> volume = 1.0.obs;
-
-  Map<String, Duration> durationMap = Map();
+  PlayerStatus playerStatus = PlayerStatus.stopped;
+  LoopMode loopMode = LoopMode.off;
+  double volume = 1.0;
 
   // Playing queue
   List<AnnilAudioSource> queue = [];
   int? playingIndex;
   AnnilAudioSource? get playing =>
       this.playingIndex != null ? this.queue[this.playingIndex!] : null;
-  Rxn<String> playingLyric = Rxn();
+  String? playingLyric;
 
-  @override
-  onInit() {
-    super.onInit();
+  PlayerService() {
+    PlayerService.player.onPlayerStateChanged.listen((s) {
+      this.playerStatus = PlayerStatus.fromPlayingStatus(s);
+      this.notifyListeners();
+    });
 
-    this.playerStatus.bindStream(player.onPlayerStateChanged
-        .map((s) => PlayerStatus.fromPlayingStatus(s)));
-    this.progress.bindStream(player.onPositionChanged);
-    this.duration.bindStream(player.onDurationChanged.map((duration) {
-      if (duration > Duration.zero) {
-        return duration;
-      } else {
-        return durationMap[this.playing!.id] ?? Duration.zero;
-      }
-    }));
-
-    this.player.onPlayerComplete.listen((event) => this.next());
+    PlayerService.player.onPlayerComplete.listen((event) => this.next());
   }
 
   Future<void> play({bool reload = false}) async {
@@ -107,20 +92,23 @@ class PlayerController extends GetxController {
         // await stopStatus.future;
 
         // set lyric to null as loading
-        this.playingLyric.value = null;
+        this.playingLyric = null;
+        notifyListeners();
 
         final source = this.queue[this.playingIndex!];
         if (!source.preloaded) {
-          this.playerStatus.value = PlayerStatus.buffering;
+          this.playerStatus = PlayerStatus.buffering;
+          notifyListeners();
         }
 
         this.getLyric(source).then((lyric) {
           if (this.playing == source) {
-            this.playingLyric.value = lyric?.data ?? "";
+            this.playingLyric = lyric?.data ?? "";
+            notifyListeners();
           }
         });
 
-        await this.player.play(source, volume: volume.value);
+        await PlayerService.player.play(source, volume: volume);
         if (this.queue.length > this.playingIndex! + 1) {
           this.queue[this.playingIndex! + 1].preload();
         }
@@ -130,17 +118,17 @@ class PlayerController extends GetxController {
       }
     } else {
       FLog.trace(text: "Resume playing");
-      await player.resume();
+      await PlayerService.player.resume();
     }
   }
 
   Future<void> pause() async {
     FLog.trace(text: "Pause playing");
-    await player.pause();
+    await PlayerService.player.pause();
   }
 
   Future<void> playOrPause() async {
-    if (this.playerStatus.value == PlayerStatus.playing) {
+    if (this.playerStatus == PlayerStatus.playing) {
       await this.pause();
     } else {
       await this.play();
@@ -148,9 +136,9 @@ class PlayerController extends GetxController {
   }
 
   Future<void> stop() async {
-    if (this.playerStatus.value != PlayerStatus.stopped) {
-      await this.player.stop();
-      this.progress.value = Duration.zero;
+    if (this.playerStatus != PlayerStatus.stopped) {
+      await PlayerService.player.stop();
+      // this.progress.value = Duration.zero;
       await (await AudioSession.instance).setActive(false);
     }
   }
@@ -158,12 +146,12 @@ class PlayerController extends GetxController {
   Future<void> previous() async {
     FLog.trace(text: "Seek to previous");
     if (this.queue.isNotEmpty && this.playingIndex != null) {
-      switch (this.loopMode.value) {
+      switch (this.loopMode) {
         case LoopMode.off:
           // to the next song / stop
           if (this.playingIndex! > 0) {
             this.playingIndex = this.playingIndex! - 1;
-            this.refresh();
+            this.notifyListeners();
             await this.play(reload: true);
           }
           break;
@@ -173,7 +161,7 @@ class PlayerController extends GetxController {
                   ? this.playingIndex!
                   : this.queue.length) -
               1;
-          this.refresh();
+          this.notifyListeners();
           await this.play(reload: true);
           break;
         case LoopMode.one:
@@ -185,7 +173,7 @@ class PlayerController extends GetxController {
           // to a random song
           final rng = Random();
           this.playingIndex = rng.nextInt(this.queue.length);
-          this.refresh();
+          this.notifyListeners();
           await this.play(reload: true);
           break;
       }
@@ -195,12 +183,12 @@ class PlayerController extends GetxController {
   Future<void> next() async {
     FLog.trace(text: "Seek to next");
     if (this.queue.isNotEmpty && this.playingIndex != null) {
-      switch (this.loopMode.value) {
+      switch (this.loopMode) {
         case LoopMode.off:
           // to the next song / stop
           if (this.playingIndex! < this.queue.length - 1) {
             this.playingIndex = this.playingIndex! + 1;
-            this.refresh();
+            this.notifyListeners();
             await this.play(reload: true);
           } else {
             await this.stop();
@@ -209,7 +197,7 @@ class PlayerController extends GetxController {
         case LoopMode.all:
           // to the next song / first song
           this.playingIndex = (this.playingIndex! + 1) % this.queue.length;
-          this.refresh();
+          this.notifyListeners();
           await this.play(reload: true);
           break;
         case LoopMode.one:
@@ -221,7 +209,7 @@ class PlayerController extends GetxController {
           // to a random song
           final rng = Random();
           this.playingIndex = rng.nextInt(this.queue.length);
-          this.refresh();
+          this.notifyListeners();
           await this.play(reload: true);
           break;
       }
@@ -230,7 +218,7 @@ class PlayerController extends GetxController {
 
   Future<void> seek(Duration position) async {
     FLog.trace(text: "Seek to position $position");
-    await player.seek(position);
+    await PlayerService.player.seek(position);
   }
 
   Future<void> jump(int index) async {
@@ -240,7 +228,7 @@ class PlayerController extends GetxController {
       if (to != this.playingIndex) {
         // index changed, set new audio source
         this.playingIndex = to;
-        this.refresh();
+        this.notifyListeners();
         await this.play(reload: true);
       } else {
         // index not changed, seek to start
@@ -251,20 +239,24 @@ class PlayerController extends GetxController {
 
   Future<void> setLoopMode(LoopMode mode) async {
     FLog.trace(text: "Set loop mode $mode");
-    this.loopMode.value = mode;
+    this.loopMode = mode;
+    this.notifyListeners();
   }
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
       {int initialIndex = 0}) async {
     this.queue = songs;
     this.playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
-    this.refresh();
+    this.notifyListeners();
+
     await this.play(reload: true);
   }
 
   Future<void> setVolume(double volume) async {
-    this.volume.value = volume;
-    await this.player.setVolume(volume);
+    this.volume = volume;
+    this.notifyListeners();
+
+    await PlayerService.player.setVolume(volume);
   }
 
   Future<void> fullShuffleMode({int count = 30}) async {
@@ -338,4 +330,29 @@ class PlayerController extends GetxController {
     }
     return lyric;
   }
+}
+
+class PlayingProgress extends ChangeNotifier {
+  PlayingProgress() {
+    PlayerService.player.onPositionChanged.listen((p) {
+      this.position = p;
+      notifyListeners();
+    });
+    PlayerService.player.onDurationChanged.listen((d) {
+      if (d > Duration.zero) {
+        if (d > Duration.zero) {
+          this.duration = d;
+        } else {
+          this.duration = /* durationMap[player.playing!.id] ?? */ Duration
+              .zero;
+        }
+        notifyListeners();
+      }
+    });
+  }
+
+  Duration position = Duration.zero;
+  Duration duration = Duration.zero;
+
+  // Map<String, Duration> durationMap = Map();
 }

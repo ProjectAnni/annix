@@ -1,10 +1,11 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class AnnixLayoutMobile extends AnnixLayout {
   static const pages = <String>[
@@ -48,29 +49,30 @@ class AnnixLayoutMobile extends AnnixLayout {
               ),
             ),
           ),
-          GetBuilder<PlayerController>(
-            builder: (player) => player.playing != null
+          Consumer<PlayerService>(
+            builder: (context, player, child) => player.playing != null
                 ? MobileBottomPlayer()
                 : SizedBox.shrink(),
           ),
         ],
       ),
       floatingActionButton: Builder(builder: (context) {
-        return GetBuilder<PlayerController>(
-          builder: (player) {
+        return Consumer<PlayerService>(
+          builder: (context, player, child) {
             return Padding(
               padding: EdgeInsets.only(
                 bottom: player.playing != null ? 48.0 : 0.0,
               ),
-              child: FloatingActionButton(
-                child: Icon(Icons.search),
-                onPressed: () {
-                  AnnixBodyPageRouter.toNamed("/search");
-                },
-                isExtended: true,
-              ),
+              child: child,
             );
           },
+          child: FloatingActionButton(
+            child: Icon(Icons.search),
+            onPressed: () {
+              AnnixBodyPageRouter.toNamed("/search");
+            },
+            isExtended: true,
+          ),
         );
       }),
       bottomNavigationBar: GetBuilder<AnnixBodyPageRouter>(

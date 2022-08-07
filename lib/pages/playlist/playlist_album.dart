@@ -113,7 +113,7 @@ class AlbumDetailScreen extends PlaylistScreen {
                 trackId: trackIndex,
               ),
               onTap: () {
-                this.playFullList(initialIndex: totalTrackIndex);
+                this.playFullList(Get.context!, initialIndex: totalTrackIndex);
               },
               // selected: TODO: indicate playing track,
             );

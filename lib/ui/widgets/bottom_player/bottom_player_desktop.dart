@@ -1,4 +1,4 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -9,11 +9,9 @@ import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class DesktopBottomPlayer extends StatelessWidget {
-  final PlayerController player = Get.find();
-
   DesktopBottomPlayer({Key? key}) : super(key: key);
 
   @override
@@ -26,20 +24,22 @@ class DesktopBottomPlayer extends StatelessWidget {
         height: 80,
         child: Column(
           children: [
-            Obx(() {
-              return ProgressBar(
-                progress: player.progress.value,
-                total: player.duration.value,
-                onSeek: (position) {
-                  player.seek(position);
-                },
-                barHeight: 4.0,
-                thumbRadius: 6,
-                thumbGlowRadius: 12,
-                thumbCanPaintOutsideBar: false,
-                timeLabelLocation: TimeLabelLocation.none,
-              );
-            }),
+            Consumer2<PlayingProgress, PlayerService>(
+              builder: (context, progress, player, child) {
+                return ProgressBar(
+                  progress: progress.position,
+                  total: progress.duration,
+                  onSeek: (position) {
+                    player.seek(position);
+                  },
+                  barHeight: 4.0,
+                  thumbRadius: 6,
+                  thumbGlowRadius: 12,
+                  thumbCanPaintOutsideBar: false,
+                  timeLabelLocation: TimeLabelLocation.none,
+                );
+              },
+            ),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -59,8 +59,8 @@ class DesktopBottomPlayer extends StatelessWidget {
                           Expanded(
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: GetBuilder<PlayerController>(
-                                builder: (player) {
+                              child: Consumer<PlayerService>(
+                                builder: (context, player, child) {
                                   return Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -100,13 +100,17 @@ class DesktopBottomPlayer extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.skip_previous),
                           iconSize: 28,
-                          onPressed: () => player.previous(),
+                          onPressed: () =>
+                              Provider.of<PlayerService>(context, listen: false)
+                                  .previous(),
                         ),
                         PlayPauseButton(iconSize: 40),
                         IconButton(
                           icon: Icon(Icons.skip_next),
                           iconSize: 28,
-                          onPressed: () => player.next(),
+                          onPressed: () =>
+                              Provider.of<PlayerService>(context, listen: false)
+                                  .next(),
                         ),
                         LoopModeButton(),
                         IconButton(

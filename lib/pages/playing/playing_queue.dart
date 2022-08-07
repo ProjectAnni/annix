@@ -1,14 +1,14 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class PlayingQueue extends StatelessWidget {
   const PlayingQueue({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PlayerController>(
-      builder: (player) => ListView.builder(
+    return Consumer<PlayerService>(
+      builder: (context, player, child) => ListView.builder(
         itemCount: player.queue.length,
         itemBuilder: (context, index) {
           var song = player.queue[index];

@@ -1,4 +1,4 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/lyric.dart';
@@ -11,6 +11,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class PlayingMobileScreen extends StatelessWidget {
   final RxBool showLyrics = false.obs;
@@ -19,8 +20,6 @@ class PlayingMobileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerController player = Get.find();
-
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -50,16 +49,16 @@ class PlayingMobileScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                GetBuilder<PlayerController>(
-                  builder: (player) => Marquee(
+                Consumer<PlayerService>(
+                  builder: (context, player, child) => Marquee(
                     child: Text(
                       player.playing?.track.title ?? "",
                       style: context.textTheme.titleLarge,
                     ),
                   ),
                 ),
-                GetBuilder<PlayerController>(
-                  builder: (player) => ArtistText(
+                Consumer<PlayerService>(
+                  builder: (context, player, child) => ArtistText(
                     player.playing?.track.artist ?? "",
                     style: context.textTheme.subtitle1,
                     overflow: TextOverflow.ellipsis,
@@ -92,31 +91,38 @@ class PlayingMobileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Obx(() {
-                  return ProgressBar(
-                    progress: player.progress.value,
-                    total: player.duration.value,
-                    onSeek: (position) {
-                      player.seek(position);
-                    },
-                    barHeight: 2.0,
-                    thumbRadius: 5.0,
-                    thumbCanPaintOutsideBar: false,
-                  );
-                }),
+                Consumer<PlayingProgress>(
+                  builder: (context, progress, child) {
+                    return ProgressBar(
+                      progress: progress.position,
+                      total: progress.duration,
+                      onSeek: (position) {
+                        Provider.of<PlayerService>(context, listen: false)
+                            .seek(position);
+                      },
+                      barHeight: 2.0,
+                      thumbRadius: 5.0,
+                      thumbCanPaintOutsideBar: false,
+                    );
+                  },
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
                       icon: Icon(Icons.skip_previous),
                       iconSize: 32,
-                      onPressed: () => player.previous(),
+                      onPressed: () =>
+                          Provider.of<PlayerService>(context, listen: false)
+                              .previous(),
                     ),
                     PlayPauseButton(iconSize: 48),
                     IconButton(
                       icon: Icon(Icons.skip_next),
                       iconSize: 32,
-                      onPressed: () => player.next(),
+                      onPressed: () =>
+                          Provider.of<PlayerService>(context, listen: false)
+                              .next(),
                     ),
                   ],
                 ),

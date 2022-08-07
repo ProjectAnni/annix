@@ -1,4 +1,4 @@
-import 'package:annix/controllers/player_controller.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/pages/tag.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/pages/playlist/playlist_album.dart';
@@ -8,6 +8,7 @@ import 'package:annix/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
+import 'package:provider/provider.dart';
 
 class PlayingDesktopScreen extends StatelessWidget {
   PlayingDesktopScreen({Key? key}) : super(key: key);
@@ -36,8 +37,8 @@ class PlayingDesktopScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GetBuilder<PlayerController>(
-                        builder: (player) {
+                      Consumer<PlayerService>(
+                        builder: (context, player, child) {
                           return TextButton(
                             child: Text(
                               player.playing?.track.title ?? "",
@@ -55,8 +56,8 @@ class PlayingDesktopScreen extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 4),
-                      GetBuilder<PlayerController>(
-                        builder: (player) {
+                      Consumer<PlayerService>(
+                        builder: (context, player, child) {
                           final metadata = player.playing?.track;
                           if (metadata == null) {
                             return SizedBox.shrink();
