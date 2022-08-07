@@ -66,7 +66,10 @@ class PlayingDesktopScreen extends StatelessWidget {
                             alignment: MainAxisAlignment.start,
                             children: [
                               TextButton.icon(
-                                icon: Icon(Icons.person_outline),
+                                icon: Icon(
+                                  Icons.person_outline,
+                                  size: 20,
+                                ),
                                 label: ArtistText(
                                   metadata.artist,
                                   expandable: false,
