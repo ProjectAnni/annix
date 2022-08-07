@@ -15,9 +15,15 @@ class AnnixApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // GetX-related
     Get.locale = Get.deviceLocale;
     Get.fallbackLocale = const Locale('en', 'US');
     Get.addTranslations(I18n().keys);
+
+    // global router delegate
+    final delegate = AnnixRouterDelegate(
+      builder: (context, child) => AnnixLayout.build(child: child),
+    );
 
     return MultiProvider(
       providers: [
@@ -40,9 +46,7 @@ class AnnixApp extends StatelessWidget {
           locale: Get.locale,
 
           // routes
-          routerDelegate: AnnixRouterDelegate(
-            builder: (context, child) => AnnixLayout.build(child: child),
-          ),
+          routerDelegate: delegate,
 
           // TODO: add an options in the future
           builder: (context, child) => ResponsiveWrapper.builder(
