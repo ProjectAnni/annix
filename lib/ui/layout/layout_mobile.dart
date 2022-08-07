@@ -16,8 +16,6 @@ class AnnixLayoutMobile extends AnnixLayout {
     '/server',
   ];
 
-  static const INITIAL_MOBILE_PAGE = "/home";
-
   const AnnixLayoutMobile({super.key, required this.child});
 
   @override

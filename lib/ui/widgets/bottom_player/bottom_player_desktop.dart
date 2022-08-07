@@ -32,7 +32,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                   onSeek: (position) {
                     player.seek(position);
                   },
-                  barHeight: 4.0,
+                  barHeight: 3.0,
                   thumbRadius: 6,
                   thumbGlowRadius: 12,
                   thumbCanPaintOutsideBar: false,

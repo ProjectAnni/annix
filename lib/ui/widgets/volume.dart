@@ -33,6 +33,7 @@ class VolumeController extends StatelessWidget {
               progress: Duration(seconds: (player.volume * 100).toInt()),
               total: Duration(seconds: 100),
               timeLabelLocation: TimeLabelLocation.none,
+              barHeight: 4,
               thumbGlowRadius: 0,
               thumbRadius: 8,
               onDragUpdate: (position) {

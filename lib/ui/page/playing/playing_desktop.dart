@@ -78,7 +78,11 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   Icons.album_outlined,
                                   size: 20,
                                 ),
-                                label: Text(metadata.disc.album.title),
+                                label: Text(
+                                  metadata.disc.album.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 onPressed: () {
                                   AnnixRouterDelegate.of(context).to(
                                     name: '/album',

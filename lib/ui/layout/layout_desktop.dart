@@ -28,8 +28,6 @@ class AnnixLayoutDesktop extends AnnixLayout {
     '/server',
   ];
 
-  static const INITIAL_DESKTOP_PAGE = "/home";
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
