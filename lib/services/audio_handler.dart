@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/services/cover.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
@@ -27,7 +29,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
     final service = await AudioService.init(
       builder: () => AnnixAudioHandler._(context),
-      config: AudioServiceConfig(
+      config: const AudioServiceConfig(
         androidNotificationChannelId: 'rs.anni.annix.audio',
         androidNotificationChannelName: 'Annix Audio playback',
         androidNotificationIcon: 'drawable/ic_notification',
@@ -80,7 +82,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
     AudioService.notificationClicked.listen((clicked) {
       if (clicked) {
-        Get.to(() => PlayingMobileScreen());
+        AnnixRouterDelegate.of(Global.context).to(name: '/playing');
       }
     });
   }
@@ -88,9 +90,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
   AnnixAudioHandler._(BuildContext context)
       : player = Provider.of<PlayerService>(context, listen: false),
         progress = Provider.of<PlayingProgress>(context, listen: false) {
-    this.player.addListener(() => this._updatePlaybackState());
-    this.progress.addListener(() => this._updatePlaybackState());
-    this.anniv.favorites.listen((_) => this._updatePlaybackState());
+    player.addListener(() => _updatePlaybackState());
+    progress.addListener(() => _updatePlaybackState());
+    anniv.favorites.listen((_) => _updatePlaybackState());
   }
 
   Future<void> play() async {

@@ -23,7 +23,7 @@ class PlayingMobileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -38,7 +38,7 @@ class PlayingMobileScreen extends StatelessWidget {
               },
               child: Obx(
                 () => showLyrics.value
-                    ? AspectRatio(
+                    ? const AspectRatio(
                         aspectRatio: 1,
                         child: LyricView(
                           alignment: LyricAlign.CENTER,

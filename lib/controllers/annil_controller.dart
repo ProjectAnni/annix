@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 class CombinedOnlineAnnilClient {
   final Map<String, OnlineAnnilClient> clients;
   CombinedOnlineAnnilClient(List<OnlineAnnilClient> clients)
-      : this.clients = Map.fromEntries(clients.map((e) => MapEntry(e.id, e)));
+      : clients = Map.fromEntries(clients.map((e) => MapEntry(e.id, e)));
 
   bool get isEmpty => clients.isEmpty;
   bool get isNotEmpty => !isEmpty;
@@ -19,10 +19,10 @@ class CombinedOnlineAnnilClient {
   static Future<CombinedOnlineAnnilClient> load() async {
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
     if (tokens != null) {
-      final _clients = tokens
+      final clients = tokens
           .map((token) => OnlineAnnilClient.fromJson(jsonDecode(token)))
           .toList();
-      return CombinedOnlineAnnilClient(_clients);
+      return CombinedOnlineAnnilClient(clients);
     } else {
       return CombinedOnlineAnnilClient([]);
     }
@@ -112,7 +112,7 @@ class AnnilController extends GetxController {
   final RxList<String> albums = <String>[].obs;
   bool get hasClient => clients.value.isNotEmpty;
 
-  NetworkController _network = Get.find();
+  final NetworkController _network = Get.find();
 
   static Future<AnnilController> init() async {
     return AnnilController._(await CombinedOnlineAnnilClient.load());

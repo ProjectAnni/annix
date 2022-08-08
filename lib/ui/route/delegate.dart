@@ -12,6 +12,7 @@ import 'package:annix/services/global.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
+import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
 
   AnnixRouterDelegate() {
-    this.to(name: "/home");
+    to(name: "/home");
   }
 
   @override
@@ -52,7 +53,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     return true;
   }
 
-  String get currentRoute => this._pages.last.name!;
+  String get currentRoute => _pages.last.name!;
 
   bool canPop() {
     return _pages.length > 1;
@@ -81,14 +82,14 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
   void off({required String name, dynamic arguments}) {
     _pages.clear();
-    this.to(name: name, arguments: arguments);
+    to(name: name, arguments: arguments);
   }
 
   void replace({required String name, dynamic arguments}) {
     if (_pages.isNotEmpty) {
       _pages.removeLast();
     }
-    this.to(name: name, arguments: arguments);
+    to(name: name, arguments: arguments);
   }
 
   AnnixPage _createPage(RouteSettings routeSettings) {
@@ -96,7 +97,11 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     switch (routeSettings.name) {
       case "/playing":
-        child = PlayingDesktopScreen();
+        if (Global.isDesktop) {
+          child = PlayingDesktopScreen();
+        } else {
+          child = PlayingMobileScreen();
+        }
         break;
       case "/home":
         child = HomePage();
@@ -112,10 +117,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         );
         break;
       case "/tags":
-        child = TagsView();
+        child = const TagsView();
         break;
       case "/server":
-        child = ServerView();
+        child = const ServerView();
         break;
       case "/favorite":
         child = FavoriteScreen();
@@ -125,13 +130,13 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
             PlaylistDetailScreen(playlist: routeSettings.arguments as Playlist);
         break;
       case "/search":
-        child = SearchScreen();
+        child = const SearchScreen();
         break;
       case "/settings":
-        child = SettingsScreen();
+        child = const SettingsScreen();
         break;
       case "/settings/log":
-        child = SettingsLogView();
+        child = const SettingsLogView();
         break;
       default:
         throw UnimplementedError(

@@ -47,9 +47,13 @@ class AnnixApp extends StatelessWidget {
           // TODO: add an options in the future
           builder: (context, child) {
             return ResponsiveWrapper.builder(
-              child,
+              Overlay(
+                initialEntries: [
+                  OverlayEntry(builder: (context) => child!, opaque: true)
+                ],
+              ),
               defaultScale: true,
-              breakpoints: [
+              breakpoints: const [
                 ResponsiveBreakpoint.resize(600, name: MOBILE),
                 ResponsiveBreakpoint.autoScale(800, name: TABLET),
                 ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),

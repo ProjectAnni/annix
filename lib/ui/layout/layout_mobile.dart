@@ -30,9 +30,13 @@ class AnnixLayoutMobile extends AnnixLayout {
         children: [
           Expanded(child: child),
           Consumer<PlayerService>(
-            builder: (context, player, child) => player.playing != null
-                ? MobileBottomPlayer()
-                : SizedBox.shrink(),
+            builder: (context, player, child) {
+              if (player.playing != null && router.currentRoute != "/playing") {
+                return const MobileBottomPlayer();
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
           ),
         ],
       ),
@@ -48,46 +52,44 @@ class AnnixLayoutMobile extends AnnixLayout {
               );
             },
             child: FloatingActionButton(
-              child: Icon(Icons.search),
               onPressed: () {
                 router.to(name: "/search");
               },
               isExtended: true,
+              child: const Icon(Icons.search),
             ),
           );
         },
       ),
-      bottomNavigationBar: Builder(
-        builder: (context) {
-          final route = router.currentRoute;
-          final selectedIndex =
-              pages.indexOf(route) == -1 ? null : pages.indexOf(route);
-          if (selectedIndex == null) {
-            return SizedBox.shrink();
-          }
+      bottomNavigationBar: (() {
+        final route = router.currentRoute;
+        final selectedIndex =
+            pages.contains(route) ? pages.indexOf(route) : null;
+        if (selectedIndex == null) {
+          return const SizedBox.shrink();
+        }
 
-          return NavigationBar(
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (index) {
-              router.off(name: pages[index]);
-            },
-            destinations: [
-              NavigationDestination(
-                icon: Icon(Icons.casino_outlined),
-                label: I18n.HOME.tr,
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.local_offer_outlined),
-                label: I18n.CATEGORY.tr,
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.dns_outlined),
-                label: I18n.SERVER.tr,
-              ),
-            ],
-          );
-        },
-      ),
+        return NavigationBar(
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) {
+            router.off(name: pages[index]);
+          },
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.casino_outlined),
+              label: I18n.HOME.tr,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.local_offer_outlined),
+              label: I18n.CATEGORY.tr,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.dns_outlined),
+              label: I18n.SERVER.tr,
+            ),
+          ],
+        );
+      })(),
     );
   }
 }

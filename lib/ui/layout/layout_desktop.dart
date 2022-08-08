@@ -45,7 +45,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
                 (() {
                   final route = router.currentRoute;
                   final selectedIndex =
-                      pages.indexOf(route) == -1 ? null : pages.indexOf(route);
+                      pages.contains(route) ? pages.indexOf(route) : null;
 
                   return NavigationRail(
                     selectedIndex: selectedIndex,
