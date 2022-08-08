@@ -103,7 +103,7 @@ jobs:
       - name: Deploy | Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: annix-macOS
+          name: annix-macos
           path: |
             ./build/macos/Build/Products/Release/annix-macos.zip
           retention-days: 1
