@@ -40,14 +40,21 @@ class Global {
         appWindow.show();
       });
 
+      final isPortalbleMode = File(p.normalize(
+              p.join(Platform.resolvedExecutable, '..', 'portable.enable')))
+          .existsSync();
+
       if (Platform.isMacOS) {
         storageRoot = p.join((await getLibraryDirectory()).path, 'data');
         dataRoot = storageRoot;
       } else {
-        storageRoot =
-            p.normalize(p.join(Platform.resolvedExecutable, '..', 'cache'));
-        dataRoot =
-            p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
+        if (isPortalbleMode) {
+          dataRoot =
+              p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
+        } else {
+          dataRoot = (await getApplicationSupportDirectory()).path;
+        }
+        storageRoot = p.join(dataRoot, 'cache');
       }
 
       // sqflite on desktop

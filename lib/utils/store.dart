@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:annix/services/global.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
 
 class AnnixStore {
   static AnnixStore _instance = AnnixStore._();
@@ -13,7 +15,7 @@ class AnnixStore {
 
   AnnixStore._()
       : _database = openDatabase(
-          "store.db",
+          p.join(Global.dataRoot, "store.db"),
           version: 1,
           onCreate: ((db, version) async {
             await db.execute('''
