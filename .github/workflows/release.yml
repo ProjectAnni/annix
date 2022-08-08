@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: annix-linux64
-          path: ./annix-linux64.zip
+          path: ./build/linux/x64/release/annix-linux64.zip
           retention-days: 1
 
   macOS:
