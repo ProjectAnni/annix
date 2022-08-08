@@ -1,7 +1,6 @@
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +19,7 @@ class AnnixApp extends StatelessWidget {
     Get.addTranslations(I18n().keys);
 
     // global router delegate
-    final delegate = AnnixRouterDelegate(
-      builder: (context, child) => AnnixLayout.build(child: child),
-    );
+    final delegate = AnnixRouterDelegate();
 
     return MultiProvider(
       providers: [
@@ -40,6 +37,7 @@ class AnnixApp extends StatelessWidget {
           // theme
           theme: theme.theme,
           darkTheme: theme.darkTheme,
+          themeMode: theme.themeMode,
           // i18n
           locale: Get.locale,
 

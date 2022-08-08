@@ -1,4 +1,3 @@
-import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
 
 class AnnixPage extends Page {
@@ -17,8 +16,6 @@ class AnnixPage extends Page {
       settings: this,
       pageBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation) {
-        Global.context = context;
-
         return FadeTransition(
           opacity: animation,
           child: child,

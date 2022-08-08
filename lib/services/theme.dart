@@ -12,7 +12,8 @@ class AnnixTheme extends ChangeNotifier {
           useMaterial3: true,
           brightness: Brightness.dark,
           colorSchemeSeed: seed,
-        );
+        ),
+        _themeMode = ThemeMode.system;
 
   Color _seed;
 
@@ -21,6 +22,9 @@ class AnnixTheme extends ChangeNotifier {
 
   ThemeData _darkTheme;
   ThemeData get darkTheme => _darkTheme;
+
+  ThemeMode _themeMode;
+  ThemeMode get themeMode => _themeMode;
 
   void setTheme(Color seed) {
     if (_seed == seed) {
@@ -39,5 +43,12 @@ class AnnixTheme extends ChangeNotifier {
       colorSchemeSeed: _seed,
     );
     notifyListeners();
+  }
+
+  void setThemeMode(ThemeMode mode) {
+    if (mode != _themeMode) {
+      _themeMode = mode;
+      notifyListeners();
+    }
   }
 }

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AnnixLayoutMobile extends AnnixLayout {
+  final AnnixRouterDelegate router;
   final Widget child;
 
   static const pages = <String>[
@@ -16,7 +17,11 @@ class AnnixLayoutMobile extends AnnixLayout {
     '/server',
   ];
 
-  const AnnixLayoutMobile({super.key, required this.child});
+  const AnnixLayoutMobile({
+    super.key,
+    required this.child,
+    required this.router,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +50,7 @@ class AnnixLayoutMobile extends AnnixLayout {
             child: FloatingActionButton(
               child: Icon(Icons.search),
               onPressed: () {
-                AnnixRouterDelegate.of(context).to(name: "/search");
+                router.to(name: "/search");
               },
               isExtended: true,
             ),
@@ -54,8 +59,7 @@ class AnnixLayoutMobile extends AnnixLayout {
       ),
       bottomNavigationBar: Builder(
         builder: (context) {
-          final delegate = AnnixRouterDelegate.of(context);
-          final route = delegate.currentRoute;
+          final route = router.currentRoute;
           final selectedIndex =
               pages.indexOf(route) == -1 ? null : pages.indexOf(route);
           if (selectedIndex == null) {
@@ -65,7 +69,7 @@ class AnnixLayoutMobile extends AnnixLayout {
           return NavigationBar(
             selectedIndex: selectedIndex,
             onDestinationSelected: (index) {
-              delegate.off(name: pages[index]);
+              router.off(name: pages[index]);
             },
             destinations: [
               NavigationDestination(

@@ -8,6 +8,8 @@ import 'package:annix/pages/root/tags.dart';
 import 'package:annix/pages/settings/settings.dart';
 import 'package:annix/pages/settings/settings_log.dart';
 import 'package:annix/pages/tag.dart';
+import 'package:annix/services/global.dart';
+import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/page/search.dart';
@@ -19,18 +21,17 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final List<Page> _pages = [];
 
   @override
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
 
-  final Widget Function(BuildContext context, Widget child) builder;
-  AnnixRouterDelegate({required this.builder}) {
+  AnnixRouterDelegate() {
     this.to(name: "/home");
   }
 
   @override
   Widget build(BuildContext context) {
-    return builder(
-      context,
-      Navigator(
+    return AnnixLayout.build(
+      router: this,
+      child: Navigator(
         key: navigatorKey,
         pages: List.of(_pages),
         onPopPage: _onPopPage,

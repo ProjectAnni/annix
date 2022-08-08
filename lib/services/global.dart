@@ -23,7 +23,10 @@ class Global {
   static late String dataRoot;
 
   @deprecated
-  static late BuildContext context;
+  static late GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
+  @deprecated
+  static BuildContext get context => navigatorKey.currentContext!;
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
