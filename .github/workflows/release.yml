@@ -30,7 +30,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | Apk
@@ -61,7 +61,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
       - name: Setup | Dependencies
         run: |
           sudo apt-get update -y
@@ -92,7 +92,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | macOS
@@ -120,7 +120,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
       - name: Setup | Dependencies
         run: |
           flutter config --enable-windows-desktop
@@ -128,6 +128,7 @@ jobs:
       - name: Build | Windows
         run: |
           flutter build windows --verbose
+          curl https://raw.githubusercontent.com/tekartik/sqflite/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll -o ./build/windows/runner/Release/sqlite3.dll
           cp -r build/windows/runner/Release annix-win64
           tar.exe -a -c -f annix-win64.zip annix-win64
       - name: Deploy | Upload artifacts

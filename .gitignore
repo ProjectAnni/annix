@@ -45,4 +45,3 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/app/src/main/jniLibs
-flutter
