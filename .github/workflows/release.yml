@@ -182,7 +182,6 @@ jobs:
           NVIM_VERSION: ${{ needs.linux.outputs.version }}
           DEBUG: api
         run: |
-          envsubst < "$GITHUB_WORKSPACE/.github/workflows/notes.md" > "$RUNNER_TEMP/notes.md"
           gh release create $TAG_NAME $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/* annix-linux64/* annix-macos/* annix-win64/*
           if [ "$TAG_NAME" != "nightly" ]; then
             gh release create stable $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/* annix-linux64/* annix-macos/* annix-win64/*
