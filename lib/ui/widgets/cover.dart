@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:annix/services/annil.dart';
 import 'package:annix/services/cover.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/theme.dart';
@@ -31,9 +32,9 @@ class PlayingMusicCover extends StatelessWidget {
   Widget build(BuildContext context) {
     final cover = Hero(
       tag: "playing",
-      child: Consumer<PlayerService>(
-        builder: (context, player, child) {
-          final playing = player.playing;
+      child: Selector<PlayerService, AnnilAudioSource?>(
+        selector: (context, player) => player.playing,
+        builder: (context, playing, child) {
           if (playing == null) {
             // not playing
             return Container();
@@ -56,7 +57,6 @@ class PlayingMusicCover extends StatelessWidget {
             fit: fit,
             filterQuality: filterQuality,
             cacheHeight: 800,
-            gaplessPlayback: true,
             cache: false,
           );
         },
@@ -112,7 +112,6 @@ class MusicCover extends StatelessWidget {
         fit: fit,
         filterQuality: filterQuality,
         cacheHeight: 800,
-        gaplessPlayback: true,
         cache: false,
       ),
     );
