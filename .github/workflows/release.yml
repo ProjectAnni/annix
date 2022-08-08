@@ -1,0 +1,188 @@
+name: Release
+on:
+  schedule:
+    - cron: "5 5 * * *"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag name for release"
+        required: false
+        default: nightly
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "11"
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+      - name: Setup | Dependencies
+        run: flutter pub get
+      - name: Build | Apk
+        run: |
+          flutter build apk --release
+          cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
+          flutter build apk --release --split-per-abi
+      - name: Build | App Bundle
+        run: flutter build appbundle --release
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-android
+          path: |
+            ./build/app/outputs/apk/**/*.apk
+            ./build/app/outputs/bundle/**/*.aab
+          retention-days: 1
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+      - name: Setup | Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+          flutter config --enable-linux-desktop
+          flutter pub get
+      - name: Build | Linux
+        run: |
+          flutter build linux --verbose
+          cd build/linux/x64/release/
+          zip -r annix-linux64.zip bundle
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-linux64
+          path: ./annix-linux64.zip
+          retention-days: 1
+
+  macOS:
+    runs-on: macos-11
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+      - name: Setup | Dependencies
+        run: flutter pub get
+      - name: Build | macOS
+        run: |
+          flutter build macos --verbose
+          cd build/macos/Build/Products/Release
+          ditto -c -k --sequesterRsrc --keepParent Annix.app annix-macos.zip
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-macOS
+          path: |
+            ./build/macos/Build/Products/Release/annix-macos.zip
+          retention-days: 1
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab # change this to force refresh cache
+      - name: Setup | Dependencies
+        run: |
+          flutter config --enable-windows-desktop
+          flutter pub get
+      - name: Build | Windows
+        run: |
+          flutter build windows --verbose
+          cp -r build/windows/runner/Release annix-win64
+          tar.exe -a -c -f annix-win64.zip annix-win64
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-win64
+          path: |
+            ./annix-win64.zip
+          retention-days: 1
+
+  publish:
+    needs: [linux, android, macOS, windows]
+    runs-on: ubuntu-20.04
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      # Must perform checkout first, since it deletes the target directory
+      # before running, and would therefore delete the downloaded artifacts
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext-base
+
+      - if: github.event_name == 'workflow_dispatch'
+        run: echo "TAG_NAME=${{ github.event.inputs.tag_name }}" >> $GITHUB_ENV
+      - if: github.event_name == 'schedule'
+        run: echo 'TAG_NAME=nightly' >> $GITHUB_ENV
+      - if: github.event_name == 'push'
+        run: |
+          TAG_NAME=${{ github.ref }}
+          echo "TAG_NAME=${TAG_NAME#refs/tags/}" >> $GITHUB_ENV
+      - if: env.TAG_NAME == 'nightly'
+        run: |
+          (echo 'SUBJECT=Annix development (prerelease) build';
+           echo 'PRERELEASE=--prerelease') >> $GITHUB_ENV
+          gh release delete nightly --yes || true
+          git push origin :nightly || true
+      - if: env.TAG_NAME != 'nightly'
+        run: |
+          (echo 'SUBJECT=Annix release build';
+           echo 'PRERELEASE=') >> $GITHUB_ENV
+          gh release delete stable --yes || true
+          git push origin :stable || true
+      - name: Publish release
+        env:
+          NVIM_VERSION: ${{ needs.linux.outputs.version }}
+          DEBUG: api
+        run: |
+          envsubst < "$GITHUB_WORKSPACE/.github/workflows/notes.md" > "$RUNNER_TEMP/notes.md"
+          gh release create $TAG_NAME $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/* annix-linux64/* annix-macos/* annix-win64/*
+          if [ "$TAG_NAME" != "nightly" ]; then
+            gh release create stable $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/* annix-linux64/* annix-macos/* annix-win64/*
+          fi
