@@ -189,7 +189,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
               CoverItem(
                 uri: annil.clients.value.getCoverUrl(albumId: playing.albumId),
                 albumId: playing.albumId,
-                // discId: discId,
+                // discId: playing.discId,
               ),
             ),
           ));

@@ -48,7 +48,7 @@ class PlayingMusicCover extends StatelessWidget {
                     discId: playing.discId,
                     uri: annil.clients.value.getCoverUrl(
                       albumId: playing.albumId,
-                      discId: playing.discId,
+                      // discId: playing.discId,
                     ),
                   ),
                 )
@@ -104,7 +104,7 @@ class MusicCover extends StatelessWidget {
                 discId: discId,
                 uri: annil.clients.value.getCoverUrl(
                   albumId: albumId,
-                  discId: discId,
+                  // discId: discId,
                 ),
               ),
             )
