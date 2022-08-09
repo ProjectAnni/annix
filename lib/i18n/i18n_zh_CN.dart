@@ -22,6 +22,7 @@ const Map<String, String> I18N_zh_CN = {
   // settings
   I18n.SETTINGS: "设置",
   I18n.SETTINGS_SKIP_CERT: "忽略证书验证",
+  I18n.SETTINGS_AUTOSCALE_UI: "自动 UI 缩放",
   I18n.SETTINGS_USE_MOBILE_NETWORK: "使用移动网络播放",
   I18n.SETTINGS_LOGS: "应用日志",
   I18n.SETTINGS_LOGS_DESC: "查看应用日志。",

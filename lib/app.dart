@@ -1,3 +1,4 @@
+import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
@@ -44,20 +45,29 @@ class AnnixApp extends StatelessWidget {
           // routes
           routerDelegate: delegate,
 
-          // TODO: add an options in the future
+          // scale
           builder: (context, child) {
-            return ResponsiveWrapper.builder(
-              Overlay(
-                initialEntries: [
-                  OverlayEntry(builder: (context) => child!, opaque: true)
-                ],
-              ),
-              defaultScale: true,
-              breakpoints: const [
-                ResponsiveBreakpoint.resize(600, name: MOBILE),
-                ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
-                ResponsiveBreakpoint.autoScale(2400, name: '4K'),
+            final SettingsController settings = Get.find();
+
+            return Overlay(
+              initialEntries: [
+                OverlayEntry(
+                  builder: (context) => Obx(
+                    () => settings.autoScaleUI.value
+                        ? ResponsiveWrapper.builder(
+                            child,
+                            defaultScale: true,
+                            breakpoints: const [
+                              ResponsiveBreakpoint.resize(600, name: MOBILE),
+                              ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                              ResponsiveBreakpoint.autoScale(1200,
+                                  name: DESKTOP),
+                              ResponsiveBreakpoint.autoScale(2400, name: '4K'),
+                            ],
+                          )
+                        : child!,
+                  ),
+                ),
               ],
             );
           },

@@ -14,8 +14,11 @@ class ObxSettingsTileBuilder<T extends RxInterface>
   final Widget Function(T) builder;
   final T value;
 
-  ObxSettingsTileBuilder({required this.builder, required this.value, Key? key})
-      : super(key: key);
+  const ObxSettingsTileBuilder({
+    required this.builder,
+    required this.value,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         sections: [
           SettingsSection(
-            title: Text('Common'),
+            title: const Text('Common'),
             tiles: [
               ObxSettingsTileBuilder<RxBool>(
                 value: settings.skipCertificateVerification,
@@ -57,14 +60,26 @@ class SettingsScreen extends StatelessWidget {
                     p.value = value;
                   },
                   initialValue: p.value,
-                  leading: Icon(Icons.security_outlined),
+                  leading: const Icon(Icons.security_outlined),
                   title: Text(I18n.SETTINGS_SKIP_CERT.tr),
+                ),
+              ),
+              ObxSettingsTileBuilder<RxBool>(
+                value: settings.autoScaleUI,
+                builder: (p) => SettingsTile.switchTile(
+                  onToggle: (value) {
+                    p.value = value;
+                    AnnixRouterDelegate.of(context).popRoute();
+                  },
+                  initialValue: p.value,
+                  leading: const Icon(Icons.smart_screen_outlined),
+                  title: Text(I18n.SETTINGS_AUTOSCALE_UI.tr),
                 ),
               ),
             ],
           ),
           SettingsSection(
-            title: Text('Playback'),
+            title: const Text('Playback'),
             tiles: [
               ObxSettingsTileBuilder<RxBool>(
                 value: settings.useMobileNetwork,
@@ -73,18 +88,18 @@ class SettingsScreen extends StatelessWidget {
                     p.value = value;
                   },
                   initialValue: p.value,
-                  leading: Icon(Icons.mobiledata_off_outlined),
+                  leading: const Icon(Icons.mobiledata_off_outlined),
                   title: Text(I18n.SETTINGS_USE_MOBILE_NETWORK.tr),
                 ),
               ),
             ],
           ),
           SettingsSection(
-            title: Text('Advanced'),
+            title: const Text('Advanced'),
             tiles: <SettingsTile>[
               // view logs
               SettingsTile.navigation(
-                leading: Icon(Icons.report_outlined),
+                leading: const Icon(Icons.report_outlined),
                 title: Text(I18n.SETTINGS_LOGS.tr),
                 description: Text(I18n.SETTINGS_LOGS_DESC.tr),
                 onPressed: (context) {
@@ -93,13 +108,13 @@ class SettingsScreen extends StatelessWidget {
               ),
               // clear local metadata cache
               SettingsTile.navigation(
-                leading: Icon(Icons.featured_play_list_outlined),
+                leading: const Icon(Icons.featured_play_list_outlined),
                 title: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE.tr),
                 description: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC.tr),
                 onPressed: (context) async {
                   Get.defaultDialog(
                     title: I18n.PROGRESS.tr,
-                    content: CircularProgressIndicator(strokeWidth: 2),
+                    content: const CircularProgressIndicator(strokeWidth: 2),
                     barrierDismissible: false,
                     onWillPop: () async => false,
                   );
@@ -109,13 +124,13 @@ class SettingsScreen extends StatelessWidget {
               ),
               // clear local lyric cache
               SettingsTile.navigation(
-                leading: Icon(Icons.lyrics_outlined),
+                leading: const Icon(Icons.lyrics_outlined),
                 title: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE.tr),
                 description: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC.tr),
                 onPressed: (context) async {
                   Get.defaultDialog(
                     title: I18n.PROGRESS.tr,
-                    content: CircularProgressIndicator(strokeWidth: 2),
+                    content: const CircularProgressIndicator(strokeWidth: 2),
                     barrierDismissible: false,
                     onWillPop: () async => false,
                   );

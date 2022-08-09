@@ -12,6 +12,11 @@ class SettingsController extends GetxController {
   /// Default value: false
   late RxBool skipCertificateVerification;
 
+  /// Whether to enable auto scalable UI
+  ///
+  /// Default value: false
+  late RxBool autoScaleUI;
+
   @override
   void onInit() {
     super.onInit();
@@ -26,6 +31,10 @@ class SettingsController extends GetxController {
             .obs;
     skipCertificateVerification
         .listen(saveChangedVariable("annix_skip_certificate_verification"));
+
+    autoScaleUI =
+        (Global.preferences.getBool("annix_auto_scale_ui") ?? false).obs;
+    autoScaleUI.listen(saveChangedVariable("annix_auto_scale_ui"));
   }
 
   void Function(T) saveChangedVariable<T>(String key) {

@@ -21,6 +21,7 @@ class I18n extends Translations {
 
   static const SETTINGS = "settings";
   static const SETTINGS_SKIP_CERT = "settings_skip_cert";
+  static const SETTINGS_AUTOSCALE_UI = "settings_autoscale_ui";
   static const SETTINGS_USE_MOBILE_NETWORK = "settings_use_mobile_network";
   static const SETTINGS_LOGS = "settings_logs";
   static const SETTINGS_LOGS_DESC = "settings_logs_desc";

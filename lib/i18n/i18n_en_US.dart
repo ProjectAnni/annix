@@ -21,6 +21,7 @@ const Map<String, String> I18N_en_US = {
   // settings
   I18n.SETTINGS: "Settings",
   I18n.SETTINGS_SKIP_CERT: "Skip certificate verification",
+  I18n.SETTINGS_AUTOSCALE_UI: "Auto scale UI",
   I18n.SETTINGS_USE_MOBILE_NETWORK: "Play under mobile network",
   I18n.SETTINGS_LOGS: "Logs",
   I18n.SETTINGS_LOGS_DESC: "View Logs.",
