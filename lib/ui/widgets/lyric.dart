@@ -36,13 +36,13 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getPlayingMainTextStyle() {
-    return Get.textTheme.bodyText1!;
+    return Theme.of(Global.context).textTheme.titleMedium!;
   }
 
   @override
   TextStyle getOtherMainTextStyle() {
-    return Get.textTheme.bodyText2!
-        .copyWith(color: Get.textTheme.bodyText2?.color?.withOpacity(0.5));
+    final textTheme = Theme.of(Global.context).textTheme.bodyMedium;
+    return textTheme!.copyWith(color: textTheme.color!.withOpacity(0.5));
   }
 
   @override
@@ -53,7 +53,7 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   LyricAlign getLyricHorizontalAlign() {
-    return this.align;
+    return align;
   }
 
   @override
@@ -77,7 +77,7 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   Color getLyricHightlightColor() {
-    return Get.theme.colorScheme.primary;
+    return Theme.of(Global.context).colorScheme.primary;
   }
 
   @override
