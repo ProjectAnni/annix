@@ -118,26 +118,30 @@ class _LyricView extends StatelessWidget {
     if (lyric == null) {
       return Align(
         alignment: lyricAlign.alignment,
-        child: Text("Loading..."),
+        child: const Text("Loading..."),
       );
     } else if (lyric!.isEmpty) {
       return Align(
         alignment: lyricAlign.alignment,
-        child: Text("No lyrics found"),
+        child: const Text("No lyrics found"),
       );
     } else {
+      // Notice: model and ui MUST NOT be rebuilt
+      // building ui is EXTREMELY expensive
       final model = LyricsModelBuilder.create()
           .bindLyricToMain(lyric!)
           // .bindLyricToExt(lyric) // TODO: translation
           .getModel();
-      return Consumer<PlayingProgress>(
-        builder: (context, progress, child) {
+      final ui = PlayingLyricUI(align: lyricAlign);
+      return Selector<PlayingProgress, Duration>(
+        selector: (_, progress) => progress.position,
+        builder: (context, position, child) {
           return LyricsReader(
             model: model,
-            lyricUi: PlayingLyricUI(align: lyricAlign),
-            position: progress.position.inMilliseconds /* + 500 as offset */,
+            lyricUi: ui,
+            position: position.inMilliseconds /* + 500 as offset */,
             // don't know why only playing = false has highlight
-            playing: false,
+            playing: true,
             emptyBuilder: () {
               return SingleChildScrollView(
                 child: FractionallySizedBox(

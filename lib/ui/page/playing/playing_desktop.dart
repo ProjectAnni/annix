@@ -9,14 +9,14 @@ import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:provider/provider.dart';
 
 class PlayingDesktopScreen extends StatelessWidget {
-  PlayingDesktopScreen({Key? key}) : super(key: key);
+  const PlayingDesktopScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Spacer(),
+          const Spacer(),
           Expanded(
             flex: 6,
             child: Row(
@@ -27,7 +27,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                   flex: 5,
                   child: Center(child: PlayingMusicCover(card: true)),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   flex: 4,
                   child: Column(
@@ -53,12 +53,12 @@ class PlayingDesktopScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Consumer<PlayerService>(
                         builder: (context, player, child) {
                           final metadata = player.playing?.track;
                           if (metadata == null) {
-                            return SizedBox.shrink();
+                            return const SizedBox.shrink();
                           }
 
                           return ButtonBar(
@@ -66,7 +66,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                             alignment: MainAxisAlignment.start,
                             children: [
                               TextButton.icon(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.person_outline,
                                   size: 20,
                                 ),
@@ -77,7 +77,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                                 onPressed: () {},
                               ),
                               TextButton.icon(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.album_outlined,
                                   size: 20,
                                 ),
@@ -93,13 +93,13 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   );
                                 },
                               ),
-                              ...Set.from([
+                              ...<String>{
                                 ...(metadata.tags ?? []),
                                 ...(metadata.disc.tags ?? []),
                                 ...(metadata.disc.album.tags ?? [])
-                              ]).map(
+                              }.map(
                                 (tag) => TextButton.icon(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.local_offer_outlined,
                                     size: 20,
                                   ),
@@ -116,22 +116,23 @@ class PlayingDesktopScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      SizedBox(height: 16),
-                      Expanded(
+                      const SizedBox(height: 16),
+                      const Expanded(
                         flex: 8,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: LyricView(alignment: LyricAlign.LEFT),
+                          padding: EdgeInsets.only(left: 8),
+                          child: RepaintBoundary(
+                              child: LyricView(alignment: LyricAlign.LEFT)),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Spacer(flex: 1),
+                const Spacer(flex: 1),
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
         ],
       ),
     );
