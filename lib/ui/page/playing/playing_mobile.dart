@@ -22,7 +22,9 @@ class PlayingMobileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -73,14 +75,14 @@ class PlayingMobileScreen extends StatelessWidget {
                   alignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FavoriteButton(),
-                    LoopModeButton(),
+                    const LoopModeButton(),
                     IconButton(
-                      icon: Icon(Icons.more_vert),
+                      icon: const Icon(Icons.more_vert),
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return FractionallySizedBox(
+                            return const FractionallySizedBox(
                               heightFactor: 0.6,
                               widthFactor: 1,
                               alignment: Alignment.bottomCenter,
@@ -111,15 +113,15 @@ class PlayingMobileScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.skip_previous),
+                      icon: const Icon(Icons.skip_previous),
                       iconSize: 32,
                       onPressed: () =>
                           Provider.of<PlayerService>(context, listen: false)
                               .previous(),
                     ),
-                    PlayPauseButton(iconSize: 48),
+                    const PlayPauseButton(iconSize: 48),
                     IconButton(
-                      icon: Icon(Icons.skip_next),
+                      icon: const Icon(Icons.skip_next),
                       iconSize: 32,
                       onPressed: () =>
                           Provider.of<PlayerService>(context, listen: false)
