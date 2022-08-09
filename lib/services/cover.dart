@@ -67,9 +67,7 @@ class CoverReverseProxy {
   CoverReverseProxy._();
 
   factory CoverReverseProxy() {
-    if (_instance == null) {
-      _instance = CoverReverseProxy._();
-    }
+    _instance ??= CoverReverseProxy._();
     return _instance!;
   }
 

@@ -139,8 +139,7 @@ class _LyricView extends StatelessWidget {
           return LyricsReader(
             model: model,
             lyricUi: ui,
-            position: position.inMilliseconds /* + 500 as offset */,
-            // don't know why only playing = false has highlight
+            position: position.inMilliseconds,
             playing: true,
             emptyBuilder: () {
               return SingleChildScrollView(

@@ -121,8 +121,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                         flex: 8,
                         child: Padding(
                           padding: EdgeInsets.only(left: 8),
-                          child: RepaintBoundary(
-                              child: LyricView(alignment: LyricAlign.LEFT)),
+                          child: LyricView(alignment: LyricAlign.LEFT),
                         ),
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/widgets/artist_text.dart';
@@ -30,7 +31,7 @@ class PlayingMobileScreen extends StatelessWidget {
             GestureDetector(
               onVerticalDragEnd: (details) {
                 if ((details.primaryVelocity ?? 0) > 300) {
-                  Get.back();
+                  AnnixRouterDelegate.of(context).popRoute();
                 }
               },
               onTap: () {

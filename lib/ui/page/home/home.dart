@@ -30,11 +30,11 @@ class PlaylistView extends StatelessWidget {
               // fav
               return ListTile(
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   leading: AspectRatio(
                     aspectRatio: 1,
                     child: anniv.favorites.isEmpty
-                        ? DummyMusicCover()
+                        ? const DummyMusicCover()
                         : MusicCover(
                             albumId: anniv.favorites.values.last.track.albumId),
                   ),
@@ -53,11 +53,12 @@ class PlaylistView extends StatelessWidget {
             final albumId =
                 playlist.cover.albumId == "" ? null : playlist.cover.albumId;
             return ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               leading: AspectRatio(
                 aspectRatio: 1,
                 child: albumId == null
-                    ? DummyMusicCover()
+                    ? const DummyMusicCover()
                     : MusicCover(albumId: albumId),
               ),
               title: Text(
@@ -98,7 +99,7 @@ class HomePage extends StatelessWidget {
                     scrolledUnderElevation: 0,
                     actions: [
                       IconButton(
-                        icon: Icon(Icons.shuffle_outlined),
+                        icon: const Icon(Icons.shuffle_outlined),
                         onPressed: () {
                           showDialog(
                             context: context,
@@ -110,7 +111,7 @@ class HomePage extends StatelessWidget {
                                     padding: const EdgeInsets.all(20.0),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      children: [
+                                      children: const [
                                         CircularProgressIndicator(),
                                         SizedBox(width: 12),
                                         Text("Loading..."),
@@ -126,7 +127,7 @@ class HomePage extends StatelessWidget {
                               .then((value) => Navigator.of(context).pop());
                         },
                       ),
-                      ThemeButton(),
+                      const ThemeButton(),
                     ],
                   ),
                 ] +
@@ -148,11 +149,15 @@ class HomePage extends StatelessWidget {
 
   List<Widget> content() {
     return <Widget>[
-      if (annil.albums.isNotEmpty) HomeAlbums(),
+      Obx(
+        () => annil.albums.isNotEmpty
+            ? const HomeAlbums()
+            : const SliverToBoxAdapter(),
+      ),
 
       ////////////////////////////////////////////////
       SliverPadding(
-        padding: EdgeInsets.only(top: 48, left: 16, bottom: 16),
+        padding: const EdgeInsets.only(top: 48, left: 16, bottom: 16),
         sliver: TwoSideSliver(
           leftPercentage: Global.isDesktop ? 0.5 : 1,
           left: HomeTitle(
@@ -170,7 +175,7 @@ class HomePage extends StatelessWidget {
       TwoSideSliver(
         leftPercentage: Global.isDesktop ? 0.5 : 1,
         left: PlaylistView(),
-        right: SliverToBoxAdapter(),
+        right: const SliverToBoxAdapter(),
       ),
     ];
   }

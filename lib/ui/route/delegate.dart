@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
-  final List<Page> _pages = [];
+  final List<AnnixPage> _pages = [];
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
@@ -96,9 +96,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     Widget child;
 
     switch (routeSettings.name) {
+      // TODO: cache /playing page
       case "/playing":
         if (Global.isDesktop) {
-          child = PlayingDesktopScreen();
+          child = const PlayingDesktopScreen();
         } else {
           child = PlayingMobileScreen();
         }
