@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -93,8 +92,7 @@ class CombinedOnlineAnnilClient {
   }
 
   Uri? getCoverUrl({required String albumId, int? discId}) {
-    final NetworkController network = Get.find();
-    if (network.isOnline.value) {
+    if (Global.network.isOnline) {
       final list = clients.values.toList();
       list.sort((a, b) => b.priority - a.priority);
       for (final client in list) {
@@ -112,8 +110,6 @@ class AnnilController extends GetxController {
   final RxList<String> albums = <String>[].obs;
   bool get hasClient => clients.value.isNotEmpty;
 
-  final NetworkController _network = Get.find();
-
   static Future<AnnilController> init() async {
     return AnnilController._(await CombinedOnlineAnnilClient.load());
   }
@@ -123,9 +119,17 @@ class AnnilController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    this._network.isOnline.listen((isOnline) {
-      this.refresh();
-    });
+    Global.network.addListener(onNetworkChange);
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    Global.network.removeListener(onNetworkChange);
+  }
+
+  void onNetworkChange() {
+    reloadClients();
   }
 
   /// Sync remote annil tokens with local ones
@@ -135,8 +139,8 @@ class AnnilController extends GetxController {
   }
 
   /// Refresh all annil servers
-  Future<void> refresh() async {
-    if (_network.isOnline.value) {
+  Future<void> reloadClients() async {
+    if (Global.network.isOnline) {
       var newAlbums =
           (await Future.wait(clients.value.clients.values.map((client) async {
         try {
@@ -153,11 +157,11 @@ class AnnilController extends GetxController {
               .expand((e) => e)
               .toSet()
               .toList();
-      albums.replaceRange(0, this.albums.length, newAlbums);
+      albums.replaceRange(0, albums.length, newAlbums);
       clients.value.save();
     } else {
       var newAlbums = await OfflineAnnilClient.instance.getAlbums();
-      albums.replaceRange(0, this.albums.length, newAlbums);
+      albums.replaceRange(0, albums.length, newAlbums);
     }
     albums.refresh();
   }
@@ -167,7 +171,7 @@ class AnnilController extends GetxController {
     required int discId,
     required int trackId,
   }) {
-    if (_network.isOnline.value) {
+    if (Global.network.isOnline) {
       return true;
     } else {
       return OfflineAnnilClient.instance

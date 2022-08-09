@@ -8,7 +8,7 @@ import 'dart:convert';
 import "dart:typed_data";
 
 class PetitLyricsClient {
-  static PetitLyricsClient _instance = PetitLyricsClient._();
+  static final PetitLyricsClient _instance = PetitLyricsClient._();
   factory PetitLyricsClient() => _instance;
   PetitLyricsClient._();
 

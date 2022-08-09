@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/network_controller.dart';
 import 'package:annix/metadata/metadata_source_anniv.dart';
 import 'package:annix/metadata/metadata_source_sqlite.dart';
 import 'package:annix/models/anniv.dart';
@@ -21,8 +20,7 @@ class SiteUserInfo {
 }
 
 class AnnivController extends GetxController {
-  AnnilController _annil = Get.find();
-  NetworkController _network = Get.find();
+  final AnnilController _annil = Get.find();
 
   AnnivClient? client;
 
@@ -52,17 +50,25 @@ class AnnivController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    this.isLogin.bindStream(this.info.stream.map((user) => user != null));
+    isLogin.bindStream(info.stream.map((user) => user != null));
 
     // check login status
-    if (_network.isOnline.value) {
-      checkLogin(this.client);
+    if (Global.network.isOnline) {
+      checkLogin(client);
     }
-    _network.isOnline.listen((isOnline) {
-      if (isOnline) {
-        checkLogin(this.client);
-      }
-    });
+    Global.network.addListener(onNetworkChange);
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    Global.network.removeListener(onNetworkChange);
+  }
+
+  void onNetworkChange() {
+    if (Global.network.isOnline) {
+      checkLogin(client);
+    }
   }
 
   Future<void> checkLogin(AnnivClient? client) async {
@@ -97,7 +103,7 @@ class AnnivController extends GetxController {
         (() async {
           final annilTokens = await client.getCredentials();
           _annil.syncWithRemote(annilTokens);
-          _annil.refresh();
+          _annil.reloadClients();
         })(),
         // reload favorite list
         this.syncFavorite(),

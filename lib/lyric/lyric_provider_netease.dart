@@ -9,7 +9,7 @@ class LyricProviderNetease extends LyricProvider {
     await NeteaseMusicApi.init();
     final api = NeteaseMusicApi();
 
-    final searchResult = await api.searchSong('${track.title}');
+    final searchResult = await api.searchSong(track.title);
     if (searchResult.codeEnum != RetCode.Ok) {
       return [];
     }

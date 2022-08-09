@@ -91,11 +91,14 @@ class LyricView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayerService>(
-      builder: (context, player, child) => _LyricView(
-        lyric: player.playingLyric,
-        lyricAlign: alignment,
-      ),
+    return Selector<PlayerService, String?>(
+      selector: (_, player) => player.playingLyric,
+      builder: (context, lyric, child) {
+        return _LyricView(
+          lyric: lyric,
+          lyricAlign: alignment,
+        );
+      },
     );
   }
 }
@@ -123,33 +126,28 @@ class _LyricView extends StatelessWidget {
         child: Text("No lyrics found"),
       );
     } else {
-      return Consumer<PlayerService>(
-        builder: (context, player, child) {
-          final model = LyricsModelBuilder.create()
-              .bindLyricToMain(lyric!)
-              // .bindLyricToExt(lyric) // TODO: translation
-              .getModel();
-          return Consumer<PlayingProgress>(
-            builder: (context, progress, child) {
-              return LyricsReader(
-                model: model,
-                lyricUi: PlayingLyricUI(align: lyricAlign),
-                position:
-                    progress.position.inMilliseconds /* + 500 as offset */,
-                // don't know why only playing = false has highlight
-                playing: false,
-                emptyBuilder: () {
-                  return SingleChildScrollView(
-                    child: FractionallySizedBox(
-                      widthFactor: 1,
-                      child: Text(
-                        lyric!,
-                        textAlign: lyricAlign.textAlign,
-                        style: context.textTheme.bodyText1!.copyWith(height: 2),
-                      ),
-                    ),
-                  );
-                },
+      final model = LyricsModelBuilder.create()
+          .bindLyricToMain(lyric!)
+          // .bindLyricToExt(lyric) // TODO: translation
+          .getModel();
+      return Consumer<PlayingProgress>(
+        builder: (context, progress, child) {
+          return LyricsReader(
+            model: model,
+            lyricUi: PlayingLyricUI(align: lyricAlign),
+            position: progress.position.inMilliseconds /* + 500 as offset */,
+            // don't know why only playing = false has highlight
+            playing: false,
+            emptyBuilder: () {
+              return SingleChildScrollView(
+                child: FractionallySizedBox(
+                  widthFactor: 1,
+                  child: Text(
+                    lyric!,
+                    textAlign: lyricAlign.textAlign,
+                    style: context.textTheme.bodyText1!.copyWith(height: 2),
+                  ),
+                ),
               );
             },
           );

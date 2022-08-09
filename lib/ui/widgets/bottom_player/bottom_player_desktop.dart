@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DesktopBottomPlayer extends StatelessWidget {
-  DesktopBottomPlayer({Key? key}) : super(key: key);
+  const DesktopBottomPlayer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,25 +21,27 @@ class DesktopBottomPlayer extends StatelessWidget {
       onTap: () {
         AnnixRouterDelegate.of(context).off(name: '/playing');
       },
-      child: Container(
+      child: SizedBox(
         height: 80,
         child: Column(
           children: [
-            Consumer2<PlayingProgress, PlayerService>(
-              builder: (context, progress, player, child) {
-                return ProgressBar(
-                  progress: progress.position,
-                  total: progress.duration,
-                  onSeek: (position) {
-                    player.seek(position);
-                  },
-                  barHeight: 3.0,
-                  thumbRadius: 6,
-                  thumbGlowRadius: 12,
-                  thumbCanPaintOutsideBar: false,
-                  timeLabelLocation: TimeLabelLocation.none,
-                );
-              },
+            RepaintBoundary(
+              child: Consumer2<PlayingProgress, PlayerService>(
+                builder: (context, progress, player, child) {
+                  return ProgressBar(
+                    progress: progress.position,
+                    total: progress.duration,
+                    onSeek: (position) {
+                      player.seek(position);
+                    },
+                    barHeight: 3.0,
+                    thumbRadius: 6,
+                    thumbGlowRadius: 12,
+                    thumbCanPaintOutsideBar: false,
+                    timeLabelLocation: TimeLabelLocation.none,
+                  );
+                },
+              ),
             ),
             Expanded(
               child: Container(

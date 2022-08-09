@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AnnixPage extends Page {
   final Widget child;
 
-  AnnixPage({
+  const AnnixPage({
     required this.child,
     super.key,
     super.name,

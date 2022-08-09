@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/metadata/metadata_source.dart';
+import 'package:annix/services/network.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,7 @@ class Global {
 
   static late String storageRoot;
   static late String dataRoot;
+  static late NetworkService network;
 
   @deprecated
   static late GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -30,6 +32,7 @@ class Global {
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
+    network = NetworkService();
 
     if (isDesktop) {
       doWhenWindowReady(() {
