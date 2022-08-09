@@ -196,7 +196,7 @@ class WsyLyricLine {
 
   @override
   String toString() {
-    return "[${words.first.startTime},${words.last.endTime}]${words.map((e) => e.toString()).join("")}";
+    return "[${words.first.startTime},${words.last.endTime - words.first.startTime}]${words.map((e) => e.toString()).join("")}";
   }
 }
 
