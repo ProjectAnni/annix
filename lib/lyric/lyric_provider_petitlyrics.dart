@@ -81,12 +81,13 @@ class LyricProviderPetitLyrics extends LyricProvider {
   @override
   Future<List<LyricSearchResponse>> search(Track track) async {
     // https://github.com/kokarare1212/MusicBee.PetitLyrics/blob/master/MusicBee.PetitLyrics/Plugin.cs
-    final document = await _client.getLyric(track);
+    final document = await _client.getLyric(track, lyricType: 3);
     final songs = document.findAllElements("song");
     return songs
         .map(
           (song) => LyricSearchResponsePetitLyrics(
             lyricId: int.parse(song.findElements("lyricsId").first.text),
+            lyricType: int.parse(song.findElements("lyricsType").first.text),
             track: track,
             trackTitle: song.findElements("title").first.text,
             albumTitle: song.findElements("album").first.text,
@@ -107,6 +108,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   final List<String>? artistsName;
 
   int lyricId;
+  int? lyricType;
   Track track;
   final String lyricText;
 
@@ -114,6 +116,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
     required this.lyricId,
     required this.track,
     required this.lyricText,
+    this.lyricType,
     this.albumTitle,
     this.trackTitle,
     this.artistsName,
@@ -127,27 +130,42 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
 
   @override
   Future<LyricLanguage?> get lyric async {
-    final lrc = await _client.getLyric(
-      track,
-      lyricType: 2,
-      lyricId: this.lyricId,
-    );
-
-    final songs = lrc.findAllElements("song");
-    if (songs.isEmpty) {
-      // lrc not found, return text lyric
-      return LyricLanguage(
-        language: "--",
-        type: "text",
-        data: this.lyricText,
+    if (lyricType == 1) {
+      final lrc = await _client.getLyric(
+        track,
+        lyricType: 2,
+        lyricId: this.lyricId,
       );
+
+      final songs = lrc.findAllElements("song");
+      if (songs.isEmpty) {
+        // lrc not found, return text lyric
+        return LyricLanguage(
+          language: "--",
+          type: "text",
+          data: this.lyricText,
+        );
+      } else {
+        final encrypted =
+            base64Decode(songs.first.findElements("lyricsData").first.text);
+        return LyricLanguage(
+          language: "--",
+          type: "lrc",
+          data: _client.decrypt(encrypted, lyricText).join('\n'),
+        );
+      }
     } else {
-      final encrypted =
-          base64Decode(songs.first.findElements("lyricsData").first.text);
+      // lyric type = 3
+      final xml = XmlDocument.parse(lyricText);
+      final lines = xml
+          .findAllElements("line")
+          .map((line) => WsyLyricLine.fromXml(line))
+          .toList();
+      final lyric = lines.map((e) => e.toString()).join("\n");
       return LyricLanguage(
         language: "--",
         type: "lrc",
-        data: _client.decrypt(encrypted, this.lyricText).join('\n'),
+        data: lyric,
       );
     }
   }
@@ -161,4 +179,51 @@ String cs2mmssff(int cs) {
   final ss = ((cs ~/ 100) % 60).toString().padLeft(2, '0');
   final mm = ((cs ~/ 6000) % 60).toString().padLeft(2, '0');
   return "$mm:$ss.$ff";
+}
+
+class WsyLyricLine {
+  final List<WsyLyricWord> words;
+
+  WsyLyricLine(this.words);
+
+  factory WsyLyricLine.fromXml(XmlElement line) {
+    final words = line
+        .findAllElements("word")
+        .map((word) => WsyLyricWord.fromXml(word))
+        .toList();
+    return WsyLyricLine(words);
+  }
+
+  @override
+  String toString() {
+    return "[${words.first.startTime},${words.last.endTime}]${words.map((e) => e.toString()).join("")}";
+  }
+}
+
+class WsyLyricWord {
+  final String text;
+  final int startTime;
+  final int endTime;
+
+  WsyLyricWord({
+    required this.text,
+    required this.startTime,
+    required this.endTime,
+  });
+
+  factory WsyLyricWord.fromXml(XmlElement word) {
+    return WsyLyricWord(
+      text: word.getElement("wordstring")!.text,
+      startTime: int.parse(word.getElement("starttime")!.text),
+      endTime: int.parse(word.getElement("endtime")!.text),
+    );
+  }
+
+  @override
+  String toString() {
+    if (startTime == endTime) {
+      return "";
+    }
+    return "$text($startTime,${endTime - startTime})";
+  }
 }
