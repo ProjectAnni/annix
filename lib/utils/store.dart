@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
 class AnnixStore {
-  static AnnixStore _instance = AnnixStore._();
+  static final AnnixStore _instance = AnnixStore._();
 
   factory AnnixStore() {
     return _instance;
@@ -46,8 +46,8 @@ CREATE TABLE store(
 }
 
 class AnnixStoreCategory {
-  AnnixStore _store;
-  String _category;
+  final AnnixStore _store;
+  final String _category;
 
   AnnixStoreCategory(AnnixStore store, String category)
       : _store = store,
@@ -57,7 +57,7 @@ class AnnixStoreCategory {
     final db = await _store._database;
     List<Map<String, Object?>> values = await db.rawQuery(
         "SELECT value FROM store WHERE category = ? AND key = ?",
-        [this._category, key]);
+        [_category, key]);
     if (values.isEmpty) {
       return null;
     } else if (values[0]['value'] != null) {
@@ -68,7 +68,7 @@ class AnnixStoreCategory {
   }
 
   Future<bool> contains(String key) async {
-    return (await this.get(key)) != null;
+    return (await get(key)) != null;
   }
 
   Future<void> set(String key, dynamic value) async {
@@ -76,7 +76,7 @@ class AnnixStoreCategory {
     await db.insert(
       "store",
       {
-        'category': this._category,
+        'category': _category,
         'key': key,
         'value': jsonEncode(value),
       },
@@ -89,7 +89,7 @@ class AnnixStoreCategory {
     await db.delete(
       "store",
       where: "category = ?",
-      whereArgs: [this._category],
+      whereArgs: [_category],
     );
   }
 }

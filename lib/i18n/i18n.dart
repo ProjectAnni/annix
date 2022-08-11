@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:annix/i18n/i18n_en_US.dart';
 import 'package:annix/i18n/i18n_zh_CN.dart';
 import 'package:get/get.dart';

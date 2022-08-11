@@ -134,12 +134,12 @@ class _CoverCard extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       elevation: 4,
       margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: AspectRatio(
         aspectRatio: 1,
         child: child,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
@@ -148,13 +148,13 @@ class _CoverCard extends StatelessWidget {
 class DummyMusicCover extends StatelessWidget {
   final bool card;
 
-  const DummyMusicCover({this.card = true});
+  const DummyMusicCover({super.key, this.card = true});
 
   @override
   Widget build(BuildContext context) {
     final cover = Container(
       color: Colors.black87,
-      child: Center(
+      child: const Center(
         child: Icon(Icons.music_note, color: Colors.white, size: 32),
       ),
     );
@@ -168,11 +168,11 @@ class DummyMusicCover extends StatelessWidget {
 }
 
 class ThemedImage extends StatelessWidget {
-  static Map<String, Completer<Color>> colors = Map();
+  static Map<String, Completer<Color>> colors = {};
 
   ThemedImage(
     String url, {
-    Key? key,
+    super.key,
     this.width,
     this.height,
     this.color,
@@ -267,12 +267,11 @@ class ThemedImage extends StatelessWidget {
     final completer = Completer<Color>();
     colors[url] = completer;
 
-    final stream = image.resolve(ImageConfiguration());
+    final stream = image.resolve(const ImageConfiguration());
     final listener = ImageStreamListener(
       (info, _) async {
         final bytes = (await info.image.toByteData())!;
         final top = await compute(getColorFromImage, bytes);
-        print(top.toRadixString(16));
 
         completer.complete(Color(top));
         Provider.of<AnnixTheme>(Global.context, listen: false)
@@ -526,32 +525,32 @@ class ThemedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExtendedImage(
       image: image,
-      width: this.width,
-      height: this.height,
-      color: this.color,
-      opacity: this.opacity,
-      colorBlendMode: this.colorBlendMode,
-      fit: this.fit,
-      alignment: this.alignment,
-      repeat: this.repeat,
-      centerSlice: this.centerSlice,
-      matchTextDirection: this.matchTextDirection,
-      gaplessPlayback: this.gaplessPlayback,
-      filterQuality: this.filterQuality,
-      loadStateChanged: this.loadStateChanged,
-      shape: this.shape,
-      border: this.border,
-      borderRadius: this.borderRadius,
-      clipBehavior: this.clipBehavior,
-      enableLoadState: this.enableLoadState,
-      beforePaintImage: this.beforePaintImage,
-      afterPaintImage: this.afterPaintImage,
-      mode: this.mode,
-      enableMemoryCache: this.enableMemoryCache,
-      clearMemoryCacheIfFailed: this.clearMemoryCacheIfFailed,
-      onDoubleTap: this.onDoubleTap,
-      initGestureConfigHandler: this.initGestureConfigHandler,
-      enableSlideOutPage: this.enableSlideOutPage,
+      width: width,
+      height: height,
+      color: color,
+      opacity: opacity,
+      colorBlendMode: colorBlendMode,
+      fit: fit,
+      alignment: alignment,
+      repeat: repeat,
+      centerSlice: centerSlice,
+      matchTextDirection: matchTextDirection,
+      gaplessPlayback: gaplessPlayback,
+      filterQuality: filterQuality,
+      loadStateChanged: loadStateChanged,
+      shape: shape,
+      border: border,
+      borderRadius: borderRadius,
+      clipBehavior: clipBehavior,
+      enableLoadState: enableLoadState,
+      beforePaintImage: beforePaintImage,
+      afterPaintImage: afterPaintImage,
+      mode: mode,
+      enableMemoryCache: enableMemoryCache,
+      clearMemoryCacheIfFailed: clearMemoryCacheIfFailed,
+      onDoubleTap: onDoubleTap,
+      initGestureConfigHandler: initGestureConfigHandler,
+      enableSlideOutPage: enableSlideOutPage,
       extendedImageEditorKey: extendedImageEditorKey,
       initEditorConfigHandler: initEditorConfigHandler,
       heroBuilderForSlidingPage: heroBuilderForSlidingPage,

@@ -1,3 +1,6 @@
+// ignore_for_file: file_names
+// ignore_for_file: constant_identifier_names
+
 import 'package:annix/i18n/i18n.dart';
 
 const Map<String, String> I18N_en_US = {

@@ -45,7 +45,7 @@ class DesktopBottomPlayer extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -55,13 +55,14 @@ class DesktopBottomPlayer extends StatelessWidget {
                         children: [
                           // cover
                           Container(
-                            padding: EdgeInsets.only(bottom: 8, top: 4),
+                            padding: const EdgeInsets.only(bottom: 8, top: 4),
                             child: PlayingMusicCover(),
                           ),
                           // track info
                           Expanded(
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Consumer<PlayerService>(
                                 builder: (context, player, child) {
                                   return Column(
@@ -98,26 +99,26 @@ class DesktopBottomPlayer extends StatelessWidget {
                     // right
                     Row(
                       children: [
-                        VolumeController(),
+                        const VolumeController(),
                         FavoriteButton(),
                         IconButton(
-                          icon: Icon(Icons.skip_previous),
+                          icon: const Icon(Icons.skip_previous),
                           iconSize: 28,
                           onPressed: () =>
                               Provider.of<PlayerService>(context, listen: false)
                                   .previous(),
                         ),
-                        PlayPauseButton(iconSize: 40),
+                        const PlayPauseButton(iconSize: 40),
                         IconButton(
-                          icon: Icon(Icons.skip_next),
+                          icon: const Icon(Icons.skip_next),
                           iconSize: 28,
                           onPressed: () =>
                               Provider.of<PlayerService>(context, listen: false)
                                   .next(),
                         ),
-                        LoopModeButton(),
+                        const LoopModeButton(),
                         IconButton(
-                          icon: Icon(Icons.queue_music_outlined),
+                          icon: const Icon(Icons.queue_music_outlined),
                           onPressed: () {
                             showDialog(
                               context: Global.context,
@@ -125,7 +126,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                               builder: (context) {
                                 return Container(
                                   alignment: Alignment.bottomRight,
-                                  child: FractionallySizedBox(
+                                  child: const FractionallySizedBox(
                                     heightFactor: 0.4,
                                     widthFactor: 0.3,
                                     child: Material(

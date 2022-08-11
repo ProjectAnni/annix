@@ -12,7 +12,7 @@ class FavoriteButton extends StatelessWidget {
   final Rxn<AnnilAudioSource> audio = Rxn();
   final RxBool favorited = false.obs;
 
-  FavoriteButton([AnnilAudioSource? audio]) {
+  FavoriteButton({super.key, AnnilAudioSource? audio}) {
     final player = Provider.of<PlayerService>(Global.context, listen: false);
     if (audio == null) {
       this.audio.value = player.playing;

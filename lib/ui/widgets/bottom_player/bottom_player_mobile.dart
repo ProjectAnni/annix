@@ -29,7 +29,7 @@ class MobileBottomPlayer extends StatelessWidget {
             Container(
               height: height,
               width: height,
-              padding: EdgeInsets.symmetric(vertical: 4.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: PlayingMusicCover(card: false),
             ),
             Expanded(
@@ -40,7 +40,7 @@ class MobileBottomPlayer extends StatelessWidget {
                 ),
               ),
             ),
-            PlayPauseButton(),
+            const PlayPauseButton(),
           ],
         ),
       ),

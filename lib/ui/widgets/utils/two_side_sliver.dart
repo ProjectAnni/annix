@@ -22,7 +22,8 @@ class TwoSideSliver extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext _, _RenderTwoSideSliver renderObject) {
+  void updateRenderObject(
+      BuildContext context, _RenderTwoSideSliver renderObject) {
     renderObject.leftPercentage = leftPercentage;
   }
 }

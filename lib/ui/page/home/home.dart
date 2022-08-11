@@ -67,8 +67,7 @@ class PlaylistView extends StatelessWidget {
               ),
               visualDensity: VisualDensity.standard,
               onTap: () async {
-                final playlist =
-                    await anniv.client!.getPlaylistDetail(playlistId);
+                final playlist = await anniv.getPlaylist(playlistId);
                 AnnixRouterDelegate.of(context)
                     .to(name: "/playlist", arguments: playlist);
               },

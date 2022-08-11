@@ -24,10 +24,8 @@ class Global {
   static late String dataRoot;
   static late NetworkService network;
 
-  @deprecated
-  static late GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-  @deprecated
   static BuildContext get context => navigatorKey.currentContext!;
 
   static Future<void> init() async {

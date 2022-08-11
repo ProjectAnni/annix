@@ -74,20 +74,19 @@ class AnnivController extends GetxController {
   Future<void> checkLogin(AnnivClient? client) async {
     if (client != null) {
       try {
-        var site;
-        var user;
-        await Future.wait([
-          client.getSiteInfo().then((s) => site = s),
-          client.getUserInfo().then((u) => user = u),
-        ]);
-        this.info.value = SiteUserInfo(site: site, user: user);
-        await this._saveInfo();
+        final result =
+            await Future.wait([client.getSiteInfo(), client.getUserInfo()]);
+
+        final site = result[0] as SiteInfo;
+        final user = result[1] as UserInfo;
+        info.value = SiteUserInfo(site: site, user: user);
+        await _saveInfo();
       } catch (e) {
         if (e is DioError &&
             e.response?.statusCode == 200 &&
             e.error["status"] == 902002) {
           // 鉴权失败，退出登录
-          await this.logout();
+          await logout();
         } else {
           rethrow;
         }
@@ -106,9 +105,9 @@ class AnnivController extends GetxController {
           _annil.reloadClients();
         })(),
         // reload favorite list
-        this.syncFavorite(),
+        syncFavorite(),
         // reload playlist list
-        this.syncPlaylist(),
+        syncPlaylist(),
       ]);
     }
   }
@@ -120,16 +119,17 @@ class AnnivController extends GetxController {
   }
 
   Future<void> logout() async {
-    await this.client?.logout();
-    this.info.value = null;
-    await this._saveInfo();
+    info.value = null;
+    await _saveInfo();
+
+    await client?.logout();
   }
 
   void _loadInfo() {
     final site = Global.preferences.getString("anniv_site");
     final user = Global.preferences.getString("anniv_user");
     if (site != null && user != null) {
-      this.info.value = SiteUserInfo(
+      info.value = SiteUserInfo(
         site: SiteInfo.fromJson(jsonDecode(site)),
         user: UserInfo.fromJson(jsonDecode(user)),
       );
@@ -137,9 +137,9 @@ class AnnivController extends GetxController {
   }
 
   Future<void> _saveInfo() async {
-    if (this.info.value != null) {
-      final site = this.info.value!.site.toJson();
-      final user = this.info.value!.user.toJson();
+    if (info.value != null) {
+      final site = info.value!.site.toJson();
+      final user = info.value!.user.toJson();
       await Global.preferences.setString("anniv_site", jsonEncode(site));
       await Global.preferences.setString("anniv_user", jsonEncode(user));
     } else {
@@ -167,7 +167,7 @@ class AnnivController extends GetxController {
   }
 
   Future<void> addFavorite(TrackIdentifier track) async {
-    if (this.client != null) {
+    if (client != null) {
       final trackMetadata = await (await Global.metadataSource.future).getTrack(
           albumId: track.albumId, discId: track.discId, trackId: track.trackId);
       favorites[track.toSlashedString()] = TrackInfoWithAlbum(
@@ -178,20 +178,20 @@ class AnnivController extends GetxController {
         type: trackMetadata.type,
       );
       try {
-        await this.client?.addFavorite(track);
+        await client?.addFavorite(track);
         await _saveFavorites();
       } catch (e) {
         favorites.remove(track.toSlashedString());
-        throw e;
+        rethrow;
       }
     }
   }
 
   Future<void> removeFavorite(TrackIdentifier id) async {
-    if (this.client != null) {
+    if (client != null) {
       final got = favorites.remove(id.toSlashedString());
       try {
-        await this.client?.removeFavorite(id);
+        await client?.removeFavorite(id);
         await _saveFavorites();
       } catch (e) {
         if (got != null) {
@@ -204,17 +204,17 @@ class AnnivController extends GetxController {
 
   Future<bool> toggleFavorite(TrackIdentifier id) async {
     if (favorites.containsKey(id.toSlashedString())) {
-      await this.removeFavorite(id);
+      await removeFavorite(id);
       return false;
     } else {
-      await this.addFavorite(id);
+      await addFavorite(id);
       return true;
     }
   }
 
   Future<void> syncFavorite() async {
-    if (this.client != null) {
-      final list = await this.client!.getFavoriteList();
+    if (client != null) {
+      final list = await client!.getFavoriteList();
       // reverse favorite map here
       final map = Map.fromEntries(
           list.reversed.map((e) => MapEntry(e.track.toSlashedString(), e)));
@@ -225,14 +225,29 @@ class AnnivController extends GetxController {
 
   //////////////////////////////// Playlist ///////////////////////////////
   RxMap<String, PlaylistInfo> playlists = RxMap();
-  Map<String, Playlist> playlistDetail = Map();
+  Map<String, Playlist> playlistDetail = {};
 
   Future<void> syncPlaylist() async {
-    if (this.client != null) {
-      final list = await this.client!.getOwnedPlaylists();
+    if (client != null) {
+      final list = await client!.getOwnedPlaylists();
       final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
       playlists.value = map;
     }
+  }
+
+  Future<Playlist?> getPlaylist(String id) async {
+    if (client == null) {
+      return null;
+    }
+    if (!playlistDetail.containsKey(id)) {
+      try {
+        final playlist = await client!.getPlaylistDetail(id);
+        playlistDetail.assign(id, playlist);
+      } catch (e) {
+        return null;
+      }
+    }
+    return playlistDetail[id];
   }
 
   /////////////////////////////// Database ///////////////////////////////

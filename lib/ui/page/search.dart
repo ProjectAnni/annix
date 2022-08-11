@@ -51,7 +51,7 @@ class SearchPage extends StatelessWidget {
         alignment: MainAxisAlignment.start,
         children: [
           ActionChip(
-            label: Icon(Icons.tune_outlined),
+            label: const Icon(Icons.tune_outlined),
             padding: EdgeInsets.zero,
             onPressed: () {
               //
@@ -81,7 +81,7 @@ class _SearchResult extends StatelessWidget {
             labelColor: context.textTheme.titleMedium?.color,
             indicatorColor: context.colorScheme.primary,
             indicatorSize: TabBarIndicatorSize.tab,
-            labelPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             tabs: [
               Tab(
                   child: Text(
@@ -212,10 +212,10 @@ class _SearchScreenState extends State<SearchScreen> {
       body: _result == null
           ? Container(
               alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 8),
               child: isLoading
-                  ? CircularProgressIndicator(strokeWidth: 2)
-                  : Text("Search results would display here"),
+                  ? const CircularProgressIndicator(strokeWidth: 2)
+                  : const Text("Search results would display here"),
             )
           : _SearchResult(result: _result!),
     );

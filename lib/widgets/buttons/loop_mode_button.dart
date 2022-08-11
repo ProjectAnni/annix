@@ -6,19 +6,19 @@ import 'package:provider/provider.dart';
 class LoopModeButton extends StatelessWidget {
   const LoopModeButton({Key? key}) : super(key: key);
 
-  Icon getIcon(BuildContext context, PlayerService playing) {
-    switch (playing.loopMode) {
+  Icon getIcon(BuildContext context, LoopMode loopMode) {
+    switch (loopMode) {
       case LoopMode.off:
         return Icon(
           Icons.repeat,
           color: context.iconColor?.withOpacity(0.5),
         );
       case LoopMode.all:
-        return Icon(Icons.repeat);
+        return const Icon(Icons.repeat);
       case LoopMode.one:
-        return Icon(Icons.repeat_one);
+        return const Icon(Icons.repeat_one);
       case LoopMode.random:
-        return Icon(Icons.shuffle);
+        return const Icon(Icons.shuffle);
     }
   }
 
@@ -37,11 +37,13 @@ class LoopModeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayerService>(
-      builder: (context, player, child) => IconButton(
-        icon: getIcon(context, player),
+    return Selector<PlayerService, LoopMode>(
+      selector: (context, player) => player.loopMode,
+      builder: (context, loopMode, child) => IconButton(
+        icon: getIcon(context, loopMode),
         onPressed: () {
-          player.setLoopMode(next(player.loopMode));
+          Provider.of<PlayerService>(context, listen: false)
+              .setLoopMode(next(loopMode));
         },
       ),
     );
