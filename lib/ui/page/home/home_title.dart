@@ -12,6 +12,7 @@ class HomeTitle extends StatelessWidget {
     required this.title,
     this.sliver = false,
     this.padding,
+    super.key,
   });
 
   @override
@@ -19,22 +20,22 @@ class HomeTitle extends StatelessWidget {
     Widget child = Row(
       children: [
         Icon(icon, size: 28),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Text(
-          this.title,
+          title,
           style: context.textTheme.headline5,
         ),
       ],
     );
 
-    if (this.padding != null) {
+    if (padding != null) {
       child = Padding(
-        padding: this.padding!,
+        padding: padding!,
         child: child,
       );
     }
 
-    if (this.sliver) {
+    if (sliver) {
       child = SliverToBoxAdapter(child: child);
     }
 

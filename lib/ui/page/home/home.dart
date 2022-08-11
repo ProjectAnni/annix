@@ -112,7 +112,9 @@ class HomePage extends StatelessWidget {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: const [
-                                        CircularProgressIndicator(),
+                                        CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
                                         SizedBox(width: 12),
                                         Text("Loading..."),
                                       ],

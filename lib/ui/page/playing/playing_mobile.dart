@@ -37,6 +37,7 @@ class PlayingMobileScreen extends StatelessWidget {
                   : PlayingMusicCover(),
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Consumer<PlayerService>(
                   builder: (context, player, child) => Center(
