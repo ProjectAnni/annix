@@ -54,7 +54,7 @@ class AnnixLayoutMobile extends AnnixLayout {
               child: const MobileBottomPlayer(),
             ),
             panel: PlayingMobileScreen(),
-            footerHeight: 80 + 24,
+            footerHeight: isMainPage ? (80 + 24) : 0,
             footer: (() {
               final route = router.currentRoute;
               final selectedIndex =

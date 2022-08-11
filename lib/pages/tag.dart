@@ -14,7 +14,7 @@ class TagScreen extends StatelessWidget {
     final AnnilController annil = Get.find();
 
     return Scaffold(
-      appBar: AppBar(title: Text("$name")),
+      appBar: AppBar(title: Text(name)),
       body: FutureBuilder<List<String>>(
           future: Global.metadataSource.future
               .then((metadata) => metadata.getAlbumsByTag(name))

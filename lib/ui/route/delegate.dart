@@ -68,6 +68,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     if (canPop()) {
       _pages.removeLast();
+      notifyListeners();
       return true;
     } else {
       return false;
