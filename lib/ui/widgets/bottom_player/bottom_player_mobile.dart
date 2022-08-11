@@ -1,6 +1,4 @@
-import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
@@ -15,42 +13,37 @@ class MobileBottomPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        AnnixRouterDelegate.of(Global.context).to(name: '/playing');
-      },
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-          color: ElevationOverlay.colorWithOverlay(
-              context.colorScheme.surface, context.colorScheme.primary, 3.0),
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
         ),
-        height: height,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: PlayingMusicCover(card: true),
-            ),
-            Expanded(
-              flex: 1,
-              child: Consumer<PlayerService>(
-                builder: (context, player, child) => Marquee(
-                  child: Text(
-                    player.playing?.track.title ?? "",
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+        color: ElevationOverlay.colorWithOverlay(
+            context.colorScheme.surface, context.colorScheme.primary, 3.0),
+      ),
+      height: height,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: PlayingMusicCover(card: true),
+          ),
+          Expanded(
+            flex: 1,
+            child: Consumer<PlayerService>(
+              builder: (context, player, child) => Marquee(
+                child: Text(
+                  player.playing?.track.title ?? "",
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
             ),
-            const PlayPauseButton(),
-          ],
-        ),
+          ),
+          const PlayPauseButton(),
+        ],
       ),
     );
   }

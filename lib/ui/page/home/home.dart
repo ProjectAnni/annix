@@ -102,6 +102,7 @@ class HomePage extends StatelessWidget {
                         onPressed: () {
                           showDialog(
                             context: context,
+                            useRootNavigator: true,
                             barrierDismissible: false,
                             builder: (context) {
                               return Center(
@@ -123,7 +124,9 @@ class HomePage extends StatelessWidget {
                           );
                           Provider.of<PlayerService>(context, listen: false)
                               .fullShuffleMode()
-                              .then((value) => Navigator.of(context).pop());
+                              .then((value) =>
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop());
                         },
                       ),
                       const ThemeButton(),

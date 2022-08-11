@@ -1,13 +1,11 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/widgets/artist_text.dart';
 import 'package:annix/widgets/buttons/favorite_button.dart';
 import 'package:annix/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/widgets/buttons/play_pause_button.dart';
-import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
@@ -28,22 +26,15 @@ class PlayingMobileScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            GestureDetector(
-              onVerticalDragEnd: (details) {
-                if ((details.primaryVelocity ?? 0) > 300) {
-                  AnnixRouterDelegate.of(context).popRoute();
-                }
-              },
-              child: Obx(
-                () => showLyrics.value
-                    ? const AspectRatio(
-                        aspectRatio: 1,
-                        child: LyricView(
-                          alignment: LyricAlign.CENTER,
-                        ),
-                      )
-                    : PlayingMusicCover(),
-              ),
+            Obx(
+              () => showLyrics.value
+                  ? const AspectRatio(
+                      aspectRatio: 1,
+                      child: LyricView(
+                        alignment: LyricAlign.CENTER,
+                      ),
+                    )
+                  : PlayingMusicCover(),
             ),
             Column(
               children: [
@@ -127,7 +118,7 @@ class PlayingMobileScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  useSafeArea: true,
+                  useRootNavigator: true,
                   context: context,
                   builder: (context) {
                     return const PlayingQueue();

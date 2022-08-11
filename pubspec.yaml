@@ -55,6 +55,7 @@ dependencies:
   extended_image: ^7.0.0-dev.1
   flutter_lyric: ^2.0.3
   settings_ui: ^2.0.2
+  we_slide: ^2.3.0
   material_color_utilities: ^0.2.0
 
   toml: ^0.13.1

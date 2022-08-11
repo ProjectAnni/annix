@@ -30,6 +30,7 @@ class HomeAppBar extends StatelessWidget {
             onPressed: () {
               showDialog(
                 context: context,
+                useRootNavigator: true,
                 builder: (context) => AnnivLoginDialog(),
               );
             },

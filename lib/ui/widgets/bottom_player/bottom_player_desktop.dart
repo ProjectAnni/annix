@@ -122,6 +122,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                               context: Global.context,
+                              useRootNavigator: true,
                               barrierColor: Colors.transparent,
                               builder: (context) {
                                 return Container(
