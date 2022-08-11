@@ -42,7 +42,7 @@ class MobileBottomPlayer extends StatelessWidget {
               ),
             ),
           ),
-          const PlayPauseButton(),
+          PlayPauseButton.small(),
         ],
       ),
     );

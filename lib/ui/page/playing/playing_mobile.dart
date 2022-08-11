@@ -85,7 +85,7 @@ class PlayingMobileScreen extends StatelessWidget {
                           Provider.of<PlayerService>(context, listen: false)
                               .previous(),
                     ),
-                    const PlayPauseButton(iconSize: 48),
+                    PlayPauseButton.large(),
                     IconButton(
                       icon: const Icon(Icons.skip_next),
                       iconSize: 32,
@@ -104,7 +104,7 @@ class PlayingMobileScreen extends StatelessWidget {
       bottomSheet: BottomAppBar(
         elevation: 1,
         child: ButtonBar(
-          alignment: MainAxisAlignment.start,
+          alignment: MainAxisAlignment.end,
           buttonPadding: EdgeInsets.zero,
           children: [
             IconButton(
