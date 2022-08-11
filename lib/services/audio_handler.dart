@@ -81,7 +81,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
     AudioService.notificationClicked.listen((clicked) {
       if (clicked) {
-        AnnixRouterDelegate.of(Global.context).to(name: '/playing');
+        Global.mobileWeSlideController.show();
       }
     });
   }

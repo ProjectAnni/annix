@@ -101,13 +101,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     Widget child;
 
     switch (routeSettings.name) {
-      // TODO: cache /playing page
       case "/playing":
-        if (Global.isDesktop) {
-          child = const PlayingDesktopScreen();
-        } else {
-          child = PlayingMobileScreen();
-        }
+        // /playing route is only available on desktop
+        child = const PlayingDesktopScreen();
         break;
       case "/home":
         child = HomePage();
