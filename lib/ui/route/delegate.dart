@@ -48,9 +48,14 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     if (canPop()) {
       _pages.removeLast();
       notifyListeners();
+      return true;
+    } else if (Global.mobileWeSlideController.isOpened) {
+      Global.mobileWeSlideController.hide();
+      return true;
+    } else {
+      // can not pop, exit
+      return false;
     }
-    // can not pop, exit
-    return true;
   }
 
   String get currentRoute => _pages.last.name!;

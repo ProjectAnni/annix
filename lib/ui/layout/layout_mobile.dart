@@ -1,3 +1,4 @@
+import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
@@ -34,13 +35,17 @@ class AnnixLayoutMobile extends AnnixLayout {
         selector: (context, player) => player.playing != null,
         builder: (context, isPlaying, child) {
           return WeSlide(
+            controller: Global.mobileWeSlideController,
             parallax: true,
             hideAppBar: true,
             hideFooter: true,
             body: Material(child: child),
             panelMinSize: 80 + (isPlaying ? 60 : 0),
             panelMaxSize: panelMaxSize,
-            panelHeader: const Material(child: MobileBottomPlayer()),
+            panelHeader: GestureDetector(
+              onTap: () => Global.mobileWeSlideController.show(),
+              child: const MobileBottomPlayer(),
+            ),
             panel: PlayingMobileScreen(),
             footerHeight: 80 + 24,
             footer: (() {
@@ -103,7 +108,9 @@ class AnnixLayoutMobile extends AnnixLayout {
 
     return Navigator(
       pages: [MaterialPage(child: root)],
-      onPopPage: (route, result) => true,
+      onPopPage: (route, result) {
+        return false;
+      },
     );
   }
 }

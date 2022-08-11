@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:we_slide/we_slide.dart';
 
 class Global {
   static late SharedPreferences preferences;
@@ -27,6 +28,8 @@ class Global {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   static BuildContext get context => navigatorKey.currentContext!;
+
+  static final mobileWeSlideController = WeSlideController();
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
