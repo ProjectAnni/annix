@@ -22,7 +22,7 @@ class PlayingMobileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 56),
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -101,9 +101,10 @@ class PlayingMobileScreen extends StatelessWidget {
         ),
       ),
       bottomSheet: BottomAppBar(
-        elevation: 4,
+        elevation: 1,
         child: ButtonBar(
           alignment: MainAxisAlignment.start,
+          buttonPadding: EdgeInsets.zero,
           children: [
             IconButton(
               icon: const Icon(Icons.text_snippet_rounded),
