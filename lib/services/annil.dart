@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
@@ -62,10 +64,10 @@ class AnnilAudioSource extends Source {
       await player.setSourceDeviceFile(offlinePath);
     } else {
       // download full audio first
-      if (this._preloadFuture == null) {
-        this.preload();
+      if (_preloadFuture == null) {
+        preload();
       }
-      await this._preloadFuture;
+      await _preloadFuture;
       // double check whether current song is still this track
       if (Provider.of<PlayerService>(Global.context, listen: false).playing ==
           this) {
@@ -75,11 +77,11 @@ class AnnilAudioSource extends Source {
   }
 
   void preload() {
-    if (this._preloadFuture != null) {
+    if (_preloadFuture != null) {
       return;
     }
 
-    this._preloadFuture = _preload();
+    _preloadFuture = _preload();
   }
 
   bool preloaded = false;
@@ -92,7 +94,7 @@ class AnnilAudioSource extends Source {
           albumId: albumId, discId: discId, trackId: trackId, quality: quality);
       if (url != null) {
         await file.parent.create(recursive: true);
-        final tmpPath = offlinePath + ".tmp";
+        final tmpPath = "$offlinePath.tmp";
         /*final response = */ await _client.download(url, tmpPath);
         // final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // PlayerController player = Provider.of(Global.context, listen: false);
@@ -165,7 +167,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
     required int priority,
   }) =>
       OnlineAnnilClient._(
-        id: Uuid().v4(),
+        id: const Uuid().v4(),
         name: name,
         url: url,
         token: token,
@@ -203,6 +205,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
   }
 
   /// Get the available album list of an Annil server.
+  @override
   Future<List<String>> getAlbums() async {
     try {
       final response = await client.get(
@@ -234,6 +237,7 @@ class OnlineAnnilClient implements BaseAnnilClient {
     return List.unmodifiable(albums);
   }
 
+  @override
   Uri getCoverUrl({required String albumId, int? discId}) {
     if (discId == null) {
       return Uri.parse('$url/$albumId/cover');
@@ -249,7 +253,7 @@ String getAudioCachePath(String albumId, int discId, int trackId) {
     'audio',
     albumId,
     /* extension is required on macOS for playback */
-    "${discId}_$trackId" + (Global.isApple ? ".flac" : ""),
+    "${discId}_$trackId${Global.isApple ? ".flac" : ""}",
   );
 }
 
@@ -306,7 +310,7 @@ class OfflineAnnilClient implements BaseAnnilClient {
   }
 
   static String cacheKey(String albumId, {int? discId}) {
-    return discId == null ? "$albumId" : "$albumId/$discId";
+    return discId == null ? albumId : "$albumId/$discId";
   }
 
   bool isAvailable({

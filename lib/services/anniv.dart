@@ -258,8 +258,8 @@ class AnnivClient {
   }
 
   Future<void> getRepoDatabase(String savePath) async {
-    await _client.download('/api/meta/db/repo.db', savePath + ".downloading");
-    final file = File(savePath + ".downloading");
+    await _client.download('/api/meta/db/repo.db', "$savePath.downloading");
+    final file = File("$savePath.downloading");
     await file.rename(savePath);
   }
 

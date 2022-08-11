@@ -16,8 +16,8 @@ class VolumeController extends StatelessWidget {
         Consumer<PlayerService>(
           builder: (context, player, child) {
             return IconButton(
-              icon: Icon(Icons.volume_up_outlined),
-              selectedIcon: Icon(Icons.volume_off_outlined),
+              icon: const Icon(Icons.volume_up_outlined),
+              selectedIcon: const Icon(Icons.volume_off_outlined),
               isSelected: player.volume == 0,
               onPressed: () {
                 player.setVolume(0);
@@ -25,13 +25,13 @@ class VolumeController extends StatelessWidget {
             );
           },
         ),
-        SizedBox(width: 4),
+        const SizedBox(width: 4),
         SizedBox(
           width: 100,
           child: Consumer<PlayerService>(
             builder: (context, player, child) => ProgressBar(
               progress: Duration(seconds: (player.volume * 100).toInt()),
-              total: Duration(seconds: 100),
+              total: const Duration(seconds: 100),
               timeLabelLocation: TimeLabelLocation.none,
               barHeight: 4,
               thumbGlowRadius: 0,
@@ -47,7 +47,7 @@ class VolumeController extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
       ],
     );
   }

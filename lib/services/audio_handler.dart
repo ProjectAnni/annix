@@ -5,7 +5,6 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/cover.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
@@ -273,20 +272,20 @@ class AnnixMPRISService extends MPRISService {
     player.addListener(() {
       switch (player.loopMode) {
         case LoopMode.off:
-          this.loopStatus = LoopStatus.none;
-          this.shuffle = false;
+          loopStatus = LoopStatus.none;
+          shuffle = false;
           break;
         case LoopMode.all:
-          this.loopStatus = LoopStatus.playlist;
-          this.shuffle = false;
+          loopStatus = LoopStatus.playlist;
+          shuffle = false;
           break;
         case LoopMode.one:
-          this.loopStatus = LoopStatus.track;
-          this.shuffle = false;
+          loopStatus = LoopStatus.track;
+          shuffle = false;
           break;
         case LoopMode.random:
-          this.loopStatus = LoopStatus.playlist;
-          this.shuffle = true;
+          loopStatus = LoopStatus.playlist;
+          shuffle = true;
           break;
       }
     });
@@ -348,7 +347,7 @@ class AnnixMPRISService extends MPRISService {
     if (shuffle) {
       await player.setLoopMode(LoopMode.random);
     } else {
-      switch (this.loopStatus) {
+      switch (loopStatus) {
         case LoopStatus.none:
           await player.setLoopMode(LoopMode.off);
           break;

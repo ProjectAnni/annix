@@ -18,7 +18,7 @@ class CoverItem {
 }
 
 String getCoverCachePath(String albumId, int? discId) {
-  final fileName = "${discId == null ? "$albumId" : "${albumId}_$discId"}.jpg";
+  final fileName = "${discId == null ? albumId : "${albumId}_$discId"}.jpg";
   return p.join(Global.storageRoot, "cover", fileName);
 }
 
@@ -27,8 +27,8 @@ class CoverReverseProxy {
   static CoverReverseProxy? _instance;
 
   late HttpServer proxy;
-  final Map<String, CoverItem> _urlMap = Map();
-  final downloadingMap = Map();
+  final Map<String, CoverItem> _urlMap = {};
+  final downloadingMap = {};
 
   Future<void> setup() {
     return HttpServer.bind(InternetAddress.loopbackIPv4, 0).then((server) {

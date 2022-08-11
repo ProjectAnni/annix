@@ -6,7 +6,7 @@ import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,13 +15,18 @@ class AlbumDetailScreen extends PlaylistScreen {
 
   final Album album;
 
+  @override
   Widget? get pageTitle => Text(I18n.ALBUMS.tr);
+  @override
   final List<Widget>? pageActions = null;
+  @override
   final RefreshCallback? refresh = null;
 
   AlbumDetailScreen({required this.album});
 
+  @override
   String get title => album.title;
+  @override
   Widget get cover => MusicCover(albumId: album.albumId, card: true);
 
   @override
@@ -43,8 +48,10 @@ class AlbumDetailScreen extends PlaylistScreen {
         // ),
       ];
 
+  @override
   Widget get body => getAlbumTracks();
 
+  @override
   List<TrackIdentifier> get tracks {
     List<TrackIdentifier> songs = [];
 
@@ -106,7 +113,7 @@ class AlbumDetailScreen extends PlaylistScreen {
               minLeadingWidth: 16,
               dense: true,
               visualDensity: VisualDensity.compact,
-              title: Text('${track.title}', overflow: TextOverflow.ellipsis),
+              title: Text(track.title, overflow: TextOverflow.ellipsis),
               subtitle: ArtistText(track.artist),
               enabled: _annil.isAvailable(
                 albumId: album.albumId,
@@ -114,8 +121,7 @@ class AlbumDetailScreen extends PlaylistScreen {
                 trackId: trackIndex,
               ),
               onTap: () {
-                this.playFullList(Global.context,
-                    initialIndex: totalTrackIndex);
+                playFullList(Global.context, initialIndex: totalTrackIndex);
               },
               // selected: TODO: indicate playing track,
             );

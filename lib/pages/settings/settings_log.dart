@@ -9,34 +9,30 @@ class SettingsLogView extends StatelessWidget {
   Icon getLogLevelIcon(LogLevel level) {
     switch (level) {
       case LogLevel.DEBUG:
-        return Icon(Icons.bug_report_outlined);
+        return const Icon(Icons.bug_report_outlined);
       case LogLevel.WARNING:
-        return Icon(Icons.warning_amber_outlined);
+        return const Icon(Icons.warning_amber_outlined);
       case LogLevel.ERROR:
       case LogLevel.FATAL:
-        return Icon(Icons.error_outline_outlined);
+        return const Icon(Icons.error_outline_outlined);
       case LogLevel.INFO:
       default:
-        return Icon(Icons.sms_outlined);
+        return const Icon(Icons.sms_outlined);
     }
   }
 
   void showDetailDialog(Log log) {
     Get.dialog(
       AlertDialog(
-        title: Text('Detail'),
+        title: const Text('Detail'),
         content: SingleChildScrollView(
           child: Text(
-            log.exception.toString() +
-                '\n' +
-                (log.stacktrace != "null"
-                    ? log.stacktrace ?? ""
-                    : "No stacktrace"),
+            '${log.exception}\n${log.stacktrace != "null" ? log.stacktrace ?? "" : "No stacktrace"}',
           ),
         ),
         actions: [
           TextButton(
-            child: Text("Close"),
+            child: const Text("Close"),
             onPressed: () => Get.back(),
           ),
         ],
@@ -51,7 +47,7 @@ class SettingsLogView extends StatelessWidget {
         title: Text(I18n.SETTINGS_LOGS.tr),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_outline),
+            icon: const Icon(Icons.delete_outline),
             onPressed: () async {
               await FLog.clearLogs();
               Get.back();
@@ -67,8 +63,8 @@ class SettingsLogView extends StatelessWidget {
                 // ),
               ];
             },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Icon(Icons.filter_alt_outlined),
             ),
           ),
@@ -92,7 +88,8 @@ class SettingsLogView extends StatelessWidget {
               },
             );
           } else {
-            return Center(child: CircularProgressIndicator(strokeWidth: 2));
+            return const Center(
+                child: CircularProgressIndicator(strokeWidth: 2));
           }
         },
       ),

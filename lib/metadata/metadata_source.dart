@@ -66,9 +66,9 @@ abstract class MetadataSource {
       }
 
       final album = albums[albumId]!;
-      if (this.needPersist) {
+      if (needPersist) {
         // album need persist
-        await this.persist(album);
+        await persist(album);
       }
       return album;
     }
@@ -79,7 +79,7 @@ abstract class MetadataSource {
   Future<Map<String, Album>> getAlbums(List<String> albums) async {
     // dedup album list
     final albumToGet = albums.toSet();
-    final result = Map<String, Album>();
+    final result = <String, Album>{};
     final toFetch = <String>[];
 
     for (final albumId in albumToGet) {
@@ -96,7 +96,7 @@ abstract class MetadataSource {
       for (final albumId in toFetch) {
         final album = got[albumId];
         if (album != null) {
-          await this.persist(album);
+          await persist(album);
         }
       }
     }

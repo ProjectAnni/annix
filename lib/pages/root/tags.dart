@@ -44,7 +44,8 @@ class TagsView extends StatelessWidget {
                           children: sorted.values
                               .where((element) => element.type == type)
                               .map((e) => ListTile(
-                                    leading: Icon(Icons.local_offer_outlined),
+                                    leading:
+                                        const Icon(Icons.local_offer_outlined),
                                     title: Text(e.name),
                                     onTap: () {
                                       AnnixRouterDelegate.of(context).to(
@@ -59,7 +60,7 @@ class TagsView extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Expanded(
+                  return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),

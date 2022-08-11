@@ -17,14 +17,14 @@ class HomeAppBar extends StatelessWidget {
           CircleAvatar(
             child: Text(info!.user.nickname.substring(0, 1)),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text("Welcome back, ${info!.user.nickname}."),
         ],
       );
     } else {
       return Row(
         children: [
-          Text("Not logged in"),
+          const Text("Not logged in"),
           TextButton(
             child: Text(I18n.LOGIN.tr),
             onPressed: () {

@@ -23,13 +23,13 @@ class TagScreen extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
-                return Center(
+                return const Center(
                   child: Text("No available album."),
                 );
               }
 
               return GridView.builder(
-                padding: EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(4.0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: Global.isDesktop ? 4 : 2,
                   mainAxisSpacing: 4,
@@ -42,9 +42,9 @@ class TagScreen extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               Navigator.of(context).pop();
-              return Center(child: Text('Error'));
+              return const Center(child: Text('Error'));
             } else {
-              return Center(
+              return const Center(
                 child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
               );
             }

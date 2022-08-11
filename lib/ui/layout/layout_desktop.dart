@@ -54,7 +54,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     },
                     labelType: NavigationRailLabelType.all,
                     leading: FloatingActionButton(
-                      child: Icon(Icons.search_outlined),
+                      child: const Icon(Icons.search_outlined),
                       onPressed: () {
                         router.to(name: "/search");
                       },
@@ -62,20 +62,20 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     groupAlignment: -0.7,
                     destinations: <NavigationRailDestination>[
                       NavigationRailDestination(
-                        icon: Icon(Icons.casino_outlined),
+                        icon: const Icon(Icons.casino_outlined),
                         label: Text(I18n.HOME.tr),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.music_note_outlined),
-                        selectedIcon: Icon(Icons.music_note_sharp),
+                        icon: const Icon(Icons.music_note_outlined),
+                        selectedIcon: const Icon(Icons.music_note_sharp),
                         label: Text(I18n.PLAYING.tr),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.local_offer_outlined),
+                        icon: const Icon(Icons.local_offer_outlined),
                         label: Text(I18n.CATEGORY.tr),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.dns_outlined),
+                        icon: const Icon(Icons.dns_outlined),
                         label: Text(I18n.SERVER.tr),
                       ),
                     ],
@@ -93,7 +93,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
               ],
             ),
           ),
-          DesktopBottomPlayer(),
+          const DesktopBottomPlayer(),
         ],
       ),
     );

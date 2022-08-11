@@ -1,6 +1,6 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/widgets/buttons/play_pause_button.dart';
+import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';

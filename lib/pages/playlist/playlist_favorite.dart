@@ -3,28 +3,34 @@ import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FavoriteScreen extends PlaylistScreen {
   final AnnivController _anniv = Get.find();
 
+  @override
   final Widget? pageTitle = null;
+  @override
   final List<Widget>? pageActions = null;
 
+  @override
   RefreshCallback? get refresh => () => _anniv.syncFavorite();
 
+  @override
   String get title => I18n.MY_FAVORITE.tr;
+  @override
   Widget get cover => _anniv.favorites.keys.isNotEmpty
       ? MusicCover(albumId: _anniv.favorites.keys.last.split('/')[0])
-      : DummyMusicCover();
+      : const DummyMusicCover();
 
   @override
   List<Widget> get intro => [
         Text("${_anniv.favorites.length} songs"),
       ];
 
+  @override
   Widget get body => Obx(() {
         final favorites = _anniv.favorites.values.toList().reversed;
         return ListView.builder(
@@ -53,6 +59,7 @@ class FavoriteScreen extends PlaylistScreen {
         );
       });
 
+  @override
   List<TrackIdentifier> get tracks => _anniv.favorites.keys
       .map((t) => TrackIdentifier.fromSlashSplitedString(t))
       .toList()

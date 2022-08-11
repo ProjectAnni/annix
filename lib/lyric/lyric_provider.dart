@@ -42,18 +42,18 @@ class LyricSearchResponseText extends LyricSearchResponse {
   });
 
   @override
-  Future<String?> get album => Future.value(this.albumTitle);
+  Future<String?> get album => Future.value(albumTitle);
 
   @override
-  Future<List<String>?> get artists => Future.value(this.artistsName);
+  Future<List<String>?> get artists => Future.value(artistsName);
 
   @override
   Future<LyricLanguage?> get lyric => Future.value(LyricLanguage(
         language: "--",
-        type: this.lyricType,
-        data: this.lyricText,
+        type: lyricType,
+        data: lyricText,
       ));
 
   @override
-  Future<String?> get title => Future.value(this.trackTitle);
+  Future<String?> get title => Future.value(trackTitle);
 }

@@ -18,18 +18,18 @@ class HomeAlbums extends StatelessWidget {
           HomeTitle(
             title: I18n.ALBUMS.tr,
             icon: Icons.album_outlined,
-            padding: EdgeInsets.only(top: 16, left: 16, bottom: 8),
+            padding: const EdgeInsets.only(top: 16, left: 16, bottom: 8),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Container(
+            padding: const EdgeInsets.only(left: 16),
+            child: SizedBox(
               height: 280,
               child: Obx(() {
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) => Obx(
                     () => Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: AlbumGrid(albumId: annil.albums[index]),
                     ),
                   ),

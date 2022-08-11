@@ -67,7 +67,7 @@ class PetitLyricsClient {
       final timeRaw = data.getUint16(timeBeginByteindex, Endian.little);
       final timeCs = timeRaw ^ projectionKey;
 
-      final line = "[" + cs2mmssff(timeCs + offset * 65536) + "] " + lyric[i];
+      final line = "[${cs2mmssff(timeCs + offset * 65536)}] ${lyric[i]}";
       time.add(line);
       offset += timeCs ~/ 65536;
     }
@@ -123,10 +123,10 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   });
 
   @override
-  Future<String?> get album => Future.value(this.albumTitle);
+  Future<String?> get album => Future.value(albumTitle);
 
   @override
-  Future<List<String>?> get artists => Future.value(this.artistsName);
+  Future<List<String>?> get artists => Future.value(artistsName);
 
   @override
   Future<LyricLanguage?> get lyric async {
@@ -134,7 +134,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
       final lrc = await _client.getLyric(
         track,
         lyricType: 2,
-        lyricId: this.lyricId,
+        lyricId: lyricId,
       );
 
       final songs = lrc.findAllElements("song");
@@ -143,7 +143,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
         return LyricLanguage(
           language: "--",
           type: "text",
-          data: this.lyricText,
+          data: lyricText,
         );
       } else {
         final encrypted =
@@ -171,7 +171,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   }
 
   @override
-  Future<String?> get title => Future.value(this.trackTitle);
+  Future<String?> get title => Future.value(trackTitle);
 }
 
 String cs2mmssff(int cs) {

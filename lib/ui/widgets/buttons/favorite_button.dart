@@ -36,12 +36,12 @@ class FavoriteButton extends StatelessWidget {
     return Obx(
       () => IconButton(
         isSelected: favorited.value,
-        icon: Icon(Icons.favorite_border_outlined),
-        selectedIcon: Icon(Icons.favorite_outlined),
+        icon: const Icon(Icons.favorite_border_outlined),
+        selectedIcon: const Icon(Icons.favorite_outlined),
         onPressed: () async {
-          final id = this.audio.value?.identifier;
+          final id = audio.value?.identifier;
           if (id != null) {
-            this.anniv.toggleFavorite(id);
+            anniv.toggleFavorite(id);
           }
         },
       ),

@@ -2,7 +2,7 @@ import 'package:annix/services/player.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';

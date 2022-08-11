@@ -34,14 +34,14 @@ abstract class PlaylistScreen extends StatelessWidget {
   Widget _albumIntro(BuildContext context) {
     return Container(
       height: 180,
-      padding: EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // cover
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: FractionallySizedBox(
               heightFactor: 1,
               child: cover,
@@ -50,7 +50,7 @@ abstract class PlaylistScreen extends StatelessWidget {
           // intro text
           Flexible(
             child: Container(
-              padding: EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.only(right: 16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,15 +67,15 @@ abstract class PlaylistScreen extends StatelessWidget {
                     alignment: MainAxisAlignment.start,
                     children: [
                       TextButton.icon(
-                        icon: Icon(Icons.play_arrow),
-                        label: Text("Play All"),
+                        icon: const Icon(Icons.play_arrow),
+                        label: const Text("Play All"),
                         onPressed: () {
                           playFullList(context, shuffle: false);
                         },
                       ),
                       OutlinedButton.icon(
-                        icon: Icon(Icons.shuffle),
-                        label: Text("Shuffle"),
+                        icon: const Icon(Icons.shuffle),
+                        label: const Text("Shuffle"),
                         onPressed: () {
                           playFullList(context, shuffle: true);
                         },
@@ -95,19 +95,19 @@ abstract class PlaylistScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = pageActions ?? [];
     var child = body;
-    if (this.refresh != null) {
+    if (refresh != null) {
       if (Global.isDesktop) {
         // sync button on desktop
         actions.add(
           IconButton(
-            icon: Icon(Icons.sync),
-            onPressed: this.refresh,
+            icon: const Icon(Icons.sync),
+            onPressed: refresh,
           ),
         );
       } else {
         // refresh indicator on mobile
         child = RefreshIndicator(
-          onRefresh: this.refresh!,
+          onRefresh: refresh!,
           child: child,
         );
       }

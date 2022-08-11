@@ -12,7 +12,6 @@ import 'package:annix/services/global.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
-import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
 import 'package:flutter/material.dart';

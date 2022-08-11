@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:toml/toml.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -45,9 +47,9 @@ class ReleaseDate {
   String toString() {
     String result = year.toString();
     if (month != null) {
-      result += "-" + (month! < 10 ? '0$month' : '$month');
+      result += "-${month! < 10 ? '0$month' : '$month'}";
       if (day != null) {
-        result += "-" + (day! < 10 ? '0$day' : '$day');
+        result += "-${day! < 10 ? '0$day' : '$day'}";
       }
     }
     return result;
@@ -133,7 +135,9 @@ class Album {
     this.tags,
     required this.discs,
   }) {
-    this.discs.forEach((element) => element.album = this);
+    for (final disc in discs) {
+      disc.album = this;
+    }
   }
 
   static Album fromMap(Map<String, dynamic> map) {
@@ -189,7 +193,9 @@ class Disc {
   })  : _title = title,
         _artist = artist,
         _type = type {
-    this.tracks.forEach((element) => element.disc = this);
+    for (final track in tracks) {
+      track.disc = this;
+    }
   }
 
   String get title => _title ?? album.title;

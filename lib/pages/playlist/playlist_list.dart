@@ -3,7 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -9,7 +9,7 @@ import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
-import 'package:annix/widgets/buttons/theme_button.dart';
+import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';

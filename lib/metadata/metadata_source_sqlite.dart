@@ -79,6 +79,7 @@ class SqliteMetadataSource extends MetadataSource {
     }
   }
 
+  @override
   Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
     return Map.fromEntries(
         (await Future.wait(albums.map((albumId) => getAlbumDetail(albumId))))

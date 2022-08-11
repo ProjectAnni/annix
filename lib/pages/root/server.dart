@@ -43,7 +43,8 @@ class AnnivCard extends StatelessWidget {
 
   Widget afterLogin(BuildContext context, SiteUserInfo info) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 4.0, right: 12.0, top: 16, left: 16),
+      padding:
+          const EdgeInsets.only(bottom: 4.0, right: 12.0, top: 16, left: 16),
       child: Column(
         children: [
           Row(
@@ -75,7 +76,7 @@ class AnnivCard extends StatelessWidget {
                 ),
               ),
               // TODO: Add more things in this card
-              SizedBox(height: 80),
+              const SizedBox(height: 80),
               PopupMenuButton(
                 itemBuilder: (context) {
                   return [
@@ -88,8 +89,8 @@ class AnnivCard extends StatelessWidget {
                     ),
                   ];
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Icon(Icons.more_vert_outlined),
                 ),
               ),
@@ -103,7 +104,7 @@ class AnnivCard extends StatelessWidget {
               if (info.site.features.contains("metadata-db"))
                 // TODO: move this button to somewhere else
                 TextButton(
-                  child: Text("Update Database"),
+                  child: const Text("Update Database"),
                   onPressed: () async {
                     AnnivController anniv = Get.find();
                     await anniv.updateDatabase();
@@ -157,9 +158,9 @@ class AnnivLoginDialog extends StatelessWidget {
     return AlertDialog(
       title: Center(
         child: Column(
-          children: [
+          children: const [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Icon(
                 Icons.login_outlined,
                 size: 32,
@@ -198,9 +199,9 @@ class AnnivLoginDialog extends StatelessWidget {
           ),
           child: const Text('Login'),
           onPressed: () async {
-            var url = this._controller.serverUrlController.text;
-            var email = this._controller.emailController.text;
-            final password = this._controller.passwordController.text;
+            var url = _controller.serverUrlController.text;
+            var email = _controller.emailController.text;
+            final password = _controller.passwordController.text;
             if (url.isEmpty) {
               _showSnackBar(context, "Please enter a valid URL");
             } else if (email.isEmpty || !email.contains('@')) {
@@ -238,9 +239,9 @@ class AnnilListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(annil.name),
-      leading: Icon(Icons.drag_handle_outlined),
+      leading: const Icon(Icons.drag_handle_outlined),
       trailing: IconButton(
-        icon: Icon(Icons.edit_outlined),
+        icon: const Icon(Icons.edit_outlined),
         onPressed: () {
           // FIXME: edit annil
           // Get.generalDialog(
@@ -273,9 +274,9 @@ class AnnilDialog extends StatelessWidget {
     return AlertDialog(
       title: Center(
         child: Column(
-          children: [
+          children: const [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Icon(
                 Icons.add_box_outlined,
                 size: 32,
@@ -317,8 +318,8 @@ class AnnilDialog extends StatelessWidget {
           },
         ),
       ],
-      titlePadding: EdgeInsets.only(top: 8),
-      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      titlePadding: const EdgeInsets.only(top: 8),
+      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       actionsPadding: EdgeInsets.zero,
       insetPadding: EdgeInsets.zero,
       buttonPadding: EdgeInsets.zero,
@@ -340,18 +341,18 @@ class ServerView extends StatelessWidget {
           title: Text(I18n.SERVER.tr),
           actions: [
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               onPressed: () {
                 AnnixRouterDelegate.of(context).to(name: '/settings');
               },
             ),
           ],
         ),
-        AnnivCard(),
+        const AnnivCard(),
         ListTile(
           title: Text(I18n.ANNIL_LIBRARIES.tr),
           trailing: IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
               Get.dialog(
                 AnnilDialog(

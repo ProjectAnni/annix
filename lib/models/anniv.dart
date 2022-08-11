@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:annix/models/metadata.dart';
 import 'package:json_annotation/json_annotation.dart';
 

@@ -17,7 +17,7 @@ class Artist {
   Artist({required this.name, required this.children});
 }
 
-Artist readArtist(_ArtistParser reader) {
+Artist _readArtist(_ArtistParser reader) {
   String name = "";
   final children = <Artist>[];
 
@@ -26,7 +26,7 @@ Artist readArtist(_ArtistParser reader) {
     if (reader.data[reader.idx] == "、") {
       if (reader.data[reader.idx + 1] == "、") {
         reader.idx += 1;
-        name = name + "、";
+        name = "$name、";
       } else {
         break;
       }
@@ -42,7 +42,7 @@ Artist readArtist(_ArtistParser reader) {
   if (reader.data.length > reader.idx && reader.data[reader.idx] == "（") {
     reader.idx += 1;
     do {
-      children.add(readArtist(reader));
+      children.add(_readArtist(reader));
       reader.idx += 1;
     } while (
         reader.data.length > reader.idx && reader.data[reader.idx - 1] == "、");
@@ -51,12 +51,12 @@ Artist readArtist(_ArtistParser reader) {
   return Artist(name: name, children: children);
 }
 
-List<Artist> readArtists(_ArtistParser reader) {
+List<Artist> _readArtists(_ArtistParser reader) {
   final res = <Artist>[];
-  res.add(readArtist(reader));
+  res.add(_readArtist(reader));
   while (reader.data.length > reader.idx && reader.data[reader.idx] == "、") {
     reader.idx += 1;
-    res.add(readArtist(reader));
+    res.add(_readArtist(reader));
   }
   return res;
 }
@@ -75,13 +75,12 @@ class ArtistText extends StatelessWidget {
   final fullArtist = false.obs;
 
   ArtistText(
-    String artist, {
+    this.artist, {
     Key? key,
     this.overflow = TextOverflow.ellipsis,
     this.style,
     this.expandable = true,
-  })  : artist = artist,
-        artists = readArtists(_ArtistParser(data: artist, idx: 0)),
+  })  : artists = _readArtists(_ArtistParser(data: artist, idx: 0)),
         super(key: key);
 
   void toggleExtend() {
@@ -91,7 +90,7 @@ class ArtistText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: this.toggleExtend,
+      onLongPress: toggleExtend,
       child: Obx(
         () => Row(
           mainAxisSize: MainAxisSize.min,
@@ -107,14 +106,14 @@ class ArtistText extends StatelessWidget {
                 maxLines: 1,
               ),
             ),
-            if (this.isExtensible && Global.isDesktop)
+            if (isExtensible && Global.isDesktop)
               IconButton(
-                onPressed: this.toggleExtend,
+                onPressed: toggleExtend,
                 isSelected: fullArtist.value,
-                icon: Icon(Icons.arrow_forward_ios_outlined),
-                selectedIcon: Icon(Icons.arrow_back_ios_outlined),
+                icon: const Icon(Icons.arrow_forward_ios_outlined),
+                selectedIcon: const Icon(Icons.arrow_back_ios_outlined),
                 iconSize: 12,
-                constraints: BoxConstraints(),
+                constraints: const BoxConstraints(),
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,
               ),

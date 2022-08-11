@@ -8,7 +8,7 @@ import 'package:annix/services/annil.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
-import 'package:annix/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';

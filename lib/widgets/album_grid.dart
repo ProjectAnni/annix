@@ -15,7 +15,7 @@ class AlbumGrid extends StatelessWidget {
     Key? key,
     required this.albumId,
     String? tag,
-  })  : this.tag = tag ?? Uuid().v4().toString(),
+  })  : tag = tag ?? const Uuid().v4().toString(),
         super(key: key);
 
   @override
@@ -44,7 +44,7 @@ class AlbumGrid extends StatelessWidget {
                     snapshot.hasData
                         ? Container(
                             alignment: Alignment.bottomLeft,
-                            padding: EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Text(
                               '${snapshot.data?.title}',
                               style: context.textTheme.bodyLarge?.copyWith(
