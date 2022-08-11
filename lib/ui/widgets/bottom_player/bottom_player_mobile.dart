@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class MobileBottomPlayer extends StatelessWidget {
   final double height;
 
-  const MobileBottomPlayer({Key? key, this.height = 48}) : super(key: key);
+  const MobileBottomPlayer({Key? key, this.height = 56}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +20,13 @@ class MobileBottomPlayer extends StatelessWidget {
         AnnixRouterDelegate.of(Global.context).to(name: '/playing');
       },
       child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: ElevationOverlay.colorWithOverlay(
+              context.colorScheme.surface, context.colorScheme.primary, 3.0),
+        ),
         height: height,
-        color: ElevationOverlay.colorWithOverlay(
-            context.colorScheme.surface, context.colorScheme.primary, 3.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
