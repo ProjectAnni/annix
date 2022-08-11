@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class MobileBottomPlayer extends StatelessWidget {
   final double height;
 
-  const MobileBottomPlayer({Key? key, this.height = 56}) : super(key: key);
+  const MobileBottomPlayer({Key? key, this.height = 60}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,10 @@ class MobileBottomPlayer extends StatelessWidget {
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
           color: ElevationOverlay.colorWithOverlay(
               context.colorScheme.surface, context.colorScheme.primary, 3.0),
         ),
@@ -31,16 +34,17 @@ class MobileBottomPlayer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: height,
-              width: height,
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: PlayingMusicCover(card: false),
+              padding: const EdgeInsets.all(8),
+              child: PlayingMusicCover(card: true),
             ),
             Expanded(
               flex: 1,
               child: Consumer<PlayerService>(
                 builder: (context, player, child) => Marquee(
-                  child: Text(player.playing?.track.title ?? ""),
+                  child: Text(
+                    player.playing?.track.title ?? "",
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                 ),
               ),
             ),
