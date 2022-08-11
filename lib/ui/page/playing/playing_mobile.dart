@@ -11,7 +11,8 @@ import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Obx;
+import 'package:get/get_rx/get_rx.dart';
 import 'package:provider/provider.dart';
 
 class PlayingMobileScreen extends StatelessWidget {
@@ -22,11 +23,8 @@ class PlayingMobileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 56),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -35,9 +33,6 @@ class PlayingMobileScreen extends StatelessWidget {
                 if ((details.primaryVelocity ?? 0) > 300) {
                   AnnixRouterDelegate.of(context).popRoute();
                 }
-              },
-              onTap: () {
-                showLyrics.value = !showLyrics.value;
               },
               child: Obx(
                 () => showLyrics.value
@@ -53,17 +48,18 @@ class PlayingMobileScreen extends StatelessWidget {
             Column(
               children: [
                 Consumer<PlayerService>(
-                  builder: (context, player, child) => Marquee(
+                  builder: (context, player, child) => Center(
                     child: Text(
                       player.playing?.track.title ?? "",
-                      style: context.textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
                 Consumer<PlayerService>(
                   builder: (context, player, child) => ArtistText(
                     player.playing?.track.artist ?? "",
-                    style: context.textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -71,28 +67,6 @@ class PlayingMobileScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FavoriteButton(),
-                    const LoopModeButton(),
-                    IconButton(
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          useSafeArea: true,
-                          context: context,
-                          builder: (context) {
-                            return const PlayingQueue();
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
                 Consumer<PlayingProgress>(
                   builder: (context, progress, child) {
                     return ProgressBar(
@@ -111,6 +85,7 @@ class PlayingMobileScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    FavoriteButton(),
                     IconButton(
                       icon: const Icon(Icons.skip_previous),
                       iconSize: 32,
@@ -126,10 +101,44 @@ class PlayingMobileScreen extends StatelessWidget {
                           Provider.of<PlayerService>(context, listen: false)
                               .next(),
                     ),
+                    const LoopModeButton(),
                   ],
                 ),
               ],
             )
+          ],
+        ),
+      ),
+      bottomSheet: BottomAppBar(
+        elevation: 4,
+        child: ButtonBar(
+          alignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.text_snippet_rounded),
+              onPressed: () {
+                showLyrics.value = !showLyrics.value;
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.queue_music_rounded),
+              onPressed: () {
+                showModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  useSafeArea: true,
+                  context: context,
+                  builder: (context) {
+                    return const PlayingQueue();
+                  },
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.more_horiz_rounded),
+              onPressed: () {},
+            ),
           ],
         ),
       ),
