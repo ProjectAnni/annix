@@ -131,6 +131,12 @@ class HomePage extends StatelessWidget {
                                       .pop());
                         },
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {
+                          AnnixRouterDelegate.of(context).to(name: "/search");
+                        },
+                      ),
                       const ThemeButton(),
                     ],
                   ),

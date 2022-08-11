@@ -90,27 +90,6 @@ class AnnixLayoutMobile extends AnnixLayout {
         },
         child: child,
       ),
-      floatingActionButton: Builder(
-        builder: (context) {
-          return Consumer<PlayerService>(
-            builder: (context, player, child) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  bottom: player.playing != null ? 140.0 : 0.0,
-                ),
-                child: child,
-              );
-            },
-            child: FloatingActionButton(
-              onPressed: () {
-                router.to(name: "/search");
-              },
-              isExtended: true,
-              child: const Icon(Icons.search),
-            ),
-          );
-        },
-      ),
     );
 
     return Navigator(
