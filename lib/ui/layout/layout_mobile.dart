@@ -31,16 +31,23 @@ class AnnixLayoutMobile extends AnnixLayout {
     final double panelMaxSize = MediaQuery.of(context).size.height;
 
     final root = Scaffold(
-      body: Selector<PlayerService, bool>(
-        selector: (context, player) => player.playing != null,
-        builder: (context, isPlaying, child) {
+      body: Selector2<PlayerService, AnnixRouterDelegate, List<bool>>(
+        selector: (context, player, delegate) {
+          final isPlaying = player.playing != null;
+          final isMainPage = pages.contains(delegate.currentRoute);
+          return [isPlaying, isMainPage];
+        },
+        builder: (context, result, child) {
+          final isPlaying = result[0];
+          final isMainPage = result[1];
+
           return WeSlide(
             controller: Global.mobileWeSlideController,
             parallax: true,
             hideAppBar: true,
             hideFooter: true,
             body: Material(child: child),
-            panelMinSize: 80 + (isPlaying ? 60 : 0),
+            panelMinSize: (isMainPage ? 80 : 0) + (isPlaying ? 60 : 0),
             panelMaxSize: panelMaxSize,
             panelHeader: GestureDetector(
               onTap: () => Global.mobileWeSlideController.show(),
@@ -83,27 +90,27 @@ class AnnixLayoutMobile extends AnnixLayout {
         },
         child: child,
       ),
-      // floatingActionButton: Builder(
-      //   builder: (context) {
-      //     return Consumer<PlayerService>(
-      //       builder: (context, player, child) {
-      //         return Padding(
-      //           padding: EdgeInsets.only(
-      //             bottom: player.playing != null ? 48.0 : 0.0,
-      //           ),
-      //           child: child,
-      //         );
-      //       },
-      //       child: FloatingActionButton(
-      //         onPressed: () {
-      //           router.to(name: "/search");
-      //         },
-      //         isExtended: true,
-      //         child: const Icon(Icons.search),
-      //       ),
-      //     );
-      //   },
-      // ),
+      floatingActionButton: Builder(
+        builder: (context) {
+          return Consumer<PlayerService>(
+            builder: (context, player, child) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: player.playing != null ? 140.0 : 0.0,
+                ),
+                child: child,
+              );
+            },
+            child: FloatingActionButton(
+              onPressed: () {
+                router.to(name: "/search");
+              },
+              isExtended: true,
+              child: const Icon(Icons.search),
+            ),
+          );
+        },
+      ),
     );
 
     return Navigator(

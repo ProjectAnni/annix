@@ -45,12 +45,12 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
   @override
   Future<bool> popRoute() async {
-    if (canPop()) {
+    if (Global.mobileWeSlideController.isOpened) {
+      Global.mobileWeSlideController.hide();
+      return true;
+    } else if (canPop()) {
       _pages.removeLast();
       notifyListeners();
-      return true;
-    } else if (Global.mobileWeSlideController.isOpened) {
-      Global.mobileWeSlideController.hide();
       return true;
     } else {
       // can not pop, exit

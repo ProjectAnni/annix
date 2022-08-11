@@ -19,18 +19,19 @@ class AnnixApp extends StatelessWidget {
     Get.fallbackLocale = const Locale('en', 'US');
     Get.addTranslations(I18n().keys);
 
-    // global router delegate
-    final delegate = AnnixRouterDelegate();
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
         ChangeNotifierProvider(create: (_) => PlayerService(), lazy: false),
         ChangeNotifierProvider(create: (_) => PlayingProgress(), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
+        ChangeNotifierProvider(
+            create: (_) => AnnixRouterDelegate(), lazy: false),
       ],
       builder: (context, child) {
         final theme = Provider.of<AnnixTheme>(context);
+        final delegate =
+            Provider.of<AnnixRouterDelegate>(context, listen: false);
         return MaterialApp.router(
           title: "Annix",
           debugShowCheckedModeBanner: false,
