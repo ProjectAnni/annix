@@ -79,15 +79,14 @@ class PlayingMobileScreen extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.more_vert),
                       onPressed: () {
-                        showDialog(
+                        showModalBottomSheet(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          useSafeArea: true,
                           context: context,
                           builder: (context) {
-                            return const FractionallySizedBox(
-                              heightFactor: 0.6,
-                              widthFactor: 1,
-                              alignment: Alignment.bottomCenter,
-                              child: Card(child: PlayingQueue()),
-                            );
+                            return const PlayingQueue();
                           },
                         );
                       },

@@ -4,7 +4,6 @@ import 'package:annix/controllers/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/services/cover.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:audio_service/audio_service.dart';
@@ -43,7 +42,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
     AudioSession.instance.then((session) async {
       // configure
-      await session.configure(AudioSessionConfiguration.music());
+      await session.configure(const AudioSessionConfiguration.music());
 
       // unplugged
       session.becomingNoisyEventStream.listen((_) => service.pause());
@@ -95,56 +94,60 @@ class AnnixAudioHandler extends BaseAudioHandler {
     anniv.favorites.listen((_) => _updatePlaybackState());
   }
 
+  @override
   Future<void> play() async {
-    return this.player.play();
+    return player.play();
   }
 
+  @override
   Future<void> pause() {
-    return this.player.pause();
+    return player.pause();
   }
 
+  @override
   Future<void> stop() {
-    return this.player.stop();
+    return player.stop();
   }
 
+  @override
   Future<void> seek(Duration position) {
-    return this.player.seek(position);
+    return player.seek(position);
   }
 
   @override
   Future<void> skipToNext() {
-    return this.player.next();
+    return player.next();
   }
 
   @override
   Future<void> skipToPrevious() {
-    return this.player.previous();
+    return player.previous();
   }
 
   @override
   Future<void> fastForward() async {
-    final id = this.player.playing?.identifier;
+    final id = player.playing?.identifier;
     if (id != null) {
       await anniv.toggleFavorite(id);
     }
   }
 
   void _updatePlaybackState() {
-    final isPlaying = this.player.playerStatus == PlayerStatus.playing;
-    final hasPrevious = (this.player.playingIndex ?? 0) > 0;
-    final hasNext = (this.player.playingIndex ?? this.player.queue.length) <
-        this.player.queue.length - 1;
-    final isFavorited = this.player.playing != null &&
-        anniv.favorites.containsKey(this.player.playing!.id);
+    final isPlaying = player.playerStatus == PlayerStatus.playing;
+    final hasPrevious = (player.playingIndex ?? 0) > 0;
+    final hasNext =
+        (player.playingIndex ?? player.queue.length) < player.queue.length - 1;
+    final isFavorited = player.playing != null &&
+        anniv.favorites.containsKey(player.playing!.id);
 
     final controls = [
       isFavorited
-          ? MediaControl(
+          ? const MediaControl(
               label: 'Unfavorite',
               androidIcon: 'drawable/ic_favorite',
               action: MediaAction.fastForward,
             )
-          : MediaControl(
+          : const MediaControl(
               label: 'Favorite',
               androidIcon: 'drawable/ic_favorite_border',
               action: MediaAction.fastForward,
@@ -155,46 +158,46 @@ class AnnixAudioHandler extends BaseAudioHandler {
       if (hasNext) MediaControl.skipToNext,
     ];
 
-    this.playbackState.add(playbackState.value.copyWith(
-          controls: controls,
-          androidCompactActionIndices: List.generate(controls.length, (i) => i)
-              .where((i) =>
-                  controls[i].action == MediaAction.fastForward ||
-                  controls[i].action == MediaAction.pause ||
-                  controls[i].action == MediaAction.play)
-              .toList(),
-          systemActions: {
-            MediaAction.seek,
-            MediaAction.seekForward,
-            MediaAction.seekBackward,
-          },
-          processingState: {
-            PlayerStatus.playing: AudioProcessingState.ready,
-            PlayerStatus.stopped: AudioProcessingState.idle,
-            PlayerStatus.paused: AudioProcessingState.ready,
-            PlayerStatus.buffering: AudioProcessingState.buffering,
-          }[this.player.playerStatus]!,
-          playing: isPlaying,
-          updatePosition: this.progress.position,
-          queueIndex: this.player.playingIndex,
-        ));
+    playbackState.add(playbackState.value.copyWith(
+      controls: controls,
+      androidCompactActionIndices: List.generate(controls.length, (i) => i)
+          .where((i) =>
+              controls[i].action == MediaAction.fastForward ||
+              controls[i].action == MediaAction.pause ||
+              controls[i].action == MediaAction.play)
+          .toList(),
+      systemActions: {
+        MediaAction.seek,
+        MediaAction.seekForward,
+        MediaAction.seekBackward,
+      },
+      processingState: {
+        PlayerStatus.playing: AudioProcessingState.ready,
+        PlayerStatus.stopped: AudioProcessingState.idle,
+        PlayerStatus.paused: AudioProcessingState.ready,
+        PlayerStatus.buffering: AudioProcessingState.buffering,
+      }[player.playerStatus]!,
+      playing: isPlaying,
+      updatePosition: progress.position,
+      queueIndex: player.playingIndex,
+    ));
 
-    final playing = this.player.playing;
+    final playing = player.playing;
     if (playing != null) {
-      this.mediaItem.add(MediaItem(
-            id: playing.id,
-            title: playing.track.title,
-            album: playing.track.disc.album.title,
-            artist: playing.track.artist,
-            duration: progress.duration,
-            artUri: CoverReverseProxy().url(
-              CoverItem(
-                uri: annil.clients.value.getCoverUrl(albumId: playing.albumId),
-                albumId: playing.albumId,
-                // discId: playing.discId,
-              ),
-            ),
-          ));
+      mediaItem.add(MediaItem(
+        id: playing.id,
+        title: playing.track.title,
+        album: playing.track.disc.album.title,
+        artist: playing.track.artist,
+        duration: progress.duration,
+        artUri: CoverReverseProxy().url(
+          CoverItem(
+            uri: annil.clients.value.getCoverUrl(albumId: playing.albumId),
+            albumId: playing.albumId,
+            // discId: playing.discId,
+          ),
+        ),
+      ));
     }
   }
 }
