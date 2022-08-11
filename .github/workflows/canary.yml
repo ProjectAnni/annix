@@ -1,0 +1,153 @@
+name: Release
+on:
+  push
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "11"
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
+      - name: Setup | Dependencies
+        run: flutter pub get
+      - name: Build | Apk
+        run: |
+          flutter build apk --release
+          cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
+          flutter build apk --release --split-per-abi
+          cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-android
+          path: |
+            ./build/app/outputs/apk/*.apk
+          retention-days: 1
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
+      - name: Setup | Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+          flutter config --enable-linux-desktop
+          flutter pub get
+      - name: Build | Linux
+        run: |
+          flutter build linux --verbose
+          cd build/linux/x64/release/
+          zip -r annix-linux64.zip bundle
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-linux64
+          path: ./build/linux/x64/release/annix-linux64.zip
+          retention-days: 1
+
+  macOS:
+    runs-on: macos-11
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
+      - name: Setup | Dependencies
+        run: flutter pub get
+      - name: Build | macOS
+        run: |
+          flutter build macos --verbose
+          cd build/macos/Build/Products/Release
+          ditto -c -k --sequesterRsrc --keepParent Annix.app annix-macos.zip
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-macos
+          path: |
+            ./build/macos/Build/Products/Release/annix-macos.zip
+          retention-days: 1
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
+      - name: Setup | Dependencies
+        run: |
+          flutter config --enable-windows-desktop
+          flutter pub get
+      - name: Build | Windows
+        run: |
+          flutter build windows --verbose
+          curl https://raw.githubusercontent.com/tekartik/sqflite/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll -o ./build/windows/runner/Release/sqlite3.dll
+          cp -r build/windows/runner/Release annix-win64
+          tar.exe -a -c -f annix-win64.zip annix-win64
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-win64
+          path: |
+            ./annix-win64.zip
+          retention-days: 1
+
+  publish:
+    needs: [linux, android, macOS, windows]
+    runs-on: ubuntu-20.04
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext-base
+
+      - run: |
+          (echo 'SUBJECT=Annix development (canary) build') >> $GITHUB_ENV
+          gh release delete canary --yes || true
+          git push origin :canary || true
+      - name: Publish release
+        env:
+          NVIM_VERSION: ${{ needs.linux.outputs.version }}
+          DEBUG: api
+        run: |
+          gh release create canary --prerelease --title "$SUBJECT" --target $GITHUB_SHA annix-android/**/*.apk annix-linux64/* annix-macos/* annix-win64/*
