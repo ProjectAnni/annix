@@ -35,7 +35,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final root = Scaffold(
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -96,6 +96,13 @@ class AnnixLayoutDesktop extends AnnixLayout {
           const DesktopBottomPlayer(),
         ],
       ),
+    );
+
+    return Navigator(
+      pages: [MaterialPage(child: root)],
+      onPopPage: (route, result) {
+        return false;
+      },
     );
   }
 }

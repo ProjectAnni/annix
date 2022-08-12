@@ -124,7 +124,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           icon: const Icon(Icons.queue_music_outlined),
                           onPressed: () {
                             showDialog(
-                              context: Global.context,
+                              context: context,
                               useRootNavigator: true,
                               barrierColor: Colors.transparent,
                               builder: (context) {
