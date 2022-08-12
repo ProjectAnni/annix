@@ -1,6 +1,6 @@
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/route/delegate.dart';
-import 'package:annix/ui/widgets/bottom_player/bottom_player.dart';
+import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

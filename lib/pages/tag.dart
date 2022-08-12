@@ -1,6 +1,8 @@
 import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/models/metadata.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/widgets/album_grid.dart';
+import 'package:annix/ui/widgets/album_grid.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +39,18 @@ class TagScreen extends StatelessWidget {
                 ),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return AlbumGrid(albumId: snapshot.data![index]);
+                  final albumId = snapshot.data![index];
+                  return FutureBuilder<Album?>(
+                    future: Global.metadataSource.future
+                        .then((store) => store.getAlbum(albumId: albumId)),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const DummyMusicCover();
+                      } else {
+                        return AlbumGrid(album: snapshot.data!);
+                      }
+                    },
+                  );
                 },
               );
             } else if (snapshot.hasError) {
