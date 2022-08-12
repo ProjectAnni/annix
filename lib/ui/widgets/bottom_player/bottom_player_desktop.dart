@@ -108,7 +108,10 @@ class DesktopBottomPlayer extends StatelessWidget {
                               Provider.of<PlayerService>(context, listen: false)
                                   .previous(),
                         ),
-                        PlayPauseButton.large(),
+                        const PlayPauseButton(
+                          type: PlayPauseButtonType.elevated,
+                          size: 56,
+                        ),
                         IconButton(
                           icon: const Icon(Icons.skip_next),
                           iconSize: 28,

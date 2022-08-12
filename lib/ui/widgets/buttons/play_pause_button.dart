@@ -3,22 +3,24 @@ import 'package:annix/ui/widgets/buttons/animated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+enum PlayPauseButtonType {
+  floating,
+  elevated,
+  flat,
+}
+
 class PlayPauseButton extends StatefulWidget {
   final double size;
-  final bool useFAB;
+  final PlayPauseButtonType type;
 
-  const PlayPauseButton({
-    super.key,
-    required this.size,
-    required this.useFAB,
-  });
+  const PlayPauseButton({super.key, required this.size, required this.type});
 
   factory PlayPauseButton.small() {
-    return const PlayPauseButton(size: 40, useFAB: false);
+    return const PlayPauseButton(size: 40, type: PlayPauseButtonType.flat);
   }
 
   factory PlayPauseButton.large() {
-    return const PlayPauseButton(size: 56, useFAB: true);
+    return const PlayPauseButton(size: 56, type: PlayPauseButtonType.floating);
   }
 
   @override
@@ -63,7 +65,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
               child: CircularProgressIndicator(strokeWidth: 2),
             );
           } else {
-            if (widget.useFAB) {
+            if (widget.type == PlayPauseButtonType.floating) {
               return FloatingActionButton(
                 child: AnimatedIconWidget(
                   controller: _controller,
@@ -72,6 +74,22 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
                 onPressed: () {
                   playing.playOrPause();
                 },
+              );
+            } else if (widget.type == PlayPauseButtonType.elevated) {
+              return Card(
+                elevation: 2,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Center(
+                    child: AnimatedIconWidget(
+                      controller: _controller,
+                      icon: AnimatedIcons.play_pause,
+                    ),
+                  ),
+                  onTap: () {
+                    playing.playOrPause();
+                  },
+                ),
               );
             } else {
               return IconButton(
