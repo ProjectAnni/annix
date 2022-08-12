@@ -9,6 +9,8 @@ class PlayingQueue extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PlayerService>(
       builder: (context, player, child) => ListView.builder(
+        controller: ScrollController(
+            initialScrollOffset: 32.0 * (player.playingIndex ?? 0)),
         itemCount: player.queue.length,
         itemBuilder: (context, index) {
           var song = player.queue[index];
