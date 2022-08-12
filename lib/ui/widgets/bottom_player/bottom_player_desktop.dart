@@ -123,20 +123,22 @@ class DesktopBottomPlayer extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.queue_music_outlined),
                           onPressed: () {
-                            showDialog(
+                            showModalBottomSheet(
                               context: context,
-                              useRootNavigator: true,
-                              barrierColor: Colors.transparent,
+                              useRootNavigator: false,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  topRight: Radius.circular(12),
+                                ),
+                              ),
+                              constraints: const BoxConstraints(
+                                maxWidth: 600,
+                              ),
                               builder: (context) {
                                 return Container(
                                   alignment: Alignment.bottomRight,
-                                  child: const FractionallySizedBox(
-                                    heightFactor: 0.4,
-                                    widthFactor: 0.3,
-                                    child: Material(
-                                      child: Card(child: PlayingQueue()),
-                                    ),
-                                  ),
+                                  child: const PlayingQueue(),
                                 );
                               },
                             );
