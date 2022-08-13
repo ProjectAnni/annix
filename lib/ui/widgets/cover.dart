@@ -32,7 +32,7 @@ class PlayingMusicCover extends StatelessWidget {
       builder: (context, playing, child) {
         if (playing == null) {
           // not playing
-          return Container();
+          return DummyMusicCover(card: card);
         }
 
         // is playing
