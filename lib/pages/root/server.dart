@@ -3,6 +3,7 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil.dart';
+import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/simple_text_field.dart';
 import 'package:flutter/material.dart';
@@ -21,19 +22,24 @@ class AnnivCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            "Not logged in to Anniv",
+            I18n.NOT_LOGGED_IN.tr,
             style: context.textTheme.titleLarge,
           ),
           Text(
-            // TODO: some description about anniv's functions
-            "TODO: some description about anniv’s functions",
+            I18n.ANNIV_FEATURES.tr,
             style: context.textTheme.bodyMedium,
           ),
           Align(
             alignment: Alignment.bottomRight,
             child: TextButton(
               child: Text(I18n.LOGIN.tr),
-              onPressed: () => Get.dialog(AnnivLoginDialog()),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  useRootNavigator: true,
+                  builder: (context) => AnnivLoginDialog(),
+                );
+              },
             ),
           ),
         ],
@@ -132,99 +138,6 @@ class AnnivCard extends StatelessWidget {
     );
 
     return Card(child: inner);
-  }
-}
-
-class AnnivDialogController extends GetxController {
-  var serverUrlController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-}
-
-class AnnivLoginDialog extends StatelessWidget {
-  final AnnivDialogController _controller = AnnivDialogController();
-
-  AnnivLoginDialog({Key? key}) : super(key: key);
-
-  void _showSnackBar(BuildContext context, String text) {
-    final snackBar = SnackBar(content: Text(text));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final AnnivController anniv = Get.find();
-
-    return AlertDialog(
-      title: Center(
-        child: Column(
-          children: const [
-            Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: Icon(
-                Icons.login_outlined,
-                size: 32,
-              ),
-            ),
-            Text("Login to Anniv"),
-          ],
-        ),
-      ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SimpleTextField(
-                label: "Server", controller: _controller.serverUrlController),
-            SimpleTextField(
-                label: "Email", controller: _controller.emailController),
-            SimpleTextField(
-                label: "Password",
-                controller: _controller.passwordController,
-                password: true),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: context.textTheme.labelLarge,
-          ),
-          child: const Text('Cancel'),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: context.textTheme.labelLarge,
-          ),
-          child: const Text('Login'),
-          onPressed: () async {
-            var url = _controller.serverUrlController.text;
-            var email = _controller.emailController.text;
-            final password = _controller.passwordController.text;
-            if (url.isEmpty) {
-              _showSnackBar(context, "Please enter a valid URL");
-            } else if (email.isEmpty || !email.contains('@')) {
-              _showSnackBar(context, "Please enter a valid email");
-            } else if (password.isEmpty) {
-              _showSnackBar(context, "Please enter a password");
-            } else {
-              email = email.trim();
-              if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                url = "https://$url";
-              }
-              try {
-                // TODO: alert progress
-                await anniv.login(url, email, password);
-                Navigator.of(context).pop();
-              } catch (e) {
-                _showSnackBar(context, e.toString());
-              }
-            }
-          },
-        ),
-      ],
-    );
   }
 }
 

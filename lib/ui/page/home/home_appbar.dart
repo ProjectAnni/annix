@@ -1,6 +1,6 @@
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/pages/root/server.dart';
+import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +24,7 @@ class HomeAppBar extends StatelessWidget {
     } else {
       return Row(
         children: [
-          const Text("Not logged in"),
+          Text(I18n.NOT_LOGGED_IN.tr),
           TextButton(
             child: Text(I18n.LOGIN.tr),
             onPressed: () {

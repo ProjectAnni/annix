@@ -1,5 +1,5 @@
 import 'package:annix/services/player.dart';
-import 'package:annix/pages/playing/playing_queue.dart';
+import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/volume.dart';

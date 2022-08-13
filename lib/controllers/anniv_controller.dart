@@ -87,6 +87,8 @@ class AnnivController extends GetxController {
             e.error["status"] == 902002) {
           // 鉴权失败，退出登录
           await logout();
+          this.client = null;
+          return;
         } else {
           rethrow;
         }

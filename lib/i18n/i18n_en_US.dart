@@ -38,4 +38,9 @@ const Map<String, String> I18N_en_US = {
   I18n.SEARCH: "Search",
   I18n.TRACKS: "Track",
   I18n.PLAYED_RECENTLY: "Recently played",
+
+  // others
+  I18n.NOT_LOGGED_IN: "Not logged in",
+  I18n.ANNIV_FEATURES:
+      "Login to Anniv for playlist, statistics and more features!",
 };

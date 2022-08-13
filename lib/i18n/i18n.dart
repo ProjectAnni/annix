@@ -38,6 +38,9 @@ class I18n extends Translations {
   static const TRACKS = "tracks";
   static const PLAYED_RECENTLY = "played_recently";
 
+  static const NOT_LOGGED_IN = "not_logged_in";
+  static const ANNIV_FEATURES = "anniv_login_features";
+
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': I18N_en_US,

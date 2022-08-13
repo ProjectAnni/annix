@@ -1,5 +1,5 @@
 import 'package:annix/services/player.dart';
-import 'package:annix/pages/playing/playing_queue.dart';
+import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/lyric.dart';

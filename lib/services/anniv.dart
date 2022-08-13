@@ -142,8 +142,9 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     // do not wait here
-    _client.post("/api/user/logout");
-    return this._cookieJar.deleteAll();
+    _client.post("/api/user/logout").catchError((_) {});
+    _cookieJar.deleteAll().catchError((_) {});
+    return;
   }
 
   /// https://book.anni.rs/06.anniv/04.credential.html#%E8%8E%B7%E5%8F%96-token

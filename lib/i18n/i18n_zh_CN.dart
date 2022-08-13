@@ -39,4 +39,8 @@ const Map<String, String> I18N_zh_CN = {
   I18n.SEARCH: "搜索",
   I18n.TRACKS: "单曲",
   I18n.PLAYED_RECENTLY: "最近播放",
+
+  // others
+  I18n.NOT_LOGGED_IN: "未登录",
+  I18n.ANNIV_FEATURES: "登录 Anniv 以启用播放列表、播放统计等诸多功能。",
 };
