@@ -1,6 +1,6 @@
 import 'package:annix/services/theme.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class ThemeButton extends StatelessWidget {

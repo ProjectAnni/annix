@@ -40,6 +40,7 @@ class I18n extends Translations {
 
   static const NOT_LOGGED_IN = "not_logged_in";
   static const ANNIV_FEATURES = "anniv_login_features";
+  static const NO_LYRIC_FOUND = "no_lyric_found";
 
   @override
   Map<String, Map<String, String>> get keys => {

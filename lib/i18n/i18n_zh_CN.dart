@@ -43,4 +43,5 @@ const Map<String, String> I18N_zh_CN = {
   // others
   I18n.NOT_LOGGED_IN: "未登录",
   I18n.ANNIV_FEATURES: "登录 Anniv 以启用播放列表、播放统计等诸多功能。",
+  I18n.NO_LYRIC_FOUND: "未找到歌词",
 };

@@ -1,9 +1,11 @@
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 
 extension on LyricAlign {
@@ -125,7 +127,7 @@ class _LyricView extends StatelessWidget {
     } else if (lyric!.isEmpty) {
       return Align(
         alignment: lyricAlign.alignment,
-        child: const Text("No lyrics found"),
+        child: Text(I18n.NO_LYRIC_FOUND.tr),
       );
     } else {
       if (lyric!.model == null) {

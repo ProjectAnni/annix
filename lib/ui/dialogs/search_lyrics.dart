@@ -1,9 +1,11 @@
+import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_netease.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 
 enum LyricSearchState {
@@ -143,31 +145,33 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
           SizedBox(
             width: 500,
             height: 300,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final result = _searchResult[index];
-                return ListTile(
-                  title: Text(
-                    result.title,
-                    overflow: TextOverflow.ellipsis,
+            child: _searchResult.isEmpty
+                ? Center(child: Text(I18n.NO_LYRIC_FOUND.tr))
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final result = _searchResult[index];
+                      return ListTile(
+                        title: Text(
+                          result.title,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          result.artists.join("、"),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () {
+                          final player = Provider.of<PlayerService>(context,
+                              listen: false);
+                          result.lyric.then((lyric) {
+                            player.setLyric(lyric);
+                            Navigator.of(context, rootNavigator: true).pop();
+                          });
+                        },
+                      );
+                    },
+                    itemCount: _searchResult.length,
                   ),
-                  subtitle: Text(
-                    result.artists.join("、"),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () {
-                    final player =
-                        Provider.of<PlayerService>(context, listen: false);
-                    result.lyric.then((lyric) {
-                      player.setLyric(lyric);
-                      Navigator.of(context, rootNavigator: true).pop();
-                    });
-                  },
-                );
-              },
-              itemCount: _searchResult.length,
-            ),
           )
         ],
       );
