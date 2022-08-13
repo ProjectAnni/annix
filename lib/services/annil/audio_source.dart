@@ -53,6 +53,8 @@ class AnnilAudioSource extends Source {
   @override
   Future<void> setOnPlayer(AudioPlayer player) async {
     final offlinePath = getAudioCachePath(albumId, discId, trackId);
+    final playerService =
+        Provider.of<PlayerService>(Global.context, listen: false);
     if (await File(offlinePath).exists()) {
       await player.setSourceDeviceFile(offlinePath);
     } else {
@@ -62,8 +64,7 @@ class AnnilAudioSource extends Source {
       }
       await _preloadFuture;
       // double check whether current song is still this track
-      if (Provider.of<PlayerService>(Global.context, listen: false).playing ==
-          this) {
+      if (playerService.playing == this) {
         await player.setSourceDeviceFile(offlinePath);
       }
     }

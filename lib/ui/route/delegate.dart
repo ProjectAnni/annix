@@ -110,7 +110,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const PlayingDesktopScreen();
         break;
       case "/home":
-        child = HomePage();
+        child = const HomePage();
         break;
       case "/album":
         child = AlbumDetailScreen(

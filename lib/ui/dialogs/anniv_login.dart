@@ -1,4 +1,5 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -70,6 +71,7 @@ class AnnivLoginDialog extends StatelessWidget {
             var url = _serverUrlController.text;
             var email = _emailController.text;
             final password = _passwordController.text;
+            final delegate = AnnixRouterDelegate.of(context);
             if (url.isEmpty) {
               _showSnackBar(context, "Please enter a valid URL");
             } else if (email.isEmpty || !email.contains('@')) {
@@ -84,7 +86,7 @@ class AnnivLoginDialog extends StatelessWidget {
               try {
                 // TODO: alert progress
                 await anniv.login(url, email, password);
-                Navigator.of(context).pop();
+                delegate.popRoute();
               } catch (e) {
                 _showSnackBar(context, e.toString());
               }

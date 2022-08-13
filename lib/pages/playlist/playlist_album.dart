@@ -57,9 +57,9 @@ class AlbumDetailScreen extends PlaylistScreen {
     List<TrackIdentifier> songs = [];
 
     var discId = 1;
-    album.discs.forEach((disc) {
+    for (final disc in album.discs) {
       var trackId = 1;
-      disc.tracks.forEach((element) {
+      for (final _ in disc.tracks) {
         // check if available
         final song = TrackIdentifier(
           albumId: album.albumId,
@@ -72,9 +72,9 @@ class AlbumDetailScreen extends PlaylistScreen {
             trackId: song.trackId)) {
           songs.add(song);
         }
-      });
+      }
       discId++;
-    });
+    }
 
     return songs;
   }
