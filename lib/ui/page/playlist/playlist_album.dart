@@ -23,7 +23,7 @@ class AlbumDetailScreen extends PlaylistScreen {
   const AlbumDetailScreen({super.key, required this.album});
 
   @override
-  String get title => album.title;
+  String get title => album.fullTitle;
   @override
   Widget get cover => MusicCover(albumId: album.albumId, card: true);
 

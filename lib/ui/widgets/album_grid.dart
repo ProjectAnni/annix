@@ -71,7 +71,7 @@ class AlbumGrid extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(4),
               child: Text(
-                album.title,
+                album.fullTitle,
                 style: context.textTheme.titleSmall,
                 softWrap: false,
                 overflow: TextOverflow.ellipsis,

@@ -62,20 +62,18 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getPlayingExtTextStyle() {
-    final style = getPlayingMainTextStyle();
-    return style.copyWith(fontSize: style.fontSize! * 0.8);
+    return getPlayingMainTextStyle().apply(fontSizeFactor: 0.8);
   }
 
   @override
   TextStyle getOtherExtTextStyle() {
-    final style = getOtherMainTextStyle();
-    return style.copyWith(fontSize: style.fontSize! * 0.8);
+    return getOtherMainTextStyle().apply(fontSizeFactor: 0.8);
   }
 
   @override
   double getPlayingLineBias() {
     return Global.isDesktop
-        ? 0.2 // on desk, we tend to make lyric display at top
+        ? 0.2 // on desktop, we tend to make lyric display at top
         : 0.5; // but on mobile phone, it would look better at the center of the screen
   }
 

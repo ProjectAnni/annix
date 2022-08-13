@@ -81,7 +81,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   size: 20,
                                 ),
                                 label: Text(
-                                  metadata.disc.album.title,
+                                  metadata.disc.album.fullTitle,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),

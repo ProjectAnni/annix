@@ -160,7 +160,7 @@ class AnnivService {
         track: track,
         title: trackMetadata!.title,
         artist: trackMetadata.artist,
-        albumTitle: trackMetadata.disc.album.title,
+        albumTitle: trackMetadata.disc.album.fullTitle,
         type: trackMetadata.type,
       );
       try {

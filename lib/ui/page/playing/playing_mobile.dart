@@ -1,4 +1,5 @@
 import 'package:annix/services/player.dart';
+import 'package:annix/ui/dialogs/playing_more_menu.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -151,7 +152,20 @@ class PlayingScreenMobile extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.more_horiz_rounded),
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  useRootNavigator: true,
+                  context: context,
+                  builder: (context) {
+                    final player =
+                        Provider.of<PlayerService>(context, listen: false);
+                    return PlayingMoreMenu(track: player.playing!.track);
+                  },
+                );
+              },
             ),
           ],
         ),

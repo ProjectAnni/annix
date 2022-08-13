@@ -125,6 +125,8 @@ class Album {
   final List<String>? tags;
   final List<Disc> discs;
 
+  String get fullTitle => title + (edition != null ? "【$edition】" : "");
+
   Album({
     required this.albumId,
     required this.title,
@@ -251,8 +253,8 @@ class Track {
 
   TrackIdentifier get id => TrackIdentifier(
         albumId: disc.album.albumId,
-        discId: disc.album.discs.indexOf(disc),
-        trackId: disc.tracks.indexOf(this),
+        discId: disc.album.discs.indexOf(disc) + 1,
+        trackId: disc.tracks.indexOf(this) + 1,
       );
 
   static Track fromMap(Map<String, dynamic> map) {

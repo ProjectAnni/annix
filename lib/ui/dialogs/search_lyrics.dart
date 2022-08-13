@@ -74,7 +74,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
     _titleController = TextEditingController(text: widget.track.title);
     _artistController = TextEditingController(text: widget.track.artist);
     _albumController =
-        TextEditingController(text: widget.track.disc.album.title);
+        TextEditingController(text: widget.track.disc.album.fullTitle);
   }
 
   @override

@@ -334,7 +334,7 @@ class PlayerService extends ChangeNotifier {
           track: item.identifier,
           title: item.track.title,
           artist: item.track.artist,
-          album: item.track.disc.album.title,
+          album: item.track.disc.album.fullTitle,
         );
         if (songs.isNotEmpty) {
           lyric = await songs.first.lyric;
