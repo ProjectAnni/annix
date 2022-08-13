@@ -1,4 +1,4 @@
-import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil/client.dart';
@@ -90,8 +90,8 @@ class AnnivCard extends StatelessWidget {
                     PopupMenuItem(
                       child: Text(I18n.LOGOUT.tr),
                       onTap: () {
-                        final anniv = Provider.of<AnnivController>(context,
-                            listen: false);
+                        final anniv =
+                            Provider.of<AnnivService>(context, listen: false);
                         anniv.logout();
                       },
                     ),
@@ -115,7 +115,7 @@ class AnnivCard extends StatelessWidget {
                   child: const Text("Update Database"),
                   onPressed: () async {
                     final anniv =
-                        Provider.of<AnnivController>(context, listen: false);
+                        Provider.of<AnnivService>(context, listen: false);
                     await anniv.updateDatabase();
                   },
                 ),
@@ -128,7 +128,7 @@ class AnnivCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivController>(context, listen: false);
+    final anniv = Provider.of<AnnivService>(context, listen: false);
     final inner = Obx(
       () {
         final info = anniv.info.value;

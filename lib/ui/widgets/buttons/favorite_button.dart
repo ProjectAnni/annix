@@ -1,13 +1,13 @@
-import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteButton extends StatelessWidget {
-  final _anniv = Provider.of<AnnivController>(Global.context, listen: false);
+  final _anniv = Provider.of<AnnivService>(Global.context, listen: false);
 
   final Rxn<AnnilAudioSource> audio = Rxn();
   final RxBool favorited = false.obs;

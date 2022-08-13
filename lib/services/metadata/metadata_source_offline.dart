@@ -1,6 +1,5 @@
-import 'package:annix/models/metadata.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
-import 'package:annix/services/metadata/metadata_types.dart';
 
 class OfflineMetadataSource extends MetadataSource {
   @override

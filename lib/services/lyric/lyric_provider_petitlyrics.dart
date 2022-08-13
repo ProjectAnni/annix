@@ -1,5 +1,5 @@
 import 'package:annix/services/lyric/lyric_provider.dart';
-import 'package:annix/models/anniv.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';

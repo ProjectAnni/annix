@@ -1,4 +1,4 @@
-import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,7 @@ class AnnivLoginDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivController>(context, listen: false);
+    final anniv = Provider.of<AnnivService>(context, listen: false);
 
     return AlertDialog(
       title: Center(

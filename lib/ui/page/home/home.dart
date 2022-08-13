@@ -1,7 +1,7 @@
-import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/ui/page/home/home_albums.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/home/home_title.dart';
@@ -18,7 +18,7 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivController>(Global.context, listen: false);
+    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
     return Obx(
       () => SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivController>(Global.context, listen: false);
+    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
 
     return Material(
       child: CustomScrollView(

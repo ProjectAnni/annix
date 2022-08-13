@@ -1,10 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:annix/models/anniv.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:toml/toml.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'metadata.g.dart';
+part 'metadata_model.g.dart';
 
 @JsonSerializable(createFactory: false)
 class ReleaseDate {
@@ -267,4 +267,10 @@ class Track {
 
   factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
   Map<String, dynamic> toJson() => _$TrackToJson(this);
+}
+
+class TagEntry extends TagInfo {
+  final List<String> children;
+
+  TagEntry({required this.children, required super.name, required super.type});
 }

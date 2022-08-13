@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'anniv.dart';
+part of 'anniv_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

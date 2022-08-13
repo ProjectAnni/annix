@@ -1,4 +1,4 @@
-import 'package:annix/models/metadata.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';

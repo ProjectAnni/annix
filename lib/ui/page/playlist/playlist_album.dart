@@ -1,9 +1,9 @@
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
-import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';

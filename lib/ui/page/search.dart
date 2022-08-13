@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/models/anniv.dart';
-import 'package:annix/services/anniv.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -197,7 +197,7 @@ class SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivController>(context, listen: false);
+    final anniv = Provider.of<AnnivService>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(

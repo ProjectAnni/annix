@@ -1,4 +1,4 @@
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/ui/layout/layout_desktop.dart';
 import 'package:annix/ui/layout/layout_mobile.dart';
 import 'package:annix/ui/route/delegate.dart';

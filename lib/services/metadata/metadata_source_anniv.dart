@@ -1,8 +1,7 @@
-import 'package:annix/services/metadata/metadata_types.dart';
-import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
-import 'package:annix/services/anniv.dart';
+import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/services/network.dart';
 
 class AnnivMetadataSource extends MetadataSource {

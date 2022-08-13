@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 

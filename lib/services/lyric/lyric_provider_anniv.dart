@@ -1,12 +1,12 @@
-import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
-import 'package:annix/models/anniv.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:provider/provider.dart';
 
 class LyricProviderAnniv extends LyricProvider {
-  final _anniv = Provider.of<AnnivController>(Global.context, listen: false);
+  final _anniv = Provider.of<AnnivService>(Global.context, listen: false);
 
   @override
   Future<List<LyricSearchResponse>> search({

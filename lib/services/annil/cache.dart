@@ -1,4 +1,4 @@
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:path/path.dart' as p;
 
 String getAudioCachePath(String albumId, int discId, int trackId) {

@@ -1,9 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:annix/models/metadata.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'anniv.g.dart';
+part 'anniv_model.g.dart';
 
 Object? readValueFlatten(Map json, String key) {
   return json;

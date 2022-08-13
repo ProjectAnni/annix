@@ -1,6 +1,6 @@
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';

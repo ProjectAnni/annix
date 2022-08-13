@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';

@@ -1,5 +1,5 @@
-import 'package:annix/controllers/anniv_controller.dart';
-import 'package:annix/controllers/settings_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/services/settings_controller.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/network.dart';
@@ -40,7 +40,7 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (_) => AnnixRouterDelegate(), lazy: false),
         // Anniv controller
-        Provider(create: (context) => AnnivController(context), lazy: false),
+        Provider(create: (c) => AnnivService(c), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
       ],
       builder: (context, child) {

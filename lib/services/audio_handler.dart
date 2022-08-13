@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:audio_service/audio_service.dart';
@@ -16,7 +16,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
   final PlayerService player;
   final PlayingProgress progress;
 
-  final AnnivController anniv;
+  final AnnivService anniv;
   final CombinedOnlineAnnilClient annil;
 
   static Future<void> init(BuildContext context) async {
@@ -88,7 +88,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
       : player = Provider.of<PlayerService>(context, listen: false),
         progress = Provider.of<PlayingProgress>(context, listen: false),
         annil = Provider.of<CombinedOnlineAnnilClient>(context, listen: false),
-        anniv = Provider.of<AnnivController>(Global.context, listen: false) {
+        anniv = Provider.of<AnnivService>(Global.context, listen: false) {
     player.addListener(() => _updatePlaybackState());
     progress.addListener(() => _updatePlaybackState());
     anniv.favorites.listen((_) => _updatePlaybackState());

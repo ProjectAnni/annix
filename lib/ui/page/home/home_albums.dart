@@ -1,7 +1,7 @@
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
 import 'package:flutter/material.dart';

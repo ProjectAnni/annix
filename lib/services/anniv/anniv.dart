@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_offline.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
-import 'package:annix/models/anniv.dart';
-import 'package:annix/services/anniv.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/anniv/anniv_client.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/network.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +22,13 @@ class SiteUserInfo {
   SiteUserInfo({required this.site, required this.user});
 }
 
-class AnnivController {
+class AnnivService {
   AnnivClient? client;
 
   Rxn<SiteUserInfo> info = Rxn(null);
   Rx<bool> isLogin = false.obs;
 
-  AnnivController(BuildContext context) {
+  AnnivService(BuildContext context) {
     // 1. init client
     client = AnnivClient.load();
 

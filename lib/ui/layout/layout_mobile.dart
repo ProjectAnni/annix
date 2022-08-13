@@ -1,4 +1,4 @@
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';

@@ -3,9 +3,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:annix/models/anniv.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/network.dart';
 import 'package:dio/dio.dart';
 import 'package:f_logs/f_logs.dart';

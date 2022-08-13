@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:annix/models/anniv.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:flutter_lyric/lyrics_reader_model.dart';
