@@ -1,6 +1,6 @@
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class AnnivLoginDialog extends StatelessWidget {
   final _serverUrlController = TextEditingController();
@@ -16,7 +16,7 @@ class AnnivLoginDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AnnivController anniv = Get.find();
+    final anniv = Provider.of<AnnivController>(context, listen: false);
 
     return AlertDialog(
       title: Center(

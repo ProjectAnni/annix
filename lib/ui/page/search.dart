@@ -197,7 +197,7 @@ class SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AnnivController anniv = Get.find();
+    final anniv = Provider.of<AnnivController>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(

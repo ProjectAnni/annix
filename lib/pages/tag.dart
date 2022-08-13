@@ -1,10 +1,10 @@
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/models/metadata.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class TagScreen extends StatelessWidget {
   final String name;
@@ -13,7 +13,8 @@ class TagScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AnnilController annil = Get.find();
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(title: Text(name)),
@@ -42,7 +43,7 @@ class TagScreen extends StatelessWidget {
                     future: Global.metadataSource.getAlbum(albumId: albumId),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return const DummyMusicCover();
+                        return const DummyAlbumGrid();
                       } else {
                         return AlbumGrid(album: snapshot.data!);
                       }

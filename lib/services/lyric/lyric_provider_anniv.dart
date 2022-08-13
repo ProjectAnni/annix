@@ -1,11 +1,12 @@
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class LyricProviderAnniv extends LyricProvider {
-  final AnnivController anniv = Get.find();
+  final _anniv = Provider.of<AnnivController>(Global.context, listen: false);
 
   @override
   Future<List<LyricSearchResponse>> search({
@@ -14,7 +15,7 @@ class LyricProviderAnniv extends LyricProvider {
     String? artist,
     String? album,
   }) async {
-    final lyric = await anniv.client!.getLyric(track);
+    final lyric = await _anniv.client!.getLyric(track);
     final source = lyric?.source;
     if (source == null) {
       return [];

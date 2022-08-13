@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil/cache.dart';
@@ -9,13 +8,10 @@ import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
-
-  final AnnilController annil = Get.find();
 
   AnnilAudioSource({
     required this.albumId,
@@ -84,10 +80,12 @@ class AnnilAudioSource extends Source {
   bool preloaded = false;
 
   Future<void> _preload() async {
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
     final offlinePath = getAudioCachePath(albumId, discId, trackId);
     final file = File(offlinePath);
     if (!await file.exists()) {
-      final url = annil.clients.value.getAudioUrl(
+      final url = annil.getAudioUrl(
           albumId: albumId, discId: discId, trackId: trackId, quality: quality);
       if (url != null) {
         await file.parent.create(recursive: true);

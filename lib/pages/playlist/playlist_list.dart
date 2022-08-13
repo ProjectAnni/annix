@@ -1,15 +1,14 @@
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistDetailScreen extends PlaylistScreen {
-  final AnnilController _annil = Get.find();
-
   final Playlist playlist;
 
   @override
@@ -19,10 +18,10 @@ class PlaylistDetailScreen extends PlaylistScreen {
   @override
   final RefreshCallback? refresh = null;
 
-  PlaylistDetailScreen({super.key, required this.playlist});
+  const PlaylistDetailScreen({super.key, required this.playlist});
 
   static Future<PlaylistDetailScreen?> remote(String id) async {
-    final AnnivController anniv = Get.find();
+    final anniv = Provider.of<AnnivController>(Global.context, listen: false);
     final playlist = await anniv.getPlaylist(id);
     if (playlist == null) return null;
     return PlaylistDetailScreen(playlist: playlist);
@@ -53,6 +52,9 @@ class PlaylistDetailScreen extends PlaylistScreen {
 
   @override
   Widget get body {
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+
     return ListView.builder(
       itemCount: playlist.items.length,
       itemBuilder: (context, index) {
@@ -66,7 +68,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
           subtitle: track.description != null && track.description!.isNotEmpty
               ? ArtistText(track.description!)
               : null,
-          enabled: _annil.isAvailable(
+          enabled: annil.isAvailable(
             albumId: track.info.track.albumId,
             discId: track.info.track.discId,
             trackId: track.info.track.trackId,

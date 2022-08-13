@@ -4,10 +4,54 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
+class DummyAlbumGrid extends StatelessWidget {
+  final double? width;
+
+  const DummyAlbumGrid({super.key, this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    final child = Card(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const DummyMusicCover(),
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: Text(
+              "",
+              style: context.textTheme.titleSmall,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (width != null) {
+      // fixed size
+      return SizedBox(
+        width: width!,
+        child: child,
+      );
+    } else {
+      // stretch
+      return Center(
+        child: AspectRatio(
+          aspectRatio: 0.82,
+          child: child,
+        ),
+      );
+    }
+  }
+}
+
 class AlbumGrid extends StatelessWidget {
   final Album album;
+  final double? width;
 
-  const AlbumGrid({super.key, required this.album});
+  const AlbumGrid({super.key, required this.album, this.width});
 
   void toAlbum(BuildContext context) {
     AnnixRouterDelegate.of(context).to(name: '/album', arguments: album);
@@ -15,34 +59,43 @@ class AlbumGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: AspectRatio(
-        aspectRatio: 0.86,
-        child: GestureDetector(
-          onTap: () => toAlbum(context),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () => toAlbum(context),
-                child: Card(
-                  clipBehavior: Clip.hardEdge,
-                  child: MusicCover(albumId: album.albumId),
-                ),
+    final child = InkWell(
+      onTap: () => toAlbum(context),
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MusicCover(albumId: album.albumId),
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text(
+                album.title,
+                style: context.textTheme.titleSmall,
+                softWrap: false,
+                overflow: TextOverflow.ellipsis,
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  album.title,
-                  style: context.textTheme.titleMedium,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+
+    if (width != null) {
+      // fixed size
+      return SizedBox(
+        width: width!,
+        child: child,
+      );
+    } else {
+      // stretch
+      return Center(
+        child: AspectRatio(
+          aspectRatio: 0.82,
+          child: child,
+        ),
+      );
+    }
   }
 }

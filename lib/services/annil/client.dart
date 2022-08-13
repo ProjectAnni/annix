@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/services/network.dart';
 import 'package:dio/dio.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ import 'package:path/path.dart' as p;
 class CombinedOnlineAnnilClient extends ChangeNotifier {
   final Map<String, OnlineAnnilClient> clients;
   final List<OnlineAnnilClient> _clients;
+
+  List<OnlineAnnilClient> get sortedClients => _clients;
+  List<String> albums = [];
 
   CombinedOnlineAnnilClient(List<OnlineAnnilClient> clients)
       : _clients = clients,
@@ -30,7 +34,7 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
   }
 
   // TODO: load from / save to sqlite instead of shared preferences
-  static Future<CombinedOnlineAnnilClient> loadFromLocal() async {
+  static CombinedOnlineAnnilClient loadFromLocal() {
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
     if (tokens != null) {
       final clients = tokens
@@ -107,7 +111,7 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
   }
 
   Uri? getCoverUrl({required String albumId, int? discId}) {
-    if (Global.network.isOnline) {
+    if (NetworkService.isOnline) {
       for (final client in _clients) {
         if (client.albums.contains(albumId)) {
           return client.getCoverUrl(albumId: albumId, discId: discId);
@@ -115,6 +119,43 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  /// Refresh all annil servers
+  Future<void> reloadClients() async {
+    if (NetworkService.isOnline) {
+      var newAlbums = (await Future.wait(clients.values.map((client) async {
+        try {
+          return await client.getAlbums();
+        } catch (e) {
+          FLog.error(
+            text: "Failed to refresh annil client ${client.name}",
+            exception: e,
+          );
+          // TODO: use local copy
+          return <String>[];
+        }
+      })))
+          .expand((e) => e)
+          .toSet()
+          .toList();
+      albums.replaceRange(0, albums.length, newAlbums);
+      await saveToLocal();
+    } else {
+      var localAlbums = await OfflineAnnilClient().getAlbums();
+      albums.replaceRange(0, albums.length, localAlbums);
+    }
+    notifyListeners();
+  }
+
+  bool isAvailable({
+    required String albumId,
+    required int discId,
+    required int trackId,
+  }) {
+    return OfflineAnnilClient()
+            .isAvailable(albumId: albumId, discId: discId, trackId: trackId) ||
+        (NetworkService.isOnline && albums.contains(albumId));
   }
 }
 

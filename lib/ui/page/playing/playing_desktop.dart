@@ -23,7 +23,7 @@ class PlayingDesktopScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
+                const Expanded(
                   flex: 5,
                   child: Center(child: PlayingMusicCover(card: true)),
                 ),

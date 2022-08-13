@@ -36,7 +36,7 @@ class PlayingMobileScreen extends StatelessWidget {
                         alignment: LyricAlign.CENTER,
                       ),
                     )
-                  : PlayingMusicCover(),
+                  : const PlayingMusicCover(),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,

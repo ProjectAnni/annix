@@ -1,6 +1,4 @@
 import 'package:annix/app.dart';
-import 'package:annix/services/annil/annil_controller.dart';
-import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/annil/cover.dart';
@@ -15,9 +13,6 @@ Future<void> main() async {
 
   await Global.init();
   Get.put(SettingsController());
-  await Get.putAsync(() => AnnilController.init());
-  await Get.putAsync(() => AnnivController.init());
-
   await CoverReverseProxy().setup();
 
   try {

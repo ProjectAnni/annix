@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteButton extends StatelessWidget {
-  final AnnivController anniv = Get.find();
+  final _anniv = Provider.of<AnnivController>(Global.context, listen: false);
 
   final Rxn<AnnilAudioSource> audio = Rxn();
   final RxBool favorited = false.obs;
@@ -22,13 +22,13 @@ class FavoriteButton extends StatelessWidget {
     });
 
     // listen favorite map updates
-    favorited.bindStream(anniv.favorites.stream
+    favorited.bindStream(_anniv.favorites.stream
         .map((favorites) => favorites.containsKey(this.audio.value?.id)));
     this.audio.listen((audio) {
-      favorited.value = anniv.favorites.containsKey(audio?.id);
+      favorited.value = _anniv.favorites.containsKey(audio?.id);
     });
     // initialize current status
-    favorited.value = anniv.favorites.containsKey(this.audio.value?.id);
+    favorited.value = _anniv.favorites.containsKey(this.audio.value?.id);
   }
 
   @override
@@ -41,7 +41,7 @@ class FavoriteButton extends StatelessWidget {
         onPressed: () async {
           final id = audio.value?.identifier;
           if (id != null) {
-            anniv.toggleFavorite(id);
+            _anniv.toggleFavorite(id);
           }
         },
       ),

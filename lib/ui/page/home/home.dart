@@ -1,4 +1,3 @@
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
@@ -15,13 +14,11 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistView extends StatelessWidget {
-  final AnnivController anniv = Get.find();
-  final AnnilController annil = Get.find();
-
-  PlaylistView({super.key});
+  const PlaylistView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final anniv = Provider.of<AnnivController>(Global.context, listen: false);
     return Obx(
       () => SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -81,13 +78,12 @@ class PlaylistView extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  final AnnivController anniv = Get.find();
-  final AnnilController annil = Get.find();
-
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final anniv = Provider.of<AnnivController>(Global.context, listen: false);
+
     return Material(
       child: CustomScrollView(
         slivers: (<Widget>[
@@ -159,11 +155,7 @@ class HomePage extends StatelessWidget {
 
   List<Widget> content() {
     return <Widget>[
-      Obx(
-        () => annil.albums.isNotEmpty
-            ? const HomeAlbums()
-            : const SliverToBoxAdapter(),
-      ),
+      const HomeAlbums(),
 
       ////////////////////////////////////////////////
       SliverPadding(
@@ -184,7 +176,7 @@ class HomePage extends StatelessWidget {
       ),
       TwoSideSliver(
         leftPercentage: Global.isDesktop ? 0.5 : 1,
-        left: PlaylistView(),
+        left: const PlaylistView(),
         right: const SliverToBoxAdapter(),
       ),
     ];

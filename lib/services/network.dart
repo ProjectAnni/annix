@@ -2,8 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 class NetworkService extends ChangeNotifier {
-  bool isMobile = false;
-  bool isOnline = false;
+  static bool isMobile = false;
+  static bool isOnline = false;
 
   final Connectivity _connectivity = Connectivity();
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:annix/services/annil/audio_source.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/theme.dart';
@@ -9,19 +10,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_color_utilities/quantize/quantizer_celebi.dart';
 import 'package:material_color_utilities/score/score.dart';
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/services/player.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class PlayingMusicCover extends StatelessWidget {
-  final AnnilController annil = Get.find();
-
   final bool card;
   final BoxFit? fit;
   final FilterQuality filterQuality;
 
-  PlayingMusicCover({
+  const PlayingMusicCover({
     super.key,
     this.card = true,
     this.fit,
@@ -57,8 +54,6 @@ class PlayingMusicCover extends StatelessWidget {
 class MusicCover extends StatelessWidget {
   static Map<String, Future<Color>> colors = {};
 
-  final AnnilController annil = Get.find();
-
   final String albumId;
   final int? discId;
 
@@ -69,7 +64,7 @@ class MusicCover extends StatelessWidget {
 
   final void Function(Color)? onColor;
 
-  MusicCover({
+  const MusicCover({
     super.key,
     required this.albumId,
     this.discId,
@@ -82,6 +77,8 @@ class MusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(context, listen: false);
     final id = "$albumId/$discId";
 
     final cover = Hero(
@@ -92,7 +89,7 @@ class MusicCover extends StatelessWidget {
               CoverItem(
                 albumId: albumId,
                 discId: discId,
-                uri: annil.clients.value.getCoverUrl(
+                uri: annil.getCoverUrl(
                   albumId: albumId,
                   // discId: discId,
                 ),

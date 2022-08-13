@@ -55,7 +55,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           // cover
                           Container(
                             padding: const EdgeInsets.only(bottom: 8, top: 4),
-                            child: PlayingMusicCover(),
+                            child: const PlayingMusicCover(),
                           ),
                           // track info
                           Expanded(

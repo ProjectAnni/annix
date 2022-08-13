@@ -2,13 +2,15 @@ import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/services/global.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:provider/provider.dart';
 
 class FavoriteScreen extends PlaylistScreen {
-  final AnnivController _anniv = Get.find();
+  final _anniv = Provider.of<AnnivController>(Global.context, listen: false);
 
   @override
   final Widget? pageTitle = null;
@@ -33,8 +35,9 @@ class FavoriteScreen extends PlaylistScreen {
       ];
 
   @override
-  Widget get body => Obx(() {
-        final favorites = _anniv.favorites.values.toList().reversed;
+  Widget get body =>
+      Consumer<AnnivController>(builder: (context, anniv, child) {
+        final favorites = anniv.favorites.values.toList().reversed;
         return ListView.builder(
           itemCount: _anniv.favorites.length,
           padding: EdgeInsets.zero,

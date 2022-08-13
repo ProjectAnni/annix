@@ -2,16 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_offline.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/services/network.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
+import 'package:provider/provider.dart';
 
 class SiteUserInfo {
   SiteInfo site;
@@ -20,56 +22,37 @@ class SiteUserInfo {
   SiteUserInfo({required this.site, required this.user});
 }
 
-class AnnivController extends GetxController {
-  final AnnilController _annil = Get.find();
-
+class AnnivController {
   AnnivClient? client;
 
   Rxn<SiteUserInfo> info = Rxn(null);
   Rx<bool> isLogin = false.obs;
 
-  static Future<AnnivController> init() async {
+  AnnivController(BuildContext context) {
     // 1. init client
-    final controller = AnnivController._(AnnivClient.load());
+    client = AnnivClient.load();
 
     // 2. load cached site info & user info
-    controller._loadInfo();
+    _loadInfo();
 
     // 3. load favorites
-    controller._loadFavorites();
+    _loadFavorites();
 
-    // 4. metadata
-    try {
-      await controller.loadDatabase();
-    } finally {}
-
-    return controller;
-  }
-
-  AnnivController._(this.client);
-
-  @override
-  void onInit() {
-    super.onInit();
     isLogin.bindStream(info.stream.map((user) => user != null));
 
     // check login status
-    if (Global.network.isOnline) {
+    final network = Provider.of<NetworkService>(context, listen: false);
+    if (NetworkService.isOnline) {
       checkLogin(client);
     }
-    Global.network.addListener(onNetworkChange);
-  }
+    network.addListener(() {
+      if (NetworkService.isOnline) {
+        checkLogin(client);
+      }
+    });
 
-  @override
-  void onClose() {
-    super.onClose();
-    Global.network.removeListener(onNetworkChange);
-  }
-
-  void onNetworkChange() {
-    if (Global.network.isOnline) {
-      checkLogin(client);
-    }
+    // try to load database
+    loadDatabase();
   }
 
   Future<void> checkLogin(AnnivClient? client) async {
@@ -101,12 +84,12 @@ class AnnivController extends GetxController {
       }
 
       await Future.wait([
-        // reload annil client
-        (() async {
-          final annilTokens = await client.getCredentials();
-          _annil.syncWithRemote(annilTokens);
-          _annil.reloadClients();
-        })(),
+        // FIXME: reload annil client
+        // (() async {
+        //   final annilTokens = await client.getCredentials();
+        //   _annil.syncWithRemote(annilTokens);
+        //   _annil.reloadClients();
+        // })(),
         // reload favorite list
         syncFavorite(),
         // reload playlist list

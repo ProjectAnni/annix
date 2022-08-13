@@ -3,7 +3,7 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:annix/services/anniv.dart';
-import 'package:annix/services/global.dart';
+import 'package:annix/services/network.dart';
 
 class AnnivMetadataSource extends MetadataSource {
   final AnnivClient anniv;
@@ -16,7 +16,7 @@ class AnnivMetadataSource extends MetadataSource {
 
   @override
   Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
-    if (Global.network.isOnline) {
+    if (NetworkService.isOnline) {
       return await anniv.getAlbumMetadata(albums);
     } else {
       return {};
@@ -28,7 +28,7 @@ class AnnivMetadataSource extends MetadataSource {
 
   @override
   Future<List<String>> getAlbumsByTag(String tag) async {
-    if (Global.network.isOnline) {
+    if (NetworkService.isOnline) {
       final albums = await anniv.getAlbumsByTag(tag);
       for (final album in albums) {
         persist(album);

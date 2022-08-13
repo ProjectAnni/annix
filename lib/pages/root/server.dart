@@ -1,4 +1,3 @@
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
@@ -9,6 +8,7 @@ import 'package:annix/ui/widgets/simple_text_field.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide ContextExtensionss;
+import 'package:provider/provider.dart';
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Anniv
@@ -90,7 +90,8 @@ class AnnivCard extends StatelessWidget {
                     PopupMenuItem(
                       child: Text(I18n.LOGOUT.tr),
                       onTap: () {
-                        AnnivController anniv = Get.find();
+                        final anniv = Provider.of<AnnivController>(context,
+                            listen: false);
                         anniv.logout();
                       },
                     ),
@@ -113,7 +114,8 @@ class AnnivCard extends StatelessWidget {
                 TextButton(
                   child: const Text("Update Database"),
                   onPressed: () async {
-                    AnnivController anniv = Get.find();
+                    final anniv =
+                        Provider.of<AnnivController>(context, listen: false);
                     await anniv.updateDatabase();
                   },
                 ),
@@ -126,7 +128,7 @@ class AnnivCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AnnivController anniv = Get.find();
+    final anniv = Provider.of<AnnivController>(context, listen: false);
     final inner = Obx(
       () {
         final info = anniv.info.value;
@@ -279,21 +281,25 @@ class ServerView extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Obx(() {
-            AnnilController annil = Get.find();
-            var clients = annil.clients.value.clients.values.toList();
-            clients.sort((a, b) => b.priority - a.priority);
+          child: Consumer<CombinedOnlineAnnilClient>(
+            builder: (context, annil, child) {
+              final sortedClients = annil.sortedClients;
 
-            return ReorderableListView(
-              padding: EdgeInsets.zero,
-              buildDefaultDragHandles: true,
-              onReorder: (oldIndex, newIndex) {},
-              children: clients
-                  .map((value) => AnnilListTile(
-                      annil: value, key: ValueKey(value.priority)))
-                  .toList(),
-            );
-          }),
+              return ReorderableListView(
+                padding: EdgeInsets.zero,
+                buildDefaultDragHandles: true,
+                onReorder: (oldIndex, newIndex) {},
+                children: sortedClients
+                    .map(
+                      (value) => AnnilListTile(
+                        annil: value,
+                        key: ValueKey(value.priority),
+                      ),
+                    )
+                    .toList(),
+              );
+            },
+          ),
         ),
       ],
     );

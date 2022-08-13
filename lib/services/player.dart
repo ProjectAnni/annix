@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/services/annil/audio_source.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_anniv.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
@@ -12,7 +12,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 enum LoopMode {
   off,
@@ -257,7 +257,8 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> fullShuffleMode(
       {int count = 30, bool waitUntilPlayback = false}) async {
-    AnnilController annil = Get.find();
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
     final albums = annil.albums.toList();
     if (albums.isEmpty) {
       return;

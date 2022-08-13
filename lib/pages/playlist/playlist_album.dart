@@ -1,17 +1,16 @@
-import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/playlist/playlist.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class AlbumDetailScreen extends PlaylistScreen {
-  final AnnilController _annil = Get.find();
-
   final Album album;
 
   @override
@@ -21,7 +20,7 @@ class AlbumDetailScreen extends PlaylistScreen {
   @override
   final RefreshCallback? refresh = null;
 
-  AlbumDetailScreen({super.key, required this.album});
+  const AlbumDetailScreen({super.key, required this.album});
 
   @override
   String get title => album.title;
@@ -52,6 +51,9 @@ class AlbumDetailScreen extends PlaylistScreen {
 
   @override
   List<TrackIdentifier> get tracks {
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+
     List<TrackIdentifier> songs = [];
 
     var discId = 1;
@@ -64,11 +66,10 @@ class AlbumDetailScreen extends PlaylistScreen {
           discId: discId,
           trackId: trackId++,
         );
-        if (_annil.isAvailable(
-          albumId: song.albumId,
-          discId: song.discId,
-          trackId: song.trackId,
-        )) {
+        if (annil.isAvailable(
+            albumId: song.albumId,
+            discId: song.discId,
+            trackId: song.trackId)) {
           songs.add(song);
         }
       });
@@ -79,6 +80,8 @@ class AlbumDetailScreen extends PlaylistScreen {
   }
 
   ListView getAlbumTracks() {
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -114,7 +117,7 @@ class AlbumDetailScreen extends PlaylistScreen {
               visualDensity: VisualDensity.compact,
               title: Text(track.title, overflow: TextOverflow.ellipsis),
               subtitle: ArtistText(track.artist),
-              enabled: _annil.isAvailable(
+              enabled: annil.isAvailable(
                 albumId: album.albumId,
                 discId: discId,
                 trackId: trackIndex,
