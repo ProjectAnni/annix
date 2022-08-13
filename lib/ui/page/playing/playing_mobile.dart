@@ -25,7 +25,7 @@ class PlayingScreenMobile extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ValueListenableBuilder<bool>(
               valueListenable: showLyrics,

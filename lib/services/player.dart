@@ -56,8 +56,12 @@ class PlayerService extends ChangeNotifier {
 
   PlayerService() {
     PlayerService.player.onPlayerStateChanged.listen((s) {
-      playerStatus = PlayerStatus.fromPlayingStatus(s);
-      notifyListeners();
+      // stop event from player can not interrupt buffering state
+      if (!(playerStatus == PlayerStatus.buffering &&
+          s == PlayerState.stopped)) {
+        playerStatus = PlayerStatus.fromPlayingStatus(s);
+        notifyListeners();
+      }
     });
 
     PlayerService.player.onPlayerComplete.listen((event) => next());
@@ -76,28 +80,21 @@ class PlayerService extends ChangeNotifier {
       if (playingIndex != null && playingIndex! < queue.length) {
         FLog.trace(text: "Start playing");
 
-        // FIXME: stop playing before reload
-        // We did not stop here because the stop event would interrupt the `buffering` event.
-
-        // await this.stop();
-        // final stopStatus = Completer();
-        // late StreamSubscription<PlayerStatus> listener;
-        // listener = playerStatus.listen((status) {
-        //   if (status == PlayerStatus.stopped && !stopStatus.isCompleted) {
-        //     stopStatus.complete();
-        //     listener.cancel();
-        //   }
-        // });
-        // await stopStatus.future;
-
         // set lyric to null as loading
         playingLyric = null;
+        await stop();
         notifyListeners();
 
         final source = queue[playingIndex!];
         if (!source.preloaded) {
+          // current track is not preloaded, buffering
           playerStatus = PlayerStatus.buffering;
           notifyListeners();
+        }
+
+        // preload the next track
+        if (queue.length > playingIndex! + 1) {
+          queue[playingIndex! + 1].preload();
         }
 
         getLyric(source).then((lyric) {
@@ -107,6 +104,7 @@ class PlayerService extends ChangeNotifier {
         });
 
         try {
+          // wait for audio file to download and play it
           await PlayerService.player.play(source, volume: volume);
         } catch (e) {
           // if the error occures on the current, go to the next song
@@ -116,8 +114,11 @@ class PlayerService extends ChangeNotifier {
             next();
           }
         }
-        if (queue.length > playingIndex! + 1) {
-          queue[playingIndex! + 1].preload();
+
+        // when playback start, set state to playing
+        if (playing == source && playerStatus == PlayerStatus.buffering) {
+          playerStatus = PlayerStatus.playing;
+          notifyListeners();
         }
       } else {
         FLog.trace(text: "Stop playing");
