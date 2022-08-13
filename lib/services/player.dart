@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/lyric/lyric_provider.dart';
+import 'package:annix/lyric/lyric_provider_anniv.dart';
 import 'package:annix/lyric/lyric_provider_petitlyrics.dart';
-import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/annil.dart';
 import 'package:annix/services/global.dart';
@@ -53,7 +52,7 @@ class PlayerService extends ChangeNotifier {
   int? playingIndex;
   AnnilAudioSource? get playing =>
       playingIndex != null ? queue[playingIndex!] : null;
-  String? playingLyric;
+  LyricResult? playingLyric;
 
   PlayerService() {
     PlayerService.player.onPlayerStateChanged.listen((s) {
@@ -103,7 +102,7 @@ class PlayerService extends ChangeNotifier {
 
         getLyric(source).then((lyric) {
           if (playing == source) {
-            playingLyric = lyric?.data ?? "";
+            playingLyric = lyric ?? LyricResult.empty();
             notifyListeners();
           }
         });
@@ -306,42 +305,51 @@ class PlayerService extends ChangeNotifier {
     }
   }
 
-  void setLyric(String lyric) {
-    playingLyric = lyric;
+  void setLyric(LyricResult? lyric) {
+    playingLyric = lyric ?? LyricResult.empty();
     notifyListeners();
   }
 
-  Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
-    final AnnivController anniv = Get.find();
-    final id = item.id;
+  Future<LyricResult?> getLyric(AnnilAudioSource item) async {
+    try {
+      final id = item.id;
 
-    // 1. local cache
-    var lyric = await LyricProvider.getLocal(id);
+      // 1. local cache
+      var lyric = await LyricProvider.getLocal(id);
 
-    // 2. anniv
-    if (lyric == null) {
-      final lyricResult = await anniv.client!.getLyric(id);
-      lyric = lyricResult?.source;
-    }
-
-    // 3. lyric provider
-    if (lyric == null) {
-      LyricProvider provider = LyricProviderPetitLyrics();
-      final songs = await provider.search(
-        item.track.title,
-        artist: item.track.artist,
-        album: item.track.disc.album.title,
-      );
-      if (songs.isNotEmpty) {
-        lyric = await songs.first.lyric;
+      // 2. anniv
+      if (lyric == null) {
+        final anniv = LyricProviderAnniv();
+        final result =
+            await anniv.search(track: item.identifier, title: item.track.title);
+        if (result.isNotEmpty) {
+          lyric = await result[0].lyric;
+        }
       }
-    }
 
-    // 4. save to local cache
-    if (lyric != null) {
-      LyricProvider.saveLocal(item.id, lyric);
+      // 3. lyric provider
+      if (lyric == null) {
+        LyricProvider provider = LyricProviderPetitLyrics();
+        final songs = await provider.search(
+          track: item.identifier,
+          title: item.track.title,
+          artist: item.track.artist,
+          album: item.track.disc.album.title,
+        );
+        if (songs.isNotEmpty) {
+          lyric = await songs.first.lyric;
+        }
+      }
+
+      // 4. save to local cache
+      if (lyric != null) {
+        LyricProvider.saveLocal(item.id, lyric);
+      }
+      return lyric;
+    } catch (e) {
+      print(e);
+      return null;
     }
-    return lyric;
   }
 }
 

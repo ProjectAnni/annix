@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:annix/models/anniv.dart';
 import 'package:toml/toml.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -247,6 +248,12 @@ class Track {
 
   String get artist => _artist ?? disc.artist;
   TrackType get type => _type ?? disc.type;
+
+  TrackIdentifier get id => TrackIdentifier(
+        albumId: disc.album.albumId,
+        discId: disc.album.discs.indexOf(disc),
+        trackId: disc.tracks.indexOf(this),
+      );
 
   static Track fromMap(Map<String, dynamic> map) {
     String title = map['title'];

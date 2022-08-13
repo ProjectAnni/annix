@@ -226,8 +226,7 @@ class AnnivClient {
     return Playlist.fromJson(response.data);
   }
 
-  Future<LyricResponse?> getLyric(String id) async {
-    TrackIdentifier track = TrackIdentifier.fromSlashSplitedString(id);
+  Future<LyricResponse?> getLyric(TrackIdentifier track) async {
     try {
       final response = await _client.get('/api/lyric', queryParameters: {
         'album_id': track.albumId,

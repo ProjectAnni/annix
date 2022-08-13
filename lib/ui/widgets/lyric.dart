@@ -1,3 +1,4 @@
+import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/global.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ extension on LyricAlign {
   Alignment get alignment {
     switch (this) {
       case LyricAlign.LEFT:
-        return Alignment.centerLeft;
+        return Alignment.topLeft;
       case LyricAlign.CENTER:
         return Alignment.center;
       case LyricAlign.RIGHT:
@@ -91,7 +92,7 @@ class LyricView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerService, String?>(
+    return Selector<PlayerService, LyricResult?>(
       selector: (_, player) => player.playingLyric,
       builder: (context, lyric, child) {
         return _LyricView(
@@ -105,7 +106,7 @@ class LyricView extends StatelessWidget {
 
 class _LyricView extends StatelessWidget {
   final LyricAlign lyricAlign;
-  final String? lyric;
+  final LyricResult? lyric;
 
   const _LyricView({
     Key? key,
@@ -126,36 +127,39 @@ class _LyricView extends StatelessWidget {
         child: const Text("No lyrics found"),
       );
     } else {
-      // Notice: model and ui MUST NOT be rebuilt
-      // building ui is EXTREMELY expensive
-      final model = LyricsModelBuilder.create()
-          .bindLyricToMain(lyric!)
-          // .bindLyricToExt(lyric) // TODO: translation
-          .getModel();
-      final ui = PlayingLyricUI(align: lyricAlign);
-      return Selector<PlayingProgress, Duration>(
-        selector: (_, progress) => progress.position,
-        builder: (context, position, child) {
-          return LyricsReader(
-            model: model,
-            lyricUi: ui,
-            position: position.inMilliseconds,
-            playing: true,
-            emptyBuilder: () {
-              return SingleChildScrollView(
-                child: FractionallySizedBox(
-                  widthFactor: 1,
-                  child: Text(
-                    lyric!,
-                    textAlign: lyricAlign.textAlign,
-                    style: context.textTheme.bodyText1!.copyWith(height: 2),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      );
+      if (lyric!.model == null) {
+        // plain text
+        return _textLyric(context, lyric!.text);
+      } else {
+        // lrc / karaoke
+        // Notice: ui MUST NOT be rebuilt. building ui is EXTREMELY expensive
+        final ui = PlayingLyricUI(align: lyricAlign);
+        return Selector<PlayingProgress, Duration>(
+          selector: (_, progress) => progress.position,
+          builder: (context, position, child) {
+            return LyricsReader(
+              model: lyric!.model,
+              lyricUi: ui,
+              position: position.inMilliseconds,
+              playing: true,
+              emptyBuilder: () => _textLyric(context, lyric!.text),
+            );
+          },
+        );
+      }
     }
+  }
+
+  Widget _textLyric(BuildContext context, String text) {
+    return SingleChildScrollView(
+      child: FractionallySizedBox(
+        widthFactor: 1,
+        child: Text(
+          text,
+          textAlign: lyricAlign.textAlign,
+          style: context.textTheme.bodyText1!.copyWith(height: 2),
+        ),
+      ),
+    );
   }
 }

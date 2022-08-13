@@ -1,4 +1,3 @@
-import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
 import 'package:annix/ui/route/delegate.dart';

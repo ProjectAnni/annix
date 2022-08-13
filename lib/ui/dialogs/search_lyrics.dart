@@ -49,8 +49,12 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
 
     final provider = _getLyricProvider();
     try {
-      _searchResult = await provider.search(_titleController.text,
-          artist: _artistController.text, album: _albumController.text);
+      _searchResult = await provider.search(
+        track: widget.track.id,
+        title: _titleController.text,
+        artist: _artistController.text,
+        album: _albumController.text,
+      );
       setState(() {
         _state = LyricSearchState.displaySearchResultList;
       });
@@ -156,10 +160,8 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                     final player =
                         Provider.of<PlayerService>(context, listen: false);
                     result.lyric.then((lyric) {
-                      if (lyric != null) {
-                        player.setLyric(lyric.data);
-                        Navigator.of(context, rootNavigator: true).pop();
-                      }
+                      player.setLyric(lyric);
+                      Navigator.of(context, rootNavigator: true).pop();
                     });
                   },
                 );

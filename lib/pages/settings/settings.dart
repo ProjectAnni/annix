@@ -127,15 +127,22 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.lyrics_outlined),
                 title: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE.tr),
                 description: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC.tr),
-                onPressed: (context) async {
-                  Get.defaultDialog(
-                    title: I18n.PROGRESS.tr,
-                    content: const CircularProgressIndicator(strokeWidth: 2),
+                onPressed: (context) {
+                  final navigator = Navigator.of(context, rootNavigator: true);
+                  showDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (context) => SimpleDialog(
+                      title: Text(I18n.PROGRESS.tr),
+                      children: const [
+                        Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ],
+                    ),
                     barrierDismissible: false,
-                    onWillPop: () async => false,
                   );
-                  await AnnixStore().clear("lyric");
-                  Get.back();
+                  AnnixStore().clear("lyric").then((_) => navigator.pop());
                 },
               ),
             ],

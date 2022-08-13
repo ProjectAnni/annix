@@ -4,8 +4,12 @@ import 'package:netease_music_api/netease_music_api.dart';
 
 class LyricProviderNetease extends LyricProvider {
   @override
-  Future<List<LyricSearchResponse>> search(String title,
-      {String? artist, String? album}) async {
+  Future<List<LyricSearchResponse>> search({
+    required TrackIdentifier track,
+    required String title,
+    String? artist,
+    String? album,
+  }) async {
     await NeteaseMusicApi.init();
     final api = NeteaseMusicApi();
 
@@ -30,7 +34,7 @@ class LyricSearchResponseNetease extends LyricSearchResponse {
   LyricSearchResponseNetease(this.song);
 
   @override
-  Future<LyricLanguage?> get lyric async {
+  Future<LyricResult> get lyric async {
     final api = NeteaseMusicApi();
     final songId = song.id;
     final lyricResult = await api.songLyric(songId);
@@ -39,15 +43,14 @@ class LyricSearchResponseNetease extends LyricSearchResponse {
     }
 
     final lyric = lyricResult.lrc;
-    if (lyric.lyric != null) {
-      return LyricLanguage(
-        type: 'lrc',
-        language: 'netease',
-        data: lyric.lyric!,
-      );
+    if (lyric.lyric == null) {
+      // FIXME: concrete error
+      throw Error();
     }
 
-    return null;
+    return LyricResult(
+      text: lyric.lyric!,
+    );
   }
 
   @override

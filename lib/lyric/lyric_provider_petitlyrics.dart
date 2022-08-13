@@ -2,6 +2,8 @@ import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:flutter_lyric/lyrics_reader_model.dart';
 import 'package:xml/xml.dart';
 import 'dart:convert';
 import "dart:typed_data";
@@ -93,8 +95,12 @@ class LyricProviderPetitLyrics extends LyricProvider {
   final _client = PetitLyricsClient();
 
   @override
-  Future<List<LyricSearchResponse>> search(String title,
-      {String? artist, String? album}) async {
+  Future<List<LyricSearchResponse>> search({
+    required TrackIdentifier track,
+    required String title,
+    String? artist,
+    String? album,
+  }) async {
     // https://github.com/kokarare1212/MusicBee.PetitLyrics/blob/master/MusicBee.PetitLyrics/Plugin.cs
     final document = await _client.getLyric(
       title,
@@ -146,25 +152,21 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   List<String> get artists => artistsName;
 
   @override
-  Future<LyricLanguage?> get lyric async {
+  Future<LyricResult> get lyric async {
     if (lyricType == 1) {
       final lrc = await _client.getLyricById(lyricId, lyricType: 2);
 
       final songs = lrc.findAllElements("song");
       if (songs.isEmpty) {
         // lrc not found, return text lyric
-        return LyricLanguage(
-          language: "--",
-          type: "text",
-          data: lyricText,
+        return LyricResult(
+          text: lyricText,
         );
       } else {
         final encrypted =
             base64Decode(songs.first.findElements("lyricsData").first.text);
-        return LyricLanguage(
-          language: "--",
-          type: "lrc",
-          data: _client.decrypt(encrypted, lyricText).join('\n'),
+        return LyricResult(
+          text: _client.decrypt(encrypted, lyricText).join('\n'),
         );
       }
     } else {
@@ -174,11 +176,36 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
           .findAllElements("line")
           .map((line) => WsyLyricLine.fromXml(line))
           .toList();
+
+      final linesModel = lines.map((line) {
+        final lineModel = LyricsLineModel();
+        lineModel.mainText = line.words.map((e) => e.text).join();
+        lineModel.startTime = line.words.first.startTime;
+        // lineModel.endTime = line.words.last.endTime;
+
+        int index = 0;
+        lineModel.spanList = line.words.map((word) {
+          final span = LyricSpanInfo();
+          span.raw = word.text;
+          span.length = span.raw.length;
+
+          span.index = index;
+
+          span.start = word.startTime;
+          span.duration = word.endTime - word.startTime;
+          index += span.length;
+          return span;
+        }).toList();
+
+        return lineModel;
+      }).toList();
+
+      final model =
+          (LyricsModelBuilder.create()..mainLines = linesModel).getModel();
       final lyric = lines.map((e) => e.toString()).join("\n");
-      return LyricLanguage(
-        language: "--",
-        type: "lrc",
-        data: lyric,
+      return LyricResult(
+        text: lyric,
+        model: model,
       );
     }
   }
