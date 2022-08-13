@@ -10,7 +10,10 @@ class AnnilController extends GetxController {
   bool get hasClient => clients.value.isNotEmpty;
 
   static Future<AnnilController> init() async {
-    return AnnilController._(await CombinedOnlineAnnilClient.loadFromLocal());
+    final annil =
+        AnnilController._(await CombinedOnlineAnnilClient.loadFromLocal());
+    await annil.reloadClients();
+    return annil;
   }
 
   AnnilController._(CombinedOnlineAnnilClient clients) : clients = clients.obs;
@@ -59,8 +62,8 @@ class AnnilController extends GetxController {
       albums.replaceRange(0, albums.length, newAlbums);
       clients.value.saveToLocal();
     } else {
-      var newAlbums = await OfflineAnnilClient().getAlbums();
-      albums.replaceRange(0, albums.length, newAlbums);
+      var localAlbums = await OfflineAnnilClient().getAlbums();
+      albums.replaceRange(0, albums.length, localAlbums);
     }
     albums.refresh();
   }
