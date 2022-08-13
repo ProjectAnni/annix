@@ -53,7 +53,7 @@ class AnnixLayoutMobile extends AnnixLayout {
               onTap: () => Global.mobileWeSlideController.show(),
               child: const MobileBottomPlayer(),
             ),
-            panel: PlayingMobileScreen(),
+            panel: PlayingScreenMobile(),
             footerHeight: isMainPage ? (80 + 24) : 0,
             footer: (() {
               final route = router.currentRoute;

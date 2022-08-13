@@ -11,14 +11,12 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:get/get.dart' show Obx;
-import 'package:get/get_rx/get_rx.dart';
 import 'package:provider/provider.dart';
 
-class PlayingMobileScreen extends StatelessWidget {
-  final RxBool showLyrics = false.obs;
+class PlayingScreenMobile extends StatelessWidget {
+  final showLyrics = ValueNotifier<bool>(false);
 
-  PlayingMobileScreen({Key? key}) : super(key: key);
+  PlayingScreenMobile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +26,20 @@ class PlayingMobileScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Obx(
-              () => showLyrics.value
-                  ? const AspectRatio(
-                      aspectRatio: 1,
-                      child: LyricView(
-                        alignment: LyricAlign.CENTER,
-                      ),
-                    )
-                  : const PlayingMusicCover(),
+            ValueListenableBuilder<bool>(
+              valueListenable: showLyrics,
+              builder: (context, showLyrics, child) {
+                if (showLyrics) {
+                  return const AspectRatio(
+                    aspectRatio: 1,
+                    child: LyricView(
+                      alignment: LyricAlign.CENTER,
+                    ),
+                  );
+                } else {
+                  return const PlayingMusicCover();
+                }
+              },
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
