@@ -221,7 +221,7 @@ class AnnilDialog extends StatelessWidget {
             textStyle: context.textTheme.labelLarge,
           ),
           child: const Text('Cancel'),
-          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+          onPressed: () => AnnixRouterDelegate.of(context).popRoute(),
         ),
         TextButton(
           style: TextButton.styleFrom(
@@ -230,7 +230,7 @@ class AnnilDialog extends StatelessWidget {
           child: const Text('Add'),
           onPressed: () {
             // TODO: Add annil
-            Navigator.of(Get.overlayContext!).pop();
+            AnnixRouterDelegate.of(context).popRoute();
           },
         ),
       ],

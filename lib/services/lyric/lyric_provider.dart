@@ -100,6 +100,7 @@ class LyricResult {
                   final line = LyricsLineModel();
                   line.startTime = lineJson["startTime"];
                   line.mainText = lineJson["mainText"];
+                  line.extText = lineJson["extText"];
 
                   if (lineJson["spanList"] != null) {
                     final spans = lineJson["spanList"] as List<dynamic>;

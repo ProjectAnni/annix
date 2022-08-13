@@ -37,7 +37,8 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getPlayingMainTextStyle() {
-    return Global.context.textTheme.titleMedium!;
+    return Global.context.textTheme.titleMedium!
+        .copyWith(fontWeight: FontWeight.w600);
   }
 
   @override
@@ -59,14 +60,14 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getPlayingExtTextStyle() {
-    // TODO: custom style
-    return TextStyle(color: Colors.grey[300], fontSize: 14);
+    final style = getPlayingMainTextStyle();
+    return style.copyWith(fontSize: style.fontSize! * 0.8);
   }
 
   @override
   TextStyle getOtherExtTextStyle() {
-    // TODO: custom style
-    return TextStyle(color: Colors.grey[300], fontSize: 14);
+    final style = getOtherMainTextStyle();
+    return style.copyWith(fontSize: style.fontSize! * 0.8);
   }
 
   @override

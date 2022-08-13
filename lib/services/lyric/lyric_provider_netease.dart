@@ -1,5 +1,6 @@
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
+import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 
 class LyricProviderNetease extends LyricProvider {
@@ -48,8 +49,16 @@ class LyricSearchResponseNetease extends LyricSearchResponse {
       throw Error();
     }
 
+    final model = LyricsModelBuilder.create().bindLyricToMain(lyric.lyric!);
+
+    if (lyricResult.tlyric.lyric != null) {
+      // translated lyric
+      model.bindLyricToExt(lyricResult.tlyric.lyric!);
+    }
+
     return LyricResult(
       text: lyric.lyric!,
+      model: model.getModel(),
     );
   }
 

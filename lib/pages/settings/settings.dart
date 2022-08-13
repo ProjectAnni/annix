@@ -112,6 +112,7 @@ class SettingsScreen extends StatelessWidget {
                 title: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE.tr),
                 description: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC.tr),
                 onPressed: (context) async {
+                  final delegate = AnnixRouterDelegate.of(context);
                   Get.defaultDialog(
                     title: I18n.PROGRESS.tr,
                     content: const CircularProgressIndicator(strokeWidth: 2),
@@ -119,7 +120,7 @@ class SettingsScreen extends StatelessWidget {
                     onWillPop: () async => false,
                   );
                   await AnnixStore().clear("album");
-                  Get.back();
+                  delegate.popRoute();
                 },
               ),
               // clear local lyric cache
