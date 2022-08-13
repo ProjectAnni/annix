@@ -102,12 +102,20 @@ class PlayerService extends ChangeNotifier {
 
         getLyric(source).then((lyric) {
           if (playing == source) {
-            playingLyric = lyric ?? LyricResult.empty();
-            notifyListeners();
+            setLyric(lyric);
           }
         });
 
-        await PlayerService.player.play(source, volume: volume);
+        try {
+          await PlayerService.player.play(source, volume: volume);
+        } catch (e) {
+          // if the error occures on the current, go to the next song
+          if (playing == source) {
+            // TODO: tell user why skipped
+            FLog.error(text: "Failed to play", exception: e);
+            next();
+          }
+        }
         if (queue.length > playingIndex! + 1) {
           queue[playingIndex! + 1].preload();
         }

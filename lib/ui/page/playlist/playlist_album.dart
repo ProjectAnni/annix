@@ -92,7 +92,7 @@ class AlbumDetailScreen extends PlaylistScreen {
     var totalTrackId = 0;
 
     var discId = 1;
-    album.discs.forEach((disc) {
+    for (final disc in album.discs) {
       if (needDiscId) {
         var discTitle = 'Disc $discId';
         if (disc.title != "") {
@@ -131,7 +131,7 @@ class AlbumDetailScreen extends PlaylistScreen {
         ),
       );
       discId++;
-    });
+    }
 
     return ListView.builder(
       itemCount: list.length,

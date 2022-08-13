@@ -25,6 +25,7 @@ class PlayingMoreMenu extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: false,
           ),
+          dense: true,
         ),
         ListTile(
           leading: const Icon(Icons.album_outlined),
@@ -34,6 +35,7 @@ class PlayingMoreMenu extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: false,
           ),
+          dense: true,
           onTap: () async {
             // hide dialog
             await delegate.popRoute();
@@ -46,6 +48,7 @@ class PlayingMoreMenu extends StatelessWidget {
           leading: const Icon(Icons.person_rounded),
           minLeadingWidth: 0,
           title: ArtistText(track.artist),
+          dense: true,
         ),
         const Divider(),
         // ListTile(
@@ -57,7 +60,9 @@ class PlayingMoreMenu extends StatelessWidget {
         // ),
         ListTile(
           leading: const Icon(Icons.share),
+          minLeadingWidth: 0,
           title: const Text("Share File"),
+          dense: true,
           onTap: () {
             final id = track.id;
             Share.shareFiles(
