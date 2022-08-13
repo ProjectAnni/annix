@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/metadata/metadata_source_anniv.dart';
-import 'package:annix/metadata/metadata_source_sqlite.dart';
+import 'package:annix/services/metadata/metadata_source_anniv.dart';
+import 'package:annix/services/metadata/metadata_source_sqlite.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';

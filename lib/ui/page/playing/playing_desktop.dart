@@ -3,8 +3,8 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -41,8 +41,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                             child: Text(
                               player.playing?.track.title ?? "",
                               style: context.textTheme.titleLarge!.copyWith(
-                                color: context
-                                    .theme.colorScheme.onPrimaryContainer,
+                                color: context.colorScheme.onPrimaryContainer,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

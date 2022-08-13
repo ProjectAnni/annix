@@ -1,4 +1,4 @@
-import 'package:annix/lyric/lyric_provider.dart';
+import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';

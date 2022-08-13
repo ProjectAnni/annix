@@ -1,4 +1,4 @@
-import 'package:annix/lyric/lyric_provider.dart';
+import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 

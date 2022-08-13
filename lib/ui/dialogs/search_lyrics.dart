@@ -1,6 +1,6 @@
-import 'package:annix/lyric/lyric_provider.dart';
-import 'package:annix/lyric/lyric_provider_netease.dart';
-import 'package:annix/lyric/lyric_provider_petitlyrics.dart';
+import 'package:annix/services/lyric/lyric_provider.dart';
+import 'package:annix/services/lyric/lyric_provider_netease.dart';
+import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';

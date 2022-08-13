@@ -1,9 +1,9 @@
-import 'package:annix/lyric/lyric_provider.dart';
+import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/global.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 extension on LyricAlign {
@@ -37,12 +37,12 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getPlayingMainTextStyle() {
-    return Theme.of(Global.context).textTheme.titleMedium!;
+    return Global.context.textTheme.titleMedium!;
   }
 
   @override
   TextStyle getOtherMainTextStyle() {
-    final textTheme = Theme.of(Global.context).textTheme.bodyMedium;
+    final textTheme = Global.context.textTheme.bodyMedium;
     return textTheme!.copyWith(color: textTheme.color!.withOpacity(0.5));
   }
 
@@ -78,7 +78,7 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   Color getLyricHightlightColor() {
-    return Theme.of(Global.context).colorScheme.primary;
+    return Global.context.colorScheme.primary;
   }
 
   @override

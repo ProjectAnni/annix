@@ -1,6 +1,7 @@
 import 'package:annix/models/metadata.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class AlbumGrid extends StatelessWidget {
@@ -33,7 +34,7 @@ class AlbumGrid extends StatelessWidget {
                 padding: const EdgeInsets.all(4.0),
                 child: Text(
                   album.title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: context.textTheme.titleMedium,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
                 ),

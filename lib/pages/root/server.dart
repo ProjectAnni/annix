@@ -6,8 +6,9 @@ import 'package:annix/services/annil.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/simple_text_field.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide ContextExtensionss;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Anniv

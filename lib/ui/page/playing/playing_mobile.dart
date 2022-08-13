@@ -7,6 +7,7 @@ import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
@@ -44,7 +45,7 @@ class PlayingMobileScreen extends StatelessWidget {
                   builder: (context, player, child) => Center(
                     child: Text(
                       player.playing?.track.title ?? "",
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: context.textTheme.titleLarge,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -52,7 +53,7 @@ class PlayingMobileScreen extends StatelessWidget {
                 Consumer<PlayerService>(
                   builder: (context, player, child) => ArtistText(
                     player.playing?.track.artist ?? "",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: context.textTheme.titleMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

@@ -1,7 +1,7 @@
-import 'package:annix/metadata/metadata_types.dart';
+import 'package:annix/services/metadata/metadata_types.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
-import 'package:annix/metadata/metadata_source.dart';
+import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/services/global.dart';
 

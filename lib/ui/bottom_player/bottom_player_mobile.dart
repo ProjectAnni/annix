@@ -35,7 +35,7 @@ class MobileBottomPlayer extends StatelessWidget {
             child: Consumer<PlayerService>(
               builder: (context, player, child) => Text(
                 player.playing?.track.title ?? "",
-                style: Theme.of(context).textTheme.titleSmall,
+                style: context.textTheme.titleSmall,
               ),
             ),
           ),
