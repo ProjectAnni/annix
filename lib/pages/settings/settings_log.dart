@@ -1,7 +1,8 @@
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class SettingsLogView extends StatelessWidget {
   const SettingsLogView({Key? key}) : super(key: key);
@@ -21,22 +22,26 @@ class SettingsLogView extends StatelessWidget {
     }
   }
 
-  void showDetailDialog(Log log) {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Detail'),
-        content: SingleChildScrollView(
-          child: Text(
-            '${log.exception}\n${log.stacktrace != "null" ? log.stacktrace ?? "" : "No stacktrace"}',
+  void showDetailDialog(BuildContext context, Log log) {
+    showDialog(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Detail'),
+          content: SingleChildScrollView(
+            child: Text(
+              '${log.exception}\n${log.stacktrace != "null" ? log.stacktrace ?? "" : "No stacktrace"}',
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text("Close"),
-            onPressed: () => Get.back(),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              child: const Text("Close"),
+              onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -48,9 +53,9 @@ class SettingsLogView extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            onPressed: () async {
-              await FLog.clearLogs();
-              Get.back();
+            onPressed: () {
+              final delegate = AnnixRouterDelegate.of(context);
+              FLog.clearLogs().then((_) => delegate.popRoute());
             },
           ),
           // TODO: Log filter
@@ -83,7 +88,7 @@ class SettingsLogView extends StatelessWidget {
                   title: Text(log.text ?? "[No log message]"),
                   subtitle: Text(
                       '${DateTime.fromMillisecondsSinceEpoch(log.timeInMillis!)}, ${log.className}.${log.methodName}'),
-                  onTap: () => showDetailDialog(log),
+                  onTap: () => showDetailDialog(context, log),
                 );
               },
             );
