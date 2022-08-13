@@ -36,6 +36,8 @@ class MobileBottomPlayer extends StatelessWidget {
               builder: (context, player, child) => Text(
                 player.playing?.track.title ?? "",
                 style: context.textTheme.titleSmall,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
               ),
             ),
           ),
