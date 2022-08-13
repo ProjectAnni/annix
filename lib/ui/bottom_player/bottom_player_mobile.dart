@@ -1,7 +1,6 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
-import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,11 +33,9 @@ class MobileBottomPlayer extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Consumer<PlayerService>(
-              builder: (context, player, child) => Marquee(
-                child: Text(
-                  player.playing?.track.title ?? "",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+              builder: (context, player, child) => Text(
+                player.playing?.track.title ?? "",
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
           ),

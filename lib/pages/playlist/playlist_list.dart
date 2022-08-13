@@ -19,7 +19,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
   @override
   final RefreshCallback? refresh = null;
 
-  PlaylistDetailScreen({required this.playlist});
+  PlaylistDetailScreen({super.key, required this.playlist});
 
   static Future<PlaylistDetailScreen?> remote(String id) async {
     final AnnivController anniv = Get.find();

@@ -280,7 +280,7 @@ extension PreferQualityToString on PreferQuality {
 }
 
 class OfflineAnnilClient implements BaseAnnilClient {
-  static OfflineAnnilClient _instance = OfflineAnnilClient._();
+  static final OfflineAnnilClient _instance = OfflineAnnilClient._();
   static OfflineAnnilClient get instance => OfflineAnnilClient._instance;
 
   OfflineAnnilClient._();

@@ -17,13 +17,13 @@ class TwoSideSliver extends MultiChildRenderObjectWidget {
         super(children: [left, right]);
 
   @override
-  _RenderTwoSideSliver createRenderObject(BuildContext context) {
-    return _RenderTwoSideSliver(leftPercentage: leftPercentage);
+  RenderTwoSideSliver createRenderObject(BuildContext context) {
+    return RenderTwoSideSliver(leftPercentage: leftPercentage);
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, _RenderTwoSideSliver renderObject) {
+      BuildContext context, RenderTwoSideSliver renderObject) {
     renderObject.leftPercentage = leftPercentage;
   }
 }
@@ -36,9 +36,9 @@ extension _TwoSideParentDataExt on RenderSliver {
 class _TwoSideParentData extends SliverPhysicalParentData
     with ContainerParentDataMixin<RenderSliver> {}
 
-class _RenderTwoSideSliver extends RenderSliver
+class RenderTwoSideSliver extends RenderSliver
     with ContainerRenderObjectMixin<RenderSliver, _TwoSideParentData> {
-  _RenderTwoSideSliver({required double leftPercentage})
+  RenderTwoSideSliver({required double leftPercentage})
       : _leftPercentage = leftPercentage;
 
   double get leftPercentage => _leftPercentage;

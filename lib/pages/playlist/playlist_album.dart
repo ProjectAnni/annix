@@ -4,7 +4,6 @@ import 'package:annix/models/anniv.dart';
 import 'package:annix/models/metadata.dart';
 import 'package:annix/pages/playlist/playlist.dart';
 import 'package:annix/services/global.dart';
-import 'package:annix/third_party/marquee_widget/marquee_widget.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,7 @@ class AlbumDetailScreen extends PlaylistScreen {
   @override
   final RefreshCallback? refresh = null;
 
-  AlbumDetailScreen({required this.album});
+  AlbumDetailScreen({super.key, required this.album});
 
   @override
   String get title => album.title;
@@ -96,7 +95,7 @@ class AlbumDetailScreen extends PlaylistScreen {
         if (disc.title != "") {
           discTitle += ' - ${disc.title}';
         }
-        list.add(ListTile(title: Marquee(child: Text(discTitle))));
+        list.add(ListTile(title: Text(discTitle)));
       }
 
       var trackId = 1;

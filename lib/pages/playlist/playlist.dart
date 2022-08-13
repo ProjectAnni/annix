@@ -31,6 +31,8 @@ abstract class PlaylistScreen extends StatelessWidget {
   /// Refresh callback
   abstract final RefreshCallback? refresh;
 
+  const PlaylistScreen({super.key});
+
   Widget _albumIntro(BuildContext context) {
     return Container(
       height: 180,

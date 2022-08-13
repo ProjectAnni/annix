@@ -15,6 +15,8 @@ class FavoriteScreen extends PlaylistScreen {
   @override
   final List<Widget>? pageActions = null;
 
+  FavoriteScreen({super.key});
+
   @override
   RefreshCallback? get refresh => () => _anniv.syncFavorite();
 

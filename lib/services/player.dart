@@ -347,7 +347,7 @@ class PlayerService extends ChangeNotifier {
       }
       return lyric;
     } catch (e) {
-      print(e);
+      FLog.error(text: "Failed to fetch lyric", exception: e);
       return null;
     }
   }
