@@ -48,7 +48,7 @@ class PlayingLyricUI extends LyricUI {
   }
 
   @override
-  double getInlineSpace() => 20;
+  double getInlineSpace() => 10;
 
   @override
   double getLineSpace() => 20;
