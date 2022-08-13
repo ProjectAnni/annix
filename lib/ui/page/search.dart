@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:annix/controllers/anniv_controller.dart';
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/services/annil.dart';
 import 'package:annix/services/anniv.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -164,10 +164,10 @@ class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  SearchScreenState createState() => SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class SearchScreenState extends State<SearchScreen> {
   SearchResult? _result;
   bool isLoading = false;
 

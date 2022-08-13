@@ -1,5 +1,5 @@
 import 'package:annix/app.dart';
-import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/controllers/settings_controller.dart';
 import 'package:annix/services/global.dart';

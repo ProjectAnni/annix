@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/player.dart';

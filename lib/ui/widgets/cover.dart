@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:annix/services/annil.dart';
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/theme.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_color_utilities/quantize/quantizer_celebi.dart';
 import 'package:material_color_utilities/score/score.dart';
-import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/services/player.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';

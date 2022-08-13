@@ -1,7 +1,6 @@
+import 'package:annix/services/annil/cache.dart';
 import 'package:http_plus/http_plus.dart';
 import 'dart:io' show File, HttpServer, InternetAddress, ContentType;
-import 'package:path/path.dart' as p;
-import 'package:annix/services/global.dart';
 
 class CoverItem {
   final String albumId;
@@ -15,11 +14,6 @@ class CoverItem {
   });
 
   String get key => '$albumId/$discId';
-}
-
-String getCoverCachePath(String albumId, int? discId) {
-  final fileName = "${discId == null ? albumId : "${albumId}_$discId"}.jpg";
-  return p.join(Global.storageRoot, "cover", fileName);
 }
 
 class CoverReverseProxy {

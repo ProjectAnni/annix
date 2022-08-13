@@ -1,124 +1,124 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:annix/controllers/annil_controller.dart';
-import 'package:annix/services/player.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
+import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/global.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 
-class AnnilAudioSource extends Source {
-  static final Dio _client = Dio();
+class CombinedOnlineAnnilClient extends ChangeNotifier {
+  final Map<String, OnlineAnnilClient> clients;
+  final List<OnlineAnnilClient> _clients;
 
-  final AnnilController annil = Get.find();
+  CombinedOnlineAnnilClient(List<OnlineAnnilClient> clients)
+      : _clients = clients,
+        clients = Map.fromEntries(clients.map((e) => MapEntry(e.id, e))) {
+    _sort();
+  }
 
-  AnnilAudioSource({
-    required this.albumId,
-    required this.discId,
-    required this.trackId,
-    required this.quality,
-    required this.track,
-  });
+  bool get isEmpty => clients.isEmpty;
+  bool get isNotEmpty => !isEmpty;
 
-  static Future<AnnilAudioSource> from({
+  void _sort() {
+    _clients.sort((a, b) => b.priority - a.priority);
+  }
+
+  // TODO: load from / save to sqlite instead of shared preferences
+  static Future<CombinedOnlineAnnilClient> loadFromLocal() async {
+    List<String>? tokens = Global.preferences.getStringList("annil_clients");
+    if (tokens != null) {
+      final clients = tokens
+          .map((token) => OnlineAnnilClient.fromJson(jsonDecode(token)))
+          .toList();
+      return CombinedOnlineAnnilClient(clients);
+    } else {
+      return CombinedOnlineAnnilClient([]);
+    }
+  }
+
+  Future<void> saveToLocal() async {
+    final tokens =
+        clients.values.map((client) => jsonEncode(client.toJson())).toList();
+    await Global.preferences.setStringList("annil_clients", tokens);
+  }
+
+  /// Keep sync with new credential list
+  void sync(List<AnnilToken> remoteList) {
+    final remoteIds = remoteList.map((e) => e.id).toList();
+    // update existing client info
+    clients.removeWhere((id, client) {
+      final index = remoteIds.indexOf(id);
+      if (index != -1) {
+        // exist both in local and remote, update client info
+        final newClient = remoteList[index];
+        client.name = newClient.name;
+        client.url = newClient.url;
+        client.token = newClient.token;
+        client.priority = newClient.priority;
+        remoteIds.removeAt(index);
+        remoteList.removeAt(index);
+      } else if (!client.local) {
+        // remote client which only exist in local, remove it
+        return true;
+      }
+
+      // do not remove the remaining
+      return false;
+    });
+
+    // add new clients
+    clients.addAll(
+      Map.fromEntries(
+        remoteList
+            .map((e) => OnlineAnnilClient.remote(
+                  id: e.id,
+                  name: e.name,
+                  url: e.url,
+                  token: e.token,
+                  priority: e.priority,
+                ))
+            .map((c) => MapEntry(c.id, c)),
+      ),
+    );
+
+    // sort with priority
+    _sort();
+  }
+
+  String? getAudioUrl({
     required String albumId,
     required int discId,
     required int trackId,
-    PreferQuality quality = PreferQuality.Medium,
-  }) async {
-    final track = await (await Global.metadataSource.future)
-        .getTrack(albumId: albumId, discId: discId, trackId: trackId);
-    return AnnilAudioSource(
-      albumId: albumId,
-      discId: discId,
-      trackId: trackId,
-      quality: quality,
-      track: track!,
-    );
-  }
-
-  final String albumId;
-  final int discId;
-  final int trackId;
-  final PreferQuality quality;
-  final Track track;
-
-  Future<void>? _preloadFuture;
-
-  String get id {
-    return "$albumId/$discId/$trackId";
-  }
-
-  @override
-  Future<void> setOnPlayer(AudioPlayer player) async {
-    final offlinePath = getAudioCachePath(albumId, discId, trackId);
-    if (await File(offlinePath).exists()) {
-      await player.setSourceDeviceFile(offlinePath);
-    } else {
-      // download full audio first
-      if (_preloadFuture == null) {
-        preload();
-      }
-      await _preloadFuture;
-      // double check whether current song is still this track
-      if (Provider.of<PlayerService>(Global.context, listen: false).playing ==
-          this) {
-        await player.setSourceDeviceFile(offlinePath);
+    required PreferQuality quality,
+  }) {
+    for (final client in _clients) {
+      if (client.albums.contains(albumId)) {
+        return '${client.url}/$albumId/$discId/$trackId?auth=${client.token}&quality=$quality';
       }
     }
+
+    return null;
   }
 
-  void preload() {
-    if (_preloadFuture != null) {
-      return;
-    }
-
-    _preloadFuture = _preload();
-  }
-
-  bool preloaded = false;
-
-  Future<void> _preload() async {
-    final offlinePath = getAudioCachePath(albumId, discId, trackId);
-    final file = File(offlinePath);
-    if (!await file.exists()) {
-      final url = annil.clients.value.getAudioUrl(
-          albumId: albumId, discId: discId, trackId: trackId, quality: quality);
-      if (url != null) {
-        await file.parent.create(recursive: true);
-        final tmpPath = "$offlinePath.tmp";
-        /*final response = */ await _client.download(url, tmpPath);
-        // final duration = int.parse(response.headers['x-duration-seconds']![0]);
-        // PlayerController player = Provider.of(Global.context, listen: false);
-        // player.durationMap[id] =
-        //     Duration(seconds: duration + 1); // +1 to avoid duration exceeding
-        File(tmpPath).rename(offlinePath);
-      } else {
-        throw UnsupportedError("No available annil server found");
+  Uri? getCoverUrl({required String albumId, int? discId}) {
+    if (Global.network.isOnline) {
+      for (final client in _clients) {
+        if (client.albums.contains(albumId)) {
+          return client.getCoverUrl(albumId: albumId, discId: discId);
+        }
       }
     }
-    preloaded = true;
+    return null;
   }
-
-  TrackIdentifier get identifier =>
-      TrackIdentifier(albumId: albumId, discId: discId, trackId: trackId);
 }
 
-abstract class BaseAnnilClient {
-  Future<List<String>> getAlbums();
-
-  Uri getCoverUrl({required String albumId, int? discId});
-}
-
-class OnlineAnnilClient implements BaseAnnilClient {
+class OnlineAnnilClient {
   final Dio client;
   final String id;
   String name;
@@ -205,7 +205,6 @@ class OnlineAnnilClient implements BaseAnnilClient {
   }
 
   /// Get the available album list of an Annil server.
-  @override
   Future<List<String>> getAlbums() async {
     try {
       final response = await client.get(
@@ -237,7 +236,6 @@ class OnlineAnnilClient implements BaseAnnilClient {
     return List.unmodifiable(albums);
   }
 
-  @override
   Uri getCoverUrl({required String albumId, int? discId}) {
     if (discId == null) {
       return Uri.parse('$url/$albumId/cover');
@@ -247,25 +245,14 @@ class OnlineAnnilClient implements BaseAnnilClient {
   }
 }
 
-String getAudioCachePath(String albumId, int discId, int trackId) {
-  return p.join(
-    Global.storageRoot,
-    'audio',
-    albumId,
-    /* extension is required on macOS for playback */
-    "${discId}_$trackId${Global.isApple ? ".flac" : ""}",
-  );
-}
-
 enum PreferQuality {
   Low,
   Medium,
   High,
-  Lossless,
-}
+  Lossless;
 
-extension PreferQualityToString on PreferQuality {
-  String toQualityString() {
+  @override
+  String toString() {
     switch (this) {
       case PreferQuality.Low:
         return "low";
@@ -279,13 +266,7 @@ extension PreferQualityToString on PreferQuality {
   }
 }
 
-class OfflineAnnilClient implements BaseAnnilClient {
-  static final OfflineAnnilClient _instance = OfflineAnnilClient._();
-  static OfflineAnnilClient get instance => OfflineAnnilClient._instance;
-
-  OfflineAnnilClient._();
-
-  @override
+class OfflineAnnilClient {
   Future<List<String>> getAlbums() async {
     final root = p.join(Global.storageRoot, 'audio');
     return Directory(root)
@@ -301,16 +282,6 @@ class OfflineAnnilClient implements BaseAnnilClient {
         })
         .map((entry) => p.basename(entry.path))
         .toList();
-  }
-
-  @override
-  Uri getCoverUrl({required String albumId, int? discId}) {
-    // placeholder, would never be called
-    throw UnimplementedError();
-  }
-
-  static String cacheKey(String albumId, {int? discId}) {
-    return discId == null ? albumId : "$albumId/$discId";
   }
 
   bool isAvailable({

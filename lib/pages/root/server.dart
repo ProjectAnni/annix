@@ -1,8 +1,8 @@
-import 'package:annix/controllers/annil_controller.dart';
+import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/controllers/anniv_controller.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
-import 'package:annix/services/annil.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/simple_text_field.dart';
