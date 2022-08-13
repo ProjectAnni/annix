@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:annix/services/annil.dart';
-import 'package:annix/services/cover.dart';
+import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/global.dart';
 import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
