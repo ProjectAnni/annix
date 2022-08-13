@@ -273,8 +273,7 @@ class PlayerService extends ChangeNotifier {
       albumIds.add(albumId);
     }
 
-    final metadataMap =
-        await (await Global.metadataSource.future).getAlbums(albumIds);
+    final metadataMap = await Global.metadataSource.getAlbums(albumIds);
     for (final albumId in albumIds) {
       final metadata = metadataMap[albumId];
       if (metadata != null) {

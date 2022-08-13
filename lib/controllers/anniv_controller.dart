@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:annix/services/annil/annil_controller.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
+import 'package:annix/services/metadata/metadata_source_offline.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
 import 'package:annix/models/anniv.dart';
 import 'package:annix/services/anniv.dart';
@@ -95,8 +96,8 @@ class AnnivController extends GetxController {
       }
       this.client = client;
 
-      if (!Global.metadataSource.isCompleted) {
-        Global.metadataSource.complete(AnnivMetadataSource(client));
+      if (Global.metadataSource is OfflineMetadataSource) {
+        Global.metadataSource = AnnivMetadataSource(client);
       }
 
       await Future.wait([
@@ -170,7 +171,7 @@ class AnnivController extends GetxController {
 
   Future<void> addFavorite(TrackIdentifier track) async {
     if (client != null) {
-      final trackMetadata = await (await Global.metadataSource.future).getTrack(
+      final trackMetadata = await Global.metadataSource.getTrack(
           albumId: track.albumId, discId: track.discId, trackId: track.trackId);
       favorites[track.toSlashedString()] = TrackInfoWithAlbum(
         track: track,
@@ -265,10 +266,7 @@ class AnnivController extends GetxController {
       final db = SqliteMetadataSource(_databasePath);
       await db.prepare();
 
-      if (Global.metadataSource.isCompleted) {
-        Global.metadataSource = Completer();
-      }
-      Global.metadataSource.complete(db);
+      Global.metadataSource = db;
     }
   }
 }

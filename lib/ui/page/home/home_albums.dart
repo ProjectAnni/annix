@@ -36,8 +36,8 @@ class HomeAlbums extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: FutureBuilder<Album?>(
-                          future: Global.metadataSource.future.then(
-                              (store) => store.getAlbum(albumId: albumId)),
+                          future:
+                              Global.metadataSource.getAlbum(albumId: albumId),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
                               return const DummyMusicCover();

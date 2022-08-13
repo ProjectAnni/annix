@@ -28,9 +28,7 @@ class TagsView extends StatelessWidget {
             isScrollable: true,
           ),
           FutureBuilder<Map<String, TagEntry>>(
-              future: Global.metadataSource.future.then(
-                (metadata) => metadata.getTags(),
-              ),
+              future: Global.metadataSource.getTags(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final sorted = Map.fromEntries(snapshot.data!.entries.toList()

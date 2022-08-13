@@ -31,7 +31,7 @@ class AnnilAudioSource extends Source {
     required int trackId,
     PreferQuality quality = PreferQuality.Medium,
   }) async {
-    final track = await (await Global.metadataSource.future)
+    final track = await Global.metadataSource
         .getTrack(albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource(
       albumId: albumId,

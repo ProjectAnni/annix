@@ -18,10 +18,8 @@ class TagScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(name)),
       body: FutureBuilder<List<String>>(
-          future: Global.metadataSource.future
-              .then((metadata) => metadata.getAlbumsByTag(name))
-              .then((albums) => albums
-                ..removeWhere((album) => !annil.albums.contains(album))),
+          future: Global.metadataSource.getAlbumsByTag(name).then((albums) =>
+              albums..removeWhere((album) => !annil.albums.contains(album))),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
@@ -41,8 +39,7 @@ class TagScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final albumId = snapshot.data![index];
                   return FutureBuilder<Album?>(
-                    future: Global.metadataSource.future
-                        .then((store) => store.getAlbum(albumId: albumId)),
+                    future: Global.metadataSource.getAlbum(albumId: albumId),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const DummyMusicCover();

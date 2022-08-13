@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/services/metadata/metadata_source.dart';
+import 'package:annix/services/metadata/metadata_source_offline.dart';
 import 'package:annix/services/network.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +16,7 @@ import 'package:we_slide/we_slide.dart';
 class Global {
   static late SharedPreferences preferences;
 
-  static Completer<MetadataSource> metadataSource = Completer();
+  static MetadataSource metadataSource = OfflineMetadataSource();
 
   static bool isDesktop =
       Platform.isLinux || Platform.isWindows || Platform.isMacOS;
