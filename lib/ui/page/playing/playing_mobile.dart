@@ -1,5 +1,6 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/pages/playing/playing_queue.dart';
+import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -107,10 +108,26 @@ class PlayingMobileScreen extends StatelessWidget {
           alignment: MainAxisAlignment.end,
           buttonPadding: EdgeInsets.zero,
           children: [
-            IconButton(
-              icon: const Icon(Icons.text_snippet_rounded),
-              onPressed: () {
-                showLyrics.value = !showLyrics.value;
+            GestureDetector(
+              child: IconButton(
+                icon: const Icon(Icons.text_snippet_rounded),
+                onPressed: () {
+                  showLyrics.value = !showLyrics.value;
+                },
+              ),
+              onLongPress: () {
+                final player =
+                    Provider.of<PlayerService>(context, listen: false);
+                final playing = player.playing?.track;
+                if (playing != null) {
+                  showDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (context) {
+                      return SearchLyricsDialog(track: playing);
+                    },
+                  );
+                }
               },
             ),
             IconButton(

@@ -306,6 +306,11 @@ class PlayerService extends ChangeNotifier {
     }
   }
 
+  void setLyric(String lyric) {
+    playingLyric = lyric;
+    notifyListeners();
+  }
+
   Future<LyricLanguage?> getLyric(AnnilAudioSource item) async {
     final AnnivController anniv = Get.find();
     final id = item.id;
@@ -322,7 +327,11 @@ class PlayerService extends ChangeNotifier {
     // 3. lyric provider
     if (lyric == null) {
       LyricProvider provider = LyricProviderPetitLyrics();
-      final songs = await provider.search(item.track);
+      final songs = await provider.search(
+        item.track.title,
+        artist: item.track.artist,
+        album: item.track.disc.album.title,
+      );
       if (songs.isNotEmpty) {
         lyric = await songs.first.lyric;
       }

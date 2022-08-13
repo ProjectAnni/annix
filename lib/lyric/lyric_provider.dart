@@ -1,12 +1,19 @@
 import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
 import 'package:annix/utils/store.dart';
+
+enum LyricProviders {
+  // ignore: constant_identifier_names
+  PetitLyrics,
+  // ignore: constant_identifier_names
+  Netease,
+}
 
 /// [LyricProvider] is an abstract class that provides methods to search and fetch lyrics.
 ///
 /// The [search] method returns a list of handles that can be used to fetch the lyrics.
 abstract class LyricProvider {
-  Future<List<LyricSearchResponse>> search(Track track);
+  Future<List<LyricSearchResponse>> search(String title,
+      {String? artist, String? album});
 
   static final _store = AnnixStore().category('lyric');
   static Future<LyricLanguage?> getLocal(String id) => _store
@@ -21,22 +28,22 @@ abstract class LyricProvider {
 abstract class LyricSearchResponse {
   Future<LyricLanguage?> get lyric;
 
-  Future<String?> get title;
-  Future<List<String>?> get artists;
+  String get title;
+  List<String> get artists;
   Future<String?> get album;
 }
 
 class LyricSearchResponseText extends LyricSearchResponse {
   final String? albumTitle;
-  final String? trackTitle;
-  final List<String>? artistsName;
+  final String trackTitle;
+  final List<String> artistsName;
   final String lyricText;
   final String lyricType;
 
   LyricSearchResponseText({
     this.albumTitle,
-    this.trackTitle,
-    this.artistsName,
+    required this.trackTitle,
+    this.artistsName = const [],
     required this.lyricText,
     this.lyricType = "text",
   });
@@ -45,7 +52,7 @@ class LyricSearchResponseText extends LyricSearchResponse {
   Future<String?> get album => Future.value(albumTitle);
 
   @override
-  Future<List<String>?> get artists => Future.value(artistsName);
+  List<String> get artists => artistsName;
 
   @override
   Future<LyricLanguage?> get lyric => Future.value(LyricLanguage(
@@ -55,5 +62,5 @@ class LyricSearchResponseText extends LyricSearchResponse {
       ));
 
   @override
-  Future<String?> get title => Future.value(trackTitle);
+  String get title => trackTitle;
 }

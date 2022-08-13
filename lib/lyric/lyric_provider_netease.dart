@@ -1,15 +1,15 @@
 import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 
 class LyricProviderNetease extends LyricProvider {
   @override
-  Future<List<LyricSearchResponse>> search(Track track) async {
+  Future<List<LyricSearchResponse>> search(String title,
+      {String? artist, String? album}) async {
     await NeteaseMusicApi.init();
     final api = NeteaseMusicApi();
 
-    final searchResult = await api.searchSong(track.title);
+    final searchResult = await api.searchSong(title);
     if (searchResult.codeEnum != RetCode.Ok) {
       return [];
     }
@@ -51,11 +51,10 @@ class LyricSearchResponseNetease extends LyricSearchResponse {
   }
 
   @override
-  Future<String?> get title => Future.value(song.name);
+  String get title => song.name ?? "No title";
 
   @override
-  Future<List<String>?> get artists =>
-      Future.value(song.artists?.map((e) => e.name!).toList());
+  List<String> get artists => song.artists?.map((e) => e.name!).toList() ?? [];
 
   @override
   Future<String?> get album => Future.value(song.album?.name);

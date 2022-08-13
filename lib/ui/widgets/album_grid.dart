@@ -16,7 +16,7 @@ class AlbumGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: AspectRatio(
-        aspectRatio: 0.88,
+        aspectRatio: 0.86,
         child: GestureDetector(
           onTap: () => toAlbum(context),
           child: Column(

@@ -1,6 +1,5 @@
 import 'package:annix/lyric/lyric_provider.dart';
 import 'package:annix/models/anniv.dart';
-import 'package:annix/models/metadata.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:xml/xml.dart';
@@ -12,20 +11,35 @@ class PetitLyricsClient {
   factory PetitLyricsClient() => _instance;
   PetitLyricsClient._();
 
-  Dio _client = Dio();
+  final Dio _client = Dio();
 
-  Future<XmlDocument> getLyric(Track track,
-      {int lyricType = 1, int? lyricId}) async {
+  Future<XmlDocument> getLyric(String title,
+      {String? artist, String? album, int lyricType = 1, int? lyricId}) async {
     final data = await _client.post(
       "http://p0.petitlyrics.com/api/GetPetitLyricsData.php",
       data: {
         "clientAppId": "p1110417",
         "lyricsType": lyricType,
         "terminalType": 10,
-        // "key_artist": track.artist,
-        "key_title": track.title,
-        "key_album": track.disc.album.title,
+        "key_artist": artist,
+        "key_title": title,
+        "key_album": album,
         "key_lyricsId": lyricId ?? "",
+      },
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+    );
+
+    return XmlDocument.parse(data.data as String);
+  }
+
+  Future<XmlDocument> getLyricById(int lyricId, {int lyricType = 1}) async {
+    final data = await _client.post(
+      "http://p0.petitlyrics.com/api/GetPetitLyricsData.php",
+      data: {
+        "clientAppId": "p1110417",
+        "lyricsType": lyricType,
+        "terminalType": 10,
+        "key_lyricsId": lyricId,
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
@@ -79,16 +93,21 @@ class LyricProviderPetitLyrics extends LyricProvider {
   final _client = PetitLyricsClient();
 
   @override
-  Future<List<LyricSearchResponse>> search(Track track) async {
+  Future<List<LyricSearchResponse>> search(String title,
+      {String? artist, String? album}) async {
     // https://github.com/kokarare1212/MusicBee.PetitLyrics/blob/master/MusicBee.PetitLyrics/Plugin.cs
-    final document = await _client.getLyric(track, lyricType: 3);
+    final document = await _client.getLyric(
+      title,
+      artist: artist,
+      album: album,
+      lyricType: 3,
+    );
     final songs = document.findAllElements("song");
     return songs
         .map(
           (song) => LyricSearchResponsePetitLyrics(
             lyricId: int.parse(song.findElements("lyricsId").first.text),
             lyricType: int.parse(song.findElements("lyricsType").first.text),
-            track: track,
             trackTitle: song.findElements("title").first.text,
             albumTitle: song.findElements("album").first.text,
             artistsName: [song.findElements("artist").first.text],
@@ -104,38 +123,32 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   final _client = PetitLyricsClient();
 
   final String? albumTitle;
-  final String? trackTitle;
-  final List<String>? artistsName;
+  final String trackTitle;
+  final List<String> artistsName;
 
   int lyricId;
   int? lyricType;
-  Track track;
   final String lyricText;
 
   LyricSearchResponsePetitLyrics({
     required this.lyricId,
-    required this.track,
     required this.lyricText,
     this.lyricType,
     this.albumTitle,
-    this.trackTitle,
-    this.artistsName,
+    required this.trackTitle,
+    required this.artistsName,
   });
 
   @override
   Future<String?> get album => Future.value(albumTitle);
 
   @override
-  Future<List<String>?> get artists => Future.value(artistsName);
+  List<String> get artists => artistsName;
 
   @override
   Future<LyricLanguage?> get lyric async {
     if (lyricType == 1) {
-      final lrc = await _client.getLyric(
-        track,
-        lyricType: 2,
-        lyricId: lyricId,
-      );
+      final lrc = await _client.getLyricById(lyricId, lyricType: 2);
 
       final songs = lrc.findAllElements("song");
       if (songs.isEmpty) {
@@ -171,7 +184,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   }
 
   @override
-  Future<String?> get title => Future.value(trackTitle);
+  String get title => trackTitle;
 }
 
 String cs2mmssff(int cs) {
