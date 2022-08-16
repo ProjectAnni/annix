@@ -88,7 +88,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
       : player = Provider.of<PlayerService>(context, listen: false),
         progress = Provider.of<PlayingProgress>(context, listen: false),
         annil = Provider.of<CombinedOnlineAnnilClient>(context, listen: false),
-        anniv = Provider.of<AnnivService>(Global.context, listen: false) {
+        anniv = Provider.of<AnnivService>(context, listen: false) {
     player.addListener(() => _updatePlaybackState());
     progress.addListener(() => _updatePlaybackState());
     anniv.favorites.listen((_) => _updatePlaybackState());

@@ -42,8 +42,7 @@ class PlayingMusicCover extends StatelessWidget {
           fit: fit,
           filterQuality: filterQuality,
           onColor: (color) {
-            Provider.of<AnnixTheme>(Global.context, listen: false)
-                .setTheme(color);
+            Provider.of<AnnixTheme>(context, listen: false).setTheme(color);
           },
         );
       },

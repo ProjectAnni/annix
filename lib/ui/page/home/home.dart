@@ -18,7 +18,7 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
+    final anniv = Provider.of<AnnivService>(context, listen: false);
     return Obx(
       () => SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
+    final anniv = Provider.of<AnnivService>(context, listen: false);
 
     return Material(
       child: CustomScrollView(
