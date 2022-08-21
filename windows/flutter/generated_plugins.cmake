@@ -7,6 +7,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
   connectivity_plus_windows
   flutter_lyric
+  flutter_secure_storage_windows
+  sqlite3_flutter_libs
   url_launcher_windows
 )
 

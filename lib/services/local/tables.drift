@@ -1,0 +1,31 @@
+-- tables
+
+CREATE TABLE playlist (
+    -- local properties
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name"            TEXT NOT NULL,
+    "cover"           TEXT,
+    "description"     TEXT,
+
+    -- remote properties
+    "remote_id"       TEXT,
+    "owner"           TEXT,
+    "public"          BOOL,
+    "last_modified"   INT
+);
+
+CREATE TABLE playlist_item (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "playlist_id"     INT NOT NULL,
+
+    "type"            TEXT NOT NULL DEFAULT 'normal' CHECK ("type" IN ('normal', 'dummy', 'album')),
+    "description"     TEXT,
+    "info"            TEXT NOT NULL,
+
+    "remote_id"       TEXT,
+    "order"           INT NOT NULL,
+
+    FOREIGN KEY("playlist_id") REFERENCES "playlist"("id")
+);
+
+playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";

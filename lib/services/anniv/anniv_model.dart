@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:drift/drift.dart' hide JsonKey;
 import 'package:json_annotation/json_annotation.dart';
 
 part 'anniv_model.g.dart';
@@ -141,6 +143,8 @@ class DiscIdentifier {
       _$DiscIdentifierFromJson(json);
 
   Map<String, dynamic> toJson() => _$DiscIdentifierToJson(this);
+
+  String? toIdentifier() => '$albumId/$discId';
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -269,6 +273,19 @@ class PlaylistInfo {
 
   factory PlaylistInfo.fromJson(Map<String, dynamic> json) =>
       _$PlaylistInfoFromJson(json);
+
+  PlaylistCompanion toCompanion({Value<int> id = const Value.absent()}) {
+    return PlaylistCompanion(
+      id: id,
+      name: Value(name),
+      description: Value(description),
+      cover: Value(cover.toIdentifier()),
+      remoteId: Value(this.id),
+      owner: Value(owner),
+      public: Value(isPublic),
+      lastModified: const Value(0), // TODO: last_modified from remote
+    );
+  }
 }
 
 class Playlist {
@@ -408,12 +425,12 @@ class LyricLanguage {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class RepoDatabaseDecsription {
+class RepoDatabaseDescription {
   final int lastModified;
 
-  RepoDatabaseDecsription({required this.lastModified});
+  RepoDatabaseDescription({required this.lastModified});
 
-  factory RepoDatabaseDecsription.fromJson(Map<String, dynamic> json) =>
+  factory RepoDatabaseDescription.fromJson(Map<String, dynamic> json) =>
       _$RepoDatabaseDecsriptionFromJson(json);
 }
 

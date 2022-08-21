@@ -42,7 +42,7 @@ class Global {
         appWindow.show();
       });
 
-      final isPortalbleMode = File(p.normalize(
+      final isPortableMode = File(p.normalize(
               p.join(Platform.resolvedExecutable, '..', 'portable.enable')))
           .existsSync();
 
@@ -50,7 +50,7 @@ class Global {
         storageRoot = p.join((await getLibraryDirectory()).path, 'data');
         dataRoot = storageRoot;
       } else {
-        if (isPortalbleMode) {
+        if (isPortableMode) {
           dataRoot =
               p.normalize(p.join(Platform.resolvedExecutable, '..', 'data'));
         } else {

@@ -6,6 +6,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
   bitsdojo_window_linux
   flutter_lyric
+  flutter_secure_storage_linux
+  sqlite3_flutter_libs
   url_launcher_linux
 )
 

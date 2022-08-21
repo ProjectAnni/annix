@@ -17,8 +17,8 @@ dependencies:
     git:
       url: https://github.com/ProjectAnni/Flogs
   get: ^4.6.5
-  # use provier in some performance-critical situations such as current playing state
-  # I just don't belive in the performance of GetX.
+  # use provider in some performance-critical situations such as current playing state
+  # I just don't believe in the performance of GetX.
   # Would replace it with provider completely in the future.
   provider: ^6.0.3
   shared_preferences: ^2.0.15
@@ -61,8 +61,12 @@ dependencies:
   toml: ^0.13.1
   json_serializable: ^6.2.0
   json_annotation: ^4.5.0
+
+  drift: ^2.0.2
+  sqlite3_flutter_libs: ^0.5.0
   sqflite: ^2.0.1
   sqflite_common_ffi: ^2.1.1
+
   uuid: ^3.0.5
   cupertino_icons: ^1.0.5
 
@@ -83,7 +87,15 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.5
+  drift_dev: ^2.0.1
+  build_runner: ^2.2.0
+
+  # storage inspector
+  storage_inspector: ^0.2.3
+  file_local_storage_inspector: ^0.2.3
+  preferences_local_storage_inspector: ^0.2.3
+  secure_storage_local_storage_inspector: ^0.2.3
+  drift_local_storage_inspector: ^0.3.0
 
 flutter:
   uses-material-design: true

@@ -244,10 +244,10 @@ class AnnivClient {
     }
   }
 
-  Future<RepoDatabaseDecsription?> getRepoDatabaseDescription() async {
+  Future<RepoDatabaseDescription?> getRepoDatabaseDescription() async {
     try {
       final response =
-          await _client.get<RepoDatabaseDecsription>('/api/meta/db/repo.json');
+          await _client.get<RepoDatabaseDescription>('/api/meta/db/repo.json');
       return response.data;
     } catch (e) {
       FLog.error(text: e.toString(), exception: e);

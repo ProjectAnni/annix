@@ -25,8 +25,7 @@ Windows users should download
 [`sqlite3.dll`](https://github.com/tekartik/sqflite/raw/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll)
 manually and put it in the directory which includes `annix.exe`.
 
-At this moment, annix does not work as expected.
-[#1221](https://github.com/bluefireteam/audioplayers/pull/1221)
+At this moment, annix does not work as expected. [#1221](https://github.com/bluefireteam/audioplayers/pull/1221) has been merged, but no update has been released yet.
 
 ## TODOs
 

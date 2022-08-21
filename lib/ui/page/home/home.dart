@@ -4,78 +4,14 @@ import 'package:annix/i18n/i18n.dart';
 import 'package:annix/global.dart';
 import 'package:annix/ui/page/home/home_albums.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
+import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/route/delegate.dart';
-import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-
-class PlaylistView extends StatelessWidget {
-  const PlaylistView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(context, listen: false);
-    return Obx(
-      () => SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            if (index == 0) {
-              // fav
-              return ListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  leading: AspectRatio(
-                    aspectRatio: 1,
-                    child: anniv.favorites.isEmpty
-                        ? const DummyMusicCover()
-                        : MusicCover(
-                            albumId: anniv.favorites.values.last.track.albumId),
-                  ),
-                  title: Text(I18n.MY_FAVORITE.tr),
-                  visualDensity: VisualDensity.standard,
-                  onTap: () {
-                    AnnixRouterDelegate.of(context).to(name: "/favorite");
-                  });
-            } else {
-              index = index - 1;
-            }
-
-            final playlistId = anniv.playlists.keys.toList()[index];
-            final playlist = anniv.playlists[playlistId]!;
-
-            final albumId =
-                playlist.cover.albumId == "" ? null : playlist.cover.albumId;
-            return ListTile(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              leading: AspectRatio(
-                aspectRatio: 1,
-                child: albumId == null
-                    ? const DummyMusicCover()
-                    : MusicCover(albumId: albumId),
-              ),
-              title: Text(
-                playlist.name,
-                overflow: TextOverflow.ellipsis,
-              ),
-              visualDensity: VisualDensity.standard,
-              onTap: () async {
-                final delegate = AnnixRouterDelegate.of(context);
-                final playlist = await anniv.getPlaylist(playlistId);
-                delegate.to(name: "/playlist", arguments: playlist);
-              },
-            );
-          },
-          childCount: anniv.playlists.length + 1,
-        ),
-      ),
-    );
-  }
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

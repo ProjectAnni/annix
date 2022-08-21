@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:annix/services/local/database.dart' hide Playlist;
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_offline.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
@@ -10,8 +11,9 @@ import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/network.dart';
 import 'package:dio/dio.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
@@ -210,14 +212,45 @@ class AnnivService {
   }
 
   //////////////////////////////// Playlist ///////////////////////////////
-  RxMap<String, PlaylistInfo> playlists = RxMap();
   Map<String, Playlist> playlistDetail = {};
 
   Future<void> syncPlaylist() async {
     if (client != null) {
+      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+
       final list = await client!.getOwnedPlaylists();
       final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
-      playlists.value = map;
+
+      final deduplicate = <String>[];
+      await db.playlist.select().map((playlist) {
+        final isRemote = playlist.remoteId != null;
+        if (isRemote) {
+          final remote = map[playlist.remoteId];
+
+          // playlist does not exist on remote, remove it
+          if (remote == null || deduplicate.contains(remote.id)) {
+            db.playlist.deleteOne(playlist);
+            db.playlistItem
+                .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
+          } else {
+            // playlist exists on remote, compare last_modified and update it
+            // FIXME: replace -1 with map[id].lastModified
+            if (playlist.lastModified != -1) {
+              // update modified playlist
+              db.playlist
+                  .update()
+                  .replace(remote.toCompanion(id: Value(playlist.id)));
+            }
+            deduplicate.add(remote.id);
+            map.remove(remote.id);
+          }
+        }
+      }).get();
+
+      // the remaining playlist is new, add it
+      for (final playlist in map.values) {
+        db.playlist.insertOne(playlist.toCompanion());
+      }
     }
   }
 

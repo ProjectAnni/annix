@@ -1,4 +1,5 @@
 import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/services/local/database.dart';
 import 'package:annix/services/settings_controller.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
@@ -28,6 +29,8 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NetworkService(), lazy: false),
         ChangeNotifierProvider(create: (_) => PlayerService(), lazy: false),
         ChangeNotifierProvider(create: (_) => PlayingProgress(), lazy: false),
+        LocalDatabase.provider,
+        LocalDatabase.playlistProvider,
         ChangeNotifierProvider(
           create: (context) {
             final network = Provider.of<NetworkService>(context, listen: false);
@@ -38,7 +41,9 @@ class AnnixApp extends StatelessWidget {
           lazy: false,
         ),
         ChangeNotifierProvider(
-            create: (_) => AnnixRouterDelegate(), lazy: false),
+          create: (_) => AnnixRouterDelegate(),
+          lazy: false,
+        ),
         // Anniv controller
         Provider(create: (c) => AnnivService(c), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
