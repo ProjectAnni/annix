@@ -18,59 +18,62 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(context, listen: false);
-
     return Material(
       child: CustomScrollView(
         slivers: (<Widget>[
-                  SliverAppBar.large(
-                    title: Obx(() => HomeAppBar(info: anniv.info.value)),
-                    centerTitle: true,
-                    automaticallyImplyLeading: false,
-                    scrolledUnderElevation: 0,
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Icons.shuffle_outlined),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            useRootNavigator: true,
-                            barrierDismissible: false,
-                            builder: (context) {
-                              return Center(
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        CircularProgressIndicator(
-                                          strokeWidth: 2,
+                  Consumer<AnnivService>(
+                    builder: (context, anniv, child) {
+                      return SliverAppBar.large(
+                        title: HomeAppBar(info: anniv.info),
+                        centerTitle: true,
+                        automaticallyImplyLeading: false,
+                        scrolledUnderElevation: 0,
+                        actions: [
+                          IconButton(
+                            icon: const Icon(Icons.shuffle_outlined),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                useRootNavigator: true,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return Center(
+                                    child: Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                            SizedBox(width: 12),
+                                            Text("Loading..."),
+                                          ],
                                         ),
-                                        SizedBox(width: 12),
-                                        Text("Loading..."),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               );
+                              Provider.of<PlayerService>(context, listen: false)
+                                  .fullShuffleMode()
+                                  .then((value) =>
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop());
                             },
-                          );
-                          Provider.of<PlayerService>(context, listen: false)
-                              .fullShuffleMode()
-                              .then((value) =>
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop());
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () {
-                          AnnixRouterDelegate.of(context).to(name: "/search");
-                        },
-                      ),
-                      const ThemeButton(),
-                    ],
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              AnnixRouterDelegate.of(context)
+                                  .to(name: "/search");
+                            },
+                          ),
+                          const ThemeButton(),
+                        ],
+                      );
+                    },
                   ),
                 ] +
                 content())

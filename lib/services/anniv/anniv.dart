@@ -24,11 +24,12 @@ class SiteUserInfo {
   SiteUserInfo({required this.site, required this.user});
 }
 
-class AnnivService {
+class AnnivService extends ChangeNotifier {
   AnnivClient? client;
 
-  Rxn<SiteUserInfo> info = Rxn(null);
-  Rx<bool> isLogin = false.obs;
+  SiteUserInfo? info;
+
+  bool get isLogin => info != null;
 
   AnnivService(BuildContext context) {
     // 1. init client
@@ -39,8 +40,6 @@ class AnnivService {
 
     // 3. load favorites
     _loadFavorites();
-
-    isLogin.bindStream(info.stream.map((user) => user != null));
 
     // check login status
     final network = Provider.of<NetworkService>(context, listen: false);
@@ -65,7 +64,7 @@ class AnnivService {
 
         final site = result[0] as SiteInfo;
         final user = result[1] as UserInfo;
-        info.value = SiteUserInfo(site: site, user: user);
+        info = SiteUserInfo(site: site, user: user);
         await _saveInfo();
       } catch (e) {
         if (e is DioError &&
@@ -107,7 +106,7 @@ class AnnivService {
   }
 
   Future<void> logout() async {
-    info.value = null;
+    info = null;
     await _saveInfo();
 
     await client?.logout();
@@ -117,7 +116,7 @@ class AnnivService {
     final site = Global.preferences.getString("anniv_site");
     final user = Global.preferences.getString("anniv_user");
     if (site != null && user != null) {
-      info.value = SiteUserInfo(
+      info = SiteUserInfo(
         site: SiteInfo.fromJson(jsonDecode(site)),
         user: UserInfo.fromJson(jsonDecode(user)),
       );
@@ -125,18 +124,20 @@ class AnnivService {
   }
 
   Future<void> _saveInfo() async {
-    if (info.value != null) {
-      final site = info.value!.site.toJson();
-      final user = info.value!.user.toJson();
+    if (info != null) {
+      final site = info!.site.toJson();
+      final user = info!.user.toJson();
       await Global.preferences.setString("anniv_site", jsonEncode(site));
       await Global.preferences.setString("anniv_user", jsonEncode(user));
     } else {
       await Global.preferences.remove("anniv_site");
       await Global.preferences.remove("anniv_user");
     }
+    notifyListeners();
   }
 
   //////////////////////////////// Favorite ///////////////////////////////
+  // TODO: save favorite in table
   RxMap<String, TrackInfoWithAlbum> favorites = RxMap();
 
   void _loadFavorites() async {

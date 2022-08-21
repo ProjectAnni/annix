@@ -128,14 +128,12 @@ class AnnivCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(context, listen: false);
-    final inner = Obx(
-      () {
-        final info = anniv.info.value;
-        if (info == null) {
+    final inner = Consumer<AnnivService>(
+      builder: (context, AnnivService anniv, child) {
+        if (anniv.info == null) {
           return beforeLogin(context);
         } else {
-          return afterLogin(context, info);
+          return afterLogin(context, anniv.info!);
         }
       },
     );

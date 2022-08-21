@@ -45,7 +45,7 @@ class AnnixApp extends StatelessWidget {
           lazy: false,
         ),
         // Anniv controller
-        Provider(create: (c) => AnnivService(c), lazy: false),
+        ChangeNotifierProvider(create: (c) => AnnivService(c), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
       ],
       builder: (context, child) {

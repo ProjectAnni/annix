@@ -32,7 +32,7 @@ class LocalDatabase extends _$LocalDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final file = File(p.join(Global.dataRoot, 'db.sqlite'));
+    final file = File(p.join(Global.dataRoot, 'local.db'));
     return NativeDatabase(file);
   });
 }

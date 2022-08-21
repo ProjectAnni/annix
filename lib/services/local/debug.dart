@@ -12,13 +12,14 @@ Future<void> startDebug() async {
     icon: '...',
   );
 
-  final preferencesServer = PreferencesKeyValueServer(
-      Global.preferences, 'Base Preferences');
+  final preferencesServer =
+      PreferencesKeyValueServer(Global.preferences, 'Base Preferences');
   driver.addKeyValueServer(preferencesServer);
 
   final fileServer = DefaultFileServer(Global.storageRoot, "Cache files");
   driver.addFileServer(fileServer);
 
+  // FIXME: do not create new instance here
   final driftDb = LocalDatabase();
   final sqlServer = DriftSQLDatabaseServer(
     id: "1",
