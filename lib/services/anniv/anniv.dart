@@ -139,7 +139,7 @@ class AnnivService extends ChangeNotifier {
     if (favoritesLoaded != null) {
       final favoriteMap = (jsonDecode(favoritesLoaded) as List<dynamic>)
           .map((e) => TrackInfoWithAlbum.fromJson(e))
-          .map((e) => MapEntry(e.track.toSlashedString(), e));
+          .map((e) => MapEntry(e.track.toString(), e));
       favorites.value = Map.fromEntries(favoriteMap);
     }
   }
@@ -153,9 +153,8 @@ class AnnivService extends ChangeNotifier {
     if (client != null) {
       final MetadataService metadata =
           Provider.of<MetadataService>(Global.context, listen: false);
-      final trackMetadata = await metadata.getTrack(
-          albumId: track.albumId, discId: track.discId, trackId: track.trackId);
-      favorites[track.toSlashedString()] = TrackInfoWithAlbum(
+      final trackMetadata = await metadata.getTrack(track);
+      favorites[track.toString()] = TrackInfoWithAlbum(
         track: track,
         title: trackMetadata!.title,
         artist: trackMetadata.artist,
@@ -166,7 +165,7 @@ class AnnivService extends ChangeNotifier {
         await client?.addFavorite(track);
         await _saveFavorites();
       } catch (e) {
-        favorites.remove(track.toSlashedString());
+        favorites.remove(track.toString());
         rethrow;
       }
     }
@@ -174,13 +173,13 @@ class AnnivService extends ChangeNotifier {
 
   Future<void> removeFavorite(TrackIdentifier id) async {
     if (client != null) {
-      final got = favorites.remove(id.toSlashedString());
+      final got = favorites.remove(id.toString());
       try {
         await client?.removeFavorite(id);
         await _saveFavorites();
       } catch (e) {
         if (got != null) {
-          favorites[id.toSlashedString()] = got;
+          favorites[id.toString()] = got;
         }
         rethrow;
       }
@@ -188,7 +187,7 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<bool> toggleFavorite(TrackIdentifier id) async {
-    if (favorites.containsKey(id.toSlashedString())) {
+    if (favorites.containsKey(id.toString())) {
       await removeFavorite(id);
       return false;
     } else {
@@ -202,7 +201,7 @@ class AnnivService extends ChangeNotifier {
       final list = await client!.getFavoriteList();
       // reverse favorite map here
       final map = Map.fromEntries(
-          list.reversed.map((e) => MapEntry(e.track.toSlashedString(), e)));
+          list.reversed.map((e) => MapEntry(e.track.toString(), e)));
       favorites.value = map;
       await _saveFavorites();
     }

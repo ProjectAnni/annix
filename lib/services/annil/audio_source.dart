@@ -15,47 +15,35 @@ class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
 
   AnnilAudioSource({
-    required this.albumId,
-    required this.discId,
-    required this.trackId,
     required this.quality,
     required this.track,
   });
 
   static Future<AnnilAudioSource> from({
-    required String albumId,
-    required int discId,
-    required int trackId,
+    required TrackIdentifier id,
     PreferQuality quality = PreferQuality.Medium,
   }) async {
     final MetadataService metadata =
         Provider.of<MetadataService>(Global.context, listen: false);
-    final track = await metadata.getTrack(
-        albumId: albumId, discId: discId, trackId: trackId);
+    final track = await metadata.getTrack(id);
     return AnnilAudioSource(
-      albumId: albumId,
-      discId: discId,
-      trackId: trackId,
       quality: quality,
       track: track!,
     );
   }
 
-  final String albumId;
-  final int discId;
-  final int trackId;
   final PreferQuality quality;
   final Track track;
 
   Future<void>? _preloadFuture;
 
-  String get id {
-    return "$albumId/$discId/$trackId";
-  }
+  TrackIdentifier get identifier => track.id;
+
+  String get id => track.id.toString();
 
   @override
   Future<void> setOnPlayer(AudioPlayer player) async {
-    final offlinePath = getAudioCachePath(albumId, discId, trackId);
+    final offlinePath = getAudioCachePath(track.id);
     final playerService =
         Provider.of<PlayerService>(Global.context, listen: false);
     if (await File(offlinePath).exists()) {
@@ -86,11 +74,10 @@ class AnnilAudioSource extends Source {
   Future<void> _preload() async {
     final annil =
         Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
-    final offlinePath = getAudioCachePath(albumId, discId, trackId);
+    final offlinePath = getAudioCachePath(track.id);
     final file = File(offlinePath);
     if (!await file.exists()) {
-      final url = annil.getAudioUrl(
-          albumId: albumId, discId: discId, trackId: trackId, quality: quality);
+      final url = annil.getAudioUrl(id: track.id, quality: quality);
       if (url != null) {
         await file.parent.create(recursive: true);
         final tmpPath = "$offlinePath.tmp";
@@ -107,7 +94,4 @@ class AnnilAudioSource extends Source {
     }
     preloaded = true;
   }
-
-  TrackIdentifier get identifier =>
-      TrackIdentifier(albumId: albumId, discId: discId, trackId: trackId);
 }

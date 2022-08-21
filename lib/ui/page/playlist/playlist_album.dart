@@ -24,6 +24,7 @@ class AlbumDetailScreen extends PlaylistScreen {
 
   @override
   String get title => album.fullTitle;
+
   @override
   Widget get cover => MusicCover(albumId: album.albumId, card: true);
 
@@ -66,10 +67,7 @@ class AlbumDetailScreen extends PlaylistScreen {
           discId: discId,
           trackId: trackId++,
         );
-        if (annil.isAvailable(
-            albumId: song.albumId,
-            discId: song.discId,
-            trackId: song.trackId)) {
+        if (annil.isAvailable(song)) {
           songs.add(song);
         }
       }
@@ -118,9 +116,11 @@ class AlbumDetailScreen extends PlaylistScreen {
               title: Text(track.title, overflow: TextOverflow.ellipsis),
               subtitle: ArtistText(track.artist),
               enabled: annil.isAvailable(
-                albumId: album.albumId,
-                discId: discId,
-                trackId: trackIndex,
+                TrackIdentifier(
+                  albumId: album.albumId,
+                  discId: discId,
+                  trackId: trackIndex,
+                ),
               ),
               onTap: () {
                 playFullList(Global.context, initialIndex: totalTrackIndex);

@@ -1,13 +1,14 @@
 import 'package:annix/global.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:path/path.dart' as p;
 
-String getAudioCachePath(String albumId, int discId, int trackId) {
+String getAudioCachePath(TrackIdentifier id) {
   return p.join(
     Global.storageRoot,
     'audio',
-    albumId,
+    id.albumId,
     /* extension is required on macOS for playback */
-    "${discId}_$trackId${Global.isApple ? ".flac" : ""}",
+    "${id.discId}_${id.trackId}${Global.isApple ? ".flac" : ""}",
   );
 }
 

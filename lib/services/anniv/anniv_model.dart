@@ -174,18 +174,19 @@ class TrackIdentifier {
   factory TrackIdentifier.fromJson(Map<String, dynamic> json) =>
       _$TrackIdentifierFromJson(json);
 
-  factory TrackIdentifier.fromSlashSplitedString(String slashed) {
-    final splited = slashed.split('/');
+  factory TrackIdentifier.fromSlashSplitString(String slashed) {
+    final split = slashed.split('/');
     return TrackIdentifier(
-      albumId: splited[0],
-      discId: int.parse(splited[1]),
-      trackId: int.parse(splited[2]),
+      albumId: split[0],
+      discId: int.parse(split[1]),
+      trackId: int.parse(split[2]),
     );
   }
 
   Map<String, dynamic> toJson() => _$TrackIdentifierToJson(this);
 
-  String toSlashedString() => '$albumId/$discId/$trackId';
+  @override
+  String toString() => '$albumId/$discId/$trackId';
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

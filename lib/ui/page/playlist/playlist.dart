@@ -179,11 +179,7 @@ abstract class PlaylistScreen extends StatelessWidget {
 
     await Provider.of<PlayerService>(context, listen: false).setPlayingQueue(
       await Future.wait<AnnilAudioSource>(trackList.map(
-        (s) => AnnilAudioSource.from(
-          albumId: s.albumId,
-          discId: s.discId,
-          trackId: s.trackId,
-        ),
+        (s) => AnnilAudioSource.from(id: s),
       )),
       initialIndex: initialIndex,
     );

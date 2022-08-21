@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_anniv.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
@@ -300,9 +301,11 @@ class PlayerService extends ChangeNotifier {
 
         if (track.type == TrackType.Normal) {
           songs.add(AnnilAudioSource.from(
-            albumId: albumId,
-            discId: discIndex + 1,
-            trackId: trackIndex + 1,
+            id: TrackIdentifier(
+              albumId: albumId,
+              discId: discIndex + 1,
+              trackId: trackIndex + 1,
+            ),
           ));
         }
       }

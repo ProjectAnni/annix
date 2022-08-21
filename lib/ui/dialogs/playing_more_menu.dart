@@ -66,13 +66,7 @@ class PlayingMoreMenu extends StatelessWidget {
           onTap: () {
             final id = track.id;
             Share.shareFiles(
-              [
-                getAudioCachePath(
-                  id.albumId,
-                  id.discId,
-                  id.trackId,
-                )
-              ],
+              [getAudioCachePath(id)],
               mimeTypes: ["audio/flac"],
             );
           },

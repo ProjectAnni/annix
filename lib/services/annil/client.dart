@@ -27,6 +27,7 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
   }
 
   bool get isEmpty => clients.isEmpty;
+
   bool get isNotEmpty => !isEmpty;
 
   void _sort() {
@@ -96,14 +97,12 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
   }
 
   String? getAudioUrl({
-    required String albumId,
-    required int discId,
-    required int trackId,
+    required TrackIdentifier id,
     required PreferQuality quality,
   }) {
     for (final client in _clients) {
-      if (client.albums.contains(albumId)) {
-        return '${client.url}/$albumId/$discId/$trackId?auth=${client.token}&quality=$quality';
+      if (client.albums.contains(id.albumId)) {
+        return '${client.url}/${id.albumId}/${id.discId}/${id.trackId}?auth=${client.token}&quality=$quality';
       }
     }
 
@@ -148,14 +147,9 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isAvailable({
-    required String albumId,
-    required int discId,
-    required int trackId,
-  }) {
-    return OfflineAnnilClient()
-            .isAvailable(albumId: albumId, discId: discId, trackId: trackId) ||
-        (NetworkService.isOnline && albums.contains(albumId));
+  bool isAvailable(TrackIdentifier id) {
+    return OfflineAnnilClient().isAvailable(id) ||
+        (NetworkService.isOnline && albums.contains(id.albumId));
   }
 }
 
@@ -325,12 +319,8 @@ class OfflineAnnilClient {
         .toList();
   }
 
-  bool isAvailable({
-    required String albumId,
-    required int discId,
-    required int trackId,
-  }) {
-    final path = getAudioCachePath(albumId, discId, trackId);
+  bool isAvailable(TrackIdentifier id) {
+    final path = getAudioCachePath(id);
     return File(path).existsSync();
   }
 }

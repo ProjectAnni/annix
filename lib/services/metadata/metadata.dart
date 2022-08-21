@@ -1,3 +1,4 @@
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
@@ -53,13 +54,9 @@ class MetadataService {
   }
 
   /// Get track information
-  Future<Track?> getTrack({
-    required String albumId,
-    required int discId,
-    required int trackId,
-  }) async {
-    Album? album = await getAlbum(albumId: albumId);
-    return album?.discs[discId - 1].tracks[trackId - 1];
+  Future<Track?> getTrack(TrackIdentifier id) async {
+    Album? album = await getAlbum(albumId: id.albumId);
+    return album?.discs[id.discId - 1].tracks[id.trackId - 1];
   }
 
   /// Get info of all tags

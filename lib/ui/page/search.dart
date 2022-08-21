@@ -68,6 +68,7 @@ class SearchPage extends StatelessWidget {
 
 class _SearchResult extends StatelessWidget {
   final SearchResult result;
+
   const _SearchResult({required this.result});
 
   @override
@@ -109,13 +110,8 @@ class _SearchResult extends StatelessWidget {
                       onTap: () async {
                         final player =
                             Provider.of<PlayerService>(context, listen: false);
-                        await player.setPlayingQueue([
-                          await AnnilAudioSource.from(
-                            albumId: e.track.albumId,
-                            discId: e.track.discId,
-                            trackId: e.track.trackId,
-                          )
-                        ]);
+                        await player.setPlayingQueue(
+                            [await AnnilAudioSource.from(id: e.track)]);
                       },
                     );
                   },

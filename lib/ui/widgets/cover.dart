@@ -36,7 +36,7 @@ class PlayingMusicCover extends StatelessWidget {
 
         // is playing
         return MusicCover(
-          albumId: playing.albumId,
+          albumId: playing.identifier.albumId,
           card: card,
           fit: fit,
           filterQuality: filterQuality,

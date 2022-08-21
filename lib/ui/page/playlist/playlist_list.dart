@@ -86,11 +86,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
           subtitle: track.description != null && track.description!.isNotEmpty
               ? ArtistText(track.description!)
               : null,
-          enabled: annil.isAvailable(
-            albumId: track.info.track.albumId,
-            discId: track.info.track.discId,
-            trackId: track.info.track.trackId,
-          ),
+          enabled: annil.isAvailable(track.info.track),
         );
       },
     );

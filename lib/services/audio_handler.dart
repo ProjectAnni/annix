@@ -192,8 +192,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
         duration: progress.duration,
         artUri: CoverReverseProxy().url(
           CoverItem(
-            uri: annil.getCoverUrl(albumId: playing.albumId),
-            albumId: playing.albumId,
+            uri: annil.getCoverUrl(albumId: playing.identifier.albumId),
+            albumId: playing.identifier.albumId,
             // discId: playing.discId,
           ),
         ),
