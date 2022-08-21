@@ -137,11 +137,11 @@ class AnnixAudioHandler extends BaseAudioHandler {
     final hasPrevious = (player.playingIndex ?? 0) > 0;
     final hasNext =
         (player.playingIndex ?? player.queue.length) < player.queue.length - 1;
-    final isFavorited = player.playing != null &&
+    final isFavorite = player.playing != null &&
         anniv.favorites.containsKey(player.playing!.id);
 
     final controls = [
-      isFavorited
+      isFavorite
           ? const MediaControl(
               label: 'Unfavorite',
               androidIcon: 'drawable/ic_favorite',

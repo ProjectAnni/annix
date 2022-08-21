@@ -110,7 +110,7 @@ class PlayerService extends ChangeNotifier {
           // wait for audio file to download and play it
           await PlayerService.player.play(source, volume: volume);
         } catch (e) {
-          // if the error occures on the current, go to the next song
+          // if the error occurs on the current, go to the next song
           if (playing == source) {
             // TODO: tell user why skipped
             FLog.error(text: "Failed to play", exception: e);
