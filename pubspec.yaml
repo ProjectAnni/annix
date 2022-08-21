@@ -90,13 +90,6 @@ dev_dependencies:
   drift_dev: ^2.0.1
   build_runner: ^2.2.0
 
-  # storage inspector
-  storage_inspector: ^0.2.3
-  file_local_storage_inspector: ^0.2.3
-  preferences_local_storage_inspector: ^0.2.3
-  secure_storage_local_storage_inspector: ^0.2.3
-  drift_local_storage_inspector: ^0.3.0
-
 flutter:
   uses-material-design: true
 
