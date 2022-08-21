@@ -1,4 +1,5 @@
 import 'package:annix/app.dart';
+import 'package:annix/services/local/debug.dart';
 import 'package:annix/services/settings_controller.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/cover.dart';
@@ -14,6 +15,8 @@ Future<void> main() async {
   await Global.init();
   Get.put(SettingsController());
   await CoverReverseProxy().setup();
+
+  await startDebug();
 
   try {
     runApp(const AnnixApp());

@@ -235,6 +235,9 @@ class AnnivService {
             // playlist exists on remote, compare last_modified and update it
             // FIXME: replace -1 with map[id].lastModified
             if (playlist.lastModified != -1) {
+              // clear items
+              await db.playlistItem
+                  .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
               // update modified playlist
               await db.playlist
                   .update()
