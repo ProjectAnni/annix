@@ -16,6 +16,7 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
   final String? owner;
   final bool? public;
   final int? lastModified;
+  final bool hasItems;
   const PlaylistData(
       {required this.id,
       required this.name,
@@ -24,7 +25,8 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
       this.remoteId,
       this.owner,
       this.public,
-      this.lastModified});
+      this.lastModified,
+      required this.hasItems});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -48,6 +50,7 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
     if (!nullToAbsent || lastModified != null) {
       map['last_modified'] = Variable<int>(lastModified);
     }
+    map['has_items'] = Variable<bool>(hasItems);
     return map;
   }
 
@@ -70,6 +73,7 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
       lastModified: lastModified == null && nullToAbsent
           ? const Value.absent()
           : Value(lastModified),
+      hasItems: Value(hasItems),
     );
   }
 
@@ -85,6 +89,7 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
       owner: serializer.fromJson<String?>(json['owner']),
       public: serializer.fromJson<bool?>(json['public']),
       lastModified: serializer.fromJson<int?>(json['last_modified']),
+      hasItems: serializer.fromJson<bool>(json['has_items']),
     );
   }
   @override
@@ -99,6 +104,7 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
       'owner': serializer.toJson<String?>(owner),
       'public': serializer.toJson<bool?>(public),
       'last_modified': serializer.toJson<int?>(lastModified),
+      'has_items': serializer.toJson<bool>(hasItems),
     };
   }
 
@@ -110,7 +116,8 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
           Value<String?> remoteId = const Value.absent(),
           Value<String?> owner = const Value.absent(),
           Value<bool?> public = const Value.absent(),
-          Value<int?> lastModified = const Value.absent()}) =>
+          Value<int?> lastModified = const Value.absent(),
+          bool? hasItems}) =>
       PlaylistData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -121,6 +128,7 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
         public: public.present ? public.value : this.public,
         lastModified:
             lastModified.present ? lastModified.value : this.lastModified,
+        hasItems: hasItems ?? this.hasItems,
       );
   @override
   String toString() {
@@ -132,14 +140,15 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
           ..write('remoteId: $remoteId, ')
           ..write('owner: $owner, ')
           ..write('public: $public, ')
-          ..write('lastModified: $lastModified')
+          ..write('lastModified: $lastModified, ')
+          ..write('hasItems: $hasItems')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, cover, description, remoteId, owner, public, lastModified);
+  int get hashCode => Object.hash(id, name, cover, description, remoteId, owner,
+      public, lastModified, hasItems);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -151,7 +160,8 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
           other.remoteId == this.remoteId &&
           other.owner == this.owner &&
           other.public == this.public &&
-          other.lastModified == this.lastModified);
+          other.lastModified == this.lastModified &&
+          other.hasItems == this.hasItems);
 }
 
 class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
@@ -163,6 +173,7 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
   final Value<String?> owner;
   final Value<bool?> public;
   final Value<int?> lastModified;
+  final Value<bool> hasItems;
   const PlaylistCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -172,6 +183,7 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
     this.owner = const Value.absent(),
     this.public = const Value.absent(),
     this.lastModified = const Value.absent(),
+    this.hasItems = const Value.absent(),
   });
   PlaylistCompanion.insert({
     this.id = const Value.absent(),
@@ -182,7 +194,9 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
     this.owner = const Value.absent(),
     this.public = const Value.absent(),
     this.lastModified = const Value.absent(),
-  }) : name = Value(name);
+    required bool hasItems,
+  })  : name = Value(name),
+        hasItems = Value(hasItems);
   static Insertable<PlaylistData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -192,6 +206,7 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
     Expression<String>? owner,
     Expression<bool>? public,
     Expression<int>? lastModified,
+    Expression<bool>? hasItems,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -202,6 +217,7 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
       if (owner != null) 'owner': owner,
       if (public != null) 'public': public,
       if (lastModified != null) 'last_modified': lastModified,
+      if (hasItems != null) 'has_items': hasItems,
     });
   }
 
@@ -213,7 +229,8 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
       Value<String?>? remoteId,
       Value<String?>? owner,
       Value<bool?>? public,
-      Value<int?>? lastModified}) {
+      Value<int?>? lastModified,
+      Value<bool>? hasItems}) {
     return PlaylistCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -223,6 +240,7 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
       owner: owner ?? this.owner,
       public: public ?? this.public,
       lastModified: lastModified ?? this.lastModified,
+      hasItems: hasItems ?? this.hasItems,
     );
   }
 
@@ -253,6 +271,9 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
     if (lastModified.present) {
       map['last_modified'] = Variable<int>(lastModified.value);
     }
+    if (hasItems.present) {
+      map['has_items'] = Variable<bool>(hasItems.value);
+    }
     return map;
   }
 
@@ -266,7 +287,8 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
           ..write('remoteId: $remoteId, ')
           ..write('owner: $owner, ')
           ..write('public: $public, ')
-          ..write('lastModified: $lastModified')
+          ..write('lastModified: $lastModified, ')
+          ..write('hasItems: $hasItems')
           ..write(')'))
         .toString();
   }
@@ -327,9 +349,24 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: '');
+  final VerificationMeta _hasItemsMeta = const VerificationMeta('hasItems');
+  late final GeneratedColumn<bool> hasItems = GeneratedColumn<bool>(
+      'has_items', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, cover, description, remoteId, owner, public, lastModified];
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        cover,
+        description,
+        remoteId,
+        owner,
+        public,
+        lastModified,
+        hasItems
+      ];
   @override
   String get aliasedName => _alias ?? 'playlist';
   @override
@@ -376,6 +413,12 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
           lastModified.isAcceptableOrUnknown(
               data['last_modified']!, _lastModifiedMeta));
     }
+    if (data.containsKey('has_items')) {
+      context.handle(_hasItemsMeta,
+          hasItems.isAcceptableOrUnknown(data['has_items']!, _hasItemsMeta));
+    } else if (isInserting) {
+      context.missing(_hasItemsMeta);
+    }
     return context;
   }
 
@@ -401,6 +444,8 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
           .read(DriftSqlType.bool, data['${effectivePrefix}public']),
       lastModified: attachedDatabase.options.types
           .read(DriftSqlType.int, data['${effectivePrefix}last_modified']),
+      hasItems: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}has_items'])!,
     );
   }
 

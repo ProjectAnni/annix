@@ -1,4 +1,3 @@
-import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/page/playlist/playlist_album.dart';
 import 'package:annix/ui/page/playlist/playlist_favorite.dart';
 import 'package:annix/ui/page/playlist/playlist_list.dart';
@@ -132,8 +131,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = FavoriteScreen();
         break;
       case "/playlist":
-        child =
-            PlaylistDetailScreen(playlist: routeSettings.arguments as Playlist);
+        child = PlaylistDetailScreen(id: routeSettings.arguments as int);
         break;
       case "/search":
         child = const SearchScreen();

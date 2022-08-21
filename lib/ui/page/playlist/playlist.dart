@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 abstract class PlaylistScreen extends StatelessWidget {
+  abstract final Future<void>? loading;
+
   /// Page title
   abstract final Widget? pageTitle;
 
@@ -93,10 +95,46 @@ abstract class PlaylistScreen extends StatelessWidget {
     );
   }
 
+  Widget _child(BuildContext context) {
+    var child = body;
+
+    child = Column(
+      children: [
+        _albumIntro(context),
+        Expanded(child: child),
+      ],
+    );
+
+    return child;
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget child;
+    if (loading != null) {
+      child = FutureBuilder(
+        future: loading,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            } else {
+              return _child(context);
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            );
+          }
+        },
+      );
+    } else {
+      child = _child(context);
+    }
+
     final actions = pageActions ?? [];
-    var child = body;
     if (refresh != null) {
       if (Global.isDesktop) {
         // sync button on desktop
@@ -121,12 +159,7 @@ abstract class PlaylistScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
         actions: actions,
       ),
-      body: Column(
-        children: [
-          _albumIntro(context),
-          Expanded(child: child),
-        ],
-      ),
+      body: child,
     );
   }
 

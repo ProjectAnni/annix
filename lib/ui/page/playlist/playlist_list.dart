@@ -1,15 +1,24 @@
+import 'dart:convert';
+
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/local/database.dart' hide PlaylistItem;
 import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistDetailScreen extends PlaylistScreen {
-  final Playlist playlist;
+  final int id;
+
+  @override
+  late final Future<void> loading;
+  late final PlaylistData playlist;
+  late final List<PlaylistItem> items;
 
   @override
   final Widget? pageTitle = null;
@@ -18,36 +27,45 @@ class PlaylistDetailScreen extends PlaylistScreen {
   @override
   final RefreshCallback? refresh = null;
 
-  const PlaylistDetailScreen({super.key, required this.playlist});
+  PlaylistDetailScreen({super.key, required this.id}) {
+    loading = (() async {
+      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+      final anniv = Provider.of<AnnivService>(Global.context, listen: false);
+      playlist = await (db.playlist.select()..where((tbl) => tbl.id.equals(id)))
+          .getSingle();
 
-  static Future<PlaylistDetailScreen?> remote(String id) async {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
-    final playlist = await anniv.getPlaylist(id);
-    if (playlist == null) return null;
-    return PlaylistDetailScreen(playlist: playlist);
+      final items = await anniv.getPlaylistItems(playlist);
+      if (items == null) {
+        throw Exception('Failed to load playlist items');
+      }
+      this.items = items;
+    })();
   }
 
   @override
-  String get title => playlist.intro.name;
+  String get title => playlist.name;
 
   @override
   Widget get cover {
-    final albumId = playlist.intro.cover.albumId == ""
-        ? firstAvailableCover()
-        : playlist.intro.cover.albumId;
-    if (albumId == null) {
+    String? coverIdentifier = playlist.cover;
+    if (coverIdentifier == null ||
+        coverIdentifier == "" ||
+        coverIdentifier.startsWith("/")) {
+      coverIdentifier = firstAvailableCover();
+    }
+
+    if (coverIdentifier == null) {
       return const DummyMusicCover();
     } else {
-      return MusicCover(albumId: albumId);
+      final cover = DiscIdentifier.fromIdentifier(coverIdentifier);
+      return MusicCover(albumId: cover.albumId, discId: cover.discId);
     }
   }
 
   @override
   List<Widget> get intro => [
         // description
-        ...(playlist.intro.description != null
-            ? [Text(playlist.intro.description!)]
-            : []),
+        ...(playlist.description != null ? [Text(playlist.description!)] : []),
       ];
 
   @override
@@ -56,9 +74,9 @@ class PlaylistDetailScreen extends PlaylistScreen {
         Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
 
     return ListView.builder(
-      itemCount: playlist.items.length,
+      itemCount: items.length,
       itemBuilder: (context, index) {
-        final track = playlist.items[index];
+        final track = items[index];
         return ListTile(
           leading: Text("${index + 1}"),
           minLeadingWidth: 16,
@@ -79,12 +97,12 @@ class PlaylistDetailScreen extends PlaylistScreen {
   }
 
   @override
-  List<TrackIdentifier> get tracks => playlist.items
+  List<TrackIdentifier> get tracks => items
       .map<TrackIdentifier?>(
         (item) {
           switch (item.type) {
             case PlaylistItemType.normal:
-              return (item as PlaylistItemTrack).info.track;
+              return TrackInfoWithAlbum.fromJson(jsonDecode(item.info)).track;
             case PlaylistItemType.dummy:
             case PlaylistItemType.album:
               return null;
@@ -96,7 +114,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
       .toList();
 
   String? firstAvailableCover() {
-    for (final item in playlist.items) {
+    for (final item in items) {
       if (item.type == PlaylistItemType.normal) {
         return (item as PlaylistItemTrack).info.track.albumId;
       } else if (item.type == PlaylistItemType.album) {

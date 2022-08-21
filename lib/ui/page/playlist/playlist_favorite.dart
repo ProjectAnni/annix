@@ -69,4 +69,7 @@ class FavoriteScreen extends PlaylistScreen {
       .toList()
       .reversed
       .toList();
+
+  @override
+  Future<void>? get loading => null;
 }

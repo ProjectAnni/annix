@@ -40,7 +40,6 @@ class PlaylistView extends StatelessWidget {
                 index = index - 1;
               }
 
-              final playlistId = playlists[index].remoteId;
               final playlist = playlists[index];
 
               final albumId =
@@ -61,8 +60,7 @@ class PlaylistView extends StatelessWidget {
                 visualDensity: VisualDensity.standard,
                 onTap: () async {
                   final delegate = AnnixRouterDelegate.of(context);
-                  final playlist = await anniv.getPlaylist(playlistId ?? ""); // FIXME
-                  delegate.to(name: "/playlist", arguments: playlist);
+                  delegate.to(name: "/playlist", arguments: playlist.id);
                 },
               );
             },

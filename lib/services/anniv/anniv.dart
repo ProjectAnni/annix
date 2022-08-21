@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:annix/services/local/database.dart' hide Playlist;
+import 'package:annix/services/local/database.dart' hide Playlist, PlaylistItem;
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_offline.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
@@ -212,8 +212,6 @@ class AnnivService {
   }
 
   //////////////////////////////// Playlist ///////////////////////////////
-  Map<String, Playlist> playlistDetail = {};
-
   Future<void> syncPlaylist() async {
     if (client != null) {
       final db = Provider.of<LocalDatabase>(Global.context, listen: false);
@@ -221,8 +219,9 @@ class AnnivService {
       final list = await client!.getOwnedPlaylists();
       final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
 
+      // TODO: remove deduplicate
       final deduplicate = <String>[];
-      await db.playlist.select().map((playlist) {
+      await db.playlist.select().asyncMap((playlist) async {
         final isRemote = playlist.remoteId != null;
         if (isRemote) {
           final remote = map[playlist.remoteId];
@@ -237,7 +236,7 @@ class AnnivService {
             // FIXME: replace -1 with map[id].lastModified
             if (playlist.lastModified != -1) {
               // update modified playlist
-              db.playlist
+              await db.playlist
                   .update()
                   .replace(remote.toCompanion(id: Value(playlist.id)));
             }
@@ -254,19 +253,38 @@ class AnnivService {
     }
   }
 
-  Future<Playlist?> getPlaylist(String id) async {
-    if (client == null) {
-      return null;
-    }
-    if (!playlistDetail.containsKey(id)) {
+  Future<List<PlaylistItem>?> getPlaylistItems(PlaylistData playlist) async {
+    final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+    if (!playlist.hasItems) {
+      // remote playlist without track items
+      // try to fetch items
+      if (client == null) return null;
+
       try {
-        final playlist = await client!.getPlaylistDetail(id);
-        playlistDetail.assign(id, playlist);
+        final remote = await client!.getPlaylistDetail(playlist.remoteId!);
+
+        // update tracks
+        await db.batch((batch) => batch.insertAll(
+              db.playlistItem,
+              remote.items
+                  .asMap()
+                  .entries
+                  .map((e) => e.value
+                      .toCompanion(playlistId: playlist.id, order: e.key))
+                  .toList(),
+            ));
+
+        // update playlist intro
+        await db.playlist.update().replace(
+            remote.intro.toCompanion(id: Value(playlist.id), hasItems: true));
       } catch (e) {
+        // TODO: log error here
         return null;
       }
     }
-    return playlistDetail[id];
+
+    final items = await db.playlistItems(playlist.id).get();
+    return items.map((e) => PlaylistItem.fromDatabase(e)).toList();
   }
 
   /////////////////////////////// Database ///////////////////////////////

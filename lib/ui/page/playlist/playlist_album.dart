@@ -140,4 +140,7 @@ class AlbumDetailScreen extends PlaylistScreen {
       },
     );
   }
+
+  @override
+  Future<void>? get loading => null;
 }

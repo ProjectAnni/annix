@@ -8,10 +8,12 @@ CREATE TABLE playlist (
     "description"     TEXT,
 
     -- remote properties
-    "remote_id"       TEXT,
-    "owner"           TEXT,
-    "public"          BOOL,
-    "last_modified"   INT
+    "remote_id"       TEXT,            -- remote id (string), should be unique
+    "owner"           TEXT,            -- owner id of the playlist
+    "public"          BOOL,            -- whether the playlist is public
+    "last_modified"   INT,             -- last modified timestamp of remote playlist
+    "has_items"       BOOL NOT NULL    -- whether playlist items has synced with remote
+                                       -- if has_items == false, we should fetch playlist detail from remote
 );
 
 CREATE TABLE playlist_item (

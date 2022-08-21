@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:drift/drift.dart' hide JsonKey;
@@ -27,6 +29,7 @@ class SiteInfo {
 
   factory SiteInfo.fromJson(Map<String, dynamic> json) =>
       _$SiteInfoFromJson(json);
+
   Map<String, dynamic> toJson() => _$SiteInfoToJson(this);
 }
 
@@ -46,6 +49,7 @@ class UserInfo {
 
   factory UserInfo.fromJson(Map<String, dynamic> json) =>
       _$UserInfoFromJson(json);
+
   Map<String, dynamic> toJson() => _$UserInfoToJson(this);
 }
 
@@ -145,6 +149,14 @@ class DiscIdentifier {
   Map<String, dynamic> toJson() => _$DiscIdentifierToJson(this);
 
   String? toIdentifier() => '$albumId/$discId';
+
+  factory DiscIdentifier.fromIdentifier(String identifier) {
+    final parts = identifier.split('/');
+    return DiscIdentifier(
+      albumId: parts[0],
+      discId: parts.length == 2 ? int.parse(parts[1]) : 1,
+    );
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -274,7 +286,8 @@ class PlaylistInfo {
   factory PlaylistInfo.fromJson(Map<String, dynamic> json) =>
       _$PlaylistInfoFromJson(json);
 
-  PlaylistCompanion toCompanion({Value<int> id = const Value.absent()}) {
+  PlaylistCompanion toCompanion(
+      {Value<int> id = const Value.absent(), bool hasItems = false}) {
     return PlaylistCompanion(
       id: id,
       name: Value(name),
@@ -283,7 +296,9 @@ class PlaylistInfo {
       remoteId: Value(this.id),
       owner: Value(owner),
       public: Value(isPublic),
-      lastModified: const Value(0), // TODO: last_modified from remote
+      lastModified: const Value(0),
+      // TODO: last_modified from remote
+      hasItems: Value(hasItems),
     );
   }
 }
@@ -303,7 +318,23 @@ class Playlist {
   }
 }
 
-enum PlaylistItemType { normal, dummy, album }
+enum PlaylistItemType {
+  normal,
+  dummy,
+  album;
+
+  @override
+  String toString() {
+    switch (this) {
+      case PlaylistItemType.normal:
+        return 'normal';
+      case PlaylistItemType.dummy:
+        return 'dummy';
+      case PlaylistItemType.album:
+        return 'album';
+    }
+  }
+}
 
 abstract class PlaylistItem<T> {
   PlaylistItemType type;
@@ -315,6 +346,14 @@ abstract class PlaylistItem<T> {
     this.description,
     required this.info,
   });
+
+  static PlaylistItem<dynamic> fromDatabase(PlaylistItemData data) {
+    return fromJson({
+      "type": data.type,
+      "description": data.description,
+      "info": jsonDecode(data.info),
+    });
+  }
 
   static PlaylistItem<dynamic> fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
@@ -329,6 +368,19 @@ abstract class PlaylistItem<T> {
         throw Exception('Unknown playlist item type: $type');
     }
   }
+
+  PlaylistItemCompanion toCompanion(
+      {required int playlistId, required int order}) {
+    return PlaylistItemCompanion(
+      playlistId: Value(playlistId),
+      type: Value(type.toString()),
+      description: Value(description),
+      info: Value(serializeInfo()),
+      order: Value(order),
+    );
+  }
+
+  String serializeInfo();
 }
 
 class PlaylistItemTrack extends PlaylistItem<TrackInfoWithAlbum> {
@@ -346,6 +398,11 @@ class PlaylistItemTrack extends PlaylistItem<TrackInfoWithAlbum> {
         info: TrackInfoWithAlbum.fromJson(json["info"]),
         description: json['description'],
       );
+
+  @override
+  String serializeInfo() {
+    return jsonEncode(info.toJson());
+  }
 }
 
 class PlaylistItemDummyTrack extends PlaylistItem<RequiredTrackInfo> {
@@ -363,6 +420,11 @@ class PlaylistItemDummyTrack extends PlaylistItem<RequiredTrackInfo> {
         info: RequiredTrackInfo.fromJson(json["info"]),
         description: json['description'],
       );
+
+  @override
+  String serializeInfo() {
+    return jsonEncode(info.toJson());
+  }
 }
 
 class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
@@ -380,6 +442,11 @@ class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
         albumId: json['info'],
         description: json['description'],
       );
+
+  @override
+  String serializeInfo() {
+    return jsonEncode(info);
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -410,6 +477,7 @@ class LyricLanguage {
   String language;
   String type; // "text" | "lrc"
   String data;
+
   // UserIntro contributor;
 
   LyricLanguage({
@@ -431,7 +499,7 @@ class RepoDatabaseDescription {
   RepoDatabaseDescription({required this.lastModified});
 
   factory RepoDatabaseDescription.fromJson(Map<String, dynamic> json) =>
-      _$RepoDatabaseDecsriptionFromJson(json);
+      _$RepoDatabaseDescriptionFromJson(json);
 }
 
 @JsonEnum(fieldRename: FieldRename.snake)
