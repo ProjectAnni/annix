@@ -1,5 +1,6 @@
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/settings_controller.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
@@ -47,6 +48,7 @@ class AnnixApp extends StatelessWidget {
         // Anniv controller
         ChangeNotifierProvider(create: (c) => AnnivService(c), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
+        Provider(create: (c) => MetadataService()),
       ],
       builder: (context, child) {
         final theme = Provider.of<AnnixTheme>(context);

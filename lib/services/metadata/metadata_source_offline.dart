@@ -8,7 +8,7 @@ class OfflineMetadataSource extends MetadataSource {
   }
 
   @override
-  Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
+  Future<Map<String, Album>> getAlbums(List<String> albums) async {
     return {};
   }
 
@@ -16,9 +16,6 @@ class OfflineMetadataSource extends MetadataSource {
   Future<Map<String, TagEntry>> getTags() async {
     return {};
   }
-
-  @override
-  bool get needPersist => false;
 
   @override
   Future<void> prepare() async {}

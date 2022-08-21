@@ -1,18 +1,22 @@
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/pages/root/base.dart';
-import 'package:annix/global.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:provider/provider.dart';
 
 class TagsView extends StatelessWidget {
   const TagsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final MetadataService metadata =
+        Provider.of<MetadataService>(context, listen: false);
+
     return DefaultTabController(
       length: TagType.values.length,
       child: Column(
@@ -28,7 +32,7 @@ class TagsView extends StatelessWidget {
             isScrollable: true,
           ),
           FutureBuilder<Map<String, TagEntry>>(
-              future: Global.metadataSource.getTags(),
+              future: metadata.getTags(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final sorted = Map.fromEntries(snapshot.data!.entries.toList()

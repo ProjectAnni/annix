@@ -7,6 +7,7 @@ import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_anniv.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -50,6 +51,7 @@ class PlayerService extends ChangeNotifier {
   // Playing queue
   List<AnnilAudioSource> queue = [];
   int? playingIndex;
+
   AnnilAudioSource? get playing =>
       playingIndex != null ? queue[playingIndex!] : null;
   LyricResult? playingLyric;
@@ -283,7 +285,9 @@ class PlayerService extends ChangeNotifier {
       albumIds.add(albumId);
     }
 
-    final metadataMap = await Global.metadataSource.getAlbums(albumIds);
+    final MetadataService metadata =
+        Provider.of<MetadataService>(Global.context, listen: false);
+    final metadataMap = await metadata.getAlbums(albumIds);
     for (final albumId in albumIds) {
       final metadata = metadataMap[albumId];
       if (metadata != null) {
@@ -383,5 +387,5 @@ class PlayingProgress extends ChangeNotifier {
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
 
-  // Map<String, Duration> durationMap = Map();
+// Map<String, Duration> durationMap = Map();
 }

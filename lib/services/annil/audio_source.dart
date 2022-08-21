@@ -4,6 +4,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -27,8 +28,10 @@ class AnnilAudioSource extends Source {
     required int trackId,
     PreferQuality quality = PreferQuality.Medium,
   }) async {
-    final track = await Global.metadataSource
-        .getTrack(albumId: albumId, discId: discId, trackId: trackId);
+    final MetadataService metadata =
+        Provider.of<MetadataService>(Global.context, listen: false);
+    final track = await metadata.getTrack(
+        albumId: albumId, discId: discId, trackId: trackId);
     return AnnilAudioSource(
       albumId: albumId,
       discId: discId,
@@ -91,7 +94,8 @@ class AnnilAudioSource extends Source {
       if (url != null) {
         await file.parent.create(recursive: true);
         final tmpPath = "$offlinePath.tmp";
-        /*final response = */ await _client.download(url, tmpPath);
+        /*final response = */
+        await _client.download(url, tmpPath);
         // final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // PlayerController player = Provider.of(Global.context, listen: false);
         // player.durationMap[id] =

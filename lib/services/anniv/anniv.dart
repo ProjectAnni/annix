@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:annix/services/local/database.dart' hide Playlist, PlaylistItem;
-import 'package:annix/services/metadata/metadata_source_anniv.dart';
-import 'package:annix/services/metadata/metadata_source_offline.dart';
-import 'package:annix/services/metadata/metadata_source_sqlite.dart';
+import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/global.dart';
@@ -14,7 +13,6 @@ import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
-import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
 class SiteUserInfo {
@@ -79,10 +77,6 @@ class AnnivService extends ChangeNotifier {
         }
       }
       this.client = client;
-
-      if (Global.metadataSource is OfflineMetadataSource) {
-        Global.metadataSource = AnnivMetadataSource(client);
-      }
 
       await Future.wait([
         // FIXME: reload annil client
@@ -157,7 +151,9 @@ class AnnivService extends ChangeNotifier {
 
   Future<void> addFavorite(TrackIdentifier track) async {
     if (client != null) {
-      final trackMetadata = await Global.metadataSource.getTrack(
+      final MetadataService metadata =
+          Provider.of<MetadataService>(Global.context, listen: false);
+      final trackMetadata = await metadata.getTrack(
           albumId: track.albumId, discId: track.discId, trackId: track.trackId);
       favorites[track.toSlashedString()] = TrackInfoWithAlbum(
         track: track,
@@ -292,19 +288,19 @@ class AnnivService extends ChangeNotifier {
   }
 
   /////////////////////////////// Database ///////////////////////////////
-  String get _databasePath => p.join(Global.storageRoot, 'repo.db');
-
   Future<void> updateDatabase() async {
-    await client!.getRepoDatabase(_databasePath);
+    await client!.downloadRepoDatabase(Global.storageRoot);
     await loadDatabase();
   }
 
   Future<void> loadDatabase() async {
-    if (File(_databasePath).existsSync()) {
-      final db = SqliteMetadataSource(_databasePath);
-      await db.prepare();
+    if (File(Global.storageRoot).existsSync()) {
+      final metadata =
+          Provider.of<MetadataService>(Global.context, listen: false);
 
-      Global.metadataSource = db;
+      final db = AnnivSqliteMetadataSource();
+      await db.prepare();
+      metadata.sources.insert(0, db);
     }
   }
 }

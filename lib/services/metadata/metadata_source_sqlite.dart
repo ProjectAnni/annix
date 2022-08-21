@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
 
 class SqliteMetadataSource extends MetadataSource {
   String dbPath;
@@ -11,7 +15,7 @@ class SqliteMetadataSource extends MetadataSource {
 
   @override
   Future<void> prepare() async {
-    database = await openDatabase(dbPath, readOnly: true);
+    database = await openDatabase(p.join(dbPath, "repo.db"), readOnly: true);
   }
 
   @override
@@ -19,7 +23,7 @@ class SqliteMetadataSource extends MetadataSource {
     return false;
   }
 
-  Future<Album?> getAlbumDetail(String albumId) async {
+  Future<Album?> _getAlbum(String albumId) async {
     var albumUuid = albumId.replaceAll('-', '').toUpperCase();
     List<Map<String, Object?>> discs = await database.rawQuery(
         "SELECT * FROM repo_disc WHERE hex(album_id) = ? ORDER BY disc_id",
@@ -79,15 +83,12 @@ class SqliteMetadataSource extends MetadataSource {
   }
 
   @override
-  Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
+  Future<Map<String, Album>> getAlbums(List<String> albums) async {
     return Map.fromEntries(
-        (await Future.wait(albums.map((albumId) => getAlbumDetail(albumId))))
+        (await Future.wait(albums.map((albumId) => _getAlbum(albumId))))
             .where((e) => e != null)
             .map((e) => MapEntry(e!.albumId, e)));
   }
-
-  @override
-  bool get needPersist => false;
 
   @override
   Future<List<String>> getAlbumsByTag(String tag) async {
@@ -141,5 +142,10 @@ SELECT lower(hex(album_id)) album_id FROM repo_album WHERE album_id IN (
     });
 
     return Map.fromEntries(tagsMap.values.map((e) => MapEntry(e.name, e)));
+  }
+
+  Future<RepoDatabaseDescription> getDescription() async {
+    final data = await File(p.join(dbPath, "repo.json")).readAsString();
+    return RepoDatabaseDescription.fromJson(jsonDecode(data));
   }
 }

@@ -11,6 +11,7 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:get/get.dart' hide Response;
+import 'package:path/path.dart' as p;
 
 class AnnivClient {
   final Dio _client;
@@ -244,21 +245,24 @@ class AnnivClient {
     }
   }
 
-  Future<RepoDatabaseDescription?> getRepoDatabaseDescription() async {
-    try {
-      final response =
-          await _client.get<RepoDatabaseDescription>('/api/meta/db/repo.json');
-      return response.data;
-    } catch (e) {
-      FLog.error(text: e.toString(), exception: e);
-      return null;
-    }
+  Future<RepoDatabaseDescription> getRepoDatabaseDescription() async {
+    final response =
+        await _client.get<RepoDatabaseDescription>('/api/meta/db/repo.json');
+    return response.data!;
   }
 
-  Future<void> getRepoDatabase(String savePath) async {
-    await _client.download('/api/meta/db/repo.db', "$savePath.downloading");
-    final file = File("$savePath.downloading");
-    await file.rename(savePath);
+  Future<void> downloadRepoDatabase(String saveRoot) async {
+    // 1. download db
+    final dbPath = p.join(saveRoot, 'repo.db');
+    await _client.download('/api/meta/db/repo.db', "$dbPath.downloading");
+    final dbFile = File("$dbPath.downloading");
+    await dbFile.rename(dbPath);
+
+    // 2. download json
+    final jsonPath = p.join(saveRoot, 'repo.json');
+    await _client.download('/api/meta/db/repo.json', "$jsonPath.downloading");
+    final jsonFile = File("$jsonPath.downloading");
+    await jsonFile.rename(jsonPath);
   }
 
   Future<List<TagInfo>> getTags() async {

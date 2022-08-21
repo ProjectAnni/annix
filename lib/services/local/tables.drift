@@ -31,3 +31,16 @@ CREATE TABLE playlist_item (
 );
 
 playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";
+
+CREATE TABLE "favorites" (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "album_id"        TEXT NOT NULL,
+    "disc_id"        TEXT NOT NULL,
+    "track_id"        TEXT NOT NULL
+) AS Favorites;
+
+CREATE UNIQUE INDEX IF NOT EXISTS "favorites_index" ON "favorites" (
+  "album_id",
+  "disc_id",
+  "track_id"
+);

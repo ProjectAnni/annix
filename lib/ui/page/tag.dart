@@ -1,5 +1,6 @@
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +15,13 @@ class TagScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final annil =
         Provider.of<CombinedOnlineAnnilClient>(context, listen: false);
+    final MetadataService metadata =
+        Provider.of<MetadataService>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(title: Text(name)),
       body: FutureBuilder<List<String>>(
-          future: Global.metadataSource.getAlbumsByTag(name).then((albums) =>
+          future: metadata.getAlbumsByTag(name).then((albums) =>
               albums..removeWhere((album) => !annil.albums.contains(album))),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -39,7 +42,7 @@ class TagScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final albumId = snapshot.data![index];
                   return FutureBuilder<Album?>(
-                    future: Global.metadataSource.getAlbum(albumId: albumId),
+                    future: metadata.getAlbum(albumId: albumId),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const DummyAlbumGrid();

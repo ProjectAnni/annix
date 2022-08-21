@@ -1,6 +1,7 @@
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
@@ -14,6 +15,8 @@ class HomeAlbums extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = Global.isDesktop ? 280.0 : 240.0;
+    final MetadataService metadata =
+        Provider.of<MetadataService>(context, listen: false);
 
     return SliverToBoxAdapter(
       child: Column(
@@ -35,8 +38,7 @@ class HomeAlbums extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: FutureBuilder<Album?>(
-                        future:
-                            Global.metadataSource.getAlbum(albumId: albumId),
+                        future: metadata.getAlbum(albumId: albumId),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
