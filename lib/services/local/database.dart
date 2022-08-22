@@ -28,6 +28,14 @@ class LocalDatabase extends _$LocalDatabase {
     },
     initialData: const [],
   );
+
+  static StreamProvider<List<Favorite>> favoritesProvider = StreamProvider(
+    create: (context) {
+      final database = Provider.of<LocalDatabase>(context, listen: false);
+      return database.favorites.select().watch();
+    },
+    initialData: const [],
+  );
 }
 
 LazyDatabase _openConnection() {

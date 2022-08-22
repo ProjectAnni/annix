@@ -30,17 +30,25 @@ CREATE TABLE playlist_item (
     FOREIGN KEY("playlist_id") REFERENCES "playlist"("id")
 );
 
-CREATE TABLE "favorites" (
+CREATE TABLE favorites (
     "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     "album_id"        TEXT NOT NULL,
-    "disc_id"        TEXT NOT NULL,
-    "track_id"        TEXT NOT NULL
-) AS Favorites;
+    "disc_id"         INT NOT NULL,
+    "track_id"        INT NOT NULL,
 
-CREATE UNIQUE INDEX IF NOT EXISTS "favorites_index" ON "favorites" (
+    -- some metadata
+    "title"           TEXT,
+    "artist"          TEXT,
+    "album_title"     TEXT,
+    "type"            TEXT NOT NULL DEFAULT 'normal' CHECK ("type" IN ('normal', 'instrumental', 'absolute', 'drama', 'radio', 'vocal'))
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "favorites_index" ON favorites (
   "album_id",
   "disc_id",
   "track_id"
 );
 
 playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";
+
+isTrackFavorite: SELECT EXISTS (SELECT 1 FROM favorites WHERE album_id = ? AND disc_id = ? AND track_id = ?);

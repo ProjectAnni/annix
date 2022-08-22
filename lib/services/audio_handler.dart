@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/local/database.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
@@ -18,6 +22,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   final AnnivService anniv;
   final CombinedOnlineAnnilClient annil;
+  final LocalDatabase database;
 
   static Future<void> init(BuildContext context) async {
     if (Platform.isLinux) {
@@ -88,10 +93,14 @@ class AnnixAudioHandler extends BaseAudioHandler {
       : player = Provider.of<PlayerService>(context, listen: false),
         progress = Provider.of<PlayingProgress>(context, listen: false),
         annil = Provider.of<CombinedOnlineAnnilClient>(context, listen: false),
-        anniv = Provider.of<AnnivService>(context, listen: false) {
+        anniv = Provider.of<AnnivService>(context, listen: false),
+        database = Provider.of<LocalDatabase>(context, listen: false) {
     player.addListener(() => _updatePlaybackState());
     progress.addListener(() => _updatePlaybackState());
-    anniv.favorites.listen((_) => _updatePlaybackState());
+    database.favorites
+        .select()
+        .watch()
+        .listen((favorites) => _updatePlaybackState(favorites));
   }
 
   @override
@@ -132,13 +141,17 @@ class AnnixAudioHandler extends BaseAudioHandler {
     }
   }
 
-  void _updatePlaybackState() {
+  void _updatePlaybackState([List<Favorite>? favorites]) {
     final isPlaying = player.playerStatus == PlayerStatus.playing;
     final hasPrevious = (player.playingIndex ?? 0) > 0;
     final hasNext =
         (player.playingIndex ?? player.queue.length) < player.queue.length - 1;
     final isFavorite = player.playing != null &&
-        anniv.favorites.containsKey(player.playing!.id);
+        favorites?.firstWhereOrNull((f) =>
+                TrackIdentifier(
+                    albumId: f.albumId, discId: f.discId, trackId: f.trackId) ==
+                player.playing!.track.id) !=
+            null;
 
     final controls = [
       isFavorite

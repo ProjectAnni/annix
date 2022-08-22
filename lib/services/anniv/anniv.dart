@@ -12,7 +12,6 @@ import 'package:annix/services/network.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide Value;
 import 'package:provider/provider.dart';
 
 class SiteUserInfo {
@@ -35,9 +34,6 @@ class AnnivService extends ChangeNotifier {
 
     // 2. load cached site info & user info
     _loadInfo();
-
-    // 3. load favorites
-    _loadFavorites();
 
     // check login status
     final network = Provider.of<NetworkService>(context, listen: false);
@@ -131,63 +127,47 @@ class AnnivService extends ChangeNotifier {
   }
 
   //////////////////////////////// Favorite ///////////////////////////////
-  // TODO: save favorite in table
-  RxMap<String, TrackInfoWithAlbum> favorites = RxMap();
-
-  void _loadFavorites() async {
-    final favoritesLoaded = Global.preferences.getString("anniv_favorites");
-    if (favoritesLoaded != null) {
-      final favoriteMap = (jsonDecode(favoritesLoaded) as List<dynamic>)
-          .map((e) => TrackInfoWithAlbum.fromJson(e))
-          .map((e) => MapEntry(e.track.toString(), e));
-      favorites.value = Map.fromEntries(favoriteMap);
-    }
-  }
-
-  Future<void> _saveFavorites() async {
-    await Global.preferences
-        .setString("anniv_favorites", jsonEncode(favorites.values.toList()));
-  }
-
   Future<void> addFavorite(TrackIdentifier track) async {
     if (client != null) {
+      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
       final MetadataService metadata =
           Provider.of<MetadataService>(Global.context, listen: false);
       final trackMetadata = await metadata.getTrack(track);
-      favorites[track.toString()] = TrackInfoWithAlbum(
-        track: track,
-        title: trackMetadata!.title,
-        artist: trackMetadata.artist,
-        albumTitle: trackMetadata.disc.album.fullTitle,
-        type: trackMetadata.type,
-      );
-      try {
-        await client?.addFavorite(track);
-        await _saveFavorites();
-      } catch (e) {
-        favorites.remove(track.toString());
-        rethrow;
-      }
+
+      await client?.addFavorite(track);
+      await db.favorites.insert().insert(
+            FavoritesCompanion.insert(
+              albumId: track.albumId,
+              discId: track.discId,
+              trackId: track.trackId,
+              title: Value(trackMetadata?.title),
+              artist: Value(trackMetadata?.artist),
+              albumTitle: Value(trackMetadata?.disc.album.fullTitle),
+              type: Value(trackMetadata?.type.toString() ?? "normal"),
+            ),
+          );
     }
   }
 
   Future<void> removeFavorite(TrackIdentifier id) async {
     if (client != null) {
-      final got = favorites.remove(id.toString());
-      try {
-        await client?.removeFavorite(id);
-        await _saveFavorites();
-      } catch (e) {
-        if (got != null) {
-          favorites[id.toString()] = got;
-        }
-        rethrow;
-      }
+      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+      await client?.removeFavorite(id);
+      await (db.favorites.delete()
+            ..where((f) =>
+                f.albumId.equals(id.albumId) &
+                f.discId.equals(id.discId) &
+                f.trackId.equals(id.trackId)))
+          .go();
     }
   }
 
   Future<bool> toggleFavorite(TrackIdentifier id) async {
-    if (favorites.containsKey(id.toString())) {
+    final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+
+    if (await db
+        .isTrackFavorite(id.albumId, id.discId, id.trackId)
+        .getSingle()) {
       await removeFavorite(id);
       return false;
     } else {
@@ -198,12 +178,32 @@ class AnnivService extends ChangeNotifier {
 
   Future<void> syncFavorite() async {
     if (client != null) {
+      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+
       final list = await client!.getFavoriteList();
-      // reverse favorite map here
-      final map = Map.fromEntries(
-          list.reversed.map((e) => MapEntry(e.track.toString(), e)));
-      favorites.value = map;
-      await _saveFavorites();
+      await db.transaction(() async {
+        // clear favorite list
+        await db.favorites.delete().go();
+        // write new favorite list in
+        await db.batch(
+          (batch) => batch.insertAll(
+            db.favorites,
+            list
+                .map(
+                  (e) => FavoritesCompanion.insert(
+                    albumId: e.track.albumId,
+                    discId: e.track.discId,
+                    trackId: e.track.trackId,
+                    title: Value(e.title),
+                    artist: Value(e.artist),
+                    albumTitle: Value(e.albumTitle),
+                    type: Value(e.type.toString()),
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      });
     }
   }
 

@@ -32,6 +32,7 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PlayingProgress(), lazy: false),
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,
+        LocalDatabase.favoritesProvider,
         ChangeNotifierProvider(
           create: (context) {
             final network = Provider.of<NetworkService>(context, listen: false);

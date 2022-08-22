@@ -148,7 +148,9 @@ PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
       description: json['description'] as String?,
       owner: json['owner'] as String,
       isPublic: json['is_public'] as bool,
-      cover: DiscIdentifier.fromJson(json['cover'] as Map<String, dynamic>),
+      cover: json['cover'] == null
+          ? null
+          : DiscIdentifier.fromJson(json['cover'] as Map<String, dynamic>),
       lastModified: json['last_modified'] as int,
     );
 

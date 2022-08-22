@@ -7,25 +7,43 @@ part of 'database.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
-class Favorites extends DataClass implements Insertable<Favorites> {
+class Favorite extends DataClass implements Insertable<Favorite> {
   final int id;
   final String albumId;
-  final String discId;
-  final String trackId;
+  final int discId;
+  final int trackId;
+  final String? title;
+  final String? artist;
+  final String? albumTitle;
+  final String type;
 
-  const Favorites(
+  const Favorite(
       {required this.id,
       required this.albumId,
       required this.discId,
-      required this.trackId});
+      required this.trackId,
+      this.title,
+      this.artist,
+      this.albumTitle,
+      required this.type});
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['album_id'] = Variable<String>(albumId);
-    map['disc_id'] = Variable<String>(discId);
-    map['track_id'] = Variable<String>(trackId);
+    map['disc_id'] = Variable<int>(discId);
+    map['track_id'] = Variable<int>(trackId);
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
+    if (!nullToAbsent || albumTitle != null) {
+      map['album_title'] = Variable<String>(albumTitle);
+    }
+    map['type'] = Variable<String>(type);
     return map;
   }
 
@@ -35,110 +53,171 @@ class Favorites extends DataClass implements Insertable<Favorites> {
       albumId: Value(albumId),
       discId: Value(discId),
       trackId: Value(trackId),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      artist:
+          artist == null && nullToAbsent ? const Value.absent() : Value(artist),
+      albumTitle: albumTitle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(albumTitle),
+      type: Value(type),
     );
   }
 
-  factory Favorites.fromJson(Map<String, dynamic> json,
+  factory Favorite.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Favorites(
+    return Favorite(
       id: serializer.fromJson<int>(json['id']),
       albumId: serializer.fromJson<String>(json['album_id']),
-      discId: serializer.fromJson<String>(json['disc_id']),
-      trackId: serializer.fromJson<String>(json['track_id']),
+      discId: serializer.fromJson<int>(json['disc_id']),
+      trackId: serializer.fromJson<int>(json['track_id']),
+      title: serializer.fromJson<String?>(json['title']),
+      artist: serializer.fromJson<String?>(json['artist']),
+      albumTitle: serializer.fromJson<String?>(json['album_title']),
+      type: serializer.fromJson<String>(json['type']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'album_id': serializer.toJson<String>(albumId),
-      'disc_id': serializer.toJson<String>(discId),
-      'track_id': serializer.toJson<String>(trackId),
+      'disc_id': serializer.toJson<int>(discId),
+      'track_id': serializer.toJson<int>(trackId),
+      'title': serializer.toJson<String?>(title),
+      'artist': serializer.toJson<String?>(artist),
+      'album_title': serializer.toJson<String?>(albumTitle),
+      'type': serializer.toJson<String>(type),
     };
   }
 
-  Favorites copyWith(
-          {int? id, String? albumId, String? discId, String? trackId}) =>
-      Favorites(
+  Favorite copyWith(
+          {int? id,
+          String? albumId,
+          int? discId,
+          int? trackId,
+          Value<String?> title = const Value.absent(),
+          Value<String?> artist = const Value.absent(),
+          Value<String?> albumTitle = const Value.absent(),
+          String? type}) =>
+      Favorite(
         id: id ?? this.id,
         albumId: albumId ?? this.albumId,
         discId: discId ?? this.discId,
         trackId: trackId ?? this.trackId,
+        title: title.present ? title.value : this.title,
+        artist: artist.present ? artist.value : this.artist,
+        albumTitle: albumTitle.present ? albumTitle.value : this.albumTitle,
+        type: type ?? this.type,
       );
 
   @override
   String toString() {
-    return (StringBuffer('Favorites(')
+    return (StringBuffer('Favorite(')
           ..write('id: $id, ')
           ..write('albumId: $albumId, ')
           ..write('discId: $discId, ')
-          ..write('trackId: $trackId')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('albumTitle: $albumTitle, ')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, albumId, discId, trackId);
-
+  int get hashCode => Object.hash(
+      id, albumId, discId, trackId, title, artist, albumTitle, type);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Favorites &&
+      (other is Favorite &&
           other.id == this.id &&
           other.albumId == this.albumId &&
           other.discId == this.discId &&
-          other.trackId == this.trackId);
+          other.trackId == this.trackId &&
+          other.title == this.title &&
+          other.artist == this.artist &&
+          other.albumTitle == this.albumTitle &&
+          other.type == this.type);
 }
 
-class FavoritesCompanion extends UpdateCompanion<Favorites> {
+class FavoritesCompanion extends UpdateCompanion<Favorite> {
   final Value<int> id;
   final Value<String> albumId;
-  final Value<String> discId;
-  final Value<String> trackId;
+  final Value<int> discId;
+  final Value<int> trackId;
+  final Value<String?> title;
+  final Value<String?> artist;
+  final Value<String?> albumTitle;
+  final Value<String> type;
 
   const FavoritesCompanion({
     this.id = const Value.absent(),
     this.albumId = const Value.absent(),
     this.discId = const Value.absent(),
     this.trackId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.albumTitle = const Value.absent(),
+    this.type = const Value.absent(),
   });
-
   FavoritesCompanion.insert({
     this.id = const Value.absent(),
     required String albumId,
-    required String discId,
-    required String trackId,
+    required int discId,
+    required int trackId,
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.albumTitle = const Value.absent(),
+    this.type = const Value.absent(),
   })  : albumId = Value(albumId),
         discId = Value(discId),
         trackId = Value(trackId);
 
-  static Insertable<Favorites> custom({
+  static Insertable<Favorite> custom({
     Expression<int>? id,
     Expression<String>? albumId,
-    Expression<String>? discId,
-    Expression<String>? trackId,
+    Expression<int>? discId,
+    Expression<int>? trackId,
+    Expression<String>? title,
+    Expression<String>? artist,
+    Expression<String>? albumTitle,
+    Expression<String>? type,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (albumId != null) 'album_id': albumId,
       if (discId != null) 'disc_id': discId,
       if (trackId != null) 'track_id': trackId,
+      if (title != null) 'title': title,
+      if (artist != null) 'artist': artist,
+      if (albumTitle != null) 'album_title': albumTitle,
+      if (type != null) 'type': type,
     });
   }
 
   FavoritesCompanion copyWith(
       {Value<int>? id,
       Value<String>? albumId,
-      Value<String>? discId,
-      Value<String>? trackId}) {
+      Value<int>? discId,
+      Value<int>? trackId,
+      Value<String?>? title,
+      Value<String?>? artist,
+      Value<String?>? albumTitle,
+      Value<String>? type}) {
     return FavoritesCompanion(
       id: id ?? this.id,
       albumId: albumId ?? this.albumId,
       discId: discId ?? this.discId,
       trackId: trackId ?? this.trackId,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      albumTitle: albumTitle ?? this.albumTitle,
+      type: type ?? this.type,
     );
   }
 
@@ -152,10 +231,22 @@ class FavoritesCompanion extends UpdateCompanion<Favorites> {
       map['album_id'] = Variable<String>(albumId.value);
     }
     if (discId.present) {
-      map['disc_id'] = Variable<String>(discId.value);
+      map['disc_id'] = Variable<int>(discId.value);
     }
     if (trackId.present) {
-      map['track_id'] = Variable<String>(trackId.value);
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
+    if (albumTitle.present) {
+      map['album_title'] = Variable<String>(albumTitle.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     return map;
   }
@@ -166,18 +257,22 @@ class FavoritesCompanion extends UpdateCompanion<Favorites> {
           ..write('id: $id, ')
           ..write('albumId: $albumId, ')
           ..write('discId: $discId, ')
-          ..write('trackId: $trackId')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('albumTitle: $albumTitle, ')
+          ..write('type: $type')
           ..write(')'))
         .toString();
   }
 }
 
-class FavoritesTable extends Table with TableInfo<FavoritesTable, Favorites> {
+class Favorites extends Table with TableInfo<Favorites, Favorite> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
 
-  FavoritesTable(this.attachedDatabase, [this._alias]);
+  Favorites(this.attachedDatabase, [this._alias]);
 
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -192,20 +287,47 @@ class FavoritesTable extends Table with TableInfo<FavoritesTable, Favorites> {
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
   final VerificationMeta _discIdMeta = const VerificationMeta('discId');
-  late final GeneratedColumn<String> discId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> discId = GeneratedColumn<int>(
       'disc_id', aliasedName, false,
-      type: DriftSqlType.string,
+      type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
   final VerificationMeta _trackIdMeta = const VerificationMeta('trackId');
-  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
       'track_id', aliasedName, false,
-      type: DriftSqlType.string,
+      type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  final VerificationMeta _titleMeta = const VerificationMeta('title');
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  final VerificationMeta _artistMeta = const VerificationMeta('artist');
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+      'artist', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  final VerificationMeta _albumTitleMeta = const VerificationMeta('albumTitle');
+  late final GeneratedColumn<String> albumTitle = GeneratedColumn<String>(
+      'album_title', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints:
+          'NOT NULL DEFAULT \'normal\' CHECK ("type" IN (\'normal\', \'instrumental\', \'absolute\', \'drama\', \'radio\', \'vocal\'))',
+      defaultValue: const CustomExpression<String>('\'normal\''));
 
   @override
-  List<GeneratedColumn> get $columns => [id, albumId, discId, trackId];
+  List<GeneratedColumn> get $columns =>
+      [id, albumId, discId, trackId, title, artist, albumTitle, type];
 
   @override
   String get aliasedName => _alias ?? 'favorites';
@@ -214,7 +336,7 @@ class FavoritesTable extends Table with TableInfo<FavoritesTable, Favorites> {
   String get actualTableName => 'favorites';
 
   @override
-  VerificationContext validateIntegrity(Insertable<Favorites> instance,
+  VerificationContext validateIntegrity(Insertable<Favorite> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -239,6 +361,24 @@ class FavoritesTable extends Table with TableInfo<FavoritesTable, Favorites> {
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    }
+    if (data.containsKey('artist')) {
+      context.handle(_artistMeta,
+          artist.isAcceptableOrUnknown(data['artist']!, _artistMeta));
+    }
+    if (data.containsKey('album_title')) {
+      context.handle(
+          _albumTitleMeta,
+          albumTitle.isAcceptableOrUnknown(
+              data['album_title']!, _albumTitleMeta));
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+    }
     return context;
   }
 
@@ -246,23 +386,31 @@ class FavoritesTable extends Table with TableInfo<FavoritesTable, Favorites> {
   Set<GeneratedColumn> get $primaryKey => {id};
 
   @override
-  Favorites map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Favorite map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Favorites(
+    return Favorite(
       id: attachedDatabase.options.types
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       albumId: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
       discId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}disc_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}disc_id'])!,
       trackId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}track_id'])!,
+      title: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}title']),
+      artist: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}artist']),
+      albumTitle: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}album_title']),
+      type: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
     );
   }
 
   @override
-  FavoritesTable createAlias(String alias) {
-    return FavoritesTable(attachedDatabase, alias);
+  Favorites createAlias(String alias) {
+    return Favorites(attachedDatabase, alias);
   }
 
   @override
@@ -1093,7 +1241,7 @@ class PlaylistItem extends Table
 
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
-  late final FavoritesTable favorites = FavoritesTable(this);
+  late final Favorites favorites = Favorites(this);
   late final Index favoritesIndex = Index('favorites_index',
       'CREATE UNIQUE INDEX IF NOT EXISTS favorites_index ON favorites (album_id, disc_id, track_id)');
   late final Playlist playlist = Playlist(this);
@@ -1108,6 +1256,19 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         readsFrom: {
           playlistItem,
         }).asyncMap(playlistItem.mapFromRow);
+  }
+
+  Selectable<bool> isTrackFavorite(String var1, int var2, int var3) {
+    return customSelect(
+        'SELECT EXISTS (SELECT 1 AS _c1 FROM favorites WHERE album_id = ?1 AND disc_id = ?2 AND track_id = ?3) AS _c0',
+        variables: [
+          Variable<String>(var1),
+          Variable<int>(var2),
+          Variable<int>(var3)
+        ],
+        readsFrom: {
+          favorites,
+        }).map((QueryRow row) => row.read<bool>('_c0'));
   }
 
   @override

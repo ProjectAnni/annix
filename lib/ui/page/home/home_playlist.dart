@@ -1,5 +1,4 @@
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -12,7 +11,6 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(context, listen: false);
     return Consumer<List<PlaylistData>>(
       builder: (context, playlists, child) {
         return SliverList(
@@ -20,22 +18,25 @@ class PlaylistView extends StatelessWidget {
             (context, index) {
               if (index == 0) {
                 // fav
-                return ListTile(
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    leading: AspectRatio(
-                      aspectRatio: 1,
-                      child: anniv.favorites.isEmpty
-                          ? const DummyMusicCover()
-                          : MusicCover(
-                              albumId:
-                                  anniv.favorites.values.last.track.albumId),
-                    ),
-                    title: Text(I18n.MY_FAVORITE.tr),
-                    visualDensity: VisualDensity.standard,
-                    onTap: () {
-                      AnnixRouterDelegate.of(context).to(name: "/favorite");
-                    });
+                return Consumer<List<Favorite>>(
+                  builder: (context, favorites, child) {
+                    return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      leading: AspectRatio(
+                        aspectRatio: 1,
+                        child: favorites.isEmpty
+                            ? const DummyMusicCover()
+                            : MusicCover(albumId: favorites.last.albumId),
+                      ),
+                      title: Text(I18n.MY_FAVORITE.tr),
+                      visualDensity: VisualDensity.standard,
+                      onTap: () {
+                        AnnixRouterDelegate.of(context).to(name: "/favorite");
+                      },
+                    );
+                  },
+                );
               } else {
                 index = index - 1;
               }

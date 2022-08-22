@@ -99,7 +99,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                     Row(
                       children: [
                         const VolumeController(),
-                        FavoriteButton(),
+                        const FavoriteButton(),
                         IconButton(
                           icon: const Icon(Icons.skip_previous),
                           iconSize: 28,

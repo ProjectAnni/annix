@@ -91,7 +91,7 @@ class CoverReverseProxy {
         // create folder
         await file.parent.create(recursive: true);
 
-        // response stream to Uint8List
+        // response stream to UInt8List
         final data = response.bodyBytes;
         await file.writeAsBytes(data);
         downloadingMap.remove(cover.uri.toString());

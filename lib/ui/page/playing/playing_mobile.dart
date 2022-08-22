@@ -83,7 +83,7 @@ class PlayingScreenMobile extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    FavoriteButton(),
+                    const FavoriteButton(),
                     IconButton(
                       icon: const Icon(Icons.skip_previous),
                       iconSize: 32,

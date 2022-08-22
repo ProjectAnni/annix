@@ -59,6 +59,7 @@ class ReleaseDate {
   static readValue(Map map, String key) => map[key] as dynamic;
 
   factory ReleaseDate.fromJson(dynamic json) => fromDynamic(json);
+
   Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
 }
 
@@ -69,11 +70,9 @@ enum TrackType {
   Absolute,
   Drama,
   Radio,
-  Vocal,
-}
+  Vocal;
 
-extension TrackTypeExtension on TrackType {
-  static TrackType fromString(String value) {
+  factory TrackType.fromString(String value) {
     switch (value) {
       case "normal":
         return TrackType.Normal;
@@ -92,7 +91,8 @@ extension TrackTypeExtension on TrackType {
     }
   }
 
-  toText() {
+  @override
+  String toString() {
     switch (this) {
       case TrackType.Normal:
         return "normal";
@@ -149,7 +149,7 @@ class Album {
     String? edition = map['album']['edition'];
     String catalog = map['album']['catalog'];
     String artist = map['album']['artist'];
-    TrackType type = TrackTypeExtension.fromString(map['album']['type']!);
+    TrackType type = TrackType.fromString(map['album']['type']!);
     ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
     List<String>? tags = (map['album']['tags'] as List<dynamic>?)
         ?.map((e) => e.toString())
@@ -171,6 +171,7 @@ class Album {
   }
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
+
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 }
 
@@ -202,14 +203,16 @@ class Disc {
   }
 
   String get title => _title ?? album.title;
+
   String get artist => _artist ?? album.artist;
+
   TrackType get type => _type ?? album.type;
 
   static Disc fromMap(Map<String, dynamic> map) {
     String? title = map['title'];
     String catalog = map['catalog'];
     String? artist = map['artist'];
-    TrackType? type = TrackTypeExtension.fromString(map['type']);
+    TrackType? type = TrackType.fromString(map['type']);
     List<String>? tags =
         (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
 
@@ -227,6 +230,7 @@ class Disc {
   }
 
   factory Disc.fromJson(Map<String, dynamic> json) => _$DiscFromJson(json);
+
   Map<String, dynamic> toJson() => _$DiscToJson(this);
 }
 
@@ -249,6 +253,7 @@ class Track {
         _type = type;
 
   String get artist => _artist ?? disc.artist;
+
   TrackType get type => _type ?? disc.type;
 
   TrackIdentifier get id => TrackIdentifier(
@@ -261,13 +266,14 @@ class Track {
     String title = map['title'];
     String? artist = map['artist'];
 
-    TrackType? type = TrackTypeExtension.fromString(map['type']);
+    TrackType? type = TrackType.fromString(map['type']);
     List<String>? tags =
         (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
     return Track(title: title, artist: artist, type: type, tags: tags);
   }
 
   factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
+
   Map<String, dynamic> toJson() => _$TrackToJson(this);
 }
 

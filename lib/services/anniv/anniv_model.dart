@@ -187,6 +187,18 @@ class TrackIdentifier {
 
   @override
   String toString() => '$albumId/$discId/$trackId';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TrackIdentifier) return false;
+    return albumId == other.albumId &&
+        discId == other.discId &&
+        trackId == other.trackId;
+  }
+
+  @override
+  int get hashCode => Object.hash(albumId, discId, trackId);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -273,7 +285,7 @@ class PlaylistInfo {
   String? description;
   String owner;
   bool isPublic;
-  DiscIdentifier cover;
+  DiscIdentifier? cover;
   int lastModified;
 
   PlaylistInfo({
@@ -295,7 +307,7 @@ class PlaylistInfo {
       id: id,
       name: Value(name),
       description: Value(description),
-      cover: Value(cover.toIdentifier()),
+      cover: Value(cover?.toIdentifier()),
       remoteId: Value(this.id),
       owner: Value(owner),
       public: Value(isPublic),
