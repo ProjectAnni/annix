@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
@@ -21,7 +20,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
   final PlayingProgress progress;
 
   final AnnivService anniv;
-  final CombinedOnlineAnnilClient annil;
   final LocalDatabase database;
 
   static Future<void> init(BuildContext context) async {
@@ -92,7 +90,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
   AnnixAudioHandler._(BuildContext context)
       : player = Provider.of<PlayerService>(context, listen: false),
         progress = Provider.of<PlayingProgress>(context, listen: false),
-        annil = Provider.of<CombinedOnlineAnnilClient>(context, listen: false),
         anniv = Provider.of<AnnivService>(context, listen: false),
         database = Provider.of<LocalDatabase>(context, listen: false) {
     player.addListener(() => _updatePlaybackState());
@@ -205,7 +202,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
         duration: progress.duration,
         artUri: CoverReverseProxy().url(
           CoverItem(
-            uri: annil.getCoverUrl(albumId: playing.identifier.albumId),
             albumId: playing.identifier.albumId,
             // discId: playing.discId,
           ),

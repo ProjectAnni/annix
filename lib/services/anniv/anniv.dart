@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/local/database.dart' hide Playlist, PlaylistItem;
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
@@ -75,12 +76,13 @@ class AnnivService extends ChangeNotifier {
       this.client = client;
 
       await Future.wait([
-        // FIXME: reload annil client
-        // (() async {
-        //   final annilTokens = await client.getCredentials();
-        //   _annil.syncWithRemote(annilTokens);
-        //   _annil.reloadClients();
-        // })(),
+        (() async {
+          final annil = Provider.of<CombinedOnlineAnnilClient>(Global.context,
+              listen: false);
+          final annilTokens = await client.getCredentials();
+          annil.sync(annilTokens);
+          annil.reloadClients();
+        })(),
         // reload favorite list
         syncFavorite(),
         // reload playlist list

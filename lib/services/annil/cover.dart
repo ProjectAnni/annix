@@ -1,19 +1,21 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/cache.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:http_plus/http_plus.dart';
 import 'dart:io' show File, HttpServer, InternetAddress, ContentType;
+
+import 'package:provider/provider.dart';
 
 class CoverItem {
   final String albumId;
   final int? discId;
-  final Uri? uri;
 
   CoverItem({
     required this.albumId,
     this.discId,
-    this.uri,
   });
 
-  String get key => '$albumId/$discId';
+  String get key => discId == null ? albumId : '$albumId/$discId';
 }
 
 class CoverReverseProxy {
@@ -72,20 +74,25 @@ class CoverReverseProxy {
   }
 
   Future<File?> getCoverImage(CoverItem cover) async {
-    if (downloadingMap.containsKey(cover.uri.toString())) {
-      await downloadingMap[cover.uri.toString()];
+    final annil =
+        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+
+    if (downloadingMap.containsKey(cover.key)) {
+      await downloadingMap[cover.key];
     }
 
     final coverImagePath = getCoverCachePath(cover.albumId, cover.discId);
     final file = File(coverImagePath);
     if (!await file.exists()) {
-      if (cover.uri == null) {
+      final uri =
+          annil.getCoverUrl(albumId: cover.albumId, discId: cover.discId);
+      if (uri == null) {
         return null;
       }
 
       // fetch remote cover
-      final getRequest = client.get(cover.uri!);
-      downloadingMap[cover.uri.toString()] = getRequest;
+      final getRequest = client.get(uri);
+      downloadingMap[cover.key] = getRequest;
       final response = await getRequest;
       if (response.statusCode == 200) {
         // create folder
@@ -94,7 +101,7 @@ class CoverReverseProxy {
         // response stream to UInt8List
         final data = response.bodyBytes;
         await file.writeAsBytes(data);
-        downloadingMap.remove(cover.uri.toString());
+        downloadingMap.remove(cover.key);
       }
     }
     return file;

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
@@ -75,24 +74,13 @@ class MusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(context, listen: false);
     final id = "$albumId/$discId";
 
     final cover = Hero(
       tag: "$tag/$albumId/$discId",
       child: ExtendedImage.network(
         CoverReverseProxy()
-            .url(
-              CoverItem(
-                albumId: albumId,
-                discId: discId,
-                uri: annil.getCoverUrl(
-                  albumId: albumId,
-                  // discId: discId,
-                ),
-              ),
-            )
+            .url(CoverItem(albumId: albumId, discId: discId))
             .toString(),
         fit: fit,
         filterQuality: filterQuality,
@@ -130,6 +118,7 @@ class MusicCover extends StatelessWidget {
 
 class _CoverCard extends StatelessWidget {
   final Widget child;
+
   const _CoverCard({required this.child});
 
   @override

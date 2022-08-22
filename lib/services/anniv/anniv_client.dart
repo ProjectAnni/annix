@@ -7,6 +7,7 @@ import 'package:annix/utils/hash.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+
 // import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:path/path.dart' as p;
@@ -140,8 +141,8 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     // do not wait here
-    _client.post("/api/user/logout").catchError((_) {});
-    _cookieJar.deleteAll().catchError((_) {});
+    _client.post("/api/user/logout").catchError((_) async {});
+    _cookieJar.deleteAll().catchError((_) async {});
     return;
   }
 

@@ -48,6 +48,7 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
   }
 
   Future<void> saveToLocal() async {
+    // TODO: save to database instead of shared_preferences
     final tokens =
         clients.values.map((client) => jsonEncode(client.toJson())).toList();
     await Global.preferences.setStringList("annil_clients", tokens);
