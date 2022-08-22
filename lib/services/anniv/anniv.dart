@@ -215,15 +215,13 @@ class AnnivService extends ChangeNotifier {
       final list = await client!.getOwnedPlaylists();
       final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
 
-      // TODO: remove deduplicate
-      final deduplicate = <String>[];
       await db.playlist.select().asyncMap((playlist) async {
         final isRemote = playlist.remoteId != null;
         if (isRemote) {
           final remote = map[playlist.remoteId];
 
           // playlist does not exist on remote, remove it
-          if (remote == null || deduplicate.contains(remote.id)) {
+          if (remote == null) {
             db.playlist.deleteOne(playlist);
             db.playlistItem
                 .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
@@ -239,7 +237,6 @@ class AnnivService extends ChangeNotifier {
                   .update()
                   .replace(remote.toCompanion(id: Value(playlist.id)));
             }
-            deduplicate.add(remote.id);
             map.remove(remote.id);
           }
         }

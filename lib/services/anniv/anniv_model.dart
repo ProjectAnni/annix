@@ -274,6 +274,7 @@ class PlaylistInfo {
   String owner;
   bool isPublic;
   DiscIdentifier cover;
+  int lastModified;
 
   PlaylistInfo({
     required this.id,
@@ -282,6 +283,7 @@ class PlaylistInfo {
     required this.owner,
     required this.isPublic,
     required this.cover,
+    required this.lastModified,
   });
 
   factory PlaylistInfo.fromJson(Map<String, dynamic> json) =>
@@ -297,8 +299,7 @@ class PlaylistInfo {
       remoteId: Value(this.id),
       owner: Value(owner),
       public: Value(isPublic),
-      lastModified: const Value(0),
-      // TODO: last_modified from remote
+      lastModified: Value(lastModified),
       hasItems: Value(hasItems),
     );
   }

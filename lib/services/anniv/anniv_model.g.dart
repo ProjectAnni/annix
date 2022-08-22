@@ -149,6 +149,7 @@ PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
       owner: json['owner'] as String,
       isPublic: json['is_public'] as bool,
       cover: DiscIdentifier.fromJson(json['cover'] as Map<String, dynamic>),
+      lastModified: json['last_modified'] as int,
     );
 
 SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
