@@ -190,7 +190,8 @@ class AnnivService extends ChangeNotifier {
         await db.batch(
           (batch) => batch.insertAll(
             db.favorites,
-            list
+            // reverse the list so that the latest favorite is at the end of the list
+            list.reversed
                 .map(
                   (e) => FavoritesCompanion.insert(
                     albumId: e.track.albumId,
