@@ -299,14 +299,18 @@ class PlayerService extends ChangeNotifier {
         final trackIndex = rand.nextInt(disc.tracks.length);
         final track = disc.tracks[trackIndex];
 
-        if (track.type == TrackType.Normal) {
-          songs.add(AnnilAudioSource.from(
-            id: TrackIdentifier(
-              albumId: albumId,
-              discId: discIndex + 1,
-              trackId: trackIndex + 1,
-            ),
-          ));
+        final id = TrackIdentifier(
+          albumId: albumId,
+          discId: discIndex + 1,
+          trackId: trackIndex + 1,
+        );
+
+        if (annil.isAvailable(id)) {
+          if (track.type == TrackType.Normal) {
+            songs.add(AnnilAudioSource.from(
+              id: id,
+            ));
+          }
         }
       }
     }
