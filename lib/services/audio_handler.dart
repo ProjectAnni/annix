@@ -22,6 +22,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
   final AnnivService anniv;
   final LocalDatabase database;
 
+  List<Favorite> _favorites = [];
+
   static Future<void> init(BuildContext context) async {
     if (Platform.isLinux) {
       AudioServicePlatform.instance = LinuxAudioService(context);
@@ -136,15 +138,24 @@ class AnnixAudioHandler extends BaseAudioHandler {
   }
 
   void _updatePlaybackState([List<Favorite>? favorites]) {
+    if (favorites != null) {
+      _favorites = favorites;
+    }
+
     final isPlaying = player.playerStatus == PlayerStatus.playing;
     final hasPrevious = (player.playingIndex ?? 0) > 0;
     final hasNext =
         (player.playingIndex ?? player.queue.length) < player.queue.length - 1;
     final isFavorite = player.playing != null &&
-        favorites?.firstWhereOrNull((f) =>
-                TrackIdentifier(
-                    albumId: f.albumId, discId: f.discId, trackId: f.trackId) ==
-                player.playing!.track.id) !=
+        _favorites.firstWhereOrNull(
+              (f) =>
+                  player.playing!.track.id ==
+                  TrackIdentifier(
+                    albumId: f.albumId,
+                    discId: f.discId,
+                    trackId: f.trackId,
+                  ),
+            ) !=
             null;
 
     final controls = [
