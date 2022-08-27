@@ -89,6 +89,7 @@ class PlayerService extends ChangeNotifier {
         notifyListeners();
 
         final source = queue[playingIndex!];
+        final toPlayId = source.id;
         if (!source.preloaded) {
           // current track is not preloaded, buffering
           playerStatus = PlayerStatus.buffering;
@@ -100,18 +101,22 @@ class PlayerService extends ChangeNotifier {
           queue[playingIndex! + 1].preload();
         }
 
-        // getLyric(source).then((lyric) {
-        //   if (playing == source) {
-        //     setLyric(lyric);
-        //   }
-        // });
+        getLyric(source).then((lyric) {
+          if (playing?.id == toPlayId) {
+            setLyric(lyric);
+          }
+        }, onError: (err) {
+          if (playing?.id == toPlayId) {
+            setLyric(null);
+          }
+        });
 
         try {
           // wait for audio file to download and play it
           await PlayerService.player.play(source, volume: volume);
         } catch (e) {
           // if the error occurs on the current, go to the next song
-          if (playing == source) {
+          if (playing?.id == toPlayId) {
             // TODO: tell user why skipped
             FLog.error(text: "Failed to play", exception: e);
             next();
@@ -119,7 +124,7 @@ class PlayerService extends ChangeNotifier {
         }
 
         // when playback start, set state to playing
-        if (playing == source && playerStatus == PlayerStatus.buffering) {
+        if (playing?.id == toPlayId && playerStatus == PlayerStatus.buffering) {
           playerStatus = PlayerStatus.playing;
           notifyListeners();
         }
