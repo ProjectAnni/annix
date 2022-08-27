@@ -23,7 +23,7 @@ class HomeTitle extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           title,
-          style: context.textTheme.headline5,
+          style: context.textTheme.headlineSmall,
         ),
       ],
     );

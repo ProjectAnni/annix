@@ -158,7 +158,7 @@ class _LyricView extends StatelessWidget {
         child: Text(
           text,
           textAlign: lyricAlign.textAlign,
-          style: context.textTheme.bodyText1!.copyWith(height: 2),
+          style: context.textTheme.bodyLarge!.copyWith(height: 2),
         ),
       ),
     );

@@ -148,7 +148,7 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> stop() async {
     if (playerStatus != PlayerStatus.stopped) {
-      await PlayerService.player.stop();
+      await PlayerService.player.release();
       // this.progress.value = Duration.zero;
       // await (await AudioSession.instance).setActive(false);
     }
