@@ -230,8 +230,7 @@ class AnnivService extends ChangeNotifier {
                 .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
           } else {
             // playlist exists on remote, compare last_modified and update it
-            // FIXME: replace -1 with map[id].lastModified
-            if (playlist.lastModified != -1) {
+            if (playlist.lastModified != remote.lastModified) {
               // clear items
               await db.playlistItem
                   .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));

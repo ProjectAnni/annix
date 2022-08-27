@@ -30,7 +30,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 1b7869fe-c378-48bc-b913-fac1b676f9ab
+          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | Apk
