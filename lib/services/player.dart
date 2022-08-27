@@ -74,10 +74,10 @@ class PlayerService extends ChangeNotifier {
     if (queue.isEmpty) return;
 
     // activate audio session
-    if (!await (await AudioSession.instance).setActive(true)) {
-      // request denied
-      return;
-    }
+    // if (!await (await AudioSession.instance).setActive(true)) {
+    //   // request denied
+    //   return;
+    // }
 
     if (reload) {
       if (playingIndex != null && playingIndex! < queue.length) {
@@ -100,11 +100,11 @@ class PlayerService extends ChangeNotifier {
           queue[playingIndex! + 1].preload();
         }
 
-        getLyric(source).then((lyric) {
-          if (playing == source) {
-            setLyric(lyric);
-          }
-        });
+        // getLyric(source).then((lyric) {
+        //   if (playing == source) {
+        //     setLyric(lyric);
+        //   }
+        // });
 
         try {
           // wait for audio file to download and play it
@@ -150,7 +150,7 @@ class PlayerService extends ChangeNotifier {
     if (playerStatus != PlayerStatus.stopped) {
       await PlayerService.player.stop();
       // this.progress.value = Duration.zero;
-      await (await AudioSession.instance).setActive(false);
+      // await (await AudioSession.instance).setActive(false);
     }
   }
 
@@ -271,7 +271,7 @@ class PlayerService extends ChangeNotifier {
       {int count = 30, bool waitUntilPlayback = false}) async {
     final annil =
         Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
-    final albums = annil.albums.toList();
+    final albums = annil.albums;
     if (albums.isEmpty) {
       return;
     }
