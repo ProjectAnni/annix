@@ -169,7 +169,12 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
           base64Decode(songs.first.findElements("lyricsData").first.text));
       final encrypted = base64Decode(lyricText);
       return LyricResult(
-        text: _client.decrypt(encrypted, lyricPlainText).join('\n'),
+        text: lyricPlainText,
+        model: LyricsModelBuilder.create()
+            .bindLyricToMain(
+              _client.decrypt(encrypted, lyricPlainText).join('\n'),
+            )
+            .getModel(),
       );
     } else {
       // lyric type = 3, karaoke
