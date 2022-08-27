@@ -74,10 +74,10 @@ class PlayerService extends ChangeNotifier {
     if (queue.isEmpty) return;
 
     // activate audio session
-    // if (!await (await AudioSession.instance).setActive(true)) {
-    //   // request denied
-    //   return;
-    // }
+    if (!await AudioSession.instance.then((e) => e.setActive(true))) {
+      // request denied
+      return;
+    }
 
     if (reload) {
       if (playingIndex != null && playingIndex! < queue.length) {
@@ -85,7 +85,7 @@ class PlayerService extends ChangeNotifier {
 
         // set lyric to null as loading
         playingLyric = null;
-        await stop();
+        await stop(false);
         notifyListeners();
 
         final source = queue[playingIndex!];
@@ -146,12 +146,12 @@ class PlayerService extends ChangeNotifier {
     }
   }
 
-  Future<void> stop() async {
-    if (playerStatus != PlayerStatus.stopped) {
-      await PlayerService.player.release();
-      // this.progress.value = Duration.zero;
-      // await (await AudioSession.instance).setActive(false);
-    }
+  Future<void> stop([bool setInactive = true]) async {
+    await Future.wait([
+      if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
+      PlayerService.player.release(),
+    ]);
+    // this.progress.value = Duration.zero;
   }
 
   Future<void> previous() async {

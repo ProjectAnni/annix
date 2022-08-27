@@ -42,9 +42,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
     );
 
     AudioSession.instance.then((session) async {
-      // configure
-      await session.configure(const AudioSessionConfiguration.music());
-
       // unplugged
       session.becomingNoisyEventStream.listen((_) => service.pause());
 
