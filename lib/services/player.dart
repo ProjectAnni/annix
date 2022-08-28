@@ -74,7 +74,7 @@ class PlayerService extends ChangeNotifier {
     if (queue.isEmpty) return;
 
     // activate audio session
-    if (!await (await AudioSession.instance).setActive(true)) {
+    if (!await AudioSession.instance.then((e) => e.setActive(true))) {
       // request denied
       return;
     }
@@ -85,10 +85,11 @@ class PlayerService extends ChangeNotifier {
 
         // set lyric to null as loading
         playingLyric = null;
-        await stop();
+        await stop(false);
         notifyListeners();
 
         final source = queue[playingIndex!];
+        final toPlayId = source.id;
         if (!source.preloaded) {
           // current track is not preloaded, buffering
           playerStatus = PlayerStatus.buffering;
@@ -101,8 +102,12 @@ class PlayerService extends ChangeNotifier {
         }
 
         getLyric(source).then((lyric) {
-          if (playing == source) {
+          if (playing?.id == toPlayId) {
             setLyric(lyric);
+          }
+        }, onError: (err) {
+          if (playing?.id == toPlayId) {
+            setLyric(null);
           }
         });
 
@@ -111,7 +116,7 @@ class PlayerService extends ChangeNotifier {
           await PlayerService.player.play(source, volume: volume);
         } catch (e) {
           // if the error occurs on the current, go to the next song
-          if (playing == source) {
+          if (playing?.id == toPlayId) {
             // TODO: tell user why skipped
             FLog.error(text: "Failed to play", exception: e);
             next();
@@ -119,7 +124,7 @@ class PlayerService extends ChangeNotifier {
         }
 
         // when playback start, set state to playing
-        if (playing == source && playerStatus == PlayerStatus.buffering) {
+        if (playing?.id == toPlayId && playerStatus == PlayerStatus.buffering) {
           playerStatus = PlayerStatus.playing;
           notifyListeners();
         }
@@ -146,12 +151,12 @@ class PlayerService extends ChangeNotifier {
     }
   }
 
-  Future<void> stop() async {
-    if (playerStatus != PlayerStatus.stopped) {
-      await PlayerService.player.stop();
-      // this.progress.value = Duration.zero;
-      await (await AudioSession.instance).setActive(false);
-    }
+  Future<void> stop([bool setInactive = true]) async {
+    await Future.wait([
+      if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
+      PlayerService.player.release(),
+    ]);
+    // this.progress.value = Duration.zero;
   }
 
   Future<void> previous() async {
@@ -271,7 +276,7 @@ class PlayerService extends ChangeNotifier {
       {int count = 30, bool waitUntilPlayback = false}) async {
     final annil =
         Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
-    final albums = annil.albums.toList();
+    final albums = annil.albums;
     if (albums.isEmpty) {
       return;
     }
@@ -299,14 +304,18 @@ class PlayerService extends ChangeNotifier {
         final trackIndex = rand.nextInt(disc.tracks.length);
         final track = disc.tracks[trackIndex];
 
-        if (track.type == TrackType.Normal) {
-          songs.add(AnnilAudioSource.from(
-            id: TrackIdentifier(
-              albumId: albumId,
-              discId: discIndex + 1,
-              trackId: trackIndex + 1,
-            ),
-          ));
+        final id = TrackIdentifier(
+          albumId: albumId,
+          discId: discIndex + 1,
+          trackId: trackIndex + 1,
+        );
+
+        if (annil.isAvailable(id)) {
+          if (track.type == TrackType.Normal) {
+            songs.add(AnnilAudioSource.from(
+              id: id,
+            ));
+          }
         }
       }
     }

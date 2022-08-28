@@ -49,7 +49,7 @@ class PlayingMusicCover extends StatelessWidget {
 }
 
 class MusicCover extends StatelessWidget {
-  static Map<String, Future<Color>> colors = {};
+  static Map<String, Completer<Color>> colors = {};
 
   final String albumId;
   final int? discId;
@@ -82,25 +82,37 @@ class MusicCover extends StatelessWidget {
         CoverReverseProxy()
             .url(CoverItem(albumId: albumId, discId: discId))
             .toString(),
-        fit: fit,
-        filterQuality: filterQuality,
+        cache: true,
         cacheHeight: 800,
-        cache: false,
         loadStateChanged: (state) {
           switch (state.extendedImageLoadState) {
             case LoadState.completed:
               final image = state.extendedImageInfo!.image;
               if (onColor != null) {
-                colors.putIfAbsent(
-                  id,
-                  () => image.toByteData().then(
-                        (bytes) => compute(getColorFromImage, bytes!),
-                      ),
-                );
-                colors[id]?.then((color) => onColor!(color));
+                colors
+                    .putIfAbsent(
+                      id,
+                      () {
+                        final completer = Completer<Color>();
+                        image.toByteData().then(
+                          (bytes) async {
+                            final color =
+                                await compute(getColorFromImage, bytes!);
+                            completer.complete(color);
+                          },
+                        );
+                        return completer;
+                      },
+                    )
+                    .future
+                    .then((color) => onColor!(color));
               }
 
-              return ExtendedRawImage(image: image);
+              return ExtendedRawImage(
+                image: image,
+                fit: fit,
+                filterQuality: filterQuality,
+              );
             default:
               return const DummyMusicCover();
           }
@@ -161,23 +173,19 @@ class DummyMusicCover extends StatelessWidget {
 }
 
 int argbFromRgb(int red, int green, int blue) {
-  return (255 << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255) >>>
-      0;
+  return (255 << 24 | red << 16 | green << 8 | blue) >>> 0;
 }
 
 Future<Color> getColorFromImage(ByteData bytes) async {
-  final List<int> pixels = [];
-  for (var i = 0; i < bytes.lengthInBytes; i += 4) {
-    final r = bytes.getUint8(i);
-    final g = bytes.getUint8(i + 1);
-    final b = bytes.getUint8(i + 2);
-    final a = bytes.getUint8(i + 3);
-    if (a < 255) {
-      continue;
-    }
+  final pixels = Iterable.generate(bytes.lengthInBytes ~/ 4, (offset) {
+    final index = offset * 4;
+    final r = bytes.getUint8(index);
+    final g = bytes.getUint8(index + 1);
+    final b = bytes.getUint8(index + 2);
+    // final a = bytes.getUint8(index + 3);
     final argb = argbFromRgb(r, g, b);
-    pixels.add(argb);
-  }
+    return argb;
+  });
   final result = await QuantizerCelebi().quantize(pixels, 128);
   final ranked = Score.score(result.colorToCount);
   final top = ranked[0];

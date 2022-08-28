@@ -426,17 +426,19 @@ packages:
   extended_image:
     dependency: "direct main"
     description:
-      name: extended_image
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.0.0-dev.1"
+      path: "."
+      ref: "7d07e2203c7ad45847a58714c921e315d79ad417"
+      resolved-ref: "7d07e2203c7ad45847a58714c921e315d79ad417"
+      url: "https://github.com/Theunodb/extended_image"
+    source: git
+    version: "6.2.1"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0-dev.1"
+    version: "3.3.0"
   f_logs:
     dependency: "direct main"
     description:
@@ -461,12 +463,12 @@ packages:
     source: hosted
     version: "2.0.1"
   file:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.2"
+    version: "6.1.4"
   fixnum:
     dependency: transitive
     description:
@@ -1097,7 +1099,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.12"
+    version: "0.4.13"
   timing:
     dependency: transitive
     description:
@@ -1188,7 +1190,7 @@ packages:
       name: vector_math
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   watcher:
     dependency: transitive
     description:
@@ -1246,5 +1248,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.17.0 <3.0.0"
+  dart: ">=2.18.0-146.0.dev <3.0.0"
   flutter: ">=3.0.0"

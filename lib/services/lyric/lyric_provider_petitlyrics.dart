@@ -109,19 +109,21 @@ class LyricProviderPetitLyrics extends LyricProvider {
       lyricType: 3,
     );
     final songs = document.findAllElements("song");
-    return songs
-        .map(
-          (song) => LyricSearchResponsePetitLyrics(
-            lyricId: int.parse(song.findElements("lyricsId").first.text),
-            lyricType: int.parse(song.findElements("lyricsType").first.text),
-            trackTitle: song.findElements("title").first.text,
-            albumTitle: song.findElements("album").first.text,
-            artistsName: [song.findElements("artist").first.text],
-            lyricText: utf8.decode(
-                base64Decode(song.findElements("lyricsData").first.text)),
-          ),
-        )
-        .toList();
+    return songs.map(
+      (song) {
+        final lyricType = int.parse(song.findElements("lyricsType").first.text);
+        final lyricData = song.findElements("lyricsData").first.text;
+        return LyricSearchResponsePetitLyrics(
+          lyricId: int.parse(song.findElements("lyricsId").first.text),
+          lyricType: lyricType,
+          trackTitle: song.findElements("title").first.text,
+          albumTitle: song.findElements("album").first.text,
+          artistsName: [song.findElements("artist").first.text],
+          lyricText:
+              lyricType != 2 ? utf8.decode(base64Decode(lyricData)) : lyricData,
+        );
+      },
+    ).toList();
   }
 }
 
@@ -154,23 +156,28 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   @override
   Future<LyricResult> get lyric async {
     if (lyricType == 1) {
-      final lrc = await _client.getLyricById(lyricId, lyricType: 2);
+      // lrc not found, return text lyric
+      return LyricResult(
+        text: lyricText,
+      );
+    } else if (lyricType == 2) {
+      // lrc
+      final text = await _client.getLyricById(lyricId, lyricType: 1);
 
-      final songs = lrc.findAllElements("song");
-      if (songs.isEmpty) {
-        // lrc not found, return text lyric
-        return LyricResult(
-          text: lyricText,
-        );
-      } else {
-        final encrypted =
-            base64Decode(songs.first.findElements("lyricsData").first.text);
-        return LyricResult(
-          text: _client.decrypt(encrypted, lyricText).join('\n'),
-        );
-      }
+      final songs = text.findAllElements("song");
+      final lyricPlainText = utf8.decode(
+          base64Decode(songs.first.findElements("lyricsData").first.text));
+      final encrypted = base64Decode(lyricText);
+      return LyricResult(
+        text: lyricPlainText,
+        model: LyricsModelBuilder.create()
+            .bindLyricToMain(
+              _client.decrypt(encrypted, lyricPlainText).join('\n'),
+            )
+            .getModel(),
+      );
     } else {
-      // lyric type = 3
+      // lyric type = 3, karaoke
       final xml = XmlDocument.parse(lyricText);
       final lines = xml
           .findAllElements("line")
@@ -181,7 +188,6 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
         final lineModel = LyricsLineModel();
         lineModel.mainText = line.words.map((e) => e.text).join();
         lineModel.startTime = line.words.first.startTime;
-        // lineModel.endTime = line.words.last.endTime;
 
         int index = 0;
         lineModel.spanList = line.words.map((word) {
