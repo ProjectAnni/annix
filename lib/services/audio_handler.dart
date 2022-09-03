@@ -205,7 +205,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
       mediaItem.add(MediaItem(
         id: playing.id,
         title: playing.track.title,
-        album: playing.track.disc.album.fullTitle,
+        album: playing.track.albumTitle,
         artist: playing.track.artist,
         duration: progress.duration,
         artUri: CoverReverseProxy().url(

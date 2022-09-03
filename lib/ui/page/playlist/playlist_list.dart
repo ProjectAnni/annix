@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart' hide PlaylistItem;
@@ -86,19 +85,21 @@ class PlaylistDetailScreen extends PlaylistScreen {
           subtitle: track.description != null && track.description!.isNotEmpty
               ? ArtistText(track.description!)
               : null,
-          enabled: annil.isAvailable(track.info.track),
+          enabled: annil.isAvailable(track.info.id),
         );
       },
     );
   }
 
   @override
-  List<TrackIdentifier> get tracks => items
-      .map<TrackIdentifier?>(
+  List<AnnilAudioSource> get tracks => items
+      .map<AnnilAudioSource?>(
         (item) {
           switch (item.type) {
             case PlaylistItemType.normal:
-              return TrackInfoWithAlbum.fromJson(jsonDecode(item.info)).track;
+              return AnnilAudioSource(
+                track: item.info,
+              );
             case PlaylistItemType.dummy:
             case PlaylistItemType.album:
               return null;
@@ -112,7 +113,7 @@ class PlaylistDetailScreen extends PlaylistScreen {
   String? firstAvailableCover() {
     for (final item in items) {
       if (item.type == PlaylistItemType.normal) {
-        return (item as PlaylistItemTrack).info.track.albumId;
+        return (item as PlaylistItemTrack).info.id.albumId;
       } else if (item.type == PlaylistItemType.album) {
         return (item as PlaylistItemAlbum).info;
       } else {

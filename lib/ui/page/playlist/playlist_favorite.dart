@@ -1,7 +1,9 @@
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/global.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -34,8 +36,8 @@ class FavoriteScreen extends PlaylistScreen {
 
   @override
   List<Widget> get intro => [
-        Text("${_favorites.length} songs"),
-      ];
+    Text("${_favorites.length} songs"),
+  ];
 
   @override
   Widget get body {
@@ -67,9 +69,21 @@ class FavoriteScreen extends PlaylistScreen {
   }
 
   @override
-  List<TrackIdentifier> get tracks => _favorites.reversed
-      .map((t) => TrackIdentifier(
-          albumId: t.albumId, discId: t.discId, trackId: t.trackId))
+  List<AnnilAudioSource> get tracks => _favorites.reversed
+      .map(
+        (fav) => AnnilAudioSource(
+            track: TrackInfoWithAlbum(
+          id: TrackIdentifier(
+            albumId: fav.albumId,
+            discId: fav.discId,
+            trackId: fav.trackId,
+          ),
+          title: fav.title!,
+          artist: fav.artist!,
+          albumTitle: fav.albumTitle!,
+          type: TrackType.fromString(fav.type),
+        )),
+      )
       .toList();
 
   @override

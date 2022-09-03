@@ -1,8 +1,8 @@
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_netease.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
-import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -15,7 +15,7 @@ enum LyricSearchState {
 }
 
 class SearchLyricsDialog extends StatefulWidget {
-  final Track track;
+  final TrackInfoWithAlbum track;
 
   const SearchLyricsDialog({super.key, required this.track});
 
@@ -73,8 +73,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
 
     _titleController = TextEditingController(text: widget.track.title);
     _artistController = TextEditingController(text: widget.track.artist);
-    _albumController =
-        TextEditingController(text: widget.track.disc.album.fullTitle);
+    _albumController = TextEditingController(text: widget.track.albumTitle);
   }
 
   @override

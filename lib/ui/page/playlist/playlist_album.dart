@@ -1,4 +1,5 @@
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/services/annil/client.dart';
@@ -51,27 +52,21 @@ class AlbumDetailScreen extends PlaylistScreen {
   Widget get body => getAlbumTracks();
 
   @override
-  List<TrackIdentifier> get tracks {
+  List<AnnilAudioSource> get tracks {
     final annil =
         Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
 
-    List<TrackIdentifier> songs = [];
+    List<AnnilAudioSource> songs = [];
 
-    var discId = 1;
     for (final disc in album.discs) {
-      var trackId = 1;
-      for (final _ in disc.tracks) {
+      for (final track in disc.tracks) {
         // check if available
-        final song = TrackIdentifier(
-          albumId: album.albumId,
-          discId: discId,
-          trackId: trackId++,
-        );
-        if (annil.isAvailable(song)) {
-          songs.add(song);
+        final trackId = track.id;
+        if (annil.isAvailable(trackId)) {
+          songs.add(
+              AnnilAudioSource(track: TrackInfoWithAlbum.fromTrack(track)));
         }
       }
-      discId++;
     }
 
     return songs;

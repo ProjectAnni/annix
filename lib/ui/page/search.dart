@@ -110,8 +110,10 @@ class _SearchResult extends StatelessWidget {
                       onTap: () async {
                         final player =
                             Provider.of<PlayerService>(context, listen: false);
-                        await player.setPlayingQueue(
-                            [await AnnilAudioSource.from(id: e.track)]);
+                        final audio = await AnnilAudioSource.from(id: e.id);
+                        if (audio != null) {
+                          await player.setPlayingQueue([audio]);
+                        }
                       },
                     );
                   },

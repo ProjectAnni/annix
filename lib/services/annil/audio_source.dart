@@ -5,7 +5,6 @@ import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
@@ -15,25 +14,29 @@ class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
 
   AnnilAudioSource({
-    required this.quality,
     required this.track,
+    this.quality = PreferQuality.Medium,
   });
 
-  static Future<AnnilAudioSource> from({
+  static Future<AnnilAudioSource?> from({
     required TrackIdentifier id,
     PreferQuality quality = PreferQuality.Medium,
   }) async {
     final MetadataService metadata =
         Provider.of<MetadataService>(Global.context, listen: false);
     final track = await metadata.getTrack(id);
-    return AnnilAudioSource(
-      quality: quality,
-      track: track!,
-    );
+    if (track != null) {
+      return AnnilAudioSource(
+        quality: quality,
+        track: TrackInfoWithAlbum.fromTrack(track),
+      );
+    }
+
+    return null;
   }
 
   final PreferQuality quality;
-  final Track track;
+  final TrackInfoWithAlbum track;
 
   Future<void>? _preloadFuture;
 

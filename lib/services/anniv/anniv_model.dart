@@ -246,7 +246,7 @@ class RequiredTrackInfo {
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class TrackInfoWithAlbum {
   @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
-  TrackIdentifier track;
+  TrackIdentifier id;
 
   String title;
   String artist;
@@ -254,7 +254,7 @@ class TrackInfoWithAlbum {
   TrackType type;
 
   TrackInfoWithAlbum({
-    required this.track,
+    required this.id,
     required this.title,
     required this.artist,
     required this.albumTitle,
@@ -268,14 +268,24 @@ class TrackInfoWithAlbum {
       TrackIdentifier.fromJson(json);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'album_id': track.albumId,
-        'disc_id': track.discId,
-        'track_id': track.trackId,
+        'album_id': id.albumId,
+        'disc_id': id.discId,
+        'track_id': id.trackId,
         'title': title,
         'artist': artist,
         'album_title': albumTitle,
         'type': _$TrackTypeEnumMap[type],
       };
+
+  factory TrackInfoWithAlbum.fromTrack(Track track) {
+    return TrackInfoWithAlbum(
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      type: track.type,
+      albumTitle: track.disc.album.title,
+    );
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)

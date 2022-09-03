@@ -1,6 +1,5 @@
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,7 @@ abstract class PlaylistScreen extends StatelessWidget {
   abstract final Widget body;
 
   /// Tracks to play
-  abstract final List<TrackIdentifier> tracks;
+  abstract final List<AnnilAudioSource> tracks;
 
   /// Refresh callback
   abstract final RefreshCallback? refresh;
@@ -178,9 +177,7 @@ abstract class PlaylistScreen extends StatelessWidget {
     }
 
     await Provider.of<PlayerService>(context, listen: false).setPlayingQueue(
-      await Future.wait<AnnilAudioSource>(trackList.map(
-        (s) => AnnilAudioSource.from(id: s),
-      )),
+      trackList,
       initialIndex: initialIndex,
     );
   }

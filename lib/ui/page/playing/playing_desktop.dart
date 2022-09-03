@@ -1,3 +1,4 @@
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/lyric.dart';
@@ -55,8 +56,8 @@ class PlayingDesktopScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Consumer<PlayerService>(
                         builder: (context, player, child) {
-                          final metadata = player.playing?.track;
-                          if (metadata == null) {
+                          final track = player.playing?.track;
+                          if (track == null) {
                             return const SizedBox.shrink();
                           }
 
@@ -70,7 +71,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   size: 20,
                                 ),
                                 label: ArtistText(
-                                  metadata.artist,
+                                  track.artist,
                                   expandable: false,
                                 ),
                                 onPressed: () {},
@@ -81,36 +82,48 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   size: 20,
                                 ),
                                 label: Text(
-                                  metadata.disc.album.fullTitle,
+                                  track.albumTitle,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                onPressed: () {
-                                  AnnixRouterDelegate.of(context).to(
-                                    name: '/album',
-                                    arguments: metadata.disc.album,
-                                  );
+                                onPressed: () async {
+                                  final metadata = Provider.of<MetadataService>(
+                                      context,
+                                      listen: false);
+                                  final router =
+                                      AnnixRouterDelegate.of(context);
+                                  final album = await metadata.getAlbum(
+                                      albumId: track.id.albumId);
+                                  if (album != null) {
+                                    router.to(
+                                      name: '/album',
+                                      arguments: album,
+                                    );
+                                  } else {
+                                    // TODO: hint user
+                                  }
                                 },
                               ),
-                              ...<String>{
-                                ...(metadata.tags ?? []),
-                                ...(metadata.disc.tags ?? []),
-                                ...(metadata.disc.album.tags ?? [])
-                              }.map(
-                                (tag) => TextButton.icon(
-                                  icon: const Icon(
-                                    Icons.local_offer_outlined,
-                                    size: 20,
-                                  ),
-                                  label: Text(tag),
-                                  onPressed: () {
-                                    AnnixRouterDelegate.of(context).to(
-                                      name: '/tag',
-                                      arguments: tag,
-                                    );
-                                  },
-                                ),
-                              ),
+                              // FIXME: tags list
+                              // ...<String>{
+                              //   ...(metadata.tags ?? []),
+                              //   ...(metadata.disc.tags ?? []),
+                              //   ...(metadata.disc.album.tags ?? [])
+                              // }.map(
+                              //   (tag) => TextButton.icon(
+                              //     icon: const Icon(
+                              //       Icons.local_offer_outlined,
+                              //       size: 20,
+                              //     ),
+                              //     label: Text(tag),
+                              //     onPressed: () {
+                              //       AnnixRouterDelegate.of(context).to(
+                              //         name: '/tag',
+                              //         arguments: tag,
+                              //       );
+                              //     },
+                              //   ),
+                              // ),
                             ],
                           );
                         },

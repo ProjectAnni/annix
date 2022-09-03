@@ -194,9 +194,9 @@ class AnnivService extends ChangeNotifier {
             list.reversed
                 .map(
                   (e) => FavoritesCompanion.insert(
-                    albumId: e.track.albumId,
-                    discId: e.track.discId,
-                    trackId: e.track.trackId,
+                    albumId: e.id.albumId,
+                    discId: e.id.discId,
+                    trackId: e.id.trackId,
                     title: Value(e.title),
                     artist: Value(e.artist),
                     albumTitle: Value(e.albumTitle),

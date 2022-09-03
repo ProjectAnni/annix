@@ -283,7 +283,7 @@ class PlayerService extends ChangeNotifier {
 
     final rand = Random();
 
-    final songs = <Future<AnnilAudioSource>>[];
+    final songs = <Future<AnnilAudioSource?>>[];
     final albumIds = <String>[];
 
     for (int i = 0; i < count; i++) {
@@ -312,9 +312,7 @@ class PlayerService extends ChangeNotifier {
 
         if (annil.isAvailable(id)) {
           if (track.type == TrackType.Normal) {
-            songs.add(AnnilAudioSource.from(
-              id: id,
-            ));
+            songs.add(AnnilAudioSource.from(id: id));
           }
         }
       }
@@ -323,10 +321,12 @@ class PlayerService extends ChangeNotifier {
     await setLoopMode(LoopMode.off);
 
     final queue = await Future.wait(songs);
+    final nonNullQueue = queue.where((element) => element != null).toList()
+        as List<AnnilAudioSource>;
     if (waitUntilPlayback) {
-      await setPlayingQueue(queue);
+      await setPlayingQueue(nonNullQueue);
     } else {
-      setPlayingQueue(queue);
+      setPlayingQueue(nonNullQueue);
     }
   }
 
@@ -359,7 +359,7 @@ class PlayerService extends ChangeNotifier {
           track: item.identifier,
           title: item.track.title,
           artist: item.track.artist,
-          album: item.track.disc.album.fullTitle,
+          album: item.track.albumTitle,
         );
         if (songs.isNotEmpty) {
           lyric = await songs.first.lyric;

@@ -134,7 +134,7 @@ Map<String, dynamic> _$RequiredTrackInfoToJson(RequiredTrackInfo instance) =>
 
 TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
     TrackInfoWithAlbum(
-      track: TrackInfoWithAlbum._trackFromJson(
+      id: TrackInfoWithAlbum._trackFromJson(
           readValueFlatten(json, 'track') as Map<String, dynamic>),
       title: json['title'] as String,
       artist: json['artist'] as String,

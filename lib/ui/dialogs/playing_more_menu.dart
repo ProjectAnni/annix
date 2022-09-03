@@ -1,13 +1,13 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class PlayingMoreMenu extends StatelessWidget {
-  final Track track;
+  final TrackInfoWithAlbum track;
 
   const PlayingMoreMenu({super.key, required this.track});
 
@@ -31,7 +31,7 @@ class PlayingMoreMenu extends StatelessWidget {
           leading: const Icon(Icons.album_outlined),
           minLeadingWidth: 0,
           title: Text(
-            track.disc.album.fullTitle,
+            track.albumTitle,
             overflow: TextOverflow.ellipsis,
             softWrap: false,
           ),
@@ -41,7 +41,8 @@ class PlayingMoreMenu extends StatelessWidget {
             await delegate.popRoute();
             // hide playing page
             Global.mobileWeSlideController.hide();
-            delegate.to(name: "/album", arguments: track.disc.album);
+            // FIXME: jump to album
+            // delegate.to(name: "/album", arguments: track.disc.album);
           },
         ),
         ListTile(

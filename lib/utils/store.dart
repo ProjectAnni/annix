@@ -48,12 +48,17 @@ CREATE TABLE store(
 class AnnixStoreCategory {
   final AnnixStore _store;
   final String _category;
+  final Map<String, dynamic> _cache = {};
 
   AnnixStoreCategory(AnnixStore store, String category)
       : _store = store,
         _category = category;
 
   Future<dynamic> get(String key) async {
+    if (_cache.containsKey(key)) {
+      return _cache[key];
+    }
+
     final db = await _store._database;
     List<Map<String, Object?>> values = await db.rawQuery(
         "SELECT value FROM store WHERE category = ? AND key = ?",
@@ -68,10 +73,11 @@ class AnnixStoreCategory {
   }
 
   Future<bool> contains(String key) async {
-    return (await get(key)) != null;
+    return _cache.containsKey(key) || await get(key) != null;
   }
 
   Future<void> set(String key, dynamic value) async {
+    _cache[key] = value;
     final db = await _store._database;
     await db.insert(
       "store",
@@ -85,6 +91,7 @@ class AnnixStoreCategory {
   }
 
   Future<void> clear() async {
+    _cache.clear();
     final db = await _store._database;
     await db.delete(
       "store",
