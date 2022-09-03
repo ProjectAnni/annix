@@ -131,9 +131,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> fastForward() async {
-    final id = player.playing?.identifier;
-    if (id != null) {
-      await anniv.toggleFavorite(id);
+    final track = player.playing?.track;
+    if (track != null) {
+      await anniv.toggleFavorite(track);
     }
   }
 

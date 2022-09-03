@@ -26,9 +26,9 @@ class FavoriteButton extends StatelessWidget {
         icon: const Icon(Icons.favorite_border_outlined),
         selectedIcon: const Icon(Icons.favorite_outlined),
         onPressed: () async {
-          final id = player.playing?.identifier;
-          if (id != null) {
-            anniv.toggleFavorite(id);
+          final track = player.playing?.track;
+          if (track != null) {
+            anniv.toggleFavorite(track);
           }
         },
       ),
