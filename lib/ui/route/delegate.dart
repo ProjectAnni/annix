@@ -112,9 +112,16 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const HomePage();
         break;
       case "/album":
-        child = AlbumDetailScreen(
-          album: routeSettings.arguments as Album,
-        );
+        if (routeSettings.arguments is String) {
+          // albumId
+          child = LazyLoadAlbumDetailScreen(
+            albumId: routeSettings.arguments as String,
+          );
+        } else {
+          child = AlbumDetailScreen(
+            album: routeSettings.arguments as Album,
+          );
+        }
         break;
       case "/tag":
         child = TagScreen(

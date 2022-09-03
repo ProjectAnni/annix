@@ -41,8 +41,8 @@ class PlayingMoreMenu extends StatelessWidget {
             await delegate.popRoute();
             // hide playing page
             Global.mobileWeSlideController.hide();
-            // FIXME: jump to album
-            // delegate.to(name: "/album", arguments: track.disc.album);
+            // jump to album page
+            delegate.to(name: "/album", arguments: track.id.albumId);
           },
         ),
         ListTile(

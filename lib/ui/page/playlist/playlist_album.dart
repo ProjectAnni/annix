@@ -1,6 +1,7 @@
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
@@ -10,6 +11,30 @@ import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
+class LazyLoadAlbumDetailScreen extends StatelessWidget {
+  final String albumId;
+
+  const LazyLoadAlbumDetailScreen({Key? key, required this.albumId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final metadata = Provider.of<MetadataService>(context, listen: false);
+    return FutureProvider<Album?>.value(
+      value: metadata.getAlbum(albumId: albumId),
+      initialData: null,
+      builder: (context, child) {
+        final album = context.watch<Album?>();
+        if (album == null) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return AlbumDetailScreen(album: album);
+        }
+      },
+    );
+  }
+}
 
 class AlbumDetailScreen extends PlaylistScreen {
   final Album album;

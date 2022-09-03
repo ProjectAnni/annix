@@ -1,4 +1,3 @@
-import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/lyric.dart';
@@ -87,21 +86,12 @@ class PlayingDesktopScreen extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 onPressed: () async {
-                                  final metadata = Provider.of<MetadataService>(
-                                      context,
-                                      listen: false);
                                   final router =
                                       AnnixRouterDelegate.of(context);
-                                  final album = await metadata.getAlbum(
-                                      albumId: track.id.albumId);
-                                  if (album != null) {
-                                    router.to(
-                                      name: '/album',
-                                      arguments: album,
-                                    );
-                                  } else {
-                                    // TODO: hint user
-                                  }
+                                  router.to(
+                                    name: '/album',
+                                    arguments: track.id.albumId,
+                                  );
                                 },
                               ),
                               // FIXME: tags list
