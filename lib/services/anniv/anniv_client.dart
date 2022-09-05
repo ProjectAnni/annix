@@ -12,6 +12,18 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:path/path.dart' as p;
 
+class AnnivError extends Error {
+  final int status;
+  final String message;
+
+  AnnivError({required this.status, required this.message});
+
+  @override
+  String toString() {
+    return 'AnnivError: $message';
+  }
+}
+
 class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
@@ -48,20 +60,23 @@ class AnnivClient {
           ));
         } else if (response.requestOptions.responseType == ResponseType.json) {
           final resp = response.data as Map<String, dynamic>;
-          int status = resp['status'];
+          final status = resp["status"] as int;
           if (status != 0) {
+            final error = AnnivError(
+              status: status,
+              message: resp["message"].toString(),
+            );
             if (status != 902000) {
-              // skip [lyric not found] error
+              // skip logging [lyric not found] error
               // TODO: show error to user
-              FLog.error(text: resp["message"].toString());
+              FLog.error(text: resp["message"].toString(), exception: error);
             }
             // business logic error code
             handler.reject(DioError(
               requestOptions: response.requestOptions,
               response: response,
               type: DioErrorType.response,
-              // TODO: deserialize resp to Error object
-              error: resp,
+              error: error,
             ));
           } else {
             dynamic data = resp['data'];
@@ -236,13 +251,18 @@ class AnnivClient {
       return LyricResponse.fromJson(response.data);
     } on DioError catch (e) {
       // no available lyric found
-      // TODO: handle error correctly
-      if (e.error["status"] == 902000) {
-        return null;
+      if (e.error is AnnivError) {
+        final error = e.error as AnnivError;
+        if (error.status == 902000) {
+          return null;
+        }
       } else {
         rethrow;
       }
+    } catch (e) {
+      rethrow;
     }
+    return null;
   }
 
   Future<RepoDatabaseDescription> getRepoDatabaseDescription() async {

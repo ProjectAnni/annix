@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/theme.dart';
@@ -40,7 +41,7 @@ class PlayingMusicCover extends StatelessWidget {
           fit: fit,
           filterQuality: filterQuality,
           onColor: (color) {
-            Provider.of<AnnixTheme>(context, listen: false).setTheme(color);
+            Global.context.read<AnnixTheme>().setTheme(color);
           },
         );
       },
