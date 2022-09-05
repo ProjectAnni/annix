@@ -61,7 +61,7 @@ List<Artist> _readArtists(_ArtistParser reader) {
   return res;
 }
 
-class ArtistText extends StatelessWidget {
+class ArtistText extends StatefulWidget {
   final String artist;
   final List<Artist> artists;
   final TextStyle? style;
@@ -72,53 +72,57 @@ class ArtistText extends StatelessWidget {
       expandable &&
       artists.firstWhereOrNull((artist) => artist.children.isNotEmpty) != null;
 
-  final fullArtist = false.obs;
-
   ArtistText(
     this.artist, {
-    Key? key,
     this.overflow = TextOverflow.ellipsis,
     this.style,
     this.expandable = true,
-  })  : artists = _readArtists(_ArtistParser(data: artist, idx: 0)),
-        super(key: key);
+    super.key,
+  }) : artists = _readArtists(_ArtistParser(data: artist, idx: 0));
+
+  @override
+  State<ArtistText> createState() => _ArtistTextState();
+}
+
+class _ArtistTextState extends State<ArtistText> {
+  bool fullArtist = false;
 
   void toggleExtend() {
-    fullArtist.value = !fullArtist.value;
+    setState(() {
+      fullArtist = !fullArtist;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: toggleExtend,
-      child: Obx(
-        () => Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Text(
-                fullArtist.value
-                    ? artist
-                    : artists.map((e) => e.name).join("、"),
-                style: style,
-                overflow: overflow,
-                maxLines: 1,
-              ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Flexible(
+            child: Text(
+              fullArtist
+                  ? widget.artist
+                  : widget.artists.map((e) => e.name).join("、"),
+              style: widget.style,
+              overflow: widget.overflow,
+              maxLines: 1,
             ),
-            if (isExtensible && Global.isDesktop)
-              IconButton(
-                onPressed: toggleExtend,
-                isSelected: fullArtist.value,
-                icon: const Icon(Icons.arrow_forward_ios_outlined),
-                selectedIcon: const Icon(Icons.arrow_back_ios_outlined),
-                iconSize: 12,
-                constraints: const BoxConstraints(),
-                visualDensity: VisualDensity.compact,
-                padding: EdgeInsets.zero,
-              ),
-          ],
-        ),
+          ),
+          if (widget.isExtensible && Global.isDesktop)
+            IconButton(
+              onPressed: toggleExtend,
+              isSelected: fullArtist,
+              icon: const Icon(Icons.arrow_forward_ios_outlined),
+              selectedIcon: const Icon(Icons.arrow_back_ios_outlined),
+              iconSize: 12,
+              constraints: const BoxConstraints(),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+            ),
+        ],
       ),
     );
   }
