@@ -35,7 +35,7 @@ class AnnixApp extends StatelessWidget {
         LocalDatabase.favoritesProvider,
         ChangeNotifierProvider(
           create: (context) {
-            final network = Provider.of<NetworkService>(context, listen: false);
+            final NetworkService network = context.read();
             final annil = CombinedOnlineAnnilClient.loadFromLocal();
             network.addListener(() => annil.reloadClients());
             return annil;
@@ -52,13 +52,11 @@ class AnnixApp extends StatelessWidget {
         Provider(create: (c) => MetadataService()),
       ],
       builder: (context, child) {
-        final theme = Provider.of<AnnixTheme>(context);
-        final delegate =
-            Provider.of<AnnixRouterDelegate>(context, listen: false);
+        final AnnixTheme theme = context.read();
+        final AnnixRouterDelegate delegate = context.read();
 
         // load local / remote album list
-        Provider.of<CombinedOnlineAnnilClient>(context, listen: false)
-            .reloadClients();
+        context.read<CombinedOnlineAnnilClient>().reloadClients();
         return MaterialApp.router(
           title: "Annix",
           debugShowCheckedModeBanner: false,

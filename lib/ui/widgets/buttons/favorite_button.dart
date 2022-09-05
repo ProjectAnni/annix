@@ -11,7 +11,7 @@ class FavoriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(context, listen: false);
+    final AnnivService anniv = context.read();
 
     return Consumer2<PlayerService, List<Favorite>>(
       builder: (context, player, favorites, child) => IconButton(

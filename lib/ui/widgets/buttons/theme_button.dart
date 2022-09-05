@@ -11,9 +11,8 @@ class ThemeButton extends StatelessWidget {
     return IconButton(
       icon: Icon(context.isDarkMode ? Icons.light_mode : Icons.dark_mode),
       onPressed: () {
-        Provider.of<AnnixTheme>(context, listen: false).setThemeMode(
-          context.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-        );
+        context.read<AnnixTheme>().setThemeMode(
+            context.isDarkMode ? ThemeMode.light : ThemeMode.dark);
       },
     );
   }

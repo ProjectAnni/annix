@@ -87,10 +87,10 @@ class AnnixAudioHandler extends BaseAudioHandler {
   }
 
   AnnixAudioHandler._(BuildContext context)
-      : player = Provider.of<PlayerService>(context, listen: false),
-        progress = Provider.of<PlayingProgress>(context, listen: false),
-        anniv = Provider.of<AnnivService>(context, listen: false),
-        database = Provider.of<LocalDatabase>(context, listen: false) {
+      : player = context.read(),
+        progress = context.read(),
+        anniv = context.read(),
+        database = context.read() {
     player.addListener(() => _updatePlaybackState());
     progress.addListener(() => _updatePlaybackState());
     database.favorites

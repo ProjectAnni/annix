@@ -14,9 +14,6 @@ class TagsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MetadataService metadata =
-        Provider.of<MetadataService>(context, listen: false);
-
     return DefaultTabController(
       length: TagType.values.length,
       child: Column(
@@ -32,7 +29,7 @@ class TagsView extends StatelessWidget {
             isScrollable: true,
           ),
           FutureBuilder<Map<String, TagEntry>>(
-              future: metadata.getTags(),
+              future: context.read<MetadataService>().getTags(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final sorted = Map.fromEntries(snapshot.data!.entries.toList()

@@ -15,8 +15,7 @@ class HomeAlbums extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = Global.isDesktop ? 280.0 : 240.0;
-    final MetadataService metadata =
-        Provider.of<MetadataService>(context, listen: false);
+    final MetadataService metadata = context.read();
 
     return SliverToBoxAdapter(
       child: Column(

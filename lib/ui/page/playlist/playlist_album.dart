@@ -20,7 +20,7 @@ class LazyLoadAlbumDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final metadata = Provider.of<MetadataService>(context, listen: false);
+    final MetadataService metadata = context.read();
     return FutureProvider<Album?>.value(
       value: metadata.getAlbum(albumId: albumId),
       initialData: null,

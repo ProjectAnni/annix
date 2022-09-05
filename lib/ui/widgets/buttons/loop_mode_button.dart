@@ -42,8 +42,7 @@ class LoopModeButton extends StatelessWidget {
       builder: (context, loopMode, child) => IconButton(
         icon: getIcon(context, loopMode),
         onPressed: () {
-          Provider.of<PlayerService>(context, listen: false)
-              .setLoopMode(next(loopMode));
+          context.read<PlayerService>().setLoopMode(next(loopMode));
         },
       ),
     );
