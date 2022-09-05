@@ -34,13 +34,17 @@ extension on LyricAlign {
 
 class PlayingLyricUI extends LyricUI {
   final LyricAlign align;
+  final bool isKaraoke;
 
-  PlayingLyricUI({this.align = LyricAlign.CENTER});
+  PlayingLyricUI({this.align = LyricAlign.CENTER, required this.isKaraoke});
 
   @override
   TextStyle getPlayingMainTextStyle() {
-    return Global.context.textTheme.titleMedium!
-        .copyWith(fontWeight: FontWeight.w600);
+    return Global.context.textTheme.titleMedium!.copyWith(
+      fontWeight: FontWeight.w500,
+      height: 1,
+      color: isKaraoke ? null : Global.context.colorScheme.primary,
+    );
   }
 
   @override
@@ -53,7 +57,7 @@ class PlayingLyricUI extends LyricUI {
   double getInlineSpace() => 10;
 
   @override
-  double getLineSpace() => 20;
+  double getLineSpace() => 18;
 
   @override
   LyricAlign getLyricHorizontalAlign() {
@@ -84,6 +88,9 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   bool enableLineAnimation() => true;
+
+  @override
+  bool enableHighlight() => isKaraoke;
 }
 
 class LyricView extends StatelessWidget {
@@ -134,7 +141,8 @@ class _LyricView extends StatelessWidget {
       } else {
         // lrc / karaoke
         // Notice: ui MUST NOT be rebuilt. building ui is EXTREMELY expensive
-        final ui = PlayingLyricUI(align: lyricAlign);
+        final isKaraoke = lyric?.model?.lyrics[0].spanList != null;
+        final ui = PlayingLyricUI(align: lyricAlign, isKaraoke: isKaraoke);
         return Selector0<PlayerService>(
           selector: (context) => context.watch(),
           shouldRebuild: (prev, next) {
