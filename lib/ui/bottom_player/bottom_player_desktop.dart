@@ -25,11 +25,11 @@ class DesktopBottomPlayer extends StatelessWidget {
         child: Column(
           children: [
             RepaintBoundary(
-              child: Consumer2<PlayingProgress, PlayerService>(
-                builder: (context, progress, player, child) {
+              child: Consumer<PlayerService>(
+                builder: (context, player, child) {
                   return ProgressBar(
-                    progress: progress.position,
-                    total: progress.duration,
+                    progress: player.position,
+                    total: player.duration,
                     onSeek: (position) {
                       player.seek(position);
                     },

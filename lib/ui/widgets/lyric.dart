@@ -135,8 +135,8 @@ class _LyricView extends StatelessWidget {
         // lrc / karaoke
         // Notice: ui MUST NOT be rebuilt. building ui is EXTREMELY expensive
         final ui = PlayingLyricUI(align: lyricAlign);
-        return Selector<PlayingProgress, Duration>(
-          selector: (_, progress) => progress.position,
+        return Selector<PlayerService, Duration>(
+          selector: (_, player) => player.position,
           builder: (context, position, child) {
             return LyricsReader(
               model: lyric!.model,

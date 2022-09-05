@@ -65,14 +65,13 @@ class PlayingScreenMobile extends StatelessWidget {
             ),
             Column(
               children: [
-                Consumer<PlayingProgress>(
-                  builder: (context, progress, child) {
+                Consumer<PlayerService>(
+                  builder: (context, player, child) {
                     return ProgressBar(
-                      progress: progress.position,
-                      total: progress.duration,
+                      progress: player.position,
+                      total: player.duration,
                       onSeek: (position) {
-                        Provider.of<PlayerService>(context, listen: false)
-                            .seek(position);
+                        player.seek(position);
                       },
                       barHeight: 2.0,
                       thumbRadius: 5.0,

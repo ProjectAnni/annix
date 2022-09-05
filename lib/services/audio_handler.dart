@@ -17,7 +17,6 @@ import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
   final PlayerService player;
-  final PlayingProgress progress;
 
   final AnnivService anniv;
   final LocalDatabase database;
@@ -88,11 +87,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   AnnixAudioHandler._(BuildContext context)
       : player = context.read(),
-        progress = context.read(),
         anniv = context.read(),
         database = context.read() {
     player.addListener(() => _updatePlaybackState());
-    progress.addListener(() => _updatePlaybackState());
     database.favorites
         .select()
         .watch()
@@ -196,7 +193,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         PlayerStatus.buffering: AudioProcessingState.buffering,
       }[player.playerStatus]!,
       playing: isPlaying,
-      updatePosition: progress.position,
+      updatePosition: player.position,
       queueIndex: player.playingIndex,
     ));
 
@@ -207,7 +204,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         title: playing.track.title,
         album: playing.track.albumTitle,
         artist: playing.track.artist,
-        duration: progress.duration,
+        duration: player.duration,
         artUri: CoverReverseProxy().url(
           CoverItem(
             albumId: playing.identifier.albumId,
@@ -270,11 +267,9 @@ class LinuxAudioService extends AudioServicePlatform {
 
 class AnnixMPRISService extends MPRISService {
   final PlayerService player;
-  final PlayingProgress progress;
 
   AnnixMPRISService(BuildContext context)
       : player = Provider.of<PlayerService>(context, listen: false),
-        progress = Provider.of<PlayingProgress>(context, listen: false),
         super(
           "annix",
           identity: "Annix",
@@ -336,7 +331,7 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onSeek(int offset) async {
-    await player.seek(progress.position + Duration(microseconds: offset));
+    await player.seek(player.position + Duration(microseconds: offset));
   }
 
   @override

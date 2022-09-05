@@ -45,6 +45,9 @@ enum PlayerStatus {
 class PlayerService extends ChangeNotifier {
   static final AudioPlayer player = AudioPlayer();
 
+  // TODO: make use of this map
+  static final Map<String, Duration> durationMap = {};
+
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
   double volume = 1.0;
@@ -57,6 +60,10 @@ class PlayerService extends ChangeNotifier {
       playingIndex != null ? queue[playingIndex!] : null;
   LyricResult? playingLyric;
 
+  // Progress
+  Duration position = Duration.zero;
+  Duration duration = Duration.zero;
+
   PlayerService() {
     PlayerService.player.onPlayerStateChanged.listen((s) {
       // stop event from player can not interrupt buffering state
@@ -68,6 +75,24 @@ class PlayerService extends ChangeNotifier {
     });
 
     PlayerService.player.onPlayerComplete.listen((event) => next());
+
+    PlayerService.player.onPositionChanged.listen((updatedPosition) {
+      position = updatedPosition;
+      notifyListeners();
+    });
+    PlayerService.player.onDurationChanged.listen((updatedDuration) {
+      final id = playing?.id;
+      if (id != null) {
+        if (updatedDuration > Duration.zero) {
+          if (updatedDuration > Duration.zero) {
+            duration = updatedDuration;
+          } else {
+            duration = PlayerService.durationMap[id] ?? Duration.zero;
+          }
+          notifyListeners();
+        }
+      }
+    });
   }
 
   Future<void> play({bool reload = false}) async {
@@ -376,28 +401,4 @@ class PlayerService extends ChangeNotifier {
       return null;
     }
   }
-}
-
-class PlayingProgress extends ChangeNotifier {
-  PlayingProgress() {
-    PlayerService.player.onPositionChanged.listen((p) {
-      position = p;
-      notifyListeners();
-    });
-    PlayerService.player.onDurationChanged.listen((d) {
-      if (d > Duration.zero) {
-        if (d > Duration.zero) {
-          duration = d;
-        } else {
-          duration = /* durationMap[player.playing!.id] ?? */ Duration.zero;
-        }
-        notifyListeners();
-      }
-    });
-  }
-
-  Duration position = Duration.zero;
-  Duration duration = Duration.zero;
-
-// Map<String, Duration> durationMap = Map();
 }

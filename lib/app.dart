@@ -29,7 +29,6 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
         ChangeNotifierProvider(create: (_) => NetworkService(), lazy: false),
         ChangeNotifierProvider(create: (_) => PlayerService(), lazy: false),
-        ChangeNotifierProvider(create: (_) => PlayingProgress(), lazy: false),
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,
         LocalDatabase.favoritesProvider,
