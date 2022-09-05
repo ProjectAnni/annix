@@ -10,7 +10,9 @@ import "dart:typed_data";
 
 class PetitLyricsClient {
   static final PetitLyricsClient _instance = PetitLyricsClient._();
+
   factory PetitLyricsClient() => _instance;
+
   PetitLyricsClient._();
 
   final Dio _client = Dio();
@@ -79,8 +81,8 @@ class PetitLyricsClient {
     final List<String> time = [];
     var offset = 0;
     for (var i = 0; i < lineCount; i++) {
-      final timeBeginByteindex = i * 2 + 0xcc;
-      final timeRaw = data.getUint16(timeBeginByteindex, Endian.little);
+      final timeBeginByteIndex = i * 2 + 0xcc;
+      final timeRaw = data.getUint16(timeBeginByteIndex, Endian.little);
       final timeCs = timeRaw ^ projectionKey;
 
       final line = "[${cs2mmssff(timeCs + offset * 65536)}] ${lyric[i]}";
@@ -190,18 +192,27 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
         lineModel.startTime = line.words.first.startTime;
 
         int index = 0;
-        lineModel.spanList = line.words.map((word) {
-          final span = LyricSpanInfo();
-          span.raw = word.text;
-          span.length = span.raw.length;
+        final List<LyricSpanInfo> spanList = [];
+        for (final word in line.words) {
+          final duration = word.endTime - word.startTime;
+          if (duration > 0 || spanList.isEmpty) {
+            final span = LyricSpanInfo();
+            span.raw = word.text;
+            span.length = span.raw.length;
 
-          span.index = index;
+            span.index = index;
 
-          span.start = word.startTime;
-          span.duration = word.endTime - word.startTime;
-          index += span.length;
-          return span;
-        }).toList();
+            span.start = word.startTime;
+            span.duration = duration;
+            spanList.add(span);
+          } else {
+            final span = spanList.last;
+            span.raw += word.text;
+            span.length = span.raw.length;
+          }
+          index += word.text.length;
+        }
+        lineModel.spanList = spanList;
 
         return lineModel;
       }).toList();

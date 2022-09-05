@@ -498,9 +498,11 @@ packages:
   flutter_lyric:
     dependency: "direct main"
     description:
-      name: flutter_lyric
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "34b04266c815f1c3ccec137431ca27e843433abe"
+      url: "https://github.com/ProjectAnni/flutter_lyric"
+    source: git
     version: "2.0.4+5"
   flutter_test:
     dependency: "direct dev"
