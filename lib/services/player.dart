@@ -42,6 +42,19 @@ enum PlayerStatus {
   }
 }
 
+class TrackLyric {
+  final LyricResult lyric;
+  final TrackType type;
+
+  TrackLyric({required this.lyric, required this.type});
+
+  bool get isEmpty => lyric.isEmpty;
+
+  factory TrackLyric.empty() {
+    return TrackLyric(lyric: LyricResult.empty(), type: TrackType.Normal);
+  }
+}
+
 class PlayerService extends ChangeNotifier {
   static final AudioPlayer player = AudioPlayer();
 
@@ -58,7 +71,8 @@ class PlayerService extends ChangeNotifier {
 
   AnnilAudioSource? get playing =>
       playingIndex != null ? queue[playingIndex!] : null;
-  LyricResult? playingLyric;
+
+  TrackLyric? playingLyric;
 
   // Progress
   Duration position = Duration.zero;
@@ -363,12 +377,16 @@ class PlayerService extends ChangeNotifier {
     }
   }
 
-  void setLyric(LyricResult? lyric) {
-    playingLyric = lyric ?? LyricResult.empty();
+  void setLyric(TrackLyric? lyric) {
+    playingLyric = lyric ?? TrackLyric.empty();
     notifyListeners();
   }
 
-  Future<LyricResult?> getLyric(AnnilAudioSource item) async {
+  Future<TrackLyric?> getLyric(AnnilAudioSource item) async {
+    if (item.track.type != TrackType.Normal) {
+      return TrackLyric(lyric: LyricResult.empty(), type: item.track.type);
+    }
+
     try {
       final id = item.id;
 
@@ -402,8 +420,10 @@ class PlayerService extends ChangeNotifier {
       // 4. save to local cache
       if (lyric != null) {
         LyricProvider.saveLocal(item.id, lyric);
+        return TrackLyric(lyric: lyric, type: item.track.type);
       }
-      return lyric;
+
+      return null;
     } catch (e) {
       FLog.error(text: "Failed to fetch lyric", exception: e);
       return null;

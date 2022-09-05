@@ -160,10 +160,10 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
-                          final player = Provider.of<PlayerService>(context,
-                              listen: false);
+                          final PlayerService player = context.read();
                           result.lyric.then((lyric) {
-                            player.setLyric(lyric);
+                            player.setLyric(TrackLyric(
+                                lyric: lyric, type: widget.track.type));
                             Navigator.of(context, rootNavigator: true).pop();
                           });
                         },

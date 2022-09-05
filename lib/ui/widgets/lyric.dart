@@ -1,5 +1,5 @@
 import 'package:annix/i18n/i18n.dart';
-import 'package:annix/services/lyric/lyric_provider.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -100,7 +100,7 @@ class LyricView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerService, LyricResult?>(
+    return Selector<PlayerService, TrackLyric?>(
       selector: (_, player) => player.playingLyric,
       builder: (context, lyric, child) {
         return _LyricView(
@@ -114,7 +114,7 @@ class LyricView extends StatelessWidget {
 
 class _LyricView extends StatelessWidget {
   final LyricAlign lyricAlign;
-  final LyricResult? lyric;
+  final TrackLyric? lyric;
 
   const _LyricView({
     Key? key,
@@ -130,18 +130,25 @@ class _LyricView extends StatelessWidget {
         child: const Text("Loading..."),
       );
     } else if (lyric!.isEmpty) {
-      return Align(
-        alignment: lyricAlign.alignment,
-        child: Text(I18n.NO_LYRIC_FOUND.tr),
-      );
+      if (lyric!.type == TrackType.Normal) {
+        return Align(
+          alignment: lyricAlign.alignment,
+          child: Text(I18n.NO_LYRIC_FOUND.tr),
+        );
+      } else {
+        return Align(
+          alignment: lyricAlign.alignment,
+          child: Text(lyric!.type.toString()),
+        );
+      }
     } else {
-      if (lyric!.model == null) {
+      if (lyric!.lyric.model == null) {
         // plain text
-        return _textLyric(context, lyric!.text);
+        return _textLyric(context, lyric!.lyric.text);
       } else {
         // lrc / karaoke
         // Notice: ui MUST NOT be rebuilt. building ui is EXTREMELY expensive
-        final isKaraoke = lyric?.model?.lyrics[0].spanList != null;
+        final isKaraoke = lyric?.lyric.model?.lyrics[0].spanList != null;
         final ui = PlayingLyricUI(align: lyricAlign, isKaraoke: isKaraoke);
         return Selector0<PlayerService>(
           selector: (context) => context.watch(),
@@ -150,11 +157,11 @@ class _LyricView extends StatelessWidget {
           },
           builder: (context, player, child) {
             return LyricsReader(
-              model: lyric!.model,
+              model: lyric!.lyric.model,
               lyricUi: ui,
               position: player.position.inMilliseconds,
               playing: player.playerStatus == PlayerStatus.playing,
-              emptyBuilder: () => _textLyric(context, lyric!.text),
+              emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
             );
           },
         );
