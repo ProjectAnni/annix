@@ -5,11 +5,12 @@ import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+
+class AudioCancelledError extends Error {}
 
 class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
@@ -47,8 +48,12 @@ class AnnilAudioSource extends Source {
 
   @override
   Future<void> setOnPlayer(AudioPlayer player) async {
+    // when setOnPlayer was called, player expects to play current track
+    // but use may change track before player is ready
+    // so isCanceled is always false here, and may become true later
+    isCanceled = false;
+
     final offlinePath = getAudioCachePath(track.id);
-    final PlayerService playerService = Global.context.read();
     if (await File(offlinePath).exists()) {
       await player.setSourceDeviceFile(offlinePath);
     } else {
@@ -57,10 +62,11 @@ class AnnilAudioSource extends Source {
         preload();
       }
       await _preloadFuture;
-      // double check whether current song is still this track
-      if (playerService.playing == this) {
-        await player.setSourceDeviceFile(offlinePath);
+      // check whether user has changed track for playback
+      if (isCanceled) {
+        throw AudioCancelledError();
       }
+      await player.setSourceDeviceFile(offlinePath);
     }
   }
 
@@ -75,8 +81,7 @@ class AnnilAudioSource extends Source {
   bool preloaded = false;
 
   Future<void> _preload() async {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+    final annil = Global.context.read<CombinedOnlineAnnilClient>();
     final offlinePath = getAudioCachePath(track.id);
     final file = File(offlinePath);
     if (!await file.exists()) {
@@ -96,5 +101,12 @@ class AnnilAudioSource extends Source {
       }
     }
     preloaded = true;
+  }
+
+  bool isCanceled = false;
+
+  void cancel() {
+    // TODO: cancel download if necessary
+    isCanceled = true;
   }
 }

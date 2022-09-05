@@ -98,68 +98,72 @@ class PlayerService extends ChangeNotifier {
   Future<void> play({bool reload = false}) async {
     if (queue.isEmpty) return;
 
+    if (!reload) {
+      FLog.trace(text: "Resume playing");
+      await PlayerService.player.resume();
+      return;
+    }
+
+    final currentIndex = playingIndex;
+    if (currentIndex == null || currentIndex >= queue.length) {
+      FLog.trace(text: "Stop playing");
+      await stop();
+      return;
+    }
+
     // activate audio session
     if (!await AudioSession.instance.then((e) => e.setActive(true))) {
       // request denied
       return;
     }
 
-    if (reload) {
-      if (playingIndex != null && playingIndex! < queue.length) {
-        FLog.trace(text: "Start playing");
+    FLog.trace(text: "Start playing");
 
-        // set lyric to null as loading
-        playingLyric = null;
-        await stop(false);
-        notifyListeners();
+    // set lyric to null as loading
+    playingLyric = null;
+    await stop(false);
+    notifyListeners();
 
-        final source = queue[playingIndex!];
-        final toPlayId = source.id;
-        if (!source.preloaded) {
-          // current track is not preloaded, buffering
-          playerStatus = PlayerStatus.buffering;
-          notifyListeners();
-        }
+    final source = queue[currentIndex];
+    final toPlayId = source.id;
+    if (!source.preloaded) {
+      // current track is not preloaded, buffering
+      playerStatus = PlayerStatus.buffering;
+      notifyListeners();
+    }
 
-        // preload the next track
-        if (queue.length > playingIndex! + 1) {
-          queue[playingIndex! + 1].preload();
-        }
+    // preload the next track
+    if (queue.length > currentIndex + 1) {
+      queue[playingIndex! + 1].preload();
+    }
 
-        getLyric(source).then((lyric) {
-          if (playing?.id == toPlayId) {
-            setLyric(lyric);
-          }
-        }, onError: (err) {
-          if (playing?.id == toPlayId) {
-            setLyric(null);
-          }
-        });
-
-        try {
-          // wait for audio file to download and play it
-          await PlayerService.player.play(source, volume: volume);
-        } catch (e) {
-          // if the error occurs on the current, go to the next song
-          if (playing?.id == toPlayId) {
-            // TODO: tell user why skipped
-            FLog.error(text: "Failed to play", exception: e);
-            next();
-          }
-        }
-
-        // when playback start, set state to playing
-        if (playing?.id == toPlayId && playerStatus == PlayerStatus.buffering) {
-          playerStatus = PlayerStatus.playing;
-          notifyListeners();
-        }
-      } else {
-        FLog.trace(text: "Stop playing");
-        await stop();
+    getLyric(source).then((lyric) {
+      if (playing?.id == toPlayId) {
+        setLyric(lyric);
       }
-    } else {
-      FLog.trace(text: "Resume playing");
-      await PlayerService.player.resume();
+    }, onError: (err) {
+      if (playing?.id == toPlayId) {
+        setLyric(null);
+      }
+    });
+
+    try {
+      // wait for audio file to download and play it
+      await PlayerService.player.play(source, volume: volume);
+    } catch (e) {
+      if (e is AudioCancelledError) {
+        return;
+      }
+
+      // TODO: tell user why skipped
+      FLog.error(text: "Failed to play", exception: e);
+      next();
+    }
+
+    // when playback start, set state to playing
+    if (playing?.id == toPlayId && playerStatus == PlayerStatus.buffering) {
+      playerStatus = PlayerStatus.playing;
+      notifyListeners();
     }
   }
 
@@ -185,21 +189,19 @@ class PlayerService extends ChangeNotifier {
   }
 
   Future<void> previous() async {
-    FLog.trace(text: "Seek to previous");
-    if (queue.isNotEmpty && playingIndex != null) {
+    final currentIndex = playingIndex;
+    if (queue.isNotEmpty && currentIndex != null) {
       switch (loopMode) {
         case LoopMode.off:
           // to the next song / stop
-          if (playingIndex! > 0) {
-            playingIndex = playingIndex! - 1;
-            notifyListeners();
+          if (currentIndex > 0) {
+            setPlayingIndex(currentIndex - 1);
             await play(reload: true);
           }
           break;
         case LoopMode.all:
           // to the previous song / last song
-          playingIndex = (playingIndex! > 0 ? playingIndex! : queue.length) - 1;
-          notifyListeners();
+          setPlayingIndex((currentIndex > 0 ? currentIndex : queue.length) - 1);
           await play(reload: true);
           break;
         case LoopMode.one:
@@ -210,8 +212,7 @@ class PlayerService extends ChangeNotifier {
         case LoopMode.random:
           // to a random song
           final rng = Random();
-          playingIndex = rng.nextInt(queue.length);
-          notifyListeners();
+          setPlayingIndex(rng.nextInt(queue.length));
           await play(reload: true);
           break;
       }
@@ -219,14 +220,13 @@ class PlayerService extends ChangeNotifier {
   }
 
   Future<void> next() async {
-    FLog.trace(text: "Seek to next");
-    if (queue.isNotEmpty && playingIndex != null) {
+    final currentIndex = playingIndex;
+    if (queue.isNotEmpty && currentIndex != null) {
       switch (loopMode) {
         case LoopMode.off:
           // to the next song / stop
-          if (playingIndex! < queue.length - 1) {
-            playingIndex = playingIndex! + 1;
-            notifyListeners();
+          if (currentIndex < queue.length - 1) {
+            setPlayingIndex(currentIndex + 1);
             await play(reload: true);
           } else {
             await stop();
@@ -234,8 +234,7 @@ class PlayerService extends ChangeNotifier {
           break;
         case LoopMode.all:
           // to the next song / first song
-          playingIndex = (playingIndex! + 1) % queue.length;
-          notifyListeners();
+          setPlayingIndex((currentIndex + 1) % queue.length);
           await play(reload: true);
           break;
         case LoopMode.one:
@@ -246,8 +245,7 @@ class PlayerService extends ChangeNotifier {
         case LoopMode.random:
           // to a random song
           final rng = Random();
-          playingIndex = rng.nextInt(queue.length);
-          notifyListeners();
+          setPlayingIndex(rng.nextInt(queue.length));
           await play(reload: true);
           break;
       }
@@ -265,8 +263,7 @@ class PlayerService extends ChangeNotifier {
       final to = index % queue.length;
       if (to != playingIndex) {
         // index changed, set new audio source
-        playingIndex = to;
-        notifyListeners();
+        setPlayingIndex(to);
         await play(reload: true);
       } else {
         // index not changed, seek to start
@@ -278,6 +275,14 @@ class PlayerService extends ChangeNotifier {
   Future<void> setLoopMode(LoopMode mode) async {
     FLog.trace(text: "Set loop mode $mode");
     loopMode = mode;
+    notifyListeners();
+  }
+
+  Future<void> setPlayingIndex(int index) async {
+    if (playingIndex != index) {
+      playing?.cancel();
+      playingIndex = index;
+    }
     notifyListeners();
   }
 
