@@ -8,6 +8,7 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class AnnilAudioSource extends Source {
@@ -18,12 +19,12 @@ class AnnilAudioSource extends Source {
     this.quality = PreferQuality.Medium,
   });
 
-  static Future<AnnilAudioSource?> from({
+  static Future<AnnilAudioSource?> from(
+    BuildContext context, {
     required TrackIdentifier id,
     PreferQuality quality = PreferQuality.Medium,
   }) async {
-    final MetadataService metadata =
-        Provider.of<MetadataService>(Global.context, listen: false);
+    final MetadataService metadata = context.read();
     final track = await metadata.getTrack(id);
     if (track != null) {
       return AnnilAudioSource(
@@ -47,8 +48,7 @@ class AnnilAudioSource extends Source {
   @override
   Future<void> setOnPlayer(AudioPlayer player) async {
     final offlinePath = getAudioCachePath(track.id);
-    final playerService =
-        Provider.of<PlayerService>(Global.context, listen: false);
+    final PlayerService playerService = Global.context.read();
     if (await File(offlinePath).exists()) {
       await player.setSourceDeviceFile(offlinePath);
     } else {

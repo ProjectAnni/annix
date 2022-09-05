@@ -56,7 +56,7 @@ dependencies:
     git:
       url: https://github.com/Theunodb/extended_image
       ref: 7d07e2203c7ad45847a58714c921e315d79ad417
-  flutter_lyric: ^2.0.3
+  flutter_lyric: ^2.0.4+5
   settings_ui: ^2.0.2
   we_slide: ^2.3.0
   material_color_utilities: ^0.2.0 # on master

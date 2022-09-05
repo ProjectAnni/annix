@@ -56,11 +56,15 @@ class HomePage extends StatelessWidget {
                                   );
                                 },
                               );
-                              Provider.of<PlayerService>(context, listen: false)
-                                  .fullShuffleMode()
-                                  .then((value) =>
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop());
+                              context
+                                  .read<PlayerService>()
+                                  .fullShuffleMode(context)
+                                  .then(
+                                (value) {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                              );
                             },
                           ),
                           IconButton(

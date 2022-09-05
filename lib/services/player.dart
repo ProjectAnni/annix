@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_anniv.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:audio_session/audio_session.dart';
@@ -297,10 +297,9 @@ class PlayerService extends ChangeNotifier {
     await PlayerService.player.setVolume(volume);
   }
 
-  Future<void> fullShuffleMode(
+  Future<void> fullShuffleMode(BuildContext context,
       {int count = 30, bool waitUntilPlayback = false}) async {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+    final CombinedOnlineAnnilClient annil = context.read();
     final albums = annil.albums;
     if (albums.isEmpty) {
       return;
@@ -316,8 +315,7 @@ class PlayerService extends ChangeNotifier {
       albumIds.add(albumId);
     }
 
-    final MetadataService metadata =
-        Provider.of<MetadataService>(Global.context, listen: false);
+    final MetadataService metadata = context.read();
     final metadataMap = await metadata.getAlbums(albumIds);
     for (final albumId in albumIds) {
       final metadata = metadataMap[albumId];
@@ -337,7 +335,8 @@ class PlayerService extends ChangeNotifier {
 
         if (annil.isAvailable(id)) {
           if (track.type == TrackType.Normal) {
-            songs.add(AnnilAudioSource.from(id: id));
+            // ignore: use_build_context_synchronously
+            songs.add(AnnilAudioSource.from(Global.context, id: id));
           }
         }
       }
@@ -346,12 +345,16 @@ class PlayerService extends ChangeNotifier {
     await setLoopMode(LoopMode.off);
 
     final queue = await Future.wait(songs);
-    final nonNullQueue = queue.where((element) => element != null).toList()
-        as List<AnnilAudioSource>;
+    final List<AnnilAudioSource> resultQueue = [];
+    for (final song in queue) {
+      if (song != null) {
+        resultQueue.add(song);
+      }
+    }
     if (waitUntilPlayback) {
-      await setPlayingQueue(nonNullQueue);
+      await setPlayingQueue(resultQueue);
     } else {
-      setPlayingQueue(nonNullQueue);
+      setPlayingQueue(resultQueue);
     }
   }
 

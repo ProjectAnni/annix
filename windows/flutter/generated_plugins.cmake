@@ -6,7 +6,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   bitsdojo_window_windows
   connectivity_plus_windows
-  flutter_lyric
   sqlite3_flutter_libs
   url_launcher_windows
 )
