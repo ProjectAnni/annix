@@ -315,10 +315,16 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
       {int initialIndex = 0}) async {
+    // 1. cancel current playing(loading) track
+    playing?.cancel();
+    // 2. set playing queue
     queue = songs;
+    // 3. set playing index
     playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
-    notifyListeners();
+    // 4. set duration to zero
+    duration = Duration.zero;
 
+    notifyListeners();
     await play(reload: true);
   }
 

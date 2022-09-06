@@ -13,6 +13,7 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteScreen extends PlaylistScreen {
+  // FIXME: update screen after refresh
   final _anniv = Provider.of<AnnivService>(Global.context, listen: false);
   final _favorites = Provider.of<List<Favorite>>(Global.context, listen: false);
 
