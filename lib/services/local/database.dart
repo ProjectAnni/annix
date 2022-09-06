@@ -19,6 +19,7 @@ class LocalDatabase extends _$LocalDatabase {
   static Provider<LocalDatabase> provider = Provider(
     create: (_) => LocalDatabase(),
     dispose: (_, LocalDatabase database) => database.close(),
+    lazy: false,
   );
 
   static StreamProvider<List<PlaylistData>> playlistProvider = StreamProvider(
