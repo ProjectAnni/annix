@@ -1,6 +1,5 @@
 import 'package:annix/global.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 // https://github.com/ProjectAnni/anniw/blob/d1770ded6cffb1c7c4ed74205b7d40ae8ec18998/src/utils/helper.ts#L62
 class _ArtistParser {
@@ -69,8 +68,7 @@ class ArtistText extends StatefulWidget {
   final bool expandable;
 
   bool get isExtensible =>
-      expandable &&
-      artists.firstWhereOrNull((artist) => artist.children.isNotEmpty) != null;
+      expandable && artist.contains('（') && artist.contains('）');
 
   ArtistText(
     this.artist, {

@@ -103,7 +103,6 @@ class PlayerService extends ChangeNotifier {
         final d = durationMap.value[id];
         if (d != null) {
           duration = d;
-          print([id, duration]);
           notifyListeners();
         }
       }
@@ -113,7 +112,6 @@ class PlayerService extends ChangeNotifier {
       if (id != null) {
         if (updatedDuration > Duration.zero) {
           duration = updatedDuration;
-          print([id, duration]);
           notifyListeners();
         }
       }

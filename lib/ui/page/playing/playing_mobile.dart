@@ -22,7 +22,18 @@ class PlayingScreenMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: Container(
+        // decoration: BoxDecoration(
+        //   gradient: LinearGradient(
+        //     begin: Alignment.topRight,
+        //     end: Alignment.bottomLeft,
+        //     colors: [
+        //       context.colorScheme.secondary,
+        //       context.colorScheme.secondaryContainer,
+        //     ],
+        //   ),
+        // ),
+        color: context.colorScheme.secondaryContainer,
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -107,7 +118,8 @@ class PlayingScreenMobile extends StatelessWidget {
         ),
       ),
       bottomSheet: BottomAppBar(
-        elevation: 1,
+        elevation: 5,
+        color: context.colorScheme.secondaryContainer,
         child: ButtonBar(
           alignment: MainAxisAlignment.end,
           buttonPadding: EdgeInsets.zero,
