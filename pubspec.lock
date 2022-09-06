@@ -25,9 +25,11 @@ packages:
   anni_mpris_service:
     dependency: "direct main"
     description:
-      name: anni_mpris_service
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "6098d631cccaa250cf74423ce221325ef70f9d92"
+      url: "https://github.com/ProjectAnni/mpris_service"
+    source: git
     version: "0.0.2"
   args:
     dependency: transitive

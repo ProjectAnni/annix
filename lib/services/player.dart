@@ -58,8 +58,9 @@ class TrackLyric {
 class PlayerService extends ChangeNotifier {
   static final AudioPlayer player = AudioPlayer();
 
-  // TODO: make use of this map
-  static final Map<String, Duration> durationMap = {};
+  // TODO: cache this map
+  static final ValueNotifier<Map<String, Duration>> durationMap =
+      ValueNotifier({});
 
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
@@ -90,19 +91,29 @@ class PlayerService extends ChangeNotifier {
 
     PlayerService.player.onPlayerComplete.listen((event) => next());
 
+    // Position
     PlayerService.player.onPositionChanged.listen((updatedPosition) {
       position = updatedPosition;
       notifyListeners();
+    });
+    // Duration
+    PlayerService.durationMap.addListener(() {
+      final id = playing?.id;
+      if (id != null) {
+        final d = durationMap.value[id];
+        if (d != null) {
+          duration = d;
+          print([id, duration]);
+          notifyListeners();
+        }
+      }
     });
     PlayerService.player.onDurationChanged.listen((updatedDuration) {
       final id = playing?.id;
       if (id != null) {
         if (updatedDuration > Duration.zero) {
-          if (updatedDuration > Duration.zero) {
-            duration = updatedDuration;
-          } else {
-            duration = PlayerService.durationMap[id] ?? Duration.zero;
-          }
+          duration = updatedDuration;
+          print([id, duration]);
           notifyListeners();
         }
       }
@@ -297,6 +308,7 @@ class PlayerService extends ChangeNotifier {
     if (playingIndex != index) {
       playing?.cancel();
       playingIndex = index;
+      duration = Duration.zero;
     }
     notifyListeners();
   }

@@ -236,14 +236,17 @@ class LinuxAudioService extends AudioServicePlatform {
 
   @override
   Future<void> setMediaItem(SetMediaItemRequest request) async {
-    mpris.metadata = Metadata(
-      trackId: "/${request.mediaItem.id.replaceAll('-', '')}",
-      trackTitle: request.mediaItem.title,
-      trackArtist: [request.mediaItem.artist!],
-      artUrl: request.mediaItem.artUri.toString(),
-      trackLength: request.mediaItem.duration,
-      albumName: request.mediaItem.album!,
-    );
+    final duration = request.mediaItem.duration;
+    if (duration != null && duration > Duration.zero) {
+      mpris.metadata = Metadata(
+        trackId: "/${request.mediaItem.id.replaceAll('-', '')}",
+        trackTitle: request.mediaItem.title,
+        trackArtist: [request.mediaItem.artist!],
+        artUrl: request.mediaItem.artUri.toString(),
+        trackLength: request.mediaItem.duration,
+        albumName: request.mediaItem.album!,
+      );
+    }
   }
 
   @override
@@ -271,9 +274,9 @@ class AnnixMPRISService extends MPRISService {
   AnnixMPRISService(BuildContext context)
       : player = Provider.of<PlayerService>(context, listen: false),
         super(
-          "annix",
+        "annix",
           identity: "Annix",
-          emitSeekedSignal: true,
+          emitSeekedSignal: false,
           canPlay: true,
           canPause: true,
           canGoPrevious: true,

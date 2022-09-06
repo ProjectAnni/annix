@@ -43,7 +43,9 @@ dependencies:
   audio_service: ^0.18.6
   audio_service_platform_interface: ^0.1.0
   audio_session: ^0.1.10
-  anni_mpris_service: ^0.0.2
+  anni_mpris_service:
+    git:
+      url: https://github.com/ProjectAnni/mpris_service
 
   ########################## Widgets ##########################
   # https://github.com/suragch/audio_video_progress_bar/issues/23
