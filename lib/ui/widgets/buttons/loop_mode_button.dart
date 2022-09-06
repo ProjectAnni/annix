@@ -1,18 +1,14 @@
 import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class LoopModeButton extends StatelessWidget {
   const LoopModeButton({Key? key}) : super(key: key);
 
-  Icon getIcon(BuildContext context, LoopMode loopMode) {
+  Icon getIcon(LoopMode loopMode) {
     switch (loopMode) {
       case LoopMode.off:
-        return Icon(
-          Icons.repeat,
-          color: context.iconColor?.withOpacity(0.5),
-        );
+        return const Icon(Icons.next_plan_outlined);
       case LoopMode.all:
         return const Icon(Icons.repeat);
       case LoopMode.one:
@@ -40,7 +36,7 @@ class LoopModeButton extends StatelessWidget {
     return Selector<PlayerService, LoopMode>(
       selector: (context, player) => player.loopMode,
       builder: (context, loopMode, child) => IconButton(
-        icon: getIcon(context, loopMode),
+        icon: getIcon(loopMode),
         onPressed: () {
           context.read<PlayerService>().setLoopMode(next(loopMode));
         },
