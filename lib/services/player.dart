@@ -195,11 +195,12 @@ class PlayerService extends ChangeNotifier {
   }
 
   Future<void> stop([bool setInactive = true]) async {
+    position = Duration.zero;
+    notifyListeners();
     await Future.wait([
       if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
       PlayerService.player.release(),
     ]);
-    // this.progress.value = Duration.zero;
   }
 
   Future<void> previous() async {

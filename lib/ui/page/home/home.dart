@@ -21,10 +21,11 @@ class HomePage extends StatelessWidget {
     return Material(
       child: CustomScrollView(
         slivers: (<Widget>[
-                  Consumer<AnnivService>(
-                    builder: (context, anniv, child) {
+                  Selector<AnnivService, SiteUserInfo?>(
+                    selector: (_, service) => service.info,
+                    builder: (context, info, child) {
                       return SliverAppBar.large(
-                        title: HomeAppBar(info: anniv.info),
+                        title: HomeAppBar(info: info),
                         centerTitle: true,
                         automaticallyImplyLeading: false,
                         scrolledUnderElevation: 0,

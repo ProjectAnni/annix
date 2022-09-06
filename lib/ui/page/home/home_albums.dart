@@ -36,24 +36,18 @@ class HomeAlbums extends StatelessWidget {
                     final albumId = annil.albums[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: FutureBuilder<Album?>(
-                        future: metadata.getAlbum(albumId: albumId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (!snapshot.hasData) {
-                              return Container(
-                                width: 0,
-                              );
-                            } else {
-                              return AlbumGrid(
-                                album: snapshot.data!,
-                                width: height - 32,
-                              );
-                            }
-                          } else {
-                            return DummyAlbumGrid(width: height - 32.0);
-                          }
+                      child: FutureProvider<Album?>.value(
+                        value: metadata.getAlbum(albumId: albumId),
+                        initialData: null,
+                        builder: (context, child) {
+                          return Consumer<Album?>(
+                            builder: (context, album, child) => album == null
+                                ? DummyAlbumGrid(width: height - 32.0)
+                                : AlbumGrid(
+                                    album: album,
+                                    width: height - 32,
+                                  ),
+                          );
                         },
                       ),
                     );
