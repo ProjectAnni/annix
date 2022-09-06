@@ -218,6 +218,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
 class LinuxAudioService extends AudioServicePlatform {
   final AnnixMPRISService mpris;
+  bool seekOnNextUpdate = false;
 
   LinuxAudioService(BuildContext context) : mpris = AnnixMPRISService(context);
 
@@ -228,7 +229,9 @@ class LinuxAudioService extends AudioServicePlatform {
   Future<void> setState(SetStateRequest request) async {
     mpris.playbackStatus =
         request.state.playing ? PlaybackStatus.playing : PlaybackStatus.stopped;
-    mpris.position = request.state.updatePosition;
+    mpris.updatePosition(request.state.updatePosition,
+        forceEmitSeeked: seekOnNextUpdate);
+    seekOnNextUpdate = false;
   }
 
   @override
@@ -238,12 +241,18 @@ class LinuxAudioService extends AudioServicePlatform {
   Future<void> setMediaItem(SetMediaItemRequest request) async {
     final duration = request.mediaItem.duration;
     if (duration != null && duration > Duration.zero) {
+      final trackId = "/${request.mediaItem.id.replaceAll('-', '')}";
+      // if duration has changed on one track, clients may set current position to zero
+      // so we need to `seek` to the correct position at next update
+      seekOnNextUpdate = mpris.metadata.trackId == trackId &&
+          mpris.metadata.trackLength != duration;
+
       mpris.metadata = Metadata(
-        trackId: "/${request.mediaItem.id.replaceAll('-', '')}",
+        trackId: trackId,
         trackTitle: request.mediaItem.title,
         trackArtist: [request.mediaItem.artist!],
         artUrl: request.mediaItem.artUri.toString(),
-        trackLength: request.mediaItem.duration,
+        trackLength: duration,
         albumName: request.mediaItem.album!,
       );
     }
