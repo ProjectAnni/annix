@@ -51,7 +51,7 @@ class AnnixApp extends StatelessWidget {
         Provider(create: (c) => MetadataService()),
       ],
       builder: (context, child) {
-        final AnnixTheme theme = context.read();
+        final AnnixTheme theme = context.watch();
         final AnnixRouterDelegate delegate = context.read();
 
         // load local / remote album list
