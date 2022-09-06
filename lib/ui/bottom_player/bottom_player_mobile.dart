@@ -1,8 +1,10 @@
 import 'package:annix/services/player.dart';
+import 'package:annix/services/settings_controller.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide ContextExtensionss;
 import 'package:provider/provider.dart';
 
 class MobileBottomPlayer extends StatelessWidget {
@@ -12,6 +14,8 @@ class MobileBottomPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final SettingsController settings = Get.find();
+
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -33,15 +37,36 @@ class MobileBottomPlayer extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Consumer<PlayerService>(
-              builder: (context, player, child) => Text(
-                player.playing?.track.title ?? "",
-                style: context.textTheme.titleSmall,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
+              builder: (context, player, child) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    player.playing?.track.title ?? "",
+                    style: context.textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                  ),
+                  Obx(() {
+                    if (settings.mobileShowArtistInBottomPlayer.value) {
+                      return Text(
+                        player.playing?.track.artist ?? "",
+                        style: context.textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  }),
+                ],
               ),
             ),
           ),
-          PlayPauseButton.small(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PlayPauseButton.small(),
+          ),
         ],
       ),
     );

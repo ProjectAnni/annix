@@ -17,6 +17,11 @@ class SettingsController extends GetxController {
   /// Default value: false
   late RxBool autoScaleUI;
 
+  /// [Mobile] Whether to display track artist in bottom player
+  ///
+  /// Default value: false
+  late RxBool mobileShowArtistInBottomPlayer;
+
   @override
   void onInit() {
     super.onInit();
@@ -35,6 +40,13 @@ class SettingsController extends GetxController {
     autoScaleUI =
         (Global.preferences.getBool("annix_auto_scale_ui") ?? false).obs;
     autoScaleUI.listen(saveChangedVariable("annix_auto_scale_ui"));
+
+    mobileShowArtistInBottomPlayer = (Global.preferences
+                .getBool("annix_mobile_show_artist_in_bottom_player") ??
+            false)
+        .obs;
+    mobileShowArtistInBottomPlayer.listen(
+        saveChangedVariable("annix_mobile_show_artist_in_bottom_player"));
   }
 
   void Function(T) saveChangedVariable<T>(String key) {

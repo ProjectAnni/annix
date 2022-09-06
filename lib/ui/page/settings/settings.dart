@@ -79,6 +79,22 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
           SettingsSection(
+            title: const Text('UI'),
+            tiles: [
+              ObxSettingsTileBuilder<RxBool>(
+                value: settings.mobileShowArtistInBottomPlayer,
+                builder: (p) => SettingsTile.switchTile(
+                  onToggle: (value) {
+                    p.value = value;
+                  },
+                  initialValue: p.value,
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text("Show artist in bottom player"),
+                ),
+              ),
+            ],
+          ),
+          SettingsSection(
             title: const Text('Playback'),
             tiles: [
               ObxSettingsTileBuilder<RxBool>(
