@@ -36,7 +36,7 @@ abstract class PlaylistScreen extends StatelessWidget {
 
   Widget _albumIntro(BuildContext context) {
     return Container(
-      height: 180,
+      height: 144,
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -60,10 +60,9 @@ abstract class PlaylistScreen extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textTheme.titleMedium,
-                    textScaleFactor: 1.2,
                   ),
                   ...intro,
                   ButtonBar(
@@ -71,7 +70,7 @@ abstract class PlaylistScreen extends StatelessWidget {
                     children: [
                       TextButton.icon(
                         icon: const Icon(Icons.play_arrow),
-                        label: const Text("Play All"),
+                        label: const Text("Play"),
                         onPressed: () {
                           playFullList(context, shuffle: false);
                         },

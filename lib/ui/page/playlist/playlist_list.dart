@@ -64,7 +64,14 @@ class PlaylistDetailScreen extends PlaylistScreen {
   @override
   List<Widget> get intro => [
         // description
-        ...(playlist.description != null ? [Text(playlist.description!)] : []),
+        ...(playlist.description != null
+            ? [
+                Text(
+                  playlist.description!,
+                  maxLines: 2,
+                )
+              ]
+            : []),
       ];
 
   @override
@@ -86,6 +93,9 @@ class PlaylistDetailScreen extends PlaylistScreen {
               ? ArtistText(track.description!)
               : null,
           enabled: annil.isAvailable(track.info.id),
+          onTap: () {
+            super.playFullList(context, initialIndex: index);
+          },
         );
       },
     );
