@@ -94,7 +94,10 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
     );
 
     // sort with priority
+    _clients.clear();
+    _clients.addAll(clients.values);
     _sort();
+    notifyListeners();
   }
 
   String? getAudioUrl({

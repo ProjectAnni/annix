@@ -156,8 +156,9 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     // do not wait here
-    _client.post("/api/user/logout").catchError((_) async {});
-    _cookieJar.deleteAll().catchError((_) async {});
+    _client.post("/api/user/logout").catchError((err) {});
+    _cookieJar.deleteAll();
+    await Global.preferences.remove('anniv_url');
     return;
   }
 

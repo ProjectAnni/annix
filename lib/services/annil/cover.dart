@@ -74,8 +74,7 @@ class CoverReverseProxy {
   }
 
   Future<File?> getCoverImage(CoverItem cover) async {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+    final CombinedOnlineAnnilClient annil = Global.context.read();
 
     if (downloadingMap.containsKey(cover.key)) {
       await downloadingMap[cover.key];

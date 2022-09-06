@@ -77,18 +77,18 @@ class AnnivService extends ChangeNotifier {
       }
       this.client = client;
 
-      await Future.wait([
+      // do not await here
+      Future.wait([
         (() async {
-          final annil = Provider.of<CombinedOnlineAnnilClient>(Global.context,
-              listen: false);
+          final CombinedOnlineAnnilClient annil = Global.context.read();
           final annilTokens = await client.getCredentials();
           annil.sync(annilTokens);
-          annil.reloadClients();
+          return annil.reloadClients();
         })(),
         // reload favorite list
         syncFavorite(),
         // reload playlist list
-        syncPlaylist(),
+        client.getOwnedPlaylists().then(syncPlaylist),
       ]);
     }
   }
@@ -100,10 +100,25 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+    final annil = Global.context.read<CombinedOnlineAnnilClient>();
+
+    // 1. clear anniv info
     info = null;
     await _saveInfo();
 
+    // 2. logout anniv if necessary
     await client?.logout();
+
+    // 3. set client to null
+    client = null;
+
+    // 4. clear annil cache
+    annil.sync([]);
+    await annil.reloadClients();
+
+    // 5. clear favorites and remote playlists
+    await _syncFavorite([]);
+    await syncPlaylist([]);
   }
 
   void _loadInfo() {
@@ -181,75 +196,72 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> syncFavorite() async {
-    if (client != null) {
-      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+    await client?.getFavoriteList().then(_syncFavorite);
+  }
 
-      final list = await client!.getFavoriteList();
-      await db.transaction(() async {
-        // clear favorite list
-        await db.favorites.delete().go();
-        // write new favorite list in
-        await db.batch(
-          (batch) => batch.insertAll(
-            db.favorites,
-            // reverse the list so that the latest favorite is at the end of the list
-            list.reversed
-                .map(
-                  (e) => FavoritesCompanion.insert(
-                    albumId: e.id.albumId,
-                    discId: e.id.discId,
-                    trackId: e.id.trackId,
-                    title: Value(e.title),
-                    artist: Value(e.artist),
-                    albumTitle: Value(e.albumTitle),
-                    type: Value(e.type.toString()),
-                  ),
-                )
-                .toList(),
-          ),
-        );
-      });
-    }
+  Future<void> _syncFavorite(List<TrackInfoWithAlbum> list) async {
+    final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+
+    await db.transaction(() async {
+      // clear favorite list
+      await db.favorites.delete().go();
+      // write new favorite list in
+      await db.batch(
+        (batch) => batch.insertAll(
+          db.favorites,
+          // reverse the list so that the latest favorite is at the end of the list
+          list.reversed
+              .map(
+                (e) => FavoritesCompanion.insert(
+                  albumId: e.id.albumId,
+                  discId: e.id.discId,
+                  trackId: e.id.trackId,
+                  title: Value(e.title),
+                  artist: Value(e.artist),
+                  albumTitle: Value(e.albumTitle),
+                  type: Value(e.type.toString()),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    });
   }
 
   //////////////////////////////// Playlist ///////////////////////////////
-  Future<void> syncPlaylist() async {
-    if (client != null) {
-      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+  Future<void> syncPlaylist(List<PlaylistInfo> list) async {
+    final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+    final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
 
-      final list = await client!.getOwnedPlaylists();
-      final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
+    await db.playlist.select().asyncMap((playlist) async {
+      final isRemote = playlist.remoteId != null;
+      if (isRemote) {
+        final remote = map[playlist.remoteId];
 
-      await db.playlist.select().asyncMap((playlist) async {
-        final isRemote = playlist.remoteId != null;
-        if (isRemote) {
-          final remote = map[playlist.remoteId];
-
-          // playlist does not exist on remote, remove it
-          if (remote == null) {
-            db.playlist.deleteOne(playlist);
-            db.playlistItem
+        // playlist does not exist on remote, remove it
+        if (remote == null) {
+          db.playlist.deleteOne(playlist);
+          db.playlistItem
+              .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
+        } else {
+          // playlist exists on remote, compare last_modified and update it
+          if (playlist.lastModified != remote.lastModified) {
+            // clear items
+            await db.playlistItem
                 .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
-          } else {
-            // playlist exists on remote, compare last_modified and update it
-            if (playlist.lastModified != remote.lastModified) {
-              // clear items
-              await db.playlistItem
-                  .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
-              // update modified playlist
-              await db.playlist
-                  .update()
-                  .replace(remote.toCompanion(id: Value(playlist.id)));
-            }
-            map.remove(remote.id);
+            // update modified playlist
+            await db.playlist
+                .update()
+                .replace(remote.toCompanion(id: Value(playlist.id)));
           }
+          map.remove(remote.id);
         }
-      }).get();
-
-      // the remaining playlist is new, add it
-      for (final playlist in map.values) {
-        db.playlist.insertOne(playlist.toCompanion());
       }
+    }).get();
+
+    // the remaining playlist is new, add it
+    for (final playlist in map.values) {
+      db.playlist.insertOne(playlist.toCompanion());
     }
   }
 
