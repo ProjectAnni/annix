@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:annix/global.dart';
@@ -80,6 +81,8 @@ class PlayerService extends ChangeNotifier {
   Duration duration = Duration.zero;
 
   PlayerService() {
+    _load();
+
     PlayerService.player.onPlayerStateChanged.listen((s) {
       // stop event from player can not interrupt buffering state
       if (!(playerStatus == PlayerStatus.buffering &&
@@ -117,6 +120,32 @@ class PlayerService extends ChangeNotifier {
       }
     });
   }
+
+  _load() {
+    final queue = Global.preferences.getStringList('player.queue') ?? [];
+    this.queue =
+        queue.map((e) => AnnilAudioSource.fromJson(jsonDecode(e))).toList();
+
+    playingIndex = Global.preferences.getInt('player.playingIndex');
+
+    final loopMode = Global.preferences.getInt('player.loopMode');
+    this.loopMode = LoopMode.values[loopMode ?? 0];
+
+    volume = Global.preferences.getDouble('player.volume') ?? 1.0;
+  }
+
+  // _save() async {
+  //   final nowPlayingIndex = playingIndex;
+  //   return Future.wait([
+  //     Global.preferences.setStringList(
+  //         "player.queue", queue.map((e) => jsonEncode(e.toJson())).toList()),
+  //     nowPlayingIndex != null
+  //         ? Global.preferences.setInt("player.playingIndex", nowPlayingIndex)
+  //         : Global.preferences.remove("player.playingIndex"),
+  //     Global.preferences.setInt("player.loopMode", loopMode.index),
+  //     Global.preferences.setDouble("player.volume", volume),
+  //   ]);
+  // }
 
   Future<void> play({bool reload = false}) async {
     if (queue.isEmpty) return;
@@ -297,16 +326,23 @@ class PlayerService extends ChangeNotifier {
   }
 
   Future<void> setLoopMode(LoopMode mode) async {
-    FLog.trace(text: "Set loop mode $mode");
     loopMode = mode;
     notifyListeners();
+    Global.preferences.setInt("player.loopMode", loopMode.index);
   }
 
   Future<void> setPlayingIndex(int index) async {
-    if (playingIndex != index) {
+    final nowPlayingIndex = playingIndex;
+    if (nowPlayingIndex != index) {
       playing?.cancel();
       playingIndex = index;
       duration = Duration.zero;
+    }
+
+    if (nowPlayingIndex != null) {
+      Global.preferences.setInt("player.playingIndex", nowPlayingIndex);
+    } else {
+      Global.preferences.remove("player.playingIndex");
     }
     notifyListeners();
   }
@@ -323,6 +359,10 @@ class PlayerService extends ChangeNotifier {
     duration = Duration.zero;
 
     notifyListeners();
+    Global.preferences.setStringList(
+        "player.queue", queue.map((e) => jsonEncode(e.toJson())).toList());
+    setPlayingIndex(playingIndex!);
+
     await play(reload: true);
   }
 
@@ -331,6 +371,7 @@ class PlayerService extends ChangeNotifier {
     notifyListeners();
 
     await PlayerService.player.setVolume(volume);
+    await Global.preferences.setDouble("player.volume", volume);
   }
 
   Future<void> fullShuffleMode(BuildContext context,

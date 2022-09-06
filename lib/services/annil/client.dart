@@ -303,6 +303,21 @@ enum PreferQuality {
         return "lossless";
     }
   }
+
+  factory PreferQuality.fromString(String str) {
+    switch (str) {
+      case "low":
+        return PreferQuality.Low;
+      case "medium":
+        return PreferQuality.Medium;
+      case "high":
+        return PreferQuality.High;
+      case "lossless":
+        return PreferQuality.Lossless;
+      default:
+        return PreferQuality.Medium;
+    }
+  }
 }
 
 class OfflineAnnilClient {

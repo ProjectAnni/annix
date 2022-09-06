@@ -109,4 +109,19 @@ class AnnilAudioSource extends Source {
     // TODO: cancel download if necessary
     isCanceled = true;
   }
+
+  /////// Serialization ///////
+  static AnnilAudioSource fromJson(Map<String, dynamic> json) {
+    return AnnilAudioSource(
+      track: TrackInfoWithAlbum.fromJson(json['track']),
+      quality: PreferQuality.fromString(json['quality']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'track': track.toJson(),
+      'quality': quality.toString(),
+    };
+  }
 }
