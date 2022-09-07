@@ -160,12 +160,8 @@ class _LyricView extends StatelessWidget {
           align: lyricAlign,
           isKaraoke: isKaraoke,
         );
-        return Selector0<PlayerService>(
-          selector: (context) => context.watch(),
-          shouldRebuild: (prev, next) {
-            return true;
-          },
-          builder: (context, player, child) {
+        return Consumer<PlayerService>(
+          builder: (iconColor, player, child) {
             return LyricsReader(
               model: lyric!.lyric.model,
               lyricUi: ui,
