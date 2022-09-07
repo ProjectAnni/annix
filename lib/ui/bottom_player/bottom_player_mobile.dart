@@ -32,7 +32,7 @@ class MobileBottomPlayer extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            child: const PlayingMusicCover(card: true),
+            child: const PlayingMusicCover(card: true, animated: false),
           ),
           Expanded(
             flex: 1,

@@ -16,12 +16,14 @@ class PlayingMusicCover extends StatelessWidget {
   final bool card;
   final BoxFit? fit;
   final FilterQuality filterQuality;
+  final bool animated;
 
   const PlayingMusicCover({
     super.key,
     this.card = true,
     this.fit,
     this.filterQuality = FilterQuality.medium,
+    this.animated = true,
   });
 
   @override
@@ -35,7 +37,8 @@ class PlayingMusicCover extends StatelessWidget {
         }
 
         // is playing
-        return MusicCover(
+        Widget child = MusicCover(
+          key: ValueKey(playing.identifier.albumId),
           albumId: playing.identifier.albumId,
           image: playing.coverProvider,
           card: card,
@@ -45,6 +48,17 @@ class PlayingMusicCover extends StatelessWidget {
             Global.context.read<AnnixTheme>().setTheme(color);
           },
         );
+
+        if (animated) {
+          child = AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            child: child,
+          );
+        }
+        return child;
       },
     );
   }
