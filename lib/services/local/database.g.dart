@@ -16,7 +16,6 @@ class Favorite extends DataClass implements Insertable<Favorite> {
   final String? artist;
   final String? albumTitle;
   final String type;
-
   const Favorite(
       {required this.id,
       required this.albumId,
@@ -26,7 +25,6 @@ class Favorite extends DataClass implements Insertable<Favorite> {
       this.artist,
       this.albumTitle,
       required this.type});
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -112,7 +110,6 @@ class Favorite extends DataClass implements Insertable<Favorite> {
         albumTitle: albumTitle.present ? albumTitle.value : this.albumTitle,
         type: type ?? this.type,
       );
-
   @override
   String toString() {
     return (StringBuffer('Favorite(')
@@ -154,7 +151,6 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
   final Value<String?> artist;
   final Value<String?> albumTitle;
   final Value<String> type;
-
   const FavoritesCompanion({
     this.id = const Value.absent(),
     this.albumId = const Value.absent(),
@@ -177,7 +173,6 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
   })  : albumId = Value(albumId),
         discId = Value(discId),
         trackId = Value(trackId);
-
   static Insertable<Favorite> custom({
     Expression<int>? id,
     Expression<String>? albumId,
@@ -271,9 +266,7 @@ class Favorites extends Table with TableInfo<Favorites, Favorite> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   Favorites(this.attachedDatabase, [this._alias]);
-
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -324,17 +317,13 @@ class Favorites extends Table with TableInfo<Favorites, Favorite> {
       $customConstraints:
           'NOT NULL DEFAULT \'normal\' CHECK ("type" IN (\'normal\', \'instrumental\', \'absolute\', \'drama\', \'radio\', \'vocal\'))',
       defaultValue: const CustomExpression<String>('\'normal\''));
-
   @override
   List<GeneratedColumn> get $columns =>
       [id, albumId, discId, trackId, title, artist, albumTitle, type];
-
   @override
   String get aliasedName => _alias ?? 'favorites';
-
   @override
   String get actualTableName => 'favorites';
-
   @override
   VerificationContext validateIntegrity(Insertable<Favorite> instance,
       {bool isInserting = false}) {
@@ -384,7 +373,6 @@ class Favorites extends Table with TableInfo<Favorites, Favorite> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Favorite map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1246,7 +1234,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       'CREATE UNIQUE INDEX IF NOT EXISTS favorites_index ON favorites (album_id, disc_id, track_id)');
   late final Playlist playlist = Playlist(this);
   late final PlaylistItem playlistItem = PlaylistItem(this);
-
   Selectable<PlaylistItemData> playlistItems(int var1) {
     return customSelect(
         'SELECT * FROM playlist_item WHERE playlist_id = ?1 ORDER BY "order"',
@@ -1274,7 +1261,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [favorites, favoritesIndex, playlist, playlistItem];

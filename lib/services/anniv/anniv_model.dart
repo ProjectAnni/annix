@@ -327,6 +327,25 @@ class PlaylistInfo {
   }
 }
 
+@JsonSerializable(fieldRename: FieldRename.snake, createFactory: false)
+class PatchedPlaylistInfo {
+  String? name;
+  String? description;
+  bool? isPublic;
+  DiscIdentifier? cover;
+  int? lastModified;
+
+  PatchedPlaylistInfo({
+    this.name,
+    this.description,
+    this.isPublic,
+    this.cover,
+    this.lastModified,
+  });
+
+  Map<String, dynamic> toJson() => _$PatchedPlaylistInfoToJson(this);
+}
+
 class Playlist {
   PlaylistInfo intro;
 

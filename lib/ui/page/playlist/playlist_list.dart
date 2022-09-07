@@ -54,6 +54,18 @@ class PlaylistDetailScreen extends PlaylistScreen {
 
       // TODO: update cover
       final AnnivService anniv = Global.context.read();
+      if (coverIdentifier != null &&
+          playlist.remoteId != null &&
+          anniv.client != null) {
+        // TODO: update information in database
+        anniv.client?.updatePlaylistInfo(
+          playlistId: playlist.remoteId!,
+          info: PatchedPlaylistInfo(
+            // FIXME: do not use disc id
+            cover: DiscIdentifier(albumId: coverIdentifier, discId: 1),
+          ),
+        );
+      }
     }
 
     if (coverIdentifier == null) {

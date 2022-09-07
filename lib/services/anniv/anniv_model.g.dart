@@ -135,7 +135,7 @@ Map<String, dynamic> _$RequiredTrackInfoToJson(RequiredTrackInfo instance) =>
 TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
     TrackInfoWithAlbum(
       id: TrackInfoWithAlbum._trackFromJson(
-          readValueFlatten(json, 'track') as Map<String, dynamic>),
+          readValueFlatten(json, 'id') as Map<String, dynamic>),
       title: json['title'] as String,
       artist: json['artist'] as String,
       albumTitle: json['album_title'] as String,
@@ -153,6 +153,16 @@ PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
           : DiscIdentifier.fromJson(json['cover'] as Map<String, dynamic>),
       lastModified: json['last_modified'] as int,
     );
+
+Map<String, dynamic> _$PatchedPlaylistInfoToJson(
+        PatchedPlaylistInfo instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'is_public': instance.isPublic,
+      'cover': instance.cover,
+      'last_modified': instance.lastModified,
+    };
 
 SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
       albums: (json['albums'] as List<dynamic>?)
