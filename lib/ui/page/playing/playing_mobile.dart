@@ -165,15 +165,20 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
               icon: const Icon(Icons.more_horiz_rounded),
               onPressed: () {
                 showModalBottomSheet(
+                  useSafeArea: true,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   useRootNavigator: true,
                   context: context,
+                  isScrollControlled: true,
                   builder: (context) {
                     final player =
                         Provider.of<PlayerService>(context, listen: false);
-                    return PlayingMoreMenu(track: player.playing!.track);
+                    return FractionallySizedBox(
+                      heightFactor: 0.7,
+                      child: PlayingMoreMenu(track: player.playing!.track),
+                    );
                   },
                 );
               },

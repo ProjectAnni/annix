@@ -16,17 +16,18 @@ class PlayingMoreMenu extends StatelessWidget {
     final delegate = AnnixRouterDelegate.of(context);
 
     return ListView(
+      shrinkWrap: true,
       children: [
         ListTile(
-          leading: const Icon(Icons.music_note_rounded),
+          leading: const Icon(Icons.playlist_add),
           minLeadingWidth: 0,
-          title: Text(
-            track.title,
-            overflow: TextOverflow.ellipsis,
-            softWrap: false,
-          ),
+          title: const Text("Add to playlist"),
           dense: true,
+          onTap: () {
+            // TODO: add to playlist
+          },
         ),
+        const Divider(),
         ListTile(
           leading: const Icon(Icons.album_outlined),
           minLeadingWidth: 0,

@@ -44,7 +44,8 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
     player.addListener(() {
       if (player.playerStatus == PlayerStatus.playing) {
         _controller.forward();
-      } else if (player.playerStatus == PlayerStatus.paused) {
+      } else if (player.playerStatus == PlayerStatus.paused ||
+          player.playerStatus == PlayerStatus.stopped) {
         _controller.reverse();
       }
     });
@@ -52,14 +53,15 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
 
   @override
   Widget build(BuildContext context) {
+    final player = Provider.of<PlayerService>(context, listen: false);
     return SizedBox(
       height: widget.size,
       width: widget.size,
-      child: Consumer<PlayerService>(
-        builder: (context, playing, child) {
-          final status = playing.playerStatus;
-
-          if (status == PlayerStatus.buffering) {
+      child: Selector<PlayerService, bool>(
+        selector: (context, player) =>
+            player.playerStatus == PlayerStatus.buffering,
+        builder: (context, isBuffering, child) {
+          if (isBuffering) {
             return const Padding(
               padding: EdgeInsets.all(8.0),
               child: CircularProgressIndicator(strokeWidth: 2),
@@ -72,7 +74,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
                   icon: AnimatedIcons.play_pause,
                 ),
                 onPressed: () {
-                  playing.playOrPause();
+                  player.playOrPause();
                 },
               );
             } else if (widget.type == PlayPauseButtonType.elevated) {
@@ -87,7 +89,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
                     ),
                   ),
                   onTap: () {
-                    playing.playOrPause();
+                    player.playOrPause();
                   },
                 ),
               );
@@ -98,7 +100,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
                   icon: AnimatedIcons.play_pause,
                 ),
                 onPressed: () {
-                  playing.playOrPause();
+                  player.playOrPause();
                 },
               );
             }

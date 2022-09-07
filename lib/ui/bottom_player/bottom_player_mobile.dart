@@ -1,5 +1,6 @@
 import 'package:annix/services/player.dart';
 import 'package:annix/services/settings_controller.dart';
+import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -49,11 +50,9 @@ class MobileBottomPlayer extends StatelessWidget {
                   ),
                   Obx(() {
                     if (settings.mobileShowArtistInBottomPlayer.value) {
-                      return Text(
+                      return ArtistText(
                         player.playing?.track.artist ?? "",
                         style: context.textTheme.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
                       );
                     } else {
                       return const SizedBox.shrink();
