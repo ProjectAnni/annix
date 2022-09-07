@@ -71,8 +71,14 @@ class PlayerService extends ChangeNotifier {
   List<AnnilAudioSource> queue = [];
   int? playingIndex;
 
-  AnnilAudioSource? get playing =>
-      playingIndex != null ? queue[playingIndex!] : null;
+  AnnilAudioSource? get playing {
+    final currentIndex = playingIndex;
+    if (currentIndex == null ||
+        currentIndex < 0 ||
+        currentIndex >= queue.length) return null;
+
+    return queue[currentIndex];
+  }
 
   TrackLyric? playingLyric;
 
@@ -221,6 +227,11 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> pause() async {
     FLog.trace(text: "Pause playing");
+    // deactivate audio session
+    if (!await AudioSession.instance.then((e) => e.setActive(false))) {
+      // request denied
+      return;
+    }
     await PlayerService.player.pause();
   }
 

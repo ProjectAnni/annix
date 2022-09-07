@@ -65,7 +65,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         } else {
           switch (event.type) {
             case AudioInterruptionType.duck:
-            // TODO
+              // TODO
               break;
             case AudioInterruptionType.pause:
               if (pausedByInterrupt) {
@@ -175,19 +175,19 @@ class AnnixAudioHandler extends BaseAudioHandler {
       if (hasNext) MediaControl.skipToNext,
     ];
 
-    playbackState.add(playbackState.value.copyWith(
+    final playState = PlaybackState(
       controls: controls,
+      systemActions: {
+        MediaAction.seek,
+        MediaAction.seekForward,
+        MediaAction.seekBackward,
+      },
       androidCompactActionIndices: List.generate(controls.length, (i) => i)
           .where((i) =>
               controls[i].action == MediaAction.fastForward ||
               controls[i].action == MediaAction.pause ||
               controls[i].action == MediaAction.play)
           .toList(),
-      systemActions: {
-        MediaAction.seek,
-        MediaAction.seekForward,
-        MediaAction.seekBackward,
-      },
       processingState: {
         PlayerStatus.playing: AudioProcessingState.ready,
         PlayerStatus.stopped: AudioProcessingState.idle,
@@ -196,11 +196,15 @@ class AnnixAudioHandler extends BaseAudioHandler {
       }[player.playerStatus]!,
       playing: isPlaying,
       updatePosition: player.position,
-      queueIndex: player.playingIndex,
-    ));
+    );
+    if (playbackState.value != playState) {
+      playbackState.add(playState);
+    }
 
     final playing = player.playing;
-    if (playing != null) {
+    if (playing != null &&
+        (mediaItem.value?.id != playing.id ||
+            mediaItem.value?.duration != player.duration)) {
       mediaItem.add(MediaItem(
         id: playing.id,
         title: playing.track.title,
@@ -237,9 +241,6 @@ class LinuxAudioService extends AudioServicePlatform {
   }
 
   @override
-  Future<void> setQueue(SetQueueRequest request) async {}
-
-  @override
   Future<void> setMediaItem(SetMediaItemRequest request) async {
     final duration = request.mediaItem.duration;
     if (duration != null && duration > Duration.zero) {
@@ -262,18 +263,6 @@ class LinuxAudioService extends AudioServicePlatform {
 
   @override
   Future<void> stopService(StopServiceRequest request) async {}
-
-  @override
-  Future<void> androidForceEnableMediaButtons(
-      AndroidForceEnableMediaButtonsRequest request) async {}
-
-  @override
-  Future<void> notifyChildrenChanged(
-      NotifyChildrenChangedRequest request) async {}
-
-  @override
-  Future<void> setAndroidPlaybackInfo(
-      SetAndroidPlaybackInfoRequest request) async {}
 
   @override
   void setHandlerCallbacks(AudioHandlerCallbacks callbacks) {}
