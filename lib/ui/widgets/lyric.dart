@@ -35,12 +35,17 @@ extension on LyricAlign {
 class PlayingLyricUI extends LyricUI {
   final LyricAlign align;
   final bool isKaraoke;
+  final TextTheme textTheme;
 
-  PlayingLyricUI({this.align = LyricAlign.CENTER, required this.isKaraoke});
+  PlayingLyricUI({
+    required this.textTheme,
+    this.align = LyricAlign.CENTER,
+    required this.isKaraoke,
+  });
 
   @override
   TextStyle getPlayingMainTextStyle() {
-    return Global.context.textTheme.titleMedium!.copyWith(
+    return textTheme.titleMedium!.copyWith(
       fontWeight: FontWeight.w500,
       height: 1,
       color: isKaraoke ? null : Global.context.colorScheme.primary,
@@ -49,8 +54,8 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getOtherMainTextStyle() {
-    final textTheme = Global.context.textTheme.bodyMedium;
-    return textTheme!.copyWith(color: textTheme.color!.withOpacity(0.5));
+    final theme = textTheme.bodyMedium;
+    return theme!.copyWith(color: theme.color!.withOpacity(0.5));
   }
 
   @override
@@ -149,7 +154,12 @@ class _LyricView extends StatelessWidget {
         // lrc / karaoke
         // Notice: ui MUST NOT be rebuilt. building ui is EXTREMELY expensive
         final isKaraoke = lyric?.lyric.model?.lyrics[0].spanList != null;
-        final ui = PlayingLyricUI(align: lyricAlign, isKaraoke: isKaraoke);
+
+        final ui = PlayingLyricUI(
+          textTheme: context.textTheme,
+          align: lyricAlign,
+          isKaraoke: isKaraoke,
+        );
         return Selector0<PlayerService>(
           selector: (context) => context.watch(),
           shouldRebuild: (prev, next) {
