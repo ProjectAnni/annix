@@ -43,6 +43,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
     );
 
     AudioSession.instance.then((session) async {
+      session.configure(const AudioSessionConfiguration.music());
+
       // unplugged
       session.becomingNoisyEventStream.listen((_) => service.pause());
 
@@ -63,7 +65,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         } else {
           switch (event.type) {
             case AudioInterruptionType.duck:
-              // TODO
+            // TODO
               break;
             case AudioInterruptionType.pause:
               if (pausedByInterrupt) {
