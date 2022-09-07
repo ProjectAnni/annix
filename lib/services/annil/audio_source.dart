@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/client.dart';
@@ -8,6 +9,7 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +17,15 @@ class AudioCancelledError extends Error {}
 
 class AnnilAudioSource extends Source {
   static final Dio _client = Dio();
+
+  final PreferQuality quality;
+  final TrackInfoWithAlbum track;
+  ExtendedNetworkImageProvider? coverProvider;
+
+  bool isCanceled = false;
+  Future<void>? _preloadFuture;
+
+  TrackIdentifier get identifier => track.id;
 
   AnnilAudioSource({
     required this.track,
@@ -37,13 +48,6 @@ class AnnilAudioSource extends Source {
 
     return null;
   }
-
-  final PreferQuality quality;
-  final TrackInfoWithAlbum track;
-
-  Future<void>? _preloadFuture;
-
-  TrackIdentifier get identifier => track.id;
 
   String get id => track.id.toString();
 
@@ -77,6 +81,8 @@ class AnnilAudioSource extends Source {
     }
 
     _preloadFuture = _preload();
+    // preload cover without await
+    _preloadCover();
   }
 
   bool preloaded = false;
@@ -103,7 +109,13 @@ class AnnilAudioSource extends Source {
     preloaded = true;
   }
 
-  bool isCanceled = false;
+  Future<void> _preloadCover() async {
+    final proxy = CoverReverseProxy();
+    final image = proxy.url(CoverItem(albumId: track.id.albumId));
+    coverProvider = ExtendedNetworkImageProvider(image.toString());
+    // ignore: use_build_context_synchronously
+    precacheImage(coverProvider!, Global.context);
+  }
 
   void cancel() {
     // TODO: cancel download if necessary

@@ -37,6 +37,7 @@ class PlayingMusicCover extends StatelessWidget {
         // is playing
         return MusicCover(
           albumId: playing.identifier.albumId,
+          image: playing.coverProvider,
           card: card,
           fit: fit,
           filterQuality: filterQuality,
@@ -52,6 +53,7 @@ class PlayingMusicCover extends StatelessWidget {
 class MusicCover extends StatelessWidget {
   static Map<String, Completer<Color>> colors = {};
 
+  final ImageProvider? image;
   final String albumId;
   final int? discId;
 
@@ -71,54 +73,65 @@ class MusicCover extends StatelessWidget {
     this.filterQuality = FilterQuality.low,
     this.tag,
     this.onColor,
+    this.image,
   });
+
+  Widget? _loadStateChanged(ExtendedImageState state) {
+    final id = "$albumId/$discId";
+    switch (state.extendedImageLoadState) {
+      case LoadState.completed:
+        final image = state.extendedImageInfo!.image;
+        if (onColor != null) {
+          colors
+              .putIfAbsent(
+                id,
+                () {
+                  final completer = Completer<Color>();
+                  image.toByteData().then(
+                    (bytes) async {
+                      final color = await compute(getColorFromImage, bytes!);
+                      completer.complete(color);
+                    },
+                  );
+                  return completer;
+                },
+              )
+              .future
+              .then((color) => onColor!(color));
+        }
+
+        return ExtendedRawImage(
+          image: image,
+          fit: fit,
+          filterQuality: filterQuality,
+        );
+      default:
+        return const DummyMusicCover();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final id = "$albumId/$discId";
-
-    final cover = Hero(
-      tag: "$tag/$albumId/$discId",
-      child: ExtendedImage.network(
+    Widget image;
+    if (this.image != null) {
+      image = ExtendedImage(
+        image: this.image!,
+        loadStateChanged: _loadStateChanged,
+      );
+    } else {
+      image = ExtendedImage.network(
         CoverReverseProxy()
             .url(CoverItem(albumId: albumId, discId: discId))
             .toString(),
         cache: true,
         cacheHeight: 800,
-        loadStateChanged: (state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.completed:
-              final image = state.extendedImageInfo!.image;
-              if (onColor != null) {
-                colors
-                    .putIfAbsent(
-                      id,
-                      () {
-                        final completer = Completer<Color>();
-                        image.toByteData().then(
-                          (bytes) async {
-                            final color =
-                                await compute(getColorFromImage, bytes!);
-                            completer.complete(color);
-                          },
-                        );
-                        return completer;
-                      },
-                    )
-                    .future
-                    .then((color) => onColor!(color));
-              }
+        loadStateChanged: _loadStateChanged,
+      );
+    }
 
-              return ExtendedRawImage(
-                image: image,
-                fit: fit,
-                filterQuality: filterQuality,
-              );
-            default:
-              return const DummyMusicCover();
-          }
-        },
-      ),
+    final cover = Hero(
+      tag: "$tag/$albumId/$discId",
+      child: image,
     );
 
     if (!card) {

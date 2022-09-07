@@ -14,10 +14,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:provider/provider.dart';
 
-class PlayingScreenMobile extends StatelessWidget {
-  final showLyrics = ValueNotifier<bool>(false);
+class PlayingScreenMobile extends StatefulWidget {
+  const PlayingScreenMobile({super.key});
 
-  PlayingScreenMobile({super.key});
+  @override
+  State<PlayingScreenMobile> createState() => _PlayingScreenMobileState();
+}
+
+class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
+  bool showLyrics = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,21 +43,14 @@ class PlayingScreenMobile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ValueListenableBuilder<bool>(
-              valueListenable: showLyrics,
-              builder: (context, showLyrics, child) {
-                if (showLyrics) {
-                  return const AspectRatio(
+            showLyrics
+                ? const AspectRatio(
                     aspectRatio: 1,
                     child: LyricView(
                       alignment: LyricAlign.CENTER,
                     ),
-                  );
-                } else {
-                  return const PlayingMusicCover();
-                }
-              },
-            ),
+                  )
+                : const PlayingMusicCover(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -128,7 +126,9 @@ class PlayingScreenMobile extends StatelessWidget {
               child: IconButton(
                 icon: const Icon(Icons.text_snippet_rounded),
                 onPressed: () {
-                  showLyrics.value = !showLyrics.value;
+                  setState(() {
+                    showLyrics = !showLyrics;
+                  });
                 },
               ),
               onLongPress: () {
