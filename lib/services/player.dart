@@ -150,6 +150,12 @@ class PlayerService extends ChangeNotifier {
   Future<void> play({bool reload = false}) async {
     if (queue.isEmpty) return;
 
+    // activate audio session
+    if (!await AudioSession.instance.then((e) => e.setActive(true))) {
+      // request denied
+      return;
+    }
+
     if (!reload) {
       FLog.trace(text: "Resume playing");
       await PlayerService.player.resume();
@@ -160,12 +166,6 @@ class PlayerService extends ChangeNotifier {
     if (currentIndex == null || currentIndex >= queue.length) {
       FLog.trace(text: "Stop playing");
       await stop();
-      return;
-    }
-
-    // activate audio session
-    if (!await AudioSession.instance.then((e) => e.setActive(true))) {
-      // request denied
       return;
     }
 
