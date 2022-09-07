@@ -51,6 +51,9 @@ class PlaylistDetailScreen extends PlaylistScreen {
         coverIdentifier == "" ||
         coverIdentifier.startsWith("/")) {
       coverIdentifier = firstAvailableCover();
+
+      // TODO: update cover
+      final AnnivService anniv = Global.context.read();
     }
 
     if (coverIdentifier == null) {
@@ -83,12 +86,19 @@ class PlaylistDetailScreen extends PlaylistScreen {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final track = items[index];
+        if (track is! PlaylistItemTrack) {
+          return ListTile(
+            title: const Text("TODO"),
+            subtitle: Text(track.description ?? ''),
+          );
+        }
+
         return ListTile(
           leading: Text("${index + 1}"),
           minLeadingWidth: 16,
           dense: true,
           visualDensity: VisualDensity.compact,
-          title: Text('${track.info.title}', overflow: TextOverflow.ellipsis),
+          title: Text(track.info.title, overflow: TextOverflow.ellipsis),
           subtitle: track.description != null && track.description!.isNotEmpty
               ? ArtistText(track.description!)
               : null,
@@ -105,14 +115,10 @@ class PlaylistDetailScreen extends PlaylistScreen {
   List<AnnilAudioSource> get tracks => items
       .map<AnnilAudioSource?>(
         (item) {
-          switch (item.type) {
-            case PlaylistItemType.normal:
-              return AnnilAudioSource(
-                track: item.info,
-              );
-            case PlaylistItemType.dummy:
-            case PlaylistItemType.album:
-              return null;
+          if (item is PlaylistItemTrack) {
+            return AnnilAudioSource(track: item.info);
+          } else {
+            return null;
           }
         },
       )
@@ -122,10 +128,10 @@ class PlaylistDetailScreen extends PlaylistScreen {
 
   String? firstAvailableCover() {
     for (final item in items) {
-      if (item.type == PlaylistItemType.normal) {
-        return (item as PlaylistItemTrack).info.id.albumId;
-      } else if (item.type == PlaylistItemType.album) {
-        return (item as PlaylistItemAlbum).info;
+      if (item is PlaylistItemTrack) {
+        return item.info.id.albumId;
+      } else if (item is PlaylistItemAlbum) {
+        return item.albumId;
       } else {
         continue;
       }

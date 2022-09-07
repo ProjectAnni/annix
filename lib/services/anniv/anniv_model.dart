@@ -358,28 +358,34 @@ enum PlaylistItemType {
         return 'album';
     }
   }
+
+  factory PlaylistItemType.fromInstance(PlaylistItem item) {
+    if (item is PlaylistItemTrack) {
+      return PlaylistItemType.normal;
+    } else if (item is PlaylistItemDummyTrack) {
+      return PlaylistItemType.dummy;
+    } else if (item is PlaylistItemAlbum) {
+      return PlaylistItemType.album;
+    } else {
+      throw ArgumentError('Unknown item type');
+    }
+  }
 }
 
-abstract class PlaylistItem<T> {
-  PlaylistItemType type;
+abstract class PlaylistItem {
   String? description;
-  T info;
 
-  PlaylistItem({
-    required this.type,
-    this.description,
-    required this.info,
-  });
+  PlaylistItem({this.description});
 
-  static PlaylistItem<dynamic> fromDatabase(PlaylistItemData data) {
-    return fromJson({
+  factory PlaylistItem.fromDatabase(PlaylistItemData data) {
+    return PlaylistItem.fromJson({
       "type": data.type,
       "description": data.description,
       "info": jsonDecode(data.info),
     });
   }
 
-  static PlaylistItem<dynamic> fromJson(Map<String, dynamic> json) {
+  factory PlaylistItem.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
     switch (type) {
       case 'normal':
@@ -393,29 +399,29 @@ abstract class PlaylistItem<T> {
     }
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'type': PlaylistItemType.fromInstance(this).toString(),
+      'description': description,
+    };
+  }
+
   PlaylistItemCompanion toCompanion(
       {required int playlistId, required int order}) {
     return PlaylistItemCompanion(
       playlistId: Value(playlistId),
-      type: Value(type.toString()),
+      type: Value(PlaylistItemType.fromInstance(this).toString()),
       description: Value(description),
-      info: Value(serializeInfo()),
+      info: Value(jsonEncode(toJson()["info"])),
       order: Value(order),
     );
   }
-
-  String serializeInfo();
 }
 
-class PlaylistItemTrack extends PlaylistItem<TrackInfoWithAlbum> {
-  PlaylistItemTrack({
-    String? description,
-    required TrackInfoWithAlbum info,
-  }) : super(
-          type: PlaylistItemType.normal,
-          description: description,
-          info: info,
-        );
+class PlaylistItemTrack extends PlaylistItem {
+  final TrackInfoWithAlbum info;
+
+  PlaylistItemTrack({super.description, required this.info});
 
   factory PlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
       PlaylistItemTrack(
@@ -424,20 +430,17 @@ class PlaylistItemTrack extends PlaylistItem<TrackInfoWithAlbum> {
       );
 
   @override
-  String serializeInfo() {
-    return jsonEncode(info.toJson());
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json["info"] = info.toJson();
+    return json;
   }
 }
 
-class PlaylistItemDummyTrack extends PlaylistItem<RequiredTrackInfo> {
-  PlaylistItemDummyTrack({
-    String? description,
-    required RequiredTrackInfo info,
-  }) : super(
-          type: PlaylistItemType.dummy,
-          description: description,
-          info: info,
-        );
+class PlaylistItemDummyTrack extends PlaylistItem {
+  final RequiredTrackInfo info;
+
+  PlaylistItemDummyTrack({super.description, required this.info});
 
   factory PlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
       PlaylistItemDummyTrack(
@@ -446,20 +449,17 @@ class PlaylistItemDummyTrack extends PlaylistItem<RequiredTrackInfo> {
       );
 
   @override
-  String serializeInfo() {
-    return jsonEncode(info.toJson());
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json["info"] = info.toJson();
+    return json;
   }
 }
 
-class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
-  PlaylistItemAlbum({
-    String? description,
-    required String albumId,
-  }) : super(
-          type: PlaylistItemType.album,
-          description: description,
-          info: albumId,
-        );
+class PlaylistItemAlbum extends PlaylistItem {
+  String albumId;
+
+  PlaylistItemAlbum({super.description, required this.albumId});
 
   factory PlaylistItemAlbum.fromJson(Map<String, dynamic> json) =>
       PlaylistItemAlbum(
@@ -468,8 +468,10 @@ class PlaylistItemAlbum extends PlaylistItem<String /* AlbumIdentifier */ > {
       );
 
   @override
-  String serializeInfo() {
-    return jsonEncode(info);
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json["info"] = albumId;
+    return json;
   }
 }
 

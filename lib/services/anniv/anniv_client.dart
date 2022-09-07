@@ -242,6 +242,24 @@ class AnnivClient {
     return Playlist.fromJson(response.data);
   }
 
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E5%88%9B%E5%BB%BA%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<Playlist> createPlaylist({
+    required String name,
+    required String description,
+    bool public = true,
+    DiscIdentifier? cover,
+    List<PlaylistItem> items = const [],
+  }) async {
+    final response = await _client.put('/api/playlist', data: {
+      'name': name,
+      'description': description,
+      'is_public': public,
+      'cover': cover?.toJson(),
+      'items': items.map((e) => e.toJson()).toList(),
+    });
+    return Playlist.fromJson(response.data);
+  }
+
   Future<LyricResponse?> getLyric(TrackIdentifier track) async {
     try {
       final response = await _client.get('/api/lyric', queryParameters: {
