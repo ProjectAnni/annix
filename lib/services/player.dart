@@ -310,6 +310,27 @@ class PlayerService extends ChangeNotifier {
     await PlayerService.player.seek(position);
   }
 
+  Future<void> remove(int index) async {
+    if (index < 0 || index >= queue.length) return;
+
+    if (index == playingIndex) {
+      await stop();
+    }
+
+    queue.removeAt(index);
+    final playingIndexNow = playingIndex;
+    if (playingIndexNow != null) {
+      if (playingIndexNow > index) {
+        setPlayingIndex(playingIndexNow - 1, notify: false);
+      }
+    }
+    notifyListeners();
+
+    if (index == playingIndex) {
+      await play(reload: true);
+    }
+  }
+
   Future<void> jump(int index) async {
     FLog.trace(text: "Jump to $index in playing queue");
     if (queue.isNotEmpty) {
@@ -331,7 +352,7 @@ class PlayerService extends ChangeNotifier {
     Global.preferences.setInt("player.loopMode", loopMode.index);
   }
 
-  Future<void> setPlayingIndex(int index) async {
+  Future<void> setPlayingIndex(int index, {bool notify = true}) async {
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index) {
       playing?.cancel();
@@ -344,7 +365,7 @@ class PlayerService extends ChangeNotifier {
     } else {
       Global.preferences.remove("player.playingIndex");
     }
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
@@ -354,7 +375,9 @@ class PlayerService extends ChangeNotifier {
     // 2. set playing queue
     queue = songs;
     // 3. set playing index
-    playingIndex = songs.isNotEmpty ? initialIndex % songs.length : null;
+    if (songs.isNotEmpty) {
+      setPlayingIndex(initialIndex % songs.length, notify: false);
+    }
     // 4. set duration to zero
     duration = Duration.zero;
 

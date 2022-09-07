@@ -23,6 +23,12 @@ class PlayingQueue extends StatelessWidget {
               await player.jump(index);
             },
             dense: true,
+            trailing: IconButton(
+              icon: const Icon(Icons.playlist_remove),
+              onPressed: () {
+                player.remove(index);
+              },
+            ),
           );
         },
       ),
