@@ -162,7 +162,7 @@ class PlayerService extends ChangeNotifier {
       return;
     }
 
-    if (!reload) {
+    if (!reload && PlayerService.player.state == PlayerState.paused) {
       FLog.trace(text: "Resume playing");
       await PlayerService.player.resume();
       return;
