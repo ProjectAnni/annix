@@ -138,6 +138,8 @@ class PlayerService extends ChangeNotifier {
     this.loopMode = LoopMode.values[loopMode ?? 0];
 
     volume = Global.preferences.getDouble('player.volume') ?? 1.0;
+
+    play(reload: true).then((_) => pause());
   }
 
   // _save() async {
@@ -318,6 +320,12 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> seek(Duration position) async {
     FLog.trace(text: "Seek to position $position");
+
+    // seek first for ui update
+    this.position = position;
+    notifyListeners();
+
+    // then notify player
     await PlayerService.player.seek(position);
   }
 
