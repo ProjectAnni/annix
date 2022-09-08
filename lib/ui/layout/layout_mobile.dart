@@ -54,7 +54,7 @@ class AnnixLayoutMobile extends AnnixLayout {
               child: const MobileBottomPlayer(),
             ),
             panel: const PlayingScreenMobile(),
-            footerHeight: isMainPage ? (80 + 24) : 0,
+            footerHeight: isMainPage ? 80 : 0,
             footer: (() {
               final route = router.currentRoute;
               final selectedIndex =
@@ -63,7 +63,8 @@ class AnnixLayoutMobile extends AnnixLayout {
                 return const SizedBox.shrink();
               }
 
-              return SafeArea(
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
                 child: NavigationBar(
                   selectedIndex: selectedIndex,
                   onDestinationSelected: (index) {
