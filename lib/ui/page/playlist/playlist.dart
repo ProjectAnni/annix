@@ -5,34 +5,44 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-abstract class PlaylistScreen extends StatelessWidget {
-  abstract final Future<void>? loading;
+typedef TrackListCallback = Future<List<AnnilAudioSource>> Function();
 
+class PlaylistScreen extends StatelessWidget {
   /// Page title
-  abstract final Widget? pageTitle;
+  final Widget? pageTitle;
 
   /// Page actions
-  abstract final List<Widget>? pageActions;
+  final List<Widget>? pageActions;
 
   /// Cover image of the playlist.
-  abstract final Widget cover;
+  final Widget cover;
 
   /// Playlist name, will be displayed in intro part
-  abstract final String title;
+  final String title;
 
   /// Additional widgets after title of intro part
-  abstract final List<Widget> intro;
+  final List<Widget> intro;
 
   /// Widget to show track list
-  abstract final Widget body;
+  final Widget child;
 
   /// Tracks to play
-  abstract final List<AnnilAudioSource> tracks;
+  final TrackListCallback onTracks;
 
   /// Refresh callback
-  abstract final RefreshCallback? refresh;
+  final RefreshCallback? refresh;
 
-  const PlaylistScreen({super.key});
+  const PlaylistScreen({
+    super.key,
+    this.pageTitle,
+    this.pageActions,
+    required this.cover,
+    required this.title,
+    required this.intro,
+    required this.child,
+    required this.onTracks,
+    this.refresh,
+  });
 
   Widget _albumIntro(BuildContext context) {
     return Container(
@@ -71,15 +81,27 @@ abstract class PlaylistScreen extends StatelessWidget {
                       TextButton.icon(
                         icon: const Icon(Icons.play_arrow),
                         label: const Text("Play"),
-                        onPressed: () {
-                          playFullList(context, shuffle: false);
+                        onPressed: () async {
+                          final player = context.read<PlayerService>();
+                          final tracks = await onTracks();
+                          playFullList(
+                            player: player,
+                            tracks: tracks,
+                            shuffle: false,
+                          );
                         },
                       ),
                       OutlinedButton.icon(
                         icon: const Icon(Icons.shuffle),
                         label: const Text("Shuffle"),
-                        onPressed: () {
-                          playFullList(context, shuffle: true);
+                        onPressed: () async {
+                          final player = context.read<PlayerService>();
+                          final tracks = await onTracks();
+                          playFullList(
+                            player: player,
+                            tracks: tracks,
+                            shuffle: true,
+                          );
                         },
                       ),
                     ],
@@ -93,44 +115,14 @@ abstract class PlaylistScreen extends StatelessWidget {
     );
   }
 
-  Widget _child(BuildContext context) {
-    var child = body;
-
-    child = Column(
+  @override
+  Widget build(BuildContext context) {
+    Widget result = Column(
       children: [
         _albumIntro(context),
         Expanded(child: child),
       ],
     );
-
-    return child;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget child;
-    if (loading != null) {
-      child = FutureBuilder(
-        future: loading,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
-            } else {
-              return _child(context);
-            }
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
-            );
-          }
-        },
-      );
-    } else {
-      child = _child(context);
-    }
 
     final actions = pageActions ?? [];
     if (refresh != null) {
@@ -144,9 +136,9 @@ abstract class PlaylistScreen extends StatelessWidget {
         );
       } else {
         // refresh indicator on mobile
-        child = RefreshIndicator(
+        result = RefreshIndicator(
           onRefresh: refresh!,
-          child: child,
+          child: result,
         );
       }
     }
@@ -157,27 +149,31 @@ abstract class PlaylistScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
         actions: actions,
       ),
-      body: child,
+      body: result,
     );
   }
+}
 
-  void playFullList(BuildContext context,
-      {bool shuffle = false, int initialIndex = 0}) async {
-    assert(
-      // when shuffle is on, initialIndex can only be zero
-      (shuffle && initialIndex == 0) ||
-          // or disable shuffle
-          !shuffle,
-    );
+void playFullList({
+  required PlayerService player,
+  required List<AnnilAudioSource> tracks,
+  bool shuffle = false,
+  int initialIndex = 0,
+}) async {
+  assert(
+    // when shuffle is on, initialIndex can only be zero
+    (shuffle && initialIndex == 0) ||
+        // or disable shuffle
+        !shuffle,
+  );
 
-    final trackList = tracks;
-    if (shuffle) {
-      trackList.shuffle();
-    }
-
-    await Provider.of<PlayerService>(context, listen: false).setPlayingQueue(
-      trackList,
-      initialIndex: initialIndex,
-    );
+  final trackList = tracks;
+  if (shuffle) {
+    trackList.shuffle();
   }
+
+  await player.setPlayingQueue(
+    trackList,
+    initialIndex: initialIndex,
+  );
 }

@@ -139,7 +139,7 @@ class PlayerService extends ChangeNotifier {
 
     volume = Global.preferences.getDouble('player.volume') ?? 1.0;
 
-    play(reload: true).then((_) => pause());
+    return play(reload: true, setSourceOnly: true);
   }
 
   // _save() async {
@@ -155,7 +155,7 @@ class PlayerService extends ChangeNotifier {
   //   ]);
   // }
 
-  Future<void> play({bool reload = false}) async {
+  Future<void> play({bool reload = false, setSourceOnly = false}) async {
     if (queue.isEmpty) return;
 
     // activate audio session
@@ -209,7 +209,12 @@ class PlayerService extends ChangeNotifier {
 
     try {
       // wait for audio file to download and play it
-      await PlayerService.player.play(source, volume: volume);
+      if (setSourceOnly) {
+        await PlayerService.player.setVolume(volume);
+        await PlayerService.player.setSource(source);
+      } else {
+        await PlayerService.player.play(source, volume: volume);
+      }
     } catch (e) {
       if (e is AudioCancelledError) {
         return;

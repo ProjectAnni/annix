@@ -114,13 +114,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case "/album":
         if (routeSettings.arguments is String) {
           // albumId
-          child = LazyLoadAlbumDetailScreen(
-            albumId: routeSettings.arguments as String,
-          );
+          child =
+              LazyAlbumDetailScreen(albumId: routeSettings.arguments as String);
         } else {
-          child = AlbumDetailScreen(
-            album: routeSettings.arguments as Album,
-          );
+          child = AlbumDetailScreen(album: routeSettings.arguments as Album);
         }
         break;
       case "/tag":
@@ -135,10 +132,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const ServerView();
         break;
       case "/favorite":
-        child = FavoriteScreen();
+        child = const FavoriteScreen();
         break;
       case "/playlist":
-        child = PlaylistDetailScreen(id: routeSettings.arguments as int);
+        child = LazyPlaylistDetailScreen(id: routeSettings.arguments as int);
         break;
       case "/search":
         child = const SearchScreen();

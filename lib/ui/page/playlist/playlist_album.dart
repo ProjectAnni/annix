@@ -2,60 +2,49 @@ import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class LazyLoadAlbumDetailScreen extends StatelessWidget {
+class LazyAlbumDetailScreen extends StatelessWidget {
   final String albumId;
 
-  const LazyLoadAlbumDetailScreen({Key? key, required this.albumId})
-      : super(key: key);
+  const LazyAlbumDetailScreen({required this.albumId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final MetadataService metadata = context.read();
-    return FutureProvider<Album?>.value(
-      value: metadata.getAlbum(albumId: albumId),
-      initialData: null,
-      builder: (context, child) {
-        final album = context.watch<Album?>();
-        if (album == null) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-          return AlbumDetailScreen(album: album);
-        }
-      },
+    return DisplayOrLazyLoadScreen<Album>(
+      future: context
+          .read<MetadataService>()
+          .getAlbum(albumId: albumId)
+          .then((album) {
+        if (album == null) throw "Album not found";
+        return album;
+      }),
+      builder: (album) => AlbumDetailScreen(album: album),
     );
   }
 }
 
-class AlbumDetailScreen extends PlaylistScreen {
+class AlbumDetailScreen extends StatelessWidget {
   final Album album;
 
-  @override
-  Widget? get pageTitle => Text(I18n.ALBUMS.tr);
-  @override
-  final List<Widget>? pageActions = null;
-  @override
-  final RefreshCallback? refresh = null;
-
-  const AlbumDetailScreen({super.key, required this.album});
+  const AlbumDetailScreen({required this.album, super.key});
 
   @override
-  String get title => album.fullTitle;
-
-  @override
-  Widget get cover => MusicCover(albumId: album.albumId, card: true);
-
-  @override
-  List<Widget> get intro => [
+  Widget build(BuildContext context) {
+    return PlaylistScreen(
+      pageTitle: Text(I18n.ALBUMS.tr),
+      title: album.fullTitle,
+      cover: MusicCover(albumId: album.albumId, card: true),
+      intro: [
         Text(album.date.toString()),
         // TODO: Add some action buttons
         // Row(
@@ -71,15 +60,14 @@ class AlbumDetailScreen extends PlaylistScreen {
         //     ),
         //   ],
         // ),
-      ];
+      ],
+      onTracks: () => onTracks(context),
+      child: _getAlbumTracks(context),
+    );
+  }
 
-  @override
-  Widget get body => getAlbumTracks();
-
-  @override
-  List<AnnilAudioSource> get tracks {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+  Future<List<AnnilAudioSource>> onTracks(BuildContext context) async {
+    final CombinedOnlineAnnilClient annil = context.read();
 
     List<AnnilAudioSource> songs = [];
 
@@ -97,9 +85,8 @@ class AlbumDetailScreen extends PlaylistScreen {
     return songs;
   }
 
-  ListView getAlbumTracks() {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(Global.context, listen: false);
+  ListView _getAlbumTracks(BuildContext context) {
+    final CombinedOnlineAnnilClient annil = context.read();
     final List<Widget> list = [];
 
     bool needDiscId = false;
@@ -142,8 +129,14 @@ class AlbumDetailScreen extends PlaylistScreen {
                   trackId: trackIndex,
                 ),
               ),
-              onTap: () {
-                playFullList(Global.context, initialIndex: totalTrackIndex);
+              onTap: () async {
+                final player = context.read<PlayerService>();
+                final tracks = await onTracks(context);
+                playFullList(
+                  player: player,
+                  tracks: tracks,
+                  initialIndex: totalTrackIndex,
+                );
               },
               // selected: TODO: indicate playing track,
             );
@@ -160,7 +153,4 @@ class AlbumDetailScreen extends PlaylistScreen {
       },
     );
   }
-
-  @override
-  Future<void>? get loading => null;
 }

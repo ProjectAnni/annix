@@ -4,89 +4,86 @@ import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/ui/page/playlist/playlist.dart';
-import 'package:annix/global.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 
-class FavoriteScreen extends PlaylistScreen {
-  // FIXME: update screen after refresh
-  final _anniv = Provider.of<AnnivService>(Global.context, listen: false);
-  final _favorites = Provider.of<List<Favorite>>(Global.context, listen: false);
+class FavoriteScreen extends StatelessWidget {
+  const FavoriteScreen({super.key});
 
   @override
-  final Widget? pageTitle = null;
-  @override
-  final List<Widget>? pageActions = null;
+  Widget build(BuildContext context) {
+    final AnnivService anniv = context.read();
+    final PlayerService player = context.read();
 
-  FavoriteScreen({super.key});
+    final List<Favorite> favorites = context.watch();
+    final reversedFavorite = favorites.reversed;
 
-  @override
-  RefreshCallback? get refresh => () => _anniv.syncFavorite();
+    final cover = favorites.isNotEmpty
+        ? MusicCover(albumId: favorites.last.albumId)
+        : const DummyMusicCover();
 
-  @override
-  String get title => I18n.MY_FAVORITE.tr;
-
-  @override
-  Widget get cover => _favorites.isNotEmpty
-      ? MusicCover(albumId: _favorites.last.albumId)
-      : const DummyMusicCover();
-
-  @override
-  List<Widget> get intro => [
-    Text("${_favorites.length} songs"),
-  ];
-
-  @override
-  Widget get body {
-    final reversedFavorite = _favorites.reversed;
-    return ListView.builder(
-      itemCount: reversedFavorite.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
-        final favorite = reversedFavorite.elementAt(index);
-        return ListTile(
-          leading: Text("${index + 1}"),
-          minLeadingWidth: 16,
-          dense: true,
-          visualDensity: VisualDensity.compact,
-          title: Text(
-            favorite.title ?? "--",
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: ArtistText(
-            favorite.artist ?? "--",
-            overflow: TextOverflow.ellipsis,
-          ),
-          onTap: () {
-            super.playFullList(context, initialIndex: index);
-          },
-        );
+    return PlaylistScreen(
+      title: I18n.MY_FAVORITE.tr,
+      cover: cover,
+      intro: [Text("${favorites.length} songs")],
+      refresh: () async {
+        await anniv.syncFavorite();
       },
+      onTracks: () => onTracks(favorites),
+      child: ListView.builder(
+        itemCount: reversedFavorite.length,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          final favorite = reversedFavorite.elementAt(index);
+          return ListTile(
+            leading: Text("${index + 1}"),
+            minLeadingWidth: 16,
+            dense: true,
+            visualDensity: VisualDensity.compact,
+            title: Text(
+              favorite.title ?? "--",
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: ArtistText(
+              favorite.artist ?? "--",
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () async {
+              final tracks = await onTracks(favorites);
+              playFullList(
+                player: player,
+                tracks: tracks,
+                initialIndex: index,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
-  @override
-  List<AnnilAudioSource> get tracks => _favorites.reversed
-      .map(
-        (fav) => AnnilAudioSource(
+  Future<List<AnnilAudioSource>> onTracks(List<Favorite> favorites) async {
+    return favorites.reversed
+        .map(
+          (fav) => AnnilAudioSource(
             track: TrackInfoWithAlbum(
-          id: TrackIdentifier(
-            albumId: fav.albumId,
-            discId: fav.discId,
-            trackId: fav.trackId,
+              id: TrackIdentifier(
+                albumId: fav.albumId,
+                discId: fav.discId,
+                trackId: fav.trackId,
+              ),
+              title: fav.title!,
+              artist: fav.artist!,
+              albumTitle: fav.albumTitle!,
+              type: TrackType.fromString(fav.type),
+            ),
           ),
-          title: fav.title!,
-          artist: fav.artist!,
-          albumTitle: fav.albumTitle!,
-          type: TrackType.fromString(fav.type),
-        )),
-      )
-      .toList();
-
-  @override
-  Future<void>? get loading => null;
+        )
+        .toList();
+  }
 }
