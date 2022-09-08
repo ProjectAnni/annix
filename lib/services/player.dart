@@ -228,7 +228,9 @@ class PlayerService extends ChangeNotifier {
     }
 
     // when playback start, set state to playing
-    if (playing?.id == toPlayId && playerStatus == PlayerStatus.buffering) {
+    if (!setSourceOnly &&
+        playing?.id == toPlayId &&
+        playerStatus == PlayerStatus.buffering) {
       playerStatus = PlayerStatus.playing;
       notifyListeners();
     }
