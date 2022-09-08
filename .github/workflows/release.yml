@@ -31,15 +31,19 @@ jobs:
           channel: master
           cache: true
           cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+      - name: Setup | Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
+          echo "${{ secrets.ANDROID_KEYSTORE_PROPERTIES }}" | base64 -d > ./android/keystore.properties
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | Apk
         run: |
-          flutter build apk --release
+          flutter build apk --verbose --build-number ${{ github.run_number }}
           cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
-          flutter build apk --release --split-per-abi
+          flutter build apk --verbose --split-per-abi --build-number ${{ github.run_number }}
       - name: Build | App Bundle
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --build-number ${{ github.run_number }}
       - name: Deploy | Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -97,7 +101,7 @@ jobs:
         run: flutter pub get
       - name: Build | macOS
         run: |
-          flutter build macos --verbose
+          flutter build macos --verbose --build-number ${{ github.run_number }}
           cd build/macos/Build/Products/Release
           ditto -c -k --sequesterRsrc --keepParent Annix.app annix-macos.zip
       - name: Deploy | Upload artifacts
@@ -127,7 +131,7 @@ jobs:
           flutter pub get
       - name: Build | Windows
         run: |
-          flutter build windows --verbose
+          flutter build windows --verbose --build-number ${{ github.run_number }}
           curl https://raw.githubusercontent.com/tekartik/sqflite/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll -o ./build/windows/runner/Release/sqlite3.dll
           cp -r build/windows/runner/Release annix-win64
           tar.exe -a -c -f annix-win64.zip annix-win64
@@ -160,7 +164,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: rs.anni.annix
           releaseFiles: annix-android/bundle/release/app-release.aab
-          track: alpha
+          track: internal
 
 
   publish:

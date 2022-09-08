@@ -21,13 +21,17 @@ jobs:
           channel: master
           cache: true
           cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+      - name: Setup | Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
+          echo "${{ secrets.ANDROID_KEYSTORE_PROPERTIES }}" | base64 -d > ./android/keystore.properties
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | Apk
         run: |
-          flutter build apk --release
+          flutter build apk --verbose
           cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
-          flutter build apk --release --split-per-abi
+          flutter build apk --verbose --split-per-abi
           cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
       - name: Deploy | Upload artifacts
         uses: actions/upload-artifact@v3
