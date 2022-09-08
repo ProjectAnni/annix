@@ -65,7 +65,13 @@ class AnnilAudioSource extends Source {
       if (_preloadFuture == null) {
         preload();
       }
-      await _preloadFuture;
+      try {
+        await _preloadFuture;
+      } catch (e) {
+        // set _preloadFuture to null, allowing retry
+        _preloadFuture = null;
+        rethrow;
+      }
       // check whether user has changed track for playback
       if (isCanceled) {
         throw AudioCancelledError();
