@@ -62,7 +62,9 @@ dependencies:
       url: https://github.com/ProjectAnni/flutter_lyric
       ref: master
   settings_ui: ^2.0.2
-  we_slide: ^2.3.0
+  we_slide:
+    git:
+      url: https://github.com/ProjectAnni/we_slide
   material_color_utilities: ^0.2.0 # on master
   crypto: ^3.0.2
 

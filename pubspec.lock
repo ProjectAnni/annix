@@ -1193,9 +1193,11 @@ packages:
   we_slide:
     dependency: "direct main"
     description:
-      name: we_slide
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f30af5f7e6b146021a13445addf56dac6d9ba430
+      url: "https://github.com/ProjectAnni/we_slide"
+    source: git
     version: "2.3.0"
   web_socket_channel:
     dependency: transitive

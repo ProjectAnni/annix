@@ -40,9 +40,15 @@ class AnnixLayoutMobile extends AnnixLayout {
         builder: (context, result, child) {
           final isPlaying = result[0];
           final isMainPage = result[1];
+          if (!isMainPage) {
+            Global.mobileWeSlideFooterController.hide();
+          } else {
+            Global.mobileWeSlideFooterController.show();
+          }
 
           return WeSlide(
             controller: Global.mobileWeSlideController,
+            footerController: Global.mobileWeSlideFooterController,
             parallax: true,
             hideAppBar: true,
             hideFooter: true,
@@ -50,21 +56,23 @@ class AnnixLayoutMobile extends AnnixLayout {
             panelBorderRadiusEnd: 0,
             backgroundColor: Colors.transparent,
             body: Material(child: child),
-            panelMinSize: (isMainPage ? 80 : 0) + (isPlaying ? 60 : 0),
+            panelMinSize: 60 + 80,
             panelMaxSize: panelMaxSize,
+            isUpSlide: isPlaying,
             panelHeader: GestureDetector(
-              onTap: () => Global.mobileWeSlideController.show(),
+              onTap: () {
+                if (isPlaying) {
+                  Global.mobileWeSlideController.show();
+                }
+              },
               child: const MobileBottomPlayer(),
             ),
             panel: const PlayingScreenMobile(),
-            footerHeight: isMainPage ? 80 : 0,
+            footerHeight: 80,
             footer: (() {
               final route = router.currentRoute;
               final selectedIndex =
-                  pages.contains(route) ? pages.indexOf(route) : null;
-              if (selectedIndex == null) {
-                return const SizedBox.shrink();
-              }
+                  pages.contains(route) ? pages.indexOf(route) : 0;
 
               return MediaQuery(
                 data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
