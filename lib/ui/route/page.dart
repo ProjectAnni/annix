@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 
 class AnnixPage extends Page {
@@ -14,10 +15,11 @@ class AnnixPage extends Page {
   Route createRoute(BuildContext context) {
     return PageRouteBuilder(
       settings: this,
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return FadeTransition(
-          opacity: animation,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
           child: child,
         );
       },
