@@ -32,12 +32,11 @@ class AnnilAudioSource extends Source {
     this.quality = PreferQuality.Medium,
   });
 
-  static Future<AnnilAudioSource?> from(
-    BuildContext context, {
+  static Future<AnnilAudioSource?> from({
+    required MetadataService metadata,
     required TrackIdentifier id,
     PreferQuality quality = PreferQuality.Medium,
   }) async {
-    final MetadataService metadata = context.read();
     final track = await metadata.getTrack(id);
     if (track != null) {
       return AnnilAudioSource(
@@ -99,8 +98,9 @@ class AnnilAudioSource extends Source {
         final response = await _client.download(url, tmpPath);
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // +1 to avoid duration exceeding
-        PlayerService.durationMap.value[id] = Duration(seconds: duration + 1);
-        PlayerService.durationMap.notifyListeners();
+        PlayerService.durationMap.update((map) {
+          map[id] = Duration(seconds: duration + 1);
+        });
         File(tmpPath).rename(offlinePath);
       } else {
         throw UnsupportedError("No available annil server found");

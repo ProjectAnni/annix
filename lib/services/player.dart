@@ -11,6 +11,7 @@ import 'package:annix/services/lyric/lyric_provider_anniv.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:f_logs/f_logs.dart';
@@ -60,8 +61,8 @@ class PlayerService extends ChangeNotifier {
   static final AudioPlayer player = AudioPlayer();
 
   // TODO: cache this map
-  static final ValueNotifier<Map<String, Duration>> durationMap =
-      ValueNotifier({});
+  static final PropertyValueNotifier<Map<String, Duration>> durationMap =
+      PropertyValueNotifier({});
 
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
@@ -442,11 +443,11 @@ class PlayerService extends ChangeNotifier {
     final MetadataService metadata = context.read();
     final metadataMap = await metadata.getAlbums(albumIds);
     for (final albumId in albumIds) {
-      final metadata = metadataMap[albumId];
-      if (metadata != null) {
+      final album = metadataMap[albumId];
+      if (album != null) {
         // random disc in metadata
-        final discIndex = rand.nextInt(metadata.discs.length);
-        final disc = metadata.discs[discIndex];
+        final discIndex = rand.nextInt(album.discs.length);
+        final disc = album.discs[discIndex];
         // random track
         final trackIndex = rand.nextInt(disc.tracks.length);
         final track = disc.tracks[trackIndex];
@@ -459,8 +460,7 @@ class PlayerService extends ChangeNotifier {
 
         if (annil.isAvailable(id)) {
           if (track.type == TrackType.Normal) {
-            // ignore: use_build_context_synchronously
-            songs.add(AnnilAudioSource.from(Global.context, id: id));
+            songs.add(AnnilAudioSource.from(id: id, metadata: metadata));
           }
         }
       }
