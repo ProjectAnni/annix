@@ -266,6 +266,9 @@ class LinuxAudioService extends AudioServicePlatform {
 
   @override
   void setHandlerCallbacks(AudioHandlerCallbacks callbacks) {}
+
+  @override
+  Future<void> setQueue(SetQueueRequest request) async {}
 }
 
 class AnnixMPRISService extends MPRISService {

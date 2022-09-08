@@ -418,19 +418,17 @@ packages:
   extended_image:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "7d07e2203c7ad45847a58714c921e315d79ad417"
-      resolved-ref: "7d07e2203c7ad45847a58714c921e315d79ad417"
-      url: "https://github.com/Theunodb/extended_image"
-    source: git
-    version: "6.2.1"
+      name: extended_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.3.0"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "3.4.0"
   f_logs:
     dependency: "direct main"
     description:
@@ -1242,5 +1240,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.0-146.0.dev <3.0.0"
-  flutter: ">=3.0.0"
+  dart: ">=2.18.0 <3.0.0"
+  flutter: ">=3.3.0"

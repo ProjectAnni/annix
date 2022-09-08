@@ -52,10 +52,11 @@ dependencies:
     git:
       url: https://github.com/Hwan-seok/audio_video_progress_bar
       ref: 26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b
-  extended_image:
-    git:
-      url: https://github.com/Theunodb/extended_image
-      ref: 7d07e2203c7ad45847a58714c921e315d79ad417
+  extended_image: ^6.3.0
+  #  extended_image:
+  #    git:
+  #      url: https://github.com/ProjectAnni/extended_image
+  #      ref: 7d07e2203c7ad45847a58714c921e315d79ad417
   flutter_lyric:
     git:
       url: https://github.com/ProjectAnni/flutter_lyric

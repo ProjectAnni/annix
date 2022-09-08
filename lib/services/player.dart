@@ -140,7 +140,8 @@ class PlayerService extends ChangeNotifier {
 
     volume = Global.preferences.getDouble('player.volume') ?? 1.0;
 
-    return play(reload: true, setSourceOnly: true);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
   }
 
   // _save() async {
