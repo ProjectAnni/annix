@@ -65,6 +65,7 @@ dependencies:
   we_slide:
     git:
       url: https://github.com/ProjectAnni/we_slide
+      ref: 43f703f542e6886c16d84a851a0ad36036f9f3bc
   animations: ^2.0.4
   material_color_utilities: ^0.2.0 # on master
   crypto: ^3.0.2

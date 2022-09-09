@@ -43,7 +43,7 @@ class AlbumDetailScreen extends StatelessWidget {
     return PlaylistScreen(
       pageTitle: Text(I18n.ALBUMS.tr),
       title: album.fullTitle,
-      cover: MusicCover(albumId: album.albumId, card: true),
+      cover: MusicCover(albumId: album.albumId),
       intro: [
         Text(album.date.toString()),
         // TODO: Add some action buttons
