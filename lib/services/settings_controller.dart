@@ -1,7 +1,7 @@
 import 'package:annix/global.dart';
 import 'package:get/get.dart';
 
-class SettingsController extends GetxController {
+class SettingsController {
   /// Download audio files using mobile network
   ///
   /// Default: true
@@ -22,10 +22,7 @@ class SettingsController extends GetxController {
   /// Default value: false
   late RxBool mobileShowArtistInBottomPlayer;
 
-  @override
-  void onInit() {
-    super.onInit();
-
+  void init() {
     useMobileNetwork =
         (Global.preferences.getBool("annix_use_mobile_network") ?? true).obs;
     useMobileNetwork.listen(saveChangedVariable("annix_use_mobile_network"));

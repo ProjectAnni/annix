@@ -1,4 +1,4 @@
-import 'package:annix/services/settings_controller.dart';
+import 'package:annix/global.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -34,7 +34,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController settings = Get.find();
+    final settings = Global.settings;
 
     return Scaffold(
       appBar: AppBar(

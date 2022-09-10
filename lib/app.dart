@@ -1,7 +1,7 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/settings_controller.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/network.dart';
@@ -72,13 +72,11 @@ class AnnixApp extends StatelessWidget {
 
           // scale
           builder: (context, child) {
-            final SettingsController settings = Get.find();
-
             return Overlay(
               initialEntries: [
                 OverlayEntry(
                   builder: (context) => Obx(
-                    () => settings.autoScaleUI.value
+                        () => Global.settings.autoScaleUI.value
                         ? ResponsiveWrapper.builder(
                             child,
                             defaultScale: true,

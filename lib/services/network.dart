@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 
 class NetworkService extends ChangeNotifier {
   static bool isMobile = false;
-  static bool isOnline = true;
+  static bool isConnected = true;
 
   final Connectivity _connectivity = Connectivity();
 
@@ -17,21 +17,21 @@ class NetworkService extends ChangeNotifier {
 
   void _updateState(ConnectivityResult result) {
     switch (result) {
-    // wireless or wired
+      // wireless or wired
       case ConnectivityResult.wifi:
       case ConnectivityResult.ethernet:
-        isOnline = true;
+        isConnected = true;
         isMobile = false;
         break;
       // mobile network, need to save traffic
       case ConnectivityResult.mobile:
       case ConnectivityResult.bluetooth:
-        isOnline = true;
+        isConnected = true;
         isMobile = true;
         break;
       default:
         // no network
-        isOnline = false;
+        isConnected = false;
         isMobile = false;
 
         if (Global.isApple) {
@@ -40,7 +40,7 @@ class NetworkService extends ChangeNotifier {
           // https://github.com/fluttercommunity/plus_plugins/issues/857
           _canVisitInternet().then((value) {
             if (value) {
-              isOnline = value;
+              isConnected = value;
               notifyListeners();
             }
           });
@@ -58,5 +58,9 @@ class NetworkService extends ChangeNotifier {
       }
     } catch (_) {}
     return false;
+  }
+
+  static bool get isOnline {
+    return isConnected && (!isMobile || Global.settings.useMobileNetwork.value);
   }
 }

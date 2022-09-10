@@ -1,5 +1,5 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/services/settings_controller.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
@@ -15,8 +15,6 @@ class MobileBottomPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController settings = Get.find();
-
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -49,7 +47,7 @@ class MobileBottomPlayer extends StatelessWidget {
                     softWrap: false,
                   ),
                   Obx(() {
-                    if (settings.mobileShowArtistInBottomPlayer.value) {
+                    if (Global.settings.mobileShowArtistInBottomPlayer.value) {
                       return ArtistText(
                         player.playing?.track.artist ?? "",
                         style: context.textTheme.bodySmall,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:annix/services/settings_controller.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,8 @@ import 'package:we_slide/we_slide.dart';
 
 class Global {
   static late SharedPreferences preferences;
+
+  static final settings = SettingsController();
 
   static bool isDesktop =
       Platform.isLinux || Platform.isWindows || Platform.isMacOS;
@@ -29,6 +32,7 @@ class Global {
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
+    settings.init();
 
     if (isDesktop) {
       doWhenWindowReady(() {
