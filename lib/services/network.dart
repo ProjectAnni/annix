@@ -13,6 +13,7 @@ class NetworkService extends ChangeNotifier {
   NetworkService() {
     _connectivity.onConnectivityChanged.listen(_updateState);
     _connectivity.checkConnectivity().then(_updateState);
+    Global.settings.useMobileNetwork.addListener(notifyListeners);
   }
 
   void _updateState(ConnectivityResult result) {

@@ -19,15 +19,17 @@ flutter pub run build_runner build --delete-conflicting-outputs
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 ```
 
-### For Windows Users
+### Known issues
 
-Windows users should download
-[`sqlite3.dll`](https://github.com/tekartik/sqflite/raw/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll)
-manually and put it in the directory which includes `annix.exe`.
-
-At this moment, annix does not work as
-expected. [#1221](https://github.com/bluefireteam/audioplayers/pull/1221) has been merged, but no
-update has been released yet.
+- Windows users should
+  download [`sqlite3.dll`](https://github.com/tekartik/sqflite/raw/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll)
+  manually and put it in the directory which includes `annix.exe`.
+- At this moment, annix does not work as
+  expected. [#1221](https://github.com/bluefireteam/audioplayers/pull/1221) has been merged, but no
+  update has been released yet.
+- Locale on linux desktop may fallback to `en_US` because
+  of [an issue of flutter engine](https://github.com/flutter/flutter/issues/111341) which makes
+  slang [failed to parse locale string](https://github.com/Tienisto/slang/issues/102).
 
 ## TODOs
 
