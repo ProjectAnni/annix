@@ -11,61 +11,61 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide ContextExtensionss;
 import 'package:provider/provider.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
-class CategoryChip extends StatelessWidget {
-  final String name;
-  final RxBool selected = false.obs;
+// class CategoryChip extends StatelessWidget {
+//   final String name;
+//   final RxBool selected = false.obs;
+//
+//   CategoryChip({super.key, required this.name});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Obx(
+//       () => FilterChip(
+//         label: Text(name),
+//         selected: selected.value,
+//         onSelected: (value) {
+//           selected.value = value;
+//         },
+//       ),
+//     );
+//   }
+// }
 
-  CategoryChip({super.key, required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => FilterChip(
-        label: Text(name),
-        selected: selected.value,
-        onSelected: (value) {
-          selected.value = value;
-        },
-      ),
-    );
-  }
-}
-
-class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          autofocus: true,
-          decoration: InputDecoration(hintText: I18n.SEARCH.tr),
-          onSubmitted: (value) {},
-        ),
-        automaticallyImplyLeading: false,
-      ),
-      body: ButtonBar(
-        alignment: MainAxisAlignment.start,
-        children: [
-          ActionChip(
-            label: const Icon(Icons.tune_outlined),
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              //
-            },
-          ),
-          CategoryChip(name: "OP"),
-          CategoryChip(name: "ED"),
-          CategoryChip(name: "OST"),
-        ],
-      ),
-    );
-  }
-}
+// class SearchPage extends StatelessWidget {
+//   const SearchPage({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: TextField(
+//           autofocus: true,
+//           decoration: InputDecoration(hintText: I18n.SEARCH.tr),
+//           onSubmitted: (value) {},
+//         ),
+//         automaticallyImplyLeading: false,
+//       ),
+//       body: ButtonBar(
+//         alignment: MainAxisAlignment.start,
+//         children: [
+//           ActionChip(
+//             label: const Icon(Icons.tune_outlined),
+//             padding: EdgeInsets.zero,
+//             onPressed: () {
+//               //
+//             },
+//           ),
+//           CategoryChip(name: "OP"),
+//           CategoryChip(name: "ED"),
+//           CategoryChip(name: "OST"),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _SearchResult extends StatelessWidget {
   final SearchResult result;
