@@ -3,8 +3,8 @@ import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class PlaylistView extends StatelessWidget {
   const PlaylistView({super.key});

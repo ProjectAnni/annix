@@ -7,7 +7,7 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/simple_text_field.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide ContextExtensionss;
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -171,14 +171,10 @@ class AnnilListTile extends StatelessWidget {
   }
 }
 
-class AnnilDialogController extends GetxController {
-  var serverNameController = TextEditingController();
-  var serverUrlController = TextEditingController();
-  var serverTokenController = TextEditingController();
-}
-
 class AnnilDialog extends StatelessWidget {
-  final AnnilDialogController _controller = AnnilDialogController();
+  final serverNameController = TextEditingController();
+  final serverUrlController = TextEditingController();
+  final serverTokenController = TextEditingController();
   final void Function(OnlineAnnilClient annil) onSubmit;
 
   AnnilDialog({Key? key, required this.onSubmit}) : super(key: key);
@@ -204,12 +200,9 @@ class AnnilDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SimpleTextField(
-                label: "Name", controller: _controller.serverNameController),
-            SimpleTextField(
-                label: "Server", controller: _controller.serverUrlController),
-            SimpleTextField(
-                label: "Token", controller: _controller.serverTokenController),
+            SimpleTextField(label: "Name", controller: serverNameController),
+            SimpleTextField(label: "Server", controller: serverUrlController),
+            SimpleTextField(label: "Token", controller: serverTokenController),
           ],
         ),
       ),
@@ -268,8 +261,9 @@ class ServerView extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              Get.dialog(
-                AnnilDialog(
+              showDialog(
+                context: context,
+                builder: (context) => AnnilDialog(
                   onSubmit: (annil) {
                     // TODO: save annil
                   },

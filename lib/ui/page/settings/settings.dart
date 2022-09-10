@@ -1,28 +1,34 @@
 import 'package:annix/global.dart';
 import 'package:annix/i18n/i18n.dart';
+import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 typedef WidgetCallback = Widget Function();
 
-class ObxSettingsTileBuilder<T extends RxInterface>
-    extends AbstractSettingsTile {
-  final Widget Function(T) builder;
-  final T value;
+class SettingsTileBuilder<T> extends AbstractSettingsTile {
+  final Widget Function(BuildContext, T, Widget?) builder;
+  final ValueNotifier<T> value;
+  final Widget? child;
 
-  const ObxSettingsTileBuilder({
+  const SettingsTileBuilder({
     required this.builder,
     required this.value,
+    this.child,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ObxValue<T>(builder, value);
+    return ValueListenableBuilder<T>(
+      valueListenable: value,
+      builder: builder,
+      child: child,
+    );
   }
 }
 
@@ -53,25 +59,25 @@ class SettingsScreen extends StatelessWidget {
           SettingsSection(
             title: const Text('Common'),
             tiles: [
-              ObxSettingsTileBuilder<RxBool>(
+              SettingsTileBuilder<bool>(
                 value: settings.skipCertificateVerification,
-                builder: (p) => SettingsTile.switchTile(
+                builder: (context, p, child) => SettingsTile.switchTile(
                   onToggle: (value) {
-                    p.value = value;
+                    settings.skipCertificateVerification.value = value;
                   },
-                  initialValue: p.value,
+                  initialValue: p,
                   leading: const Icon(Icons.security_outlined),
                   title: Text(I18n.SETTINGS_SKIP_CERT.tr),
                 ),
               ),
-              ObxSettingsTileBuilder<RxBool>(
+              SettingsTileBuilder<bool>(
                 value: settings.autoScaleUI,
-                builder: (p) => SettingsTile.switchTile(
+                builder: (context, p, _) => SettingsTile.switchTile(
                   onToggle: (value) {
-                    p.value = value;
+                    settings.autoScaleUI.value = value;
                     AnnixRouterDelegate.of(context).popRoute();
                   },
-                  initialValue: p.value,
+                  initialValue: p,
                   leading: const Icon(Icons.smart_screen_outlined),
                   title: Text(I18n.SETTINGS_AUTOSCALE_UI.tr),
                 ),
@@ -81,13 +87,13 @@ class SettingsScreen extends StatelessWidget {
           SettingsSection(
             title: const Text('UI'),
             tiles: [
-              ObxSettingsTileBuilder<RxBool>(
+              SettingsTileBuilder<bool>(
                 value: settings.mobileShowArtistInBottomPlayer,
-                builder: (p) => SettingsTile.switchTile(
+                builder: (context, p, _) => SettingsTile.switchTile(
                   onToggle: (value) {
-                    p.value = value;
+                    settings.mobileShowArtistInBottomPlayer.value = value;
                   },
-                  initialValue: p.value,
+                  initialValue: p,
                   leading: const Icon(Icons.person_outline),
                   title: const Text("Show artist in bottom player"),
                 ),
@@ -97,13 +103,13 @@ class SettingsScreen extends StatelessWidget {
           SettingsSection(
             title: const Text('Playback'),
             tiles: [
-              ObxSettingsTileBuilder<RxBool>(
+              SettingsTileBuilder<bool>(
                 value: settings.useMobileNetwork,
-                builder: (p) => SettingsTile.switchTile(
+                builder: (context, p, _) => SettingsTile.switchTile(
                   onToggle: (value) {
-                    p.value = value;
+                    settings.useMobileNetwork.value = value;
                   },
-                  initialValue: p.value,
+                  initialValue: p,
                   leading: const Icon(Icons.mobiledata_off_outlined),
                   title: Text(I18n.SETTINGS_USE_MOBILE_NETWORK.tr),
                 ),
@@ -129,12 +135,7 @@ class SettingsScreen extends StatelessWidget {
                 description: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC.tr),
                 onPressed: (context) async {
                   final delegate = AnnixRouterDelegate.of(context);
-                  Get.defaultDialog(
-                    title: I18n.PROGRESS.tr,
-                    content: const CircularProgressIndicator(strokeWidth: 2),
-                    barrierDismissible: false,
-                    onWillPop: () async => false,
-                  );
+                  showLoadingDialog(context);
                   await AnnixStore().clear("album");
                   delegate.popRoute();
                 },

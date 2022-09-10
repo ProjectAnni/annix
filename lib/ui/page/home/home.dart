@@ -2,6 +2,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/global.dart';
+import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/page/home/home_albums.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
@@ -10,8 +11,8 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -33,30 +34,7 @@ class HomePage extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.shuffle_outlined),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                useRootNavigator: true,
-                                barrierDismissible: false,
-                                builder: (context) {
-                                  return Center(
-                                    child: Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: const [
-                                            CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
-                                            SizedBox(width: 12),
-                                            Text("Loading..."),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
+                              showLoadingDialog(context);
                               context
                                   .read<PlayerService>()
                                   .fullShuffleMode(context)

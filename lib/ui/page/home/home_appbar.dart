@@ -2,7 +2,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class HomeAppBar extends StatelessWidget {
   final SiteUserInfo? info;

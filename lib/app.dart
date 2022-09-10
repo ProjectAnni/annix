@@ -75,20 +75,25 @@ class AnnixApp extends StatelessWidget {
             return Overlay(
               initialEntries: [
                 OverlayEntry(
-                  builder: (context) => Obx(
-                        () => Global.settings.autoScaleUI.value
-                        ? ResponsiveWrapper.builder(
-                            child,
-                            defaultScale: true,
-                            breakpoints: const [
-                              ResponsiveBreakpoint.resize(600, name: MOBILE),
-                              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                              ResponsiveBreakpoint.autoScale(1200,
-                                  name: DESKTOP),
-                              ResponsiveBreakpoint.autoScale(2400, name: '4K'),
-                            ],
-                          )
-                        : child!,
+                  builder: (context) => ValueListenableBuilder<bool>(
+                    valueListenable: Global.settings.autoScaleUI,
+                    builder: (context, value, child) {
+                      if (value) {
+                        return ResponsiveWrapper.builder(
+                          child,
+                          defaultScale: true,
+                          breakpoints: const [
+                            ResponsiveBreakpoint.resize(600, name: MOBILE),
+                            ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                            ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
+                            ResponsiveBreakpoint.autoScale(2400, name: '4K'),
+                          ],
+                        );
+                      } else {
+                        return child!;
+                      }
+                    },
+                    child: child,
                   ),
                 ),
               ],

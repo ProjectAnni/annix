@@ -5,7 +5,6 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide ContextExtensionss;
 import 'package:provider/provider.dart';
 
 class MobileBottomPlayer extends StatelessWidget {
@@ -46,16 +45,20 @@ class MobileBottomPlayer extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
                   ),
-                  Obx(() {
-                    if (Global.settings.mobileShowArtistInBottomPlayer.value) {
-                      return ArtistText(
-                        player.playing?.track.artist ?? "",
-                        style: context.textTheme.bodySmall,
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  }),
+                  ValueListenableBuilder<bool>(
+                    valueListenable:
+                        Global.settings.mobileShowArtistInBottomPlayer,
+                    builder: (context, showArtist, _) {
+                      if (showArtist) {
+                        return ArtistText(
+                          player.playing?.track.artist ?? "",
+                          style: context.textTheme.bodySmall,
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

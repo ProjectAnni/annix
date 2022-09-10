@@ -12,7 +12,6 @@ import 'package:audio_session/audio_session.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
@@ -146,16 +145,15 @@ class AnnixAudioHandler extends BaseAudioHandler {
     final hasNext =
         (player.playingIndex ?? player.queue.length) < player.queue.length - 1;
     final isFavorite = player.playing != null &&
-        _favorites.firstWhereOrNull(
-              (f) =>
-                  player.playing!.track.id ==
-                  TrackIdentifier(
-                    albumId: f.albumId,
-                    discId: f.discId,
-                    trackId: f.trackId,
-                  ),
-            ) !=
-            null;
+        _favorites.any(
+          (f) =>
+              player.playing!.track.id ==
+              TrackIdentifier(
+                albumId: f.albumId,
+                discId: f.discId,
+                trackId: f.trackId,
+              ),
+        );
 
     final controls = [
       isFavorite

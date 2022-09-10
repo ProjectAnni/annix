@@ -6,9 +6,9 @@ import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:we_slide/we_slide.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class AnnixLayoutMobile extends AnnixLayout {
   final AnnixRouterDelegate router;
