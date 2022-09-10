@@ -1,4 +1,3 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -11,7 +10,7 @@ import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class LazyAlbumDetailScreen extends StatelessWidget {
   final String albumId;
@@ -41,7 +40,7 @@ class AlbumDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlaylistScreen(
-      pageTitle: Text(I18n.ALBUMS.tr),
+      pageTitle: Text(t.albums),
       title: album.fullTitle,
       cover: MusicCover(albumId: album.albumId),
       intro: [

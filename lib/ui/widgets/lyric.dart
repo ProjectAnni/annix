@@ -1,12 +1,11 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 extension on LyricAlign {
   TextAlign get textAlign {
@@ -138,7 +137,7 @@ class _LyricView extends StatelessWidget {
       if (lyric!.type == TrackType.Normal) {
         return Align(
           alignment: lyricAlign.alignment,
-          child: Text(I18n.NO_LYRIC_FOUND.tr),
+          child: Text(t.no_lyric_found),
         );
       } else {
         return Align(

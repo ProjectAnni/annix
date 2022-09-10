@@ -1,8 +1,7 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class SettingsLogView extends StatelessWidget {
   const SettingsLogView({Key? key}) : super(key: key);
@@ -49,7 +48,7 @@ class SettingsLogView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.SETTINGS_LOGS.tr),
+        title: Text(t.settings.view_logs),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),

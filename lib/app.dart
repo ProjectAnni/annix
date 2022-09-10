@@ -1,4 +1,5 @@
 import 'package:annix/global.dart';
+import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -6,11 +7,10 @@ import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/network.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +19,6 @@ class AnnixApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // GetX-related
-    Get.locale = Get.deviceLocale;
-    Get.fallbackLocale = const Locale('en', 'US');
-    Get.addTranslations(I18n().keys);
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
@@ -64,8 +59,12 @@ class AnnixApp extends StatelessWidget {
           theme: theme.theme,
           darkTheme: theme.darkTheme,
           themeMode: theme.themeMode,
+
           // i18n
-          locale: Get.locale,
+          locale: TranslationProvider.of(context).flutterLocale,
+          // use provider
+          supportedLocales: LocaleSettings.supportedLocales,
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
 
           // routes
           routerDelegate: delegate,

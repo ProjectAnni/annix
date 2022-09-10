@@ -1,12 +1,11 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_netease.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
 import 'package:annix/services/player.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 enum LyricSearchState {
   userInput,
@@ -145,7 +144,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
             width: 500,
             height: 300,
             child: _searchResult.isEmpty
-                ? Center(child: Text(I18n.NO_LYRIC_FOUND.tr))
+                ? Center(child: Text(t.no_lyric_found))
                 : ListView.builder(
                     shrinkWrap: true,
                     itemBuilder: (context, index) {

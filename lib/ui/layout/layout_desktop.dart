@@ -1,9 +1,8 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 /// F |
 ///   |
@@ -63,20 +62,20 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     destinations: <NavigationRailDestination>[
                       NavigationRailDestination(
                         icon: const Icon(Icons.casino_outlined),
-                        label: Text(I18n.HOME.tr),
+                        label: Text(t.home),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.music_note_outlined),
                         selectedIcon: const Icon(Icons.music_note_sharp),
-                        label: Text(I18n.PLAYING.tr),
+                        label: Text(t.playing),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.local_offer_outlined),
-                        label: Text(I18n.CATEGORY.tr),
+                        label: Text(t.category),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.dns_outlined),
-                        label: Text(I18n.SERVER.tr),
+                        label: Text(t.server.server),
                       ),
                     ],
                   );

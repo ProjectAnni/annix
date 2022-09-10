@@ -1,8 +1,7 @@
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class HomeAppBar extends StatelessWidget {
   final SiteUserInfo? info;
@@ -24,9 +23,9 @@ class HomeAppBar extends StatelessWidget {
     } else {
       return Row(
         children: [
-          Text(I18n.NOT_LOGGED_IN.tr),
+          Text(t.server.not_logged_in),
           TextButton(
-            child: Text(I18n.LOGIN.tr),
+            child: Text(t.server.login),
             onPressed: () {
               showDialog(
                 context: context,

@@ -1,12 +1,11 @@
 import 'package:annix/global.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 typedef WidgetCallback = Widget Function();
 
@@ -44,7 +43,7 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.SETTINGS.tr),
+        title: Text(t.settings.settings),
         centerTitle: true,
         automaticallyImplyLeading: automaticallyImplyLeading,
       ),
@@ -67,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                   initialValue: p,
                   leading: const Icon(Icons.security_outlined),
-                  title: Text(I18n.SETTINGS_SKIP_CERT.tr),
+                  title: Text(t.settings.skip_cert),
                 ),
               ),
               SettingsTileBuilder<bool>(
@@ -79,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                   initialValue: p,
                   leading: const Icon(Icons.smart_screen_outlined),
-                  title: Text(I18n.SETTINGS_AUTOSCALE_UI.tr),
+                  title: Text(t.settings.auto_scale_ui),
                 ),
               ),
             ],
@@ -111,7 +110,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                   initialValue: p,
                   leading: const Icon(Icons.mobiledata_off_outlined),
-                  title: Text(I18n.SETTINGS_USE_MOBILE_NETWORK.tr),
+                  title: Text(t.settings.use_mobile_network),
                 ),
               ),
             ],
@@ -122,8 +121,8 @@ class SettingsScreen extends StatelessWidget {
               // view logs
               SettingsTile.navigation(
                 leading: const Icon(Icons.report_outlined),
-                title: Text(I18n.SETTINGS_LOGS.tr),
-                description: Text(I18n.SETTINGS_LOGS_DESC.tr),
+                title: Text(t.settings.view_logs),
+                description: Text(t.settings.view_logs_desc),
                 onPressed: (context) {
                   AnnixRouterDelegate.of(context).to(name: '/settings/log');
                 },
@@ -131,8 +130,8 @@ class SettingsScreen extends StatelessWidget {
               // clear local metadata cache
               SettingsTile.navigation(
                 leading: const Icon(Icons.featured_play_list_outlined),
-                title: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE.tr),
-                description: Text(I18n.SETTINGS_CLEAR_METADATA_CACHE_DESC.tr),
+                title: Text(t.settings.clear_metadata_cache),
+                description: Text(t.settings.clear_metadata_cache_desc),
                 onPressed: (context) async {
                   final delegate = AnnixRouterDelegate.of(context);
                   showLoadingDialog(context);
@@ -143,15 +142,15 @@ class SettingsScreen extends StatelessWidget {
               // clear local lyric cache
               SettingsTile.navigation(
                 leading: const Icon(Icons.lyrics_outlined),
-                title: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE.tr),
-                description: Text(I18n.SETTINGS_CLEAR_LYRIC_CACHE_DESC.tr),
+                title: Text(t.settings.clear_lyric_cache),
+                description: Text(t.settings.clear_lyric_cache_desc),
                 onPressed: (context) {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   showDialog(
                     context: context,
                     useRootNavigator: true,
                     builder: (context) => SimpleDialog(
-                      title: Text(I18n.PROGRESS.tr),
+                      title: Text(t.progress),
                       children: const [
                         Center(
                           child: CircularProgressIndicator(strokeWidth: 2),

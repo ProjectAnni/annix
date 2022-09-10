@@ -1,4 +1,3 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -6,8 +5,8 @@ import 'package:annix/pages/root/base.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/utils/context_extension.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class TagsView extends StatelessWidget {
   const TagsView({Key? key}) : super(key: key);
@@ -19,7 +18,7 @@ class TagsView extends StatelessWidget {
       child: Column(
         children: [
           BaseAppBar(
-            title: Text(I18n.CATEGORY.tr),
+            title: Text(t.category),
           ),
           TabBar(
             labelColor: context.textTheme.titleMedium?.color,

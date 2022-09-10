@@ -1,6 +1,5 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -8,7 +7,7 @@ import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_slide/we_slide.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class AnnixLayoutMobile extends AnnixLayout {
   final AnnixRouterDelegate router;
@@ -84,15 +83,15 @@ class AnnixLayoutMobile extends AnnixLayout {
                   destinations: [
                     NavigationDestination(
                       icon: const Icon(Icons.casino_outlined),
-                      label: I18n.HOME.tr,
+                      label: t.home,
                     ),
                     NavigationDestination(
                       icon: const Icon(Icons.local_offer_outlined),
-                      label: I18n.CATEGORY.tr,
+                      label: t.category,
                     ),
                     NavigationDestination(
                       icon: const Icon(Icons.dns_outlined),
-                      label: I18n.SERVER.tr,
+                      label: t.server.server,
                     ),
                   ],
                 ),

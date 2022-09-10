@@ -1,0 +1,34 @@
+{
+  "playing": "Playing",
+  "progress": "Progress",
+  "home": "Home",
+  "category": "Categories",
+  "albums": "Albums",
+  "playlists": "Playlists",
+  "shuffle_mode": "Shuffle Mode",
+  "my_favorite": "My Favorite",
+  "server": {
+    "server": "Server",
+    "login": "Login",
+    "logout": "Logout",
+    "not_logged_in": "Not logged in",
+    "libraries": "Libraries",
+    "anniv_features": "Login to Anniv for playlist, statistics and more features!"
+  },
+  "settings": {
+    "settings": "Settings",
+    "skip_cert": "Skip SSL Certificate Verification",
+    "auto_scale_ui": "Auto scale UI",
+    "use_mobile_network": "Play under mobile network",
+    "view_logs": "Logs",
+    "view_logs_desc": "View Logs",
+    "clear_metadata_cache": "Clear metadata cache",
+    "clear_metadata_cache_desc": "You might need to re-fetch metadata from metadata source for local playback.",
+    "clear_lyric_cache": "Clear lyric cache",
+    "clear_lyric_cache_desc": "Delete all lyric cache."
+  },
+  "search": "Search",
+  "track": "Track",
+  "recent_played": "Recently played",
+  "no_lyric_found": "No lyric found"
+}

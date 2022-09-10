@@ -1,6 +1,5 @@
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/global.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/page/home/home_albums.dart';
@@ -12,7 +11,7 @@ import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -86,12 +85,12 @@ class HomePage extends StatelessWidget {
           leftPercentage: Global.isDesktop ? 0.5 : 1,
           left: HomeTitle(
             sliver: true,
-            title: I18n.PLAYLISTS.tr,
+            title: t.playlists,
             icon: Icons.queue_music_outlined,
           ),
           right: HomeTitle(
             sliver: true,
-            title: I18n.PLAYED_RECENTLY.tr,
+            title: t.recent_played,
             icon: Icons.music_note_outlined,
           ),
         ),

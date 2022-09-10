@@ -1,5 +1,4 @@
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
@@ -7,8 +6,8 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/simple_text_field.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Anniv
@@ -23,17 +22,17 @@ class AnnivCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            I18n.NOT_LOGGED_IN.tr,
+            t.server.not_logged_in,
             style: context.textTheme.titleLarge,
           ),
           Text(
-            I18n.ANNIV_FEATURES.tr,
+            t.server.anniv_features,
             style: context.textTheme.bodyMedium,
           ),
           Align(
             alignment: Alignment.bottomRight,
             child: TextButton(
-              child: Text(I18n.LOGIN.tr),
+              child: Text(t.server.login),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -88,7 +87,7 @@ class AnnivCard extends StatelessWidget {
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem(
-                      child: Text(I18n.LOGOUT.tr),
+                      child: Text(t.server.logout),
                       onTap: () {
                         final anniv =
                             Provider.of<AnnivService>(context, listen: false);
@@ -245,7 +244,7 @@ class ServerView extends StatelessWidget {
     return Column(
       children: [
         BaseAppBar(
-          title: Text(I18n.SERVER.tr),
+          title: Text(t.server.server),
           actions: [
             IconButton(
               icon: const Icon(Icons.settings),
@@ -257,7 +256,7 @@ class ServerView extends StatelessWidget {
         ),
         const AnnivCard(),
         ListTile(
-          title: Text(I18n.ANNIL_LIBRARIES.tr),
+          title: Text(t.server.libraries),
           trailing: IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {

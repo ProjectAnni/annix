@@ -1,6 +1,5 @@
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -9,7 +8,7 @@ import 'package:annix/ui/page/playlist/playlist.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteScreen extends StatelessWidget {
@@ -28,7 +27,7 @@ class FavoriteScreen extends StatelessWidget {
         : const DummyMusicCover();
 
     return PlaylistScreen(
-      title: I18n.MY_FAVORITE.tr,
+      title: t.my_favorite,
       cover: cover,
       intro: [Text("${favorites.length} songs")],
       refresh: () async {

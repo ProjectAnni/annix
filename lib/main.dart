@@ -1,5 +1,6 @@
 import 'package:annix/app.dart';
 import 'package:annix/global.dart';
+import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,10 @@ Future<void> main() async {
 
   await Global.init();
   await CoverReverseProxy().setup();
+  LocaleSettings.useDeviceLocale();
 
   try {
-    runApp(const AnnixApp());
+    runApp(TranslationProvider(child: const AnnixApp()));
   } catch (e) {
     FLog.error(text: "Uncaught exception", exception: e);
   }

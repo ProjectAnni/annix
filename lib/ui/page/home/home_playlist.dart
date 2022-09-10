@@ -1,10 +1,9 @@
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class PlaylistView extends StatelessWidget {
   const PlaylistView({super.key});
@@ -29,7 +28,7 @@ class PlaylistView extends StatelessWidget {
                             ? const DummyMusicCover()
                             : MusicCover(albumId: favorites.last.albumId),
                       ),
-                      title: Text(I18n.MY_FAVORITE.tr),
+                      title: Text(t.my_favorite),
                       visualDensity: VisualDensity.standard,
                       onTap: () {
                         AnnixRouterDelegate.of(context).to(name: "/favorite");

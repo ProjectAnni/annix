@@ -4,7 +4,6 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/i18n/i18n.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -12,7 +11,7 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 // class CategoryChip extends StatelessWidget {
 //   final String name;
@@ -85,15 +84,11 @@ class _SearchResult extends StatelessWidget {
             indicatorSize: TabBarIndicatorSize.tab,
             labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             tabs: [
+              Tab(child: Text("${t.track} (${result.tracks?.length ?? 0})")),
+              Tab(child: Text("${t.albums} (${result.albums?.length ?? 0})")),
               Tab(
-                  child: Text(
-                      "${I18n.TRACKS.tr} (${result.tracks?.length ?? 0})")),
-              Tab(
-                  child: Text(
-                      "${I18n.ALBUMS.tr} (${result.albums?.length ?? 0})")),
-              Tab(
-                child: Text(
-                    "${I18n.PLAYLISTS.tr} (${result.playlists?.length ?? 0})"),
+                child:
+                    Text("${t.playlists} (${result.playlists?.length ?? 0})"),
               ),
             ],
           ),
@@ -206,7 +201,7 @@ class SearchScreenState extends State<SearchScreen> {
         title: TextField(
           autofocus: true,
           decoration: InputDecoration(
-            hintText: I18n.SEARCH.tr,
+            hintText: t.search,
           ),
           onSubmitted: (keyword) => search(anniv.client!, keyword),
         ),
