@@ -173,12 +173,13 @@ class _LyricView extends StatelessWidget {
           builder: (iconColor, player, child) {
             return ChangeNotifierProvider.value(
               value: player.playing,
-              child: Consumer<PlayingTrack?>(
-                builder: (context, playing, child) {
+              child: Selector<PlayingTrack?, int?>(
+                selector: (_, playing) => playing?.position.inMilliseconds,
+                builder: (context, position, child) {
                   return LyricsReader(
                     model: lyric!.lyric.model,
                     lyricUi: ui,
-                    position: playing?.position.inMilliseconds ?? 0,
+                    position: position ?? 0,
                     playing: player.playerStatus == PlayerStatus.playing,
                     emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
                   );

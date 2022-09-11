@@ -29,21 +29,26 @@ class DesktopBottomPlayer extends StatelessWidget {
                 builder: (context, player, child) {
                   return ChangeNotifierProvider.value(
                     value: player.playing,
-                    child: Consumer<PlayingTrack?>(
-                        builder: (context, playing, child) {
-                      return ProgressBar(
-                        progress: playing?.position ?? Duration.zero,
-                        total: playing?.duration ?? Duration.zero,
-                        onSeek: (position) {
-                          player.seek(position);
-                        },
-                        barHeight: 3.0,
-                        thumbRadius: 6,
-                        thumbGlowRadius: 12,
-                        thumbCanPaintOutsideBar: false,
-                        timeLabelLocation: TimeLabelLocation.none,
-                      );
-                    }),
+                    child: Selector<PlayingTrack?, List<Duration>>(
+                      selector: (_, playing) => [
+                        playing?.position ?? Duration.zero,
+                        playing?.duration ?? Duration.zero,
+                      ],
+                      builder: (context, durations, child) {
+                        return ProgressBar(
+                          progress: durations[0],
+                          total: durations[1],
+                          onSeek: (position) {
+                            player.seek(position);
+                          },
+                          barHeight: 3.0,
+                          thumbRadius: 6,
+                          thumbGlowRadius: 12,
+                          thumbCanPaintOutsideBar: false,
+                          timeLabelLocation: TimeLabelLocation.none,
+                        );
+                      },
+                    ),
                   );
                 },
               ),

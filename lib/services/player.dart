@@ -187,7 +187,6 @@ class PlayerService extends ChangeNotifier {
         final duration = durationMap.value[id];
         if (duration != null) {
           playing?.updateDuration(duration);
-          notifyListeners();
         }
       }
     });
@@ -196,7 +195,6 @@ class PlayerService extends ChangeNotifier {
       if (id != null) {
         if (updatedDuration > Duration.zero) {
           playing?.updateDuration(updatedDuration);
-          notifyListeners();
         }
       }
     });
@@ -309,7 +307,6 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> stop([bool setInactive = true]) async {
     playing?.updateDuration(Duration.zero);
-    notifyListeners();
     await Future.wait([
       if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
       PlayerService.player.release(),
@@ -385,7 +382,6 @@ class PlayerService extends ChangeNotifier {
 
     // seek first for ui update
     playing?.updatePosition(position);
-    notifyListeners();
 
     // then notify player
     await PlayerService.player.seek(position);
