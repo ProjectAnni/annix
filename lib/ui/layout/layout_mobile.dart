@@ -1,6 +1,5 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
@@ -9,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:we_slide/we_slide.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-class AnnixLayoutMobile extends AnnixLayout {
+class AnnixLayoutMobile extends StatelessWidget {
   final AnnixRouterDelegate router;
   final Widget child;
 

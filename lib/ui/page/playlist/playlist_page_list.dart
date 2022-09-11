@@ -6,7 +6,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart' hide PlaylistItem;
 import 'package:annix/services/player.dart';
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/ui/page/playlist/playlist.dart';
+import 'package:annix/ui/page/playlist/playlist_base.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
@@ -60,7 +60,7 @@ class PlaylistDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final CombinedOnlineAnnilClient annil = context.read();
 
-    return PlaylistScreen(
+    return BasePlaylistScreen(
       title: playlist.intro.name,
       intro: playlist.intro.description != null
           ? [

@@ -1,6 +1,6 @@
-import 'package:annix/ui/page/playlist/playlist_album.dart';
-import 'package:annix/ui/page/playlist/playlist_favorite.dart';
-import 'package:annix/ui/page/playlist/playlist_list.dart';
+import 'package:annix/ui/page/playlist/playlist_page_album.dart';
+import 'package:annix/ui/page/playlist/playlist_page_favorite.dart';
+import 'package:annix/ui/page/playlist/playlist_page_list.dart';
 import 'package:annix/pages/root/server.dart';
 import 'package:annix/pages/root/tags.dart';
 import 'package:annix/ui/page/settings/settings.dart';

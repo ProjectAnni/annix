@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 typedef TrackListCallback = Future<List<AnnilAudioSource>> Function();
 
-class PlaylistScreen extends StatelessWidget {
+class BasePlaylistScreen extends StatelessWidget {
   /// Page title
   final Widget? pageTitle;
 
@@ -32,7 +32,7 @@ class PlaylistScreen extends StatelessWidget {
   /// Refresh callback
   final RefreshCallback? refresh;
 
-  const PlaylistScreen({
+  const BasePlaylistScreen({
     super.key,
     this.pageTitle,
     this.pageActions,
