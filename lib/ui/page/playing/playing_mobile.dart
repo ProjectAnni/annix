@@ -84,15 +84,22 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
               children: [
                 Consumer<PlayerService>(
                   builder: (context, player, child) {
-                    return ProgressBar(
-                      progress: player.position,
-                      total: player.duration,
-                      onSeek: (position) {
-                        player.seek(position);
-                      },
-                      barHeight: 2.0,
-                      thumbRadius: 5.0,
-                      thumbCanPaintOutsideBar: false,
+                    return ChangeNotifierProvider.value(
+                      value: player.playing,
+                      child: Consumer<PlayingTrack?>(
+                        builder: (context, playing, child) {
+                          return ProgressBar(
+                            progress: playing?.position ?? Duration.zero,
+                            total: playing?.duration ?? Duration.zero,
+                            onSeek: (position) {
+                              player.seek(position);
+                            },
+                            barHeight: 2.0,
+                            thumbRadius: 5.0,
+                            thumbCanPaintOutsideBar: false,
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
   final PlayerService player;
+  PlayingTrack? playing;
 
   final AnnivService anniv;
   final LocalDatabase database;
@@ -139,6 +140,11 @@ class AnnixAudioHandler extends BaseAudioHandler {
       _favorites = favorites;
     }
 
+    if (playing != player.playing) {
+      playing = player.playing;
+      playing?.addListener(_updatePlaybackState);
+    }
+
     final isPlaying = player.playerStatus == PlayerStatus.playing;
     final hasPrevious = (player.playingIndex ?? 0) > 0;
     final hasNext =
@@ -192,24 +198,26 @@ class AnnixAudioHandler extends BaseAudioHandler {
         PlayerStatus.buffering: AudioProcessingState.buffering,
       }[player.playerStatus]!,
       playing: isPlaying,
-      updatePosition: player.position,
+      updatePosition: player.playing?.position ?? Duration.zero,
     );
     if (playbackState.value != playState) {
       playbackState.add(playState);
     }
 
-    final playing = player.playing;
     if (playing != null &&
-        (mediaItem.value?.id != playing.id ||
-            mediaItem.value?.duration != player.duration)) {
+        (mediaItem.value?.id != playing?.id ||
+            mediaItem.value?.duration !=
+                (player.playing?.duration ?? Duration.zero))) {
       mediaItem.add(MediaItem(
-        id: playing.id,
-        title: playing.track.title,
-        album: playing.track.albumTitle,
-        artist: playing.track.artist,
-        duration: player.duration,
-        artUri: Global.proxy
-            .coverUri(playing.identifier.albumId, playing.identifier.discId),
+        id: playing!.id,
+        title: playing!.track.title,
+        album: playing!.track.albumTitle,
+        artist: playing!.track.artist,
+        duration: player.playing?.duration ?? Duration.zero,
+        artUri: Global.proxy.coverUri(
+          playing!.identifier.albumId,
+          playing!.identifier.discId,
+        ),
       ));
     }
   }
@@ -330,7 +338,10 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onSeek(int offset) async {
-    await player.seek(player.position + Duration(microseconds: offset));
+    if (player.playing != null) {
+      await player
+          .seek(player.playing!.position + Duration(milliseconds: offset));
+    }
   }
 
   @override

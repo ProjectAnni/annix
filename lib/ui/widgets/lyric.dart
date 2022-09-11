@@ -104,12 +104,22 @@ class LyricView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerService, TrackLyric?>(
-      selector: (_, player) => player.playingLyric,
-      builder: (context, lyric, child) {
-        return _LyricView(
-          lyric: lyric,
-          lyricAlign: alignment,
+    return Selector<PlayerService, PlayingTrack?>(
+      selector: (_, player) => player.playing,
+      builder: (context, playing, child) {
+        return ChangeNotifierProvider.value(
+          value: playing,
+          builder: (context, child) {
+            return Selector<PlayingTrack?, TrackLyric?>(
+              selector: (_, playing) => playing?.lyric,
+              builder: (context, lyric, child) {
+                return _LyricView(
+                  lyric: lyric,
+                  lyricAlign: alignment,
+                );
+              },
+            );
+          },
         );
       },
     );
@@ -161,12 +171,19 @@ class _LyricView extends StatelessWidget {
         );
         return Consumer<PlayerService>(
           builder: (iconColor, player, child) {
-            return LyricsReader(
-              model: lyric!.lyric.model,
-              lyricUi: ui,
-              position: player.position.inMilliseconds,
-              playing: player.playerStatus == PlayerStatus.playing,
-              emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
+            return ChangeNotifierProvider.value(
+              value: player.playing,
+              child: Consumer<PlayingTrack?>(
+                builder: (context, playing, child) {
+                  return LyricsReader(
+                    model: lyric!.lyric.model,
+                    lyricUi: ui,
+                    position: playing?.position.inMilliseconds ?? 0,
+                    playing: player.playerStatus == PlayerStatus.playing,
+                    emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
+                  );
+                },
+              ),
             );
           },
         );

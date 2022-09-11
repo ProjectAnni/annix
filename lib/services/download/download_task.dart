@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 
 typedef DownloadCallback<T> = void Function(T);
 
+class DownloadCancelledError extends Error {}
+
 class DownloadTask extends ChangeNotifier {
   static final Dio _client = Dio();
 
@@ -64,6 +66,9 @@ class DownloadTask extends ChangeNotifier {
         },
         cancelToken: _cancelToken,
       );
+      if (_cancelToken.isCancelled) {
+        throw DownloadCancelledError;
+      }
 
       status = DownloadTaskStatus.completed;
       notifyListeners();
@@ -74,6 +79,12 @@ class DownloadTask extends ChangeNotifier {
     } catch (e) {
       status = DownloadTaskStatus.failed;
       notifyListeners();
+
+      if (e is DioError) {
+        if (e.type == DioErrorType.cancel) {
+          throw DownloadCancelledError();
+        }
+      }
       rethrow;
     }
   }

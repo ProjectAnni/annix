@@ -161,8 +161,10 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                         onTap: () {
                           final PlayerService player = context.read();
                           result.lyric.then((lyric) {
-                            player.setLyric(TrackLyric(
-                                lyric: lyric, type: widget.track.type));
+                            player.playing?.updateLyric(TrackLyric(
+                              lyric: lyric,
+                              type: widget.track.type,
+                            ));
                             Navigator.of(context, rootNavigator: true).pop();
                           });
                         },

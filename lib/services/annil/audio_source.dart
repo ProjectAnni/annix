@@ -22,6 +22,7 @@ class AnnilAudioSource extends Source {
 
   bool isCanceled = false;
   Future<void>? _preloadFuture;
+  DownloadTask? _downloadTask;
 
   TrackIdentifier get identifier => track.id;
 
@@ -68,7 +69,13 @@ class AnnilAudioSource extends Source {
       } catch (e) {
         // set _preloadFuture to null, allowing retry
         _preloadFuture = null;
-        rethrow;
+        _downloadTask = null;
+
+        if (e is DownloadCancelledError) {
+          throw AudioCancelledError();
+        } else {
+          rethrow;
+        }
       }
       // check whether user has changed track for playback
       if (isCanceled) {
@@ -122,6 +129,7 @@ class AnnilAudioSource extends Source {
       if (task != null) {
         await file.parent.create(recursive: true);
         Global.downloadManager.add(task);
+        _downloadTask = task;
         final response = await task.start();
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
@@ -147,7 +155,7 @@ class AnnilAudioSource extends Source {
   }
 
   void cancel() {
-    // TODO: cancel download if necessary
+    _downloadTask?.cancel();
     isCanceled = true;
   }
 

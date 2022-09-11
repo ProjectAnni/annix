@@ -70,7 +70,6 @@ class PlaylistDetailScreen extends StatelessWidget {
               )
             ]
           : [],
-      pageActions: [],
       cover: _cover(context),
       onTracks: onTracks,
       child: ListView.builder(

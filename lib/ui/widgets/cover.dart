@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:annix/global.dart';
-import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
@@ -27,7 +26,7 @@ class PlayingMusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerService, AnnilAudioSource?>(
+    return Selector<PlayerService, PlayingTrack?>(
       selector: (context, player) => player.playing,
       builder: (context, playing, child) {
         if (playing == null) {
@@ -39,7 +38,7 @@ class PlayingMusicCover extends StatelessWidget {
         Widget child = MusicCover(
           key: ValueKey(playing.identifier.albumId),
           albumId: playing.identifier.albumId,
-          image: playing.coverProvider,
+          image: playing.source.coverProvider,
           card: card,
           fit: fit,
           filterQuality: filterQuality,

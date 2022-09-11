@@ -57,6 +57,93 @@ class TrackLyric {
   }
 }
 
+class PlayingTrack extends ChangeNotifier {
+  final AnnilAudioSource source;
+
+  PlayingTrack(this.source) {
+    getLyric().then(updateLyric, onError: (_) => updateLyric(null));
+  }
+
+  TrackLyric? lyric;
+  Duration position = Duration.zero;
+  Duration duration = Duration.zero;
+
+  TrackInfoWithAlbum get track => source.track;
+
+  TrackIdentifier get identifier => source.identifier;
+
+  String get id => source.id;
+
+  void updatePosition(Duration position) {
+    this.position = position;
+    notifyListeners();
+  }
+
+  void updateDuration(Duration duration) {
+    this.duration = duration;
+    notifyListeners();
+  }
+
+  void updateLyric(TrackLyric? lyric) {
+    this.lyric = lyric ?? TrackLyric.empty();
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    source.cancel();
+    super.dispose();
+  }
+
+  Future<TrackLyric?> getLyric() async {
+    if (track.type != TrackType.Normal) {
+      return TrackLyric(lyric: LyricResult.empty(), type: track.type);
+    }
+
+    try {
+      final id = this.id;
+
+      // 1. local cache
+      var lyric = await LyricProvider.getLocal(id);
+
+      // 2. anniv
+      if (lyric == null) {
+        final anniv = LyricProviderAnniv();
+        final result =
+            await anniv.search(track: identifier, title: track.title);
+        if (result.isNotEmpty) {
+          lyric = await result[0].lyric;
+        }
+      }
+
+      // 3. lyric provider
+      if (lyric == null) {
+        LyricProvider provider = LyricProviderPetitLyrics();
+        final songs = await provider.search(
+          track: identifier,
+          title: track.title,
+          artist: track.artist,
+          album: track.albumTitle,
+        );
+        if (songs.isNotEmpty) {
+          lyric = await songs.first.lyric;
+        }
+      }
+
+      // 4. save to local cache
+      if (lyric != null) {
+        LyricProvider.saveLocal(id, lyric);
+        return TrackLyric(lyric: lyric, type: track.type);
+      }
+
+      return null;
+    } catch (e) {
+      FLog.error(text: "Failed to fetch lyric", exception: e);
+      return null;
+    }
+  }
+}
+
 class PlayerService extends ChangeNotifier {
   static final AudioPlayer player = AudioPlayer();
 
@@ -70,22 +157,10 @@ class PlayerService extends ChangeNotifier {
 
   // Playing queue
   List<AnnilAudioSource> queue = [];
-  int? playingIndex;
 
-  AnnilAudioSource? get playing {
-    final currentIndex = playingIndex;
-    if (currentIndex == null ||
-        currentIndex < 0 ||
-        currentIndex >= queue.length) return null;
-
-    return queue[currentIndex];
-  }
-
-  TrackLyric? playingLyric;
-
-  // Progress
-  Duration position = Duration.zero;
-  Duration duration = Duration.zero;
+  int? get playingIndex =>
+      playing != null ? queue.indexOf(playing!.source) : null;
+  PlayingTrack? playing;
 
   PlayerService() {
     _load();
@@ -103,16 +178,15 @@ class PlayerService extends ChangeNotifier {
 
     // Position
     PlayerService.player.onPositionChanged.listen((updatedPosition) {
-      position = updatedPosition;
-      notifyListeners();
+      playing?.updatePosition(updatedPosition);
     });
     // Duration
     PlayerService.durationMap.addListener(() {
       final id = playing?.id;
       if (id != null) {
-        final d = durationMap.value[id];
-        if (d != null) {
-          duration = d;
+        final duration = durationMap.value[id];
+        if (duration != null) {
+          playing?.updateDuration(duration);
           notifyListeners();
         }
       }
@@ -121,7 +195,7 @@ class PlayerService extends ChangeNotifier {
       final id = playing?.id;
       if (id != null) {
         if (updatedDuration > Duration.zero) {
-          duration = updatedDuration;
+          playing?.updateDuration(updatedDuration);
           notifyListeners();
         }
       }
@@ -133,7 +207,10 @@ class PlayerService extends ChangeNotifier {
     this.queue =
         queue.map((e) => AnnilAudioSource.fromJson(jsonDecode(e))).toList();
 
-    playingIndex = Global.preferences.getInt('player.playingIndex');
+    final playingIndex = Global.preferences.getInt('player.playingIndex');
+    if (playingIndex != null) {
+      setPlayingIndex(playingIndex);
+    }
 
     final loopMode = Global.preferences.getInt('player.loopMode');
     this.loopMode = LoopMode.values[loopMode ?? 0];
@@ -143,19 +220,6 @@ class PlayerService extends ChangeNotifier {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
   }
-
-  // _save() async {
-  //   final nowPlayingIndex = playingIndex;
-  //   return Future.wait([
-  //     Global.preferences.setStringList(
-  //         "player.queue", queue.map((e) => jsonEncode(e.toJson())).toList()),
-  //     nowPlayingIndex != null
-  //         ? Global.preferences.setInt("player.playingIndex", nowPlayingIndex)
-  //         : Global.preferences.remove("player.playingIndex"),
-  //     Global.preferences.setInt("player.loopMode", loopMode.index),
-  //     Global.preferences.setDouble("player.volume", volume),
-  //   ]);
-  // }
 
   Future<void> play({bool reload = false, setSourceOnly = false}) async {
     if (queue.isEmpty) return;
@@ -172,21 +236,18 @@ class PlayerService extends ChangeNotifier {
       return;
     }
 
-    final currentIndex = playingIndex;
-    if (currentIndex == null || currentIndex >= queue.length) {
-      FLog.trace(text: "Stop playing");
+    final playing = this.playing;
+    if (playing == null) {
       await stop();
       return;
     }
+    final currentIndex = playingIndex!;
 
+    // stop previous playback
     FLog.trace(text: "Start playing");
-
-    // set lyric to null as loading
-    playingLyric = null;
     await stop(false);
-    notifyListeners();
 
-    final source = queue[currentIndex];
+    final source = playing.source;
     final toPlayId = source.id;
     if (!source.preloaded) {
       // current track is not preloaded, buffering
@@ -196,18 +257,8 @@ class PlayerService extends ChangeNotifier {
 
     // preload the next track
     if (queue.length > currentIndex + 1) {
-      queue[playingIndex! + 1].preload();
+      queue[currentIndex + 1].preload();
     }
-
-    getLyric(source).then((lyric) {
-      if (playing?.id == toPlayId) {
-        setLyric(lyric);
-      }
-    }, onError: (err) {
-      if (playing?.id == toPlayId) {
-        setLyric(null);
-      }
-    });
 
     try {
       // wait for audio file to download and play it
@@ -227,8 +278,8 @@ class PlayerService extends ChangeNotifier {
       next();
     }
 
-    // when playback start, set state to playing
-    if (playing?.id == toPlayId && playerStatus == PlayerStatus.buffering) {
+    // when playback starts, set state to playing
+    if (playing.id == toPlayId && playerStatus == PlayerStatus.buffering) {
       if (setSourceOnly) {
         playerStatus = PlayerStatus.paused;
       } else {
@@ -257,7 +308,7 @@ class PlayerService extends ChangeNotifier {
   }
 
   Future<void> stop([bool setInactive = true]) async {
-    position = Duration.zero;
+    playing?.updateDuration(Duration.zero);
     notifyListeners();
     await Future.wait([
       if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
@@ -333,7 +384,7 @@ class PlayerService extends ChangeNotifier {
     FLog.trace(text: "Seek to position $position");
 
     // seek first for ui update
-    this.position = position;
+    playing?.updatePosition(position);
     notifyListeners();
 
     // then notify player
@@ -342,23 +393,18 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> remove(int index) async {
     if (index < 0 || index >= queue.length) return;
+    final removeCurrentPlayingTrack = index == playingIndex;
 
-    if (index == playingIndex) {
+    if (removeCurrentPlayingTrack) {
       await stop();
     }
 
     queue.removeAt(index);
-    final playingIndexNow = playingIndex;
-    if (playingIndexNow != null) {
-      if (playingIndexNow > index) {
-        setPlayingIndex(playingIndexNow - 1, notify: false);
-      }
-    }
-    notifyListeners();
-
-    if (index == playingIndex) {
+    if (removeCurrentPlayingTrack) {
+      setPlayingIndex(index, notify: false);
       await play(reload: true);
     }
+    notifyListeners();
   }
 
   Future<void> jump(int index) async {
@@ -382,12 +428,13 @@ class PlayerService extends ChangeNotifier {
     Global.preferences.setInt("player.loopMode", loopMode.index);
   }
 
-  Future<void> setPlayingIndex(int index, {bool notify = true}) async {
+  Future<void> setPlayingIndex(int index,
+      {bool reload = false, bool notify = true}) async {
+    final playing = this.playing;
     final nowPlayingIndex = playingIndex;
-    if (nowPlayingIndex != index) {
-      playing?.cancel();
-      playingIndex = index;
-      duration = Duration.zero;
+    if (nowPlayingIndex != index || reload) {
+      playing?.dispose();
+      this.playing = PlayingTrack(queue[index]);
     }
 
     if (nowPlayingIndex != null) {
@@ -400,21 +447,18 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
       {int initialIndex = 0}) async {
-    // 1. cancel current playing(loading) track
-    playing?.cancel();
-    // 2. set playing queue
+    // 1. set playing queue
     queue = songs;
-    // 3. set playing index
+    // 2. set playing index
     if (songs.isNotEmpty) {
-      setPlayingIndex(initialIndex % songs.length, notify: false);
+      setPlayingIndex(initialIndex % songs.length, reload: true, notify: false);
+    } else {
+      playing?.dispose();
+      playing = null;
     }
-    // 4. set duration to zero
-    duration = Duration.zero;
 
-    notifyListeners();
     Global.preferences.setStringList(
         "player.queue", queue.map((e) => jsonEncode(e.toJson())).toList());
-    setPlayingIndex(playingIndex!);
 
     await play(reload: true);
   }
@@ -484,59 +528,6 @@ class PlayerService extends ChangeNotifier {
       await setPlayingQueue(resultQueue);
     } else {
       setPlayingQueue(resultQueue);
-    }
-  }
-
-  void setLyric(TrackLyric? lyric) {
-    playingLyric = lyric ?? TrackLyric.empty();
-    notifyListeners();
-  }
-
-  Future<TrackLyric?> getLyric(AnnilAudioSource item) async {
-    if (item.track.type != TrackType.Normal) {
-      return TrackLyric(lyric: LyricResult.empty(), type: item.track.type);
-    }
-
-    try {
-      final id = item.id;
-
-      // 1. local cache
-      var lyric = await LyricProvider.getLocal(id);
-
-      // 2. anniv
-      if (lyric == null) {
-        final anniv = LyricProviderAnniv();
-        final result =
-            await anniv.search(track: item.identifier, title: item.track.title);
-        if (result.isNotEmpty) {
-          lyric = await result[0].lyric;
-        }
-      }
-
-      // 3. lyric provider
-      if (lyric == null) {
-        LyricProvider provider = LyricProviderPetitLyrics();
-        final songs = await provider.search(
-          track: item.identifier,
-          title: item.track.title,
-          artist: item.track.artist,
-          album: item.track.albumTitle,
-        );
-        if (songs.isNotEmpty) {
-          lyric = await songs.first.lyric;
-        }
-      }
-
-      // 4. save to local cache
-      if (lyric != null) {
-        LyricProvider.saveLocal(item.id, lyric);
-        return TrackLyric(lyric: lyric, type: item.track.type);
-      }
-
-      return null;
-    } catch (e) {
-      FLog.error(text: "Failed to fetch lyric", exception: e);
-      return null;
     }
   }
 }

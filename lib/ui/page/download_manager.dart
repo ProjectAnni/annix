@@ -95,8 +95,12 @@ class DownloadTaskListTile extends StatelessWidget {
           final Widget downloadProgressText = task.status ==
                   DownloadTaskStatus.completed
               ? const Icon(Icons.check)
-              : Text(
-                  "${bytesToString(task.progress.current)} / ${bytesToString(totalBytes)}");
+              : task.status == DownloadTaskStatus.failed
+                  ? const Icon(Icons.error)
+                  : task.status == DownloadTaskStatus.paused
+                      ? const Icon(Icons.pause)
+                      : Text(
+                          "${bytesToString(task.progress.current)} / ${bytesToString(totalBytes)}");
 
           if (task.data is TrackInfoWithAlbum) {
             final track = task.data as TrackInfoWithAlbum;

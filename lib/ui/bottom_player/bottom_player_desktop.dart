@@ -27,17 +27,23 @@ class DesktopBottomPlayer extends StatelessWidget {
             RepaintBoundary(
               child: Consumer<PlayerService>(
                 builder: (context, player, child) {
-                  return ProgressBar(
-                    progress: player.position,
-                    total: player.duration,
-                    onSeek: (position) {
-                      player.seek(position);
-                    },
-                    barHeight: 3.0,
-                    thumbRadius: 6,
-                    thumbGlowRadius: 12,
-                    thumbCanPaintOutsideBar: false,
-                    timeLabelLocation: TimeLabelLocation.none,
+                  return ChangeNotifierProvider.value(
+                    value: player.playing,
+                    child: Consumer<PlayingTrack?>(
+                        builder: (context, playing, child) {
+                      return ProgressBar(
+                        progress: playing?.position ?? Duration.zero,
+                        total: playing?.duration ?? Duration.zero,
+                        onSeek: (position) {
+                          player.seek(position);
+                        },
+                        barHeight: 3.0,
+                        thumbRadius: 6,
+                        thumbGlowRadius: 12,
+                        thumbCanPaintOutsideBar: false,
+                        timeLabelLocation: TimeLabelLocation.none,
+                      );
+                    }),
                   );
                 },
               ),
