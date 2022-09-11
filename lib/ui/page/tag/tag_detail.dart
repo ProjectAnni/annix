@@ -1,7 +1,6 @@
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,20 +36,12 @@ class TagDetailScreen extends StatelessWidget {
                   crossAxisCount: Global.isDesktop ? 4 : 2,
                   mainAxisSpacing: 4,
                   crossAxisSpacing: 4,
+                  childAspectRatio: 0.87,
                 ),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   final albumId = snapshot.data![index];
-                  return FutureBuilder<Album?>(
-                    future: metadata.getAlbum(albumId: albumId),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const DummyAlbumGrid();
-                      } else {
-                        return AlbumGrid(album: snapshot.data!);
-                      }
-                    },
-                  );
+                  return AlbumGrid(albumId: albumId);
                 },
               );
             } else if (snapshot.hasError) {

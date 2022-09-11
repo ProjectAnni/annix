@@ -1,64 +1,30 @@
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-
-class DummyAlbumGrid extends StatelessWidget {
-  final double? width;
-
-  const DummyAlbumGrid({super.key, this.width});
-
-  @override
-  Widget build(BuildContext context) {
-    final child = Card(
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const DummyMusicCover(),
-          Padding(
-            padding: const EdgeInsets.all(4),
-            child: Text(
-              "",
-              style: context.textTheme.titleSmall,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    if (width != null) {
-      // fixed size
-      return SizedBox(
-        width: width!,
-        child: child,
-      );
-    } else {
-      // stretch
-      return Center(
-        child: AspectRatio(
-          aspectRatio: 0.82,
-          child: child,
-        ),
-      );
-    }
-  }
-}
+import 'package:provider/provider.dart';
 
 class AlbumGrid extends StatelessWidget {
-  final Album album;
+  final String albumId;
   final double? width;
 
-  const AlbumGrid({super.key, required this.album, this.width});
-
-  void toAlbum(BuildContext context) {
-    AnnixRouterDelegate.of(context).to(name: '/album', arguments: album);
-  }
+  const AlbumGrid({super.key, required this.albumId, this.width});
 
   @override
   Widget build(BuildContext context) {
+    final MetadataService metadata = context.read();
+    final metadataFuture = metadata.getAlbum(albumId: albumId);
+
+    void toAlbum(BuildContext context) {
+      metadataFuture.then((album) {
+        if (album != null) {
+          AnnixRouterDelegate.of(context).to(name: '/album', arguments: album);
+        }
+      });
+    }
+
     final child = InkWell(
       onTap: () => toAlbum(context),
       child: Card(
@@ -67,15 +33,27 @@ class AlbumGrid extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MusicCover(albumId: album.albumId),
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                album.fullTitle,
-                style: context.textTheme.titleSmall,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-              ),
+            AspectRatio(
+              aspectRatio: 1,
+              child: MusicCover(albumId: albumId, card: false),
+            ),
+            FutureBuilder<Album?>(
+              future: metadataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Text(
+                      snapshot.data!.fullTitle,
+                      style: context.textTheme.titleSmall,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
             ),
           ],
         ),
@@ -91,10 +69,7 @@ class AlbumGrid extends StatelessWidget {
     } else {
       // stretch
       return Center(
-        child: AspectRatio(
-          aspectRatio: 0.82,
-          child: child,
-        ),
+        child: child,
       );
     }
   }
