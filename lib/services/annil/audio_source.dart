@@ -120,7 +120,10 @@ class AnnilAudioSource extends Source {
     final image = Global.proxy.coverUrl(track.id.albumId, track.id.discId);
     coverProvider = ExtendedNetworkImageProvider(image.toString());
     // ignore: use_build_context_synchronously
-    precacheImage(coverProvider!, Global.context);
+
+    if (Global.navigatorKey.currentContext != null) {
+      precacheImage(coverProvider!, Global.context);
+    }
   }
 
   void cancel() {

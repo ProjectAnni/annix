@@ -30,9 +30,14 @@ abstract class MetadataSource {
   Future<List<String>> getAlbumsByTag(String tag);
 }
 
-class CachedMetadataStore {
+mixin CachedMetadataStore {
   /// Private album object cache for album object reading
   static final _albumStore = AnnixStore().category('album');
+  static final _albumCache = <String, Album>{};
+
+  static Album? getFromCache(String albumId) {
+    return _albumCache[albumId];
+  }
 
   Future<void> persist(Album album) async {
     await _albumStore.set(album.albumId, album.toJson());
@@ -45,9 +50,17 @@ class CachedMetadataStore {
     final toFetch = <String>[];
 
     for (final albumId in albumToGet) {
+      final inCache = _albumCache[albumId];
+      if (inCache != null) {
+        result[albumId] = inCache;
+        continue;
+      }
+
       final cache = await _albumStore.get(albumId);
       if (cache != null) {
-        result[albumId] = Album.fromJson(cache);
+        final album = Album.fromJson(cache);
+        result[albumId] = album;
+        _albumCache[albumId] = album;
       } else {
         toFetch.add(albumId);
       }
@@ -58,13 +71,12 @@ class CachedMetadataStore {
       final album = got[albumId];
       if (album != null) {
         await persist(album);
+        _albumCache[albumId] = album;
       }
     }
     result.addAll(got);
     return result;
   }
 
-  Future<Map<String, Album>> getAlbumsDetail(List<String> albums) {
-    throw UnimplementedError();
-  }
+  Future<Map<String, Album>> getAlbumsDetail(List<String> albums);
 }

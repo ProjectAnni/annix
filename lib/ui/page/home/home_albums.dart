@@ -2,6 +2,7 @@ import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class HomeAlbums extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: FutureProvider<Album?>.value(
                         value: metadata.getAlbum(albumId: albumId),
-                        initialData: null,
+                        initialData: CachedMetadataStore.getFromCache(albumId),
                         builder: (context, child) {
                           return Consumer<Album?>(
                             builder: (context, album, child) => album == null
