@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:we_slide/we_slide.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-class AnnixLayoutMobile extends StatelessWidget {
+import 'layout.dart';
+
+class AnnixLayoutMobile extends AnnixLayout {
   final AnnixRouterDelegate router;
   final Widget child;
 

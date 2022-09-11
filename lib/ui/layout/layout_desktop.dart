@@ -3,6 +3,8 @@ import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 
+import 'layout.dart';
+
 /// F |
 ///   |
 ///   |
@@ -14,7 +16,7 @@ import 'package:annix/i18n/strings.g.dart';
 /// __|______________________
 ///            player
 ///
-class AnnixLayoutDesktop extends StatelessWidget {
+class AnnixLayoutDesktop extends AnnixLayout {
   final AnnixRouterDelegate router;
   final Widget child;
 
