@@ -1,4 +1,5 @@
 import 'package:annix/services/annil/audio_source.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
@@ -18,6 +19,7 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final AnnivService anniv = context.read();
     final PlayerService player = context.read();
+    final CombinedOnlineAnnilClient annil = context.read();
 
     final List<Favorite> favorites = context.watch();
     final reversedFavorite = favorites.reversed;
@@ -51,6 +53,13 @@ class FavoriteScreen extends StatelessWidget {
             subtitle: ArtistText(
               favorite.artist ?? "--",
               overflow: TextOverflow.ellipsis,
+            ),
+            enabled: annil.isAvailable(
+              TrackIdentifier(
+                albumId: favorite.albumId,
+                discId: favorite.discId,
+                trackId: favorite.trackId,
+              ),
             ),
             onTap: () async {
               final tracks = await onTracks(favorites);
