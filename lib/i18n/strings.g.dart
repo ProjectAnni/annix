@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 58 (29 per locale)
+/// Strings: 62 (31 per locale)
 ///
-/// Built on 2022-09-11 at 11:59 UTC
+/// Built on 2022-09-11 at 14:13 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -72,7 +72,7 @@ _StringsEn get t => LocaleSettings.instance.currentTranslations;
 class Translations {
 	Translations._(); // no constructor
 
-  static _StringsEn of(BuildContext context) =>
+	static _StringsEn of(BuildContext context) =>
       InheritedLocaleData.of<AppLocale, _StringsEn>(context).translations;
 }
 
@@ -251,6 +251,10 @@ class _StringsSettingsEn {
   String get clear_lyric_cache => 'Clear lyric cache';
 
   String get clear_lyric_cache_desc => 'Delete all lyric cache.';
+
+  String get show_artist_in_bottom_player => 'Show artist in bottom player';
+
+  String get show_artist_in_bottom_player_desc => 'Mobile only';
 }
 
 // Path: <root>
@@ -388,6 +392,12 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 
   @override
   String get clear_lyric_cache_desc => '删除本地缓存的所有歌词。';
+
+  @override
+  String get show_artist_in_bottom_player => '在播放条中显示艺术家';
+
+  @override
+  String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
 }
 
 /// Flat map(s) containing all translations.
@@ -422,6 +432,8 @@ extension on _StringsEn {
           'You might need to re-fetch metadata from metadata source for local playback.',
       'settings.clear_lyric_cache': 'Clear lyric cache',
       'settings.clear_lyric_cache_desc': 'Delete all lyric cache.',
+      'settings.show_artist_in_bottom_player': 'Show artist in bottom player',
+      'settings.show_artist_in_bottom_player_desc': 'Mobile only',
       'search': 'Search',
       'track': 'Track',
       'recent_played': 'Recently played',
@@ -459,6 +471,8 @@ extension on _StringsZhCn {
           '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。',
       'settings.clear_lyric_cache': '清除歌词缓存',
       'settings.clear_lyric_cache_desc': '删除本地缓存的所有歌词。',
+      'settings.show_artist_in_bottom_player': '在播放条中显示艺术家',
+      'settings.show_artist_in_bottom_player_desc': '移动端设置，桌面端无效。',
       'search': '搜索',
       'track': '单曲',
       'recent_played': '最近播放',

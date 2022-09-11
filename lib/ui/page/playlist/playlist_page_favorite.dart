@@ -66,7 +66,9 @@ class FavoriteScreen extends StatelessWidget {
               final tracks = await onTracks(favorites);
               playFullList(
                 player: player,
-                tracks: tracks,
+                tracks: tracks
+                    .map((track) => AnnilAudioSource(track: track))
+                    .toList(),
                 initialIndex: index,
               );
             },
@@ -76,7 +78,7 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 
-  Future<List<AnnilAudioSource>> onTracks(List<Favorite> favorites) async {
+  Future<List<TrackInfoWithAlbum>> onTracks(List<Favorite> favorites) async {
     final CombinedOnlineAnnilClient annil = Global.context.read();
 
     return favorites.reversed
@@ -89,21 +91,19 @@ class FavoriteScreen extends StatelessWidget {
             );
 
             if (annil.isAvailable(id)) {
-              return AnnilAudioSource(
-                track: TrackInfoWithAlbum(
-                  id: id,
-                  title: fav.title!,
-                  artist: fav.artist!,
-                  albumTitle: fav.albumTitle!,
-                  type: TrackType.fromString(fav.type),
-                ),
+              return TrackInfoWithAlbum(
+                id: id,
+                title: fav.title!,
+                artist: fav.artist!,
+                albumTitle: fav.albumTitle!,
+                type: TrackType.fromString(fav.type),
               );
             } else {
               return null;
             }
           },
         )
-        .whereType<AnnilAudioSource>()
+        .whereType<TrackInfoWithAlbum>()
         .toList();
   }
 }

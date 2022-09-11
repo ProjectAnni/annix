@@ -90,7 +90,9 @@ class SettingsScreen extends StatelessWidget {
                   },
                   initialValue: p,
                   leading: const Icon(Icons.person_outline),
-                  title: const Text("Show artist in bottom player"),
+                  title: Text(t.settings.show_artist_in_bottom_player),
+                  description:
+                      Text(t.settings.show_artist_in_bottom_player_desc),
                 ),
               ),
             ],

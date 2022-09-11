@@ -102,12 +102,12 @@ class AnnilAudioSource extends Source {
     }
 
     savePath ??= getAudioCachePath(track.id);
-    return Global.downloadManager.add(DownloadTask(
+    return DownloadTask(
       category: DownloadCategory.audio,
       url: url,
       savePath: savePath,
       data: track,
-    ));
+    );
   }
 
   Future<void> _preload() async {
@@ -121,6 +121,7 @@ class AnnilAudioSource extends Source {
       );
       if (task != null) {
         await file.parent.create(recursive: true);
+        Global.downloadManager.add(task);
         final response = await task.start();
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);

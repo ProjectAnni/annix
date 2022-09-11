@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:annix/services/annil/audio_source.dart';
+import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-typedef TrackListCallback = Future<List<AnnilAudioSource>> Function();
+typedef TrackListCallback = Future<List<TrackInfoWithAlbum>> Function();
 
 class BasePlaylistScreen extends StatelessWidget {
   /// Page title
@@ -86,7 +91,9 @@ class BasePlaylistScreen extends StatelessWidget {
                           final tracks = await onTracks();
                           playFullList(
                             player: player,
-                            tracks: tracks,
+                            tracks: tracks
+                                .map((track) => AnnilAudioSource(track: track))
+                                .toList(),
                             shuffle: false,
                           );
                         },
@@ -99,7 +106,9 @@ class BasePlaylistScreen extends StatelessWidget {
                           final tracks = await onTracks();
                           playFullList(
                             player: player,
-                            tracks: tracks,
+                            tracks: tracks
+                                .map((track) => AnnilAudioSource(track: track))
+                                .toList(),
                             shuffle: true,
                           );
                         },
@@ -124,7 +133,40 @@ class BasePlaylistScreen extends StatelessWidget {
       ],
     );
 
-    final actions = pageActions ?? [];
+    final actions = (pageActions ?? []) +
+        [
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () async {
+              final scaffold = ScaffoldMessenger.of(context);
+              final tracks = (await onTracks())
+                  .map(
+                    (track) => AnnilAudioSource.spawnDownloadTask(
+                      track: track,
+                      quality: PreferQuality.Medium,
+                    ),
+                  )
+                  .whereType<DownloadTask>()
+                  .where((task) => !File(task.savePath).existsSync())
+                  .toList();
+              if (tracks.isNotEmpty) {
+                Global.downloadManager.addAll(tracks);
+
+                scaffold.showSnackBar(
+                  SnackBar(
+                    content: Text('Downloading ${tracks.length} tracks'),
+                  ),
+                );
+              } else {
+                scaffold.showSnackBar(
+                  const SnackBar(
+                    content: Text('All tracks are already downloaded'),
+                  ),
+                );
+              }
+            },
+          ),
+        ];
     if (refresh != null) {
       if (Global.isDesktop) {
         // sync button on desktop
@@ -161,10 +203,10 @@ void playFullList({
   int initialIndex = 0,
 }) async {
   assert(
-    // when shuffle is on, initialIndex can only be zero
-    (shuffle && initialIndex == 0) ||
-        // or disable shuffle
-        !shuffle,
+  // when shuffle is on, initialIndex can only be zero
+  (shuffle && initialIndex == 0) ||
+      // or disable shuffle
+      !shuffle,
   );
 
   final trackList = tracks;
