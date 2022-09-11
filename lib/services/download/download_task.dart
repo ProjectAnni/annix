@@ -9,7 +9,7 @@ typedef DownloadCallback<T> = void Function(T);
 class DownloadTask extends ChangeNotifier {
   static final Dio _client = Dio();
 
-  final String? id;
+  final dynamic data;
   final DownloadCategory category;
 
   final String url;
@@ -21,8 +21,10 @@ class DownloadTask extends ChangeNotifier {
   DownloadProgress progress = const DownloadProgress(current: 0);
   CancelToken _cancelToken = CancelToken();
 
+  DownloadCallback<Response<dynamic>>? onSuccess;
+
   DownloadTask({
-    this.id,
+    this.data,
     required this.category,
     required this.url,
     this.headers = const {},
@@ -67,6 +69,7 @@ class DownloadTask extends ChangeNotifier {
       notifyListeners();
 
       File("$savePath.tmp").renameSync(savePath);
+      onSuccess?.call(response);
       return response;
     } catch (e) {
       status = DownloadTaskStatus.failed;

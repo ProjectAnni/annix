@@ -90,19 +90,37 @@ class AnnilAudioSource extends Source {
 
   bool preloaded = false;
 
+  static DownloadTask? spawnDownloadTask({
+    required TrackInfoWithAlbum track,
+    required PreferQuality quality,
+    String? savePath,
+  }) {
+    final CombinedOnlineAnnilClient annil = Global.context.read();
+    final url = annil.getAudioUrl(id: track.id, quality: quality);
+    if (url == null) {
+      return null;
+    }
+
+    savePath ??= getAudioCachePath(track.id);
+    return Global.downloadManager.add(DownloadTask(
+      category: DownloadCategory.audio,
+      url: url,
+      savePath: savePath,
+      data: track,
+    ));
+  }
+
   Future<void> _preload() async {
-    final offlinePath = getAudioCachePath(track.id);
-    final file = File(offlinePath);
+    final savePath = getAudioCachePath(track.id);
+    final file = File(savePath);
     if (!file.existsSync()) {
-      final CombinedOnlineAnnilClient annil = Global.context.read();
-      final url = annil.getAudioUrl(id: track.id, quality: quality);
-      if (url != null) {
+      final task = spawnDownloadTask(
+        track: track,
+        quality: quality,
+        savePath: savePath,
+      );
+      if (task != null) {
         await file.parent.create(recursive: true);
-        final task = Global.downloadManager.add(DownloadTask(
-          category: DownloadCategory.audio,
-          url: url,
-          savePath: offlinePath,
-        ));
         final response = await task.start();
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);

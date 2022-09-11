@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/local/database.dart' hide PlaylistItem;
 import 'package:annix/services/player.dart';
 import 'package:annix/services/annil/client.dart';
@@ -70,6 +73,39 @@ class PlaylistDetailScreen extends StatelessWidget {
               )
             ]
           : [],
+      pageActions: [
+        IconButton(
+          icon: const Icon(Icons.download),
+          onPressed: () {
+            final tracks = playlist.items
+                .whereType<PlaylistItemTrack>()
+                .map(
+                  (track) => AnnilAudioSource.spawnDownloadTask(
+                    track: track.info,
+                    quality: PreferQuality.Lossless,
+                  ),
+                )
+                .whereType<DownloadTask>()
+                .where((task) => !File(task.savePath).existsSync())
+                .toList();
+            if (tracks.isNotEmpty) {
+              Global.downloadManager.addAll(tracks);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Downloading ${tracks.length} tracks'),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('All tracks are already downloaded'),
+                ),
+              );
+            }
+          },
+        ),
+      ],
       cover: _cover(context),
       onTracks: onTracks,
       child: ListView.builder(

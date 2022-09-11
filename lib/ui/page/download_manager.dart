@@ -1,4 +1,5 @@
 import 'package:annix/global.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
@@ -89,12 +90,36 @@ class DownloadTaskListTile extends StatelessWidget {
               (task.status == DownloadTaskStatus.completed
                   ? task.progress.current
                   : -1);
+          final Widget downloadProgressText = task.status ==
+                  DownloadTaskStatus.completed
+              ? const Icon(Icons.check)
+              : Text(
+                  "${bytesToString(task.progress.current)} / ${bytesToString(totalBytes)}");
+
+          if (task.data is TrackInfoWithAlbum) {
+            final track = task.data as TrackInfoWithAlbum;
+            return ListTile(
+              title: Text(track.title),
+              leading: DownloadCategoryIcon(category: task.category),
+              subtitle: Text(
+                track.albumTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: downloadProgressText,
+              // trailing: IconButton(
+              //   icon: const Icon(Icons.cancel),
+              //   onPressed: () {
+              //     //
+              //   },
+              // ),
+            );
+          }
+
           return ListTile(
             title: Text(task.url),
             leading: DownloadCategoryIcon(category: task.category),
-            subtitle: Text(
-              "${bytesToString(task.progress.current)} / ${bytesToString(totalBytes)}",
-            ),
+            subtitle: downloadProgressText,
             trailing: IconButton(
               icon: const Icon(Icons.cancel),
               onPressed: () {
