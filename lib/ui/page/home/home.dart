@@ -27,7 +27,6 @@ class HomePage extends StatelessWidget {
                       return SliverAppBar.large(
                         title: HomeAppBar(info: info),
                         centerTitle: true,
-                        automaticallyImplyLeading: false,
                         scrolledUnderElevation: 0,
                         actions: [
                           IconButton(

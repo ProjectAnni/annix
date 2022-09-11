@@ -1,5 +1,4 @@
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/pages/root/base.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -241,58 +240,61 @@ class ServerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BaseAppBar(
-          title: Text(t.server.server),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(t.server.server),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              AnnixRouterDelegate.of(context).to(name: '/settings');
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          const AnnivCard(),
+          ListTile(
+            title: Text(t.server.libraries),
+            trailing: IconButton(
+              icon: const Icon(Icons.add),
               onPressed: () {
-                AnnixRouterDelegate.of(context).to(name: '/settings');
+                showDialog(
+                  context: context,
+                  builder: (context) => AnnilDialog(
+                    onSubmit: (annil) {
+                      // TODO: save annil
+                    },
+                  ),
+                );
               },
             ),
-          ],
-        ),
-        const AnnivCard(),
-        ListTile(
-          title: Text(t.server.libraries),
-          trailing: IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AnnilDialog(
-                  onSubmit: (annil) {
-                    // TODO: save annil
-                  },
-                ),
-              );
-            },
           ),
-        ),
-        Expanded(
-          child: Consumer<CombinedOnlineAnnilClient>(
-            builder: (context, annil, child) {
-              final sortedClients = annil.sortedClients;
+          Expanded(
+            child: Consumer<CombinedOnlineAnnilClient>(
+              builder: (context, annil, child) {
+                final sortedClients = annil.sortedClients;
 
-              return ReorderableListView(
-                padding: EdgeInsets.zero,
-                buildDefaultDragHandles: true,
-                onReorder: (oldIndex, newIndex) {},
-                children: sortedClients
-                    .map(
-                      (value) => AnnilListTile(
-                        annil: value,
-                        key: ValueKey(value.priority),
-                      ),
-                    )
-                    .toList(),
-              );
-            },
+                return ReorderableListView(
+                  padding: EdgeInsets.zero,
+                  buildDefaultDragHandles: true,
+                  onReorder: (oldIndex, newIndex) {},
+                  children: sortedClients
+                      .map(
+                        (value) => AnnilListTile(
+                          annil: value,
+                          key: ValueKey(value.priority),
+                        ),
+                      )
+                      .toList(),
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

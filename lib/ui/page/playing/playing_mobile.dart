@@ -141,7 +141,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
               ),
               onLongPress: () {
                 final player =
-                Provider.of<PlayerService>(context, listen: false);
+                    Provider.of<PlayerService>(context, listen: false);
                 final playing = player.playing?.track;
                 if (playing != null) {
                   showDialog(
@@ -161,6 +161,8 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  backgroundColor: context.colorScheme.surface,
+                  elevation: 1,
                   useRootNavigator: true,
                   context: context,
                   builder: (context) {
@@ -182,7 +184,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                   isScrollControlled: true,
                   builder: (context) {
                     final player =
-                    Provider.of<PlayerService>(context, listen: false);
+                        Provider.of<PlayerService>(context, listen: false);
                     return FractionallySizedBox(
                       heightFactor: 0.7,
                       child: PlayingMoreMenu(track: player.playing!.track),

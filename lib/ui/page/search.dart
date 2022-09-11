@@ -45,7 +45,6 @@ import 'package:annix/i18n/strings.g.dart';
 //           decoration: InputDecoration(hintText: I18n.SEARCH.tr),
 //           onSubmitted: (value) {},
 //         ),
-//         automaticallyImplyLeading: false,
 //       ),
 //       body: ButtonBar(
 //         alignment: MainAxisAlignment.start,

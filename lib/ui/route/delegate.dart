@@ -1,11 +1,11 @@
 import 'package:annix/ui/page/playlist/playlist_page_album.dart';
 import 'package:annix/ui/page/playlist/playlist_page_favorite.dart';
 import 'package:annix/ui/page/playlist/playlist_page_list.dart';
-import 'package:annix/pages/root/server.dart';
-import 'package:annix/pages/root/tags.dart';
+import 'package:annix/ui/page/server.dart';
+import 'package:annix/ui/page/tag/tag_list.dart';
 import 'package:annix/ui/page/settings/settings.dart';
 import 'package:annix/ui/page/settings/settings_log.dart';
-import 'package:annix/ui/page/tag.dart';
+import 'package:annix/ui/page/tag/tag_detail.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/layout/layout.dart';
@@ -111,14 +111,17 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     }
 
     Widget child;
+    bool disableAppBarDismissal = false;
 
     switch (routeSettings.name) {
       case "/playing":
         // /playing route is only available on desktop
         child = const PlayingDesktopScreen();
+        disableAppBarDismissal = true;
         break;
       case "/home":
         child = const HomePage();
+        disableAppBarDismissal = true;
         break;
       case "/album":
         if (routeSettings.arguments is String) {
@@ -130,15 +133,17 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         }
         break;
       case "/tag":
-        child = TagScreen(
+        child = TagDetailScreen(
           name: routeSettings.arguments as String,
         );
         break;
       case "/tags":
-        child = const TagsView();
+        child = const TagListView();
+        disableAppBarDismissal = true;
         break;
       case "/server":
         child = const ServerView();
+        disableAppBarDismissal = true;
         break;
       case "/favorite":
         child = const FavoriteScreen();
@@ -165,9 +170,11 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       name: routeSettings.name,
       arguments: routeSettings.arguments,
       key: Key(routeSettings.name!) as LocalKey,
+      disableAppBarDismissal: disableAppBarDismissal,
     );
-    if (page.name == "/playing" || page.name == "/tags") {
-      _reservedPages[page.name!] = page;
+
+    if (routeSettings.name == "/playing" || routeSettings.name == "/tags") {
+      _reservedPages[routeSettings.name!] = page;
     }
     return page;
   }

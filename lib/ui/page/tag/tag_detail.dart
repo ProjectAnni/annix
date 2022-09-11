@@ -6,10 +6,10 @@ import 'package:annix/ui/widgets/album_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TagScreen extends StatelessWidget {
+class TagDetailScreen extends StatelessWidget {
   final String name;
 
-  const TagScreen({Key? key, required this.name}) : super(key: key);
+  const TagDetailScreen({Key? key, required this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

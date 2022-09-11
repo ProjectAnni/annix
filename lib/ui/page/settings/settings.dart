@@ -32,10 +32,7 @@ class SettingsTileBuilder<T> extends AbstractSettingsTile {
 }
 
 class SettingsScreen extends StatelessWidget {
-  final bool automaticallyImplyLeading;
-
-  const SettingsScreen({Key? key, this.automaticallyImplyLeading = true})
-      : super(key: key);
+  const SettingsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +42,6 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(t.settings.settings),
         centerTitle: true,
-        automaticallyImplyLeading: automaticallyImplyLeading,
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(
