@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/utils/hash.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
@@ -31,18 +32,7 @@ class AnnivClient {
   AnnivClient({required String url, required CookieJar cookieJar})
       : _client = Dio(
           BaseOptions(baseUrl: url, responseType: ResponseType.json),
-        ),
-        // ..httpClientAdapter = Http2Adapter(
-        //         ConnectionManager(
-        //           idleTimeout: 60000,
-        //           onClientCreate: (_, config) {
-        //             final SettingsController settings = Get.find();
-        //             config.onBadCertificate = (_) {
-        //               return settings.skipCertificateVerification.value;
-        //             };
-        //           },
-        //         ),
-        //       ),
+        )..httpClientAdapter = createHttpPlusAdapter(),
         _cookieJar = cookieJar {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(

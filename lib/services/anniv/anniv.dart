@@ -9,7 +9,7 @@ import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/global.dart';
-import 'package:annix/services/network.dart';
+import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';

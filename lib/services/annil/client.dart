@@ -6,7 +6,8 @@ import 'dart:io';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/global.dart';
-import 'package:annix/services/network.dart';
+import 'package:annix/services/network/http_plus_adapter.dart';
+import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
@@ -177,7 +178,8 @@ class OnlineAnnilClient {
     required this.token,
     required this.priority,
     this.local = false,
-  }) : client = Dio(BaseOptions(baseUrl: url));
+  }) : client = Dio(BaseOptions(baseUrl: url))
+          ..httpClientAdapter = createHttpPlusAdapter();
 
   factory OnlineAnnilClient.remote({
     required String id,

@@ -27,7 +27,7 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   dio_http2_adapter: ^2.0.0
   cookie_jar: ^3.0.1
-  http_plus: ^0.2.1
+  http_plus: ^0.2.2
 
   netease_music_api:
     git:

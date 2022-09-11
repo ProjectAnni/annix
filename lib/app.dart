@@ -5,7 +5,7 @@ import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
-import 'package:annix/services/network.dart';
+import 'package:annix/services/network/network.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/route/delegate.dart';

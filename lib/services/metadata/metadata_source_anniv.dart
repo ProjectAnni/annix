@@ -3,7 +3,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
-import 'package:annix/services/network.dart';
+import 'package:annix/services/network/network.dart';
 import 'package:provider/provider.dart';
 
 class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {

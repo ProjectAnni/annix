@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
@@ -134,9 +133,7 @@ class MusicCover extends StatelessWidget {
       );
     } else {
       image = ExtendedImage.network(
-        CoverReverseProxy()
-            .url(CoverItem(albumId: albumId, discId: discId))
-            .toString(),
+        Global.proxy.coverUrl(albumId, discId),
         cache: true,
         cacheHeight: 800,
         loadStateChanged: _loadStateChanged,

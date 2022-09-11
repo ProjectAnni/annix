@@ -5,7 +5,6 @@ import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/player.dart';
-import 'package:annix/services/annil/cover.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
@@ -209,12 +208,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
         album: playing.track.albumTitle,
         artist: playing.track.artist,
         duration: player.duration,
-        artUri: CoverReverseProxy().url(
-          CoverItem(
-            albumId: playing.identifier.albumId,
-            // discId: playing.discId,
-          ),
-        ),
+        artUri: Global.proxy
+            .coverUri(playing.identifier.albumId, playing.identifier.discId),
       ));
     }
   }

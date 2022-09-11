@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:annix/services/network/proxy.dart';
 import 'package:annix/services/settings.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,11 @@ class Global {
   static final mobileWeSlideController = WeSlideController();
   static final mobileWeSlideFooterController = WeSlideController(true);
 
+  static AnnixProxy proxy = AnnixProxy();
+
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
+    await proxy.start();
     settings.init();
 
     if (isDesktop) {
