@@ -9,7 +9,7 @@ import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:provider/provider.dart';
 
 class PlayingDesktopScreen extends StatelessWidget {
-  const PlayingDesktopScreen({Key? key}) : super(key: key);
+  const PlayingDesktopScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

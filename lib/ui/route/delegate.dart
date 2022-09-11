@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
   final List<AnnixPage> _pages = [];
+  final Map<String, AnnixPage> _reservedPages = {};
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
@@ -28,11 +29,15 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
   @override
   Widget build(BuildContext context) {
+    final reserved = _reservedPages.values
+        .where((element) => !_pages.contains(element))
+        .toList();
+
     return AnnixLayout.build(
       router: this,
       child: Navigator(
         key: navigatorKey,
-        pages: List.of(_pages),
+        pages: List.of(reserved + _pages),
         onPopPage: _onPopPage,
       ),
     );
@@ -101,6 +106,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   AnnixPage _createPage(RouteSettings routeSettings) {
+    if (_reservedPages.containsKey(routeSettings.name)) {
+      return _reservedPages[routeSettings.name]!;
+    }
+
     Widget child;
 
     switch (routeSettings.name) {
@@ -151,12 +160,16 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
             "You've entered an unknown area! This should not happen.");
     }
 
-    return AnnixPage(
+    final page = AnnixPage(
       child: child,
       name: routeSettings.name,
       arguments: routeSettings.arguments,
       key: Key(routeSettings.name!) as LocalKey,
     );
+    if (page.name == "/playing" || page.name == "/tags") {
+      _reservedPages[page.name!] = page;
+    }
+    return page;
   }
 
   static AnnixRouterDelegate of(BuildContext context) {

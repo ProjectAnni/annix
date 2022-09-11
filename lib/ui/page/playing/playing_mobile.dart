@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:annix/services/player.dart';
 import 'package:annix/ui/dialogs/playing_more_menu.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
@@ -28,29 +29,36 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // decoration: BoxDecoration(
-        //   gradient: LinearGradient(
-        //     begin: Alignment.topRight,
-        //     end: Alignment.bottomLeft,
-        //     colors: [
-        //       context.colorScheme.secondary,
-        //       context.colorScheme.secondaryContainer,
-        //     ],
-        //   ),
-        // ),
         color: context.colorScheme.secondaryContainer,
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            showLyrics
-                ? const AspectRatio(
+            PageTransitionSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder:
+                  (widget, primaryAnimation, secondaryAnimation) {
+                return FadeThroughTransition(
+                  animation: primaryAnimation,
+                  secondaryAnimation: secondaryAnimation,
+                  fillColor: context.colorScheme.secondaryContainer,
+                  child: widget,
+                );
+              },
+              child: IndexedStack(
+                index: showLyrics ? 0 : 1,
+                key: ValueKey(showLyrics ? 0 : 1),
+                children: const [
+                  AspectRatio(
                     aspectRatio: 1,
                     child: LyricView(
                       alignment: LyricAlign.CENTER,
                     ),
-                  )
-                : const PlayingMusicCover(),
+                  ),
+                  PlayingMusicCover(),
+                ],
+              ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -133,7 +141,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
               ),
               onLongPress: () {
                 final player =
-                    Provider.of<PlayerService>(context, listen: false);
+                Provider.of<PlayerService>(context, listen: false);
                 final playing = player.playing?.track;
                 if (playing != null) {
                   showDialog(
@@ -174,7 +182,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                   isScrollControlled: true,
                   builder: (context) {
                     final player =
-                        Provider.of<PlayerService>(context, listen: false);
+                    Provider.of<PlayerService>(context, listen: false);
                     return FractionallySizedBox(
                       heightFactor: 0.7,
                       child: PlayingMoreMenu(track: player.playing!.track),
