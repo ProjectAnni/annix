@@ -30,6 +30,13 @@ class HomePage extends StatelessWidget {
                         scrolledUnderElevation: 0,
                         actions: [
                           IconButton(
+                            icon: const Icon(Icons.file_download),
+                            onPressed: () {
+                              AnnixRouterDelegate.of(context)
+                                  .to(name: "/downloading");
+                            },
+                          ),
+                          IconButton(
                             icon: const Icon(Icons.shuffle_outlined),
                             onPressed: () {
                               showLoadingDialog(context);

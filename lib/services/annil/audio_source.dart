@@ -4,11 +4,11 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/download/download_models.dart';
+import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/services/player.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -16,9 +16,6 @@ import 'package:provider/provider.dart';
 class AudioCancelledError extends Error {}
 
 class AnnilAudioSource extends Source {
-  static final Dio _client = Dio()
-    ..httpClientAdapter = createHttpPlusAdapter(false);
-
   final PreferQuality quality;
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
@@ -54,7 +51,7 @@ class AnnilAudioSource extends Source {
   @override
   Future<void> setOnPlayer(AudioPlayer player) async {
     // when setOnPlayer was called, player expects to play current track
-    // but use may change track before player is ready
+    // but user may change track before player is ready
     // so isCanceled is always false here, and may become true later
     isCanceled = false;
 
@@ -101,14 +98,18 @@ class AnnilAudioSource extends Source {
       final url = annil.getAudioUrl(id: track.id, quality: quality);
       if (url != null) {
         await file.parent.create(recursive: true);
-        final tmpPath = "$offlinePath.tmp";
-        final response = await _client.download(url, tmpPath);
+        final task = Global.downloadManager.add(DownloadTask(
+          category: DownloadCategory.audio,
+          url: url,
+          savePath: offlinePath,
+        ));
+        final response = await task.start();
+
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // +1 to avoid duration exceeding
         PlayerService.durationMap.update((map) {
           map[id] = Duration(seconds: duration + 1);
         });
-        File(tmpPath).rename(offlinePath);
       } else {
         throw UnsupportedError("No available annil server found");
       }

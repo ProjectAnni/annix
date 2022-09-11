@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/download/download_models.dart';
+import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/utils/hash.dart';
@@ -9,7 +11,6 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-// import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:path/path.dart' as p;
 
@@ -294,16 +295,22 @@ class AnnivClient {
   }
 
   Future<void> downloadRepoDatabase(String saveRoot) async {
-    // 1. download db
-    final dbPath = p.join(saveRoot, 'repo.db');
-    await _client.download('/api/meta/db/repo.db', "$dbPath.downloading");
-    final dbFile = File("$dbPath.downloading");
-    await dbFile.rename(dbPath);
-
-    // 2. download json
+    // 1. download json
     final jsonPath = p.join(saveRoot, 'repo.json');
     await _client.download('/api/meta/db/repo.json', "$jsonPath.downloading");
     final jsonFile = File("$jsonPath.downloading");
+
+    // 2. download db
+    final dbPath = p.join(saveRoot, 'repo.db');
+    final task = Global.downloadManager.add(DownloadTask(
+      url: '/api/meta/db/repo.db',
+      category: DownloadCategory.database,
+      savePath: dbPath,
+      client: _client,
+    ));
+    await task.start();
+
+    // 3. rename json after db downloaded
     await jsonFile.rename(jsonPath);
   }
 

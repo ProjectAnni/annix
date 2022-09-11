@@ -30,5 +30,6 @@
   "search": "Search",
   "track": "Track",
   "recent_played": "Recently played",
-  "no_lyric_found": "No lyric found"
+  "no_lyric_found": "No lyric found",
+  "download_manager": "Download manager"
 }

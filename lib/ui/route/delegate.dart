@@ -1,3 +1,4 @@
+import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/playlist/playlist_page_album.dart';
 import 'package:annix/ui/page/playlist/playlist_page_favorite.dart';
 import 'package:annix/ui/page/playlist/playlist_page_list.dart';
@@ -115,7 +116,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     switch (routeSettings.name) {
       case "/playing":
-        // /playing route is only available on desktop
+      // /playing route is only available on desktop
         child = const PlayingDesktopScreen();
         disableAppBarDismissal = true;
         break;
@@ -159,6 +160,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case "/settings/log":
         child = const SettingsLogView();
+        break;
+      case "/downloading":
+        child = const DownloadManagerPage();
         break;
       default:
         throw UnimplementedError(

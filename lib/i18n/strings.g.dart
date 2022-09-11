@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 56 (28 per locale)
+/// Strings: 58 (29 per locale)
 ///
-/// Built on 2022-09-10 at 07:19 UTC
+/// Built on 2022-09-11 at 11:59 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -70,7 +70,7 @@ _StringsEn get t => LocaleSettings.instance.currentTranslations;
 /// String a = t.someKey.anotherKey; // Use t variable.
 /// String b = t['someKey.anotherKey']; // Only for edge cases!
 class Translations {
-  Translations._(); // no constructor
+	Translations._(); // no constructor
 
   static _StringsEn of(BuildContext context) =>
       InheritedLocaleData.of<AppLocale, _StringsEn>(context).translations;
@@ -95,7 +95,7 @@ class TranslationProvider
 /// Usage (e.g. in a widget's build method):
 /// context.t.someKey.anotherKey
 extension BuildContextTranslationsExtension on BuildContext {
-  _StringsEn get t => TranslationProvider.of(this).translations;
+	_StringsEn get t => TranslationProvider.of(this).translations;
 }
 
 /// Manages all translation instances and the current locale
@@ -140,7 +140,7 @@ class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
 
 /// Provides utility functions without any side effects.
 class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, _StringsEn> {
-  AppLocaleUtils._()
+	AppLocaleUtils._()
       : super(baseLocale: _baseLocale, locales: AppLocale.values);
 
   static final instance = AppLocaleUtils._();
@@ -199,11 +199,13 @@ class _StringsEn implements BaseTranslations {
   String get recent_played => 'Recently played';
 
   String get no_lyric_found => 'No lyric found';
+
+  String get download_manager => 'Download manager';
 }
 
 // Path: server
 class _StringsServerEn {
-  _StringsServerEn._(this._root);
+	_StringsServerEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -224,7 +226,7 @@ class _StringsServerEn {
 
 // Path: settings
 class _StringsSettingsEn {
-  _StringsSettingsEn._(this._root);
+	_StringsSettingsEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -316,11 +318,14 @@ class _StringsZhCn implements _StringsEn {
 
   @override
   String get no_lyric_found => '未找到歌词';
+
+  @override
+  String get download_manager => '下载管理';
 }
 
 // Path: server
 class _StringsServerZhCn implements _StringsServerEn {
-  _StringsServerZhCn._(this._root);
+	_StringsServerZhCn._(this._root);
 
   @override
   final _StringsZhCn _root; // ignore: unused_field
@@ -347,7 +352,7 @@ class _StringsServerZhCn implements _StringsServerEn {
 
 // Path: settings
 class _StringsSettingsZhCn implements _StringsSettingsEn {
-  _StringsSettingsZhCn._(this._root);
+	_StringsSettingsZhCn._(this._root);
 
   @override
   final _StringsZhCn _root; // ignore: unused_field
@@ -421,6 +426,7 @@ extension on _StringsEn {
       'track': 'Track',
       'recent_played': 'Recently played',
       'no_lyric_found': 'No lyric found',
+      'download_manager': 'Download manager',
     };
   }
 }
@@ -457,6 +463,7 @@ extension on _StringsZhCn {
       'track': '单曲',
       'recent_played': '最近播放',
       'no_lyric_found': '未找到歌词',
+      'download_manager': '下载管理',
     };
   }
 }
