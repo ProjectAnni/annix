@@ -1,8 +1,10 @@
 import 'package:annix/global.dart';
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
+import 'package:annix/services/player.dart';
 import 'package:annix/utils/bytes.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -100,19 +102,18 @@ class DownloadTaskListTile extends StatelessWidget {
             final track = task.data as TrackInfoWithAlbum;
             return ListTile(
               title: Text(track.title),
-              leading: DownloadCategoryIcon(category: task.category),
               subtitle: Text(
                 track.albumTitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               trailing: downloadProgressText,
-              // trailing: IconButton(
-              //   icon: const Icon(Icons.cancel),
-              //   onPressed: () {
-              //     //
-              //   },
-              // ),
+              onTap: () {
+                if (task.status == DownloadTaskStatus.completed) {
+                  final player = context.read<PlayerService>();
+                  player.setPlayingQueue([AnnilAudioSource(track: track)]);
+                }
+              },
             );
           }
 

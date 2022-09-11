@@ -124,10 +124,18 @@ class PlaylistDetailScreen extends StatelessWidget {
             minLeadingWidth: 16,
             dense: true,
             visualDensity: VisualDensity.compact,
-            title: Text(track.info.title, overflow: TextOverflow.ellipsis),
+            title: Text(
+              track.info.title,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
             subtitle: track.description != null && track.description!.isNotEmpty
-                ? ArtistText(track.description!)
-                : null,
+                ? Text(
+                    track.description!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  )
+                : ArtistText(track.info.artist),
             enabled: annil.isAvailable(track.info.id),
             onTap: () async {
               final player = context.read<PlayerService>();

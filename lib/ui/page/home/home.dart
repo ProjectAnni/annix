@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
                         scrolledUnderElevation: 0,
                         actions: [
                           IconButton(
-                            icon: const Icon(Icons.file_download),
+                            icon: const Icon(Icons.archive_outlined),
                             onPressed: () {
                               AnnixRouterDelegate.of(context)
                                   .to(name: "/downloading");
