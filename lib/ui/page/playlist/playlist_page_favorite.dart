@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/anniv/anniv.dart';
@@ -76,22 +77,33 @@ class FavoriteScreen extends StatelessWidget {
   }
 
   Future<List<AnnilAudioSource>> onTracks(List<Favorite> favorites) async {
+    final CombinedOnlineAnnilClient annil = Global.context.read();
+
     return favorites.reversed
         .map(
-          (fav) => AnnilAudioSource(
-            track: TrackInfoWithAlbum(
-              id: TrackIdentifier(
-                albumId: fav.albumId,
-                discId: fav.discId,
-                trackId: fav.trackId,
-              ),
-              title: fav.title!,
-              artist: fav.artist!,
-              albumTitle: fav.albumTitle!,
-              type: TrackType.fromString(fav.type),
-            ),
-          ),
+          (fav) {
+            final id = TrackIdentifier(
+              albumId: fav.albumId,
+              discId: fav.discId,
+              trackId: fav.trackId,
+            );
+
+            if (annil.isAvailable(id)) {
+              return AnnilAudioSource(
+                track: TrackInfoWithAlbum(
+                  id: id,
+                  title: fav.title!,
+                  artist: fav.artist!,
+                  albumTitle: fav.albumTitle!,
+                  type: TrackType.fromString(fav.type),
+                ),
+              );
+            } else {
+              return null;
+            }
+          },
         )
+        .whereType<AnnilAudioSource>()
         .toList();
   }
 }
