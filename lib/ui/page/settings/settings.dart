@@ -42,6 +42,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(t.settings.settings),
         centerTitle: true,
+        scrolledUnderElevation: 0,
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(
@@ -65,6 +66,11 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(t.settings.skip_cert),
                 ),
               ),
+            ],
+          ),
+          SettingsSection(
+            title: const Text('UI'),
+            tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.autoScaleUI,
                 builder: (context, p, _) => SettingsTile.switchTile(
@@ -77,24 +83,20 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(t.settings.auto_scale_ui),
                 ),
               ),
-            ],
-          ),
-          SettingsSection(
-            title: const Text('UI'),
-            tiles: [
-              SettingsTileBuilder<bool>(
-                value: settings.mobileShowArtistInBottomPlayer,
-                builder: (context, p, _) => SettingsTile.switchTile(
-                  onToggle: (value) {
-                    settings.mobileShowArtistInBottomPlayer.value = value;
-                  },
-                  initialValue: p,
-                  leading: const Icon(Icons.person_outline),
-                  title: Text(t.settings.show_artist_in_bottom_player),
-                  description:
-                      Text(t.settings.show_artist_in_bottom_player_desc),
+              if (Global.isMobile)
+                SettingsTileBuilder<bool>(
+                  value: settings.mobileShowArtistInBottomPlayer,
+                  builder: (context, p, _) => SettingsTile.switchTile(
+                    onToggle: (value) {
+                      settings.mobileShowArtistInBottomPlayer.value = value;
+                    },
+                    initialValue: p,
+                    leading: const Icon(Icons.person_outline),
+                    title: Text(t.settings.show_artist_in_bottom_player),
+                    description:
+                        Text(t.settings.show_artist_in_bottom_player_desc),
+                  ),
                 ),
-              ),
             ],
           ),
           SettingsSection(
