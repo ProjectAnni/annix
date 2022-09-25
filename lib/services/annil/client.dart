@@ -179,7 +179,13 @@ class OnlineAnnilClient {
     required this.priority,
     this.local = false,
   }) : client = Dio(BaseOptions(baseUrl: url))
-          ..httpClientAdapter = createHttpPlusAdapter();
+          ..httpClientAdapter =
+              createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value) {
+    Global.settings.enableHttp2ForAnnil.addListener(() {
+      client.httpClientAdapter =
+          createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
+    });
+  }
 
   factory OnlineAnnilClient.remote({
     required String id,

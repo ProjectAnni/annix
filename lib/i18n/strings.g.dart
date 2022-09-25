@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 62 (31 per locale)
+/// Strings: 66 (33 per locale)
 ///
-/// Built on 2022-09-11 at 14:13 UTC
+/// Built on 2022-09-25 at 13:15 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -255,6 +255,11 @@ class _StringsSettingsEn {
   String get show_artist_in_bottom_player => 'Show artist in bottom player';
 
   String get show_artist_in_bottom_player_desc => 'Mobile only';
+
+  String get enable_http2_for_annil => 'Enable HTTP/2 for Annil';
+
+  String get enable_http2_for_annil_desc =>
+      'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
 }
 
 // Path: <root>
@@ -398,6 +403,13 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 
   @override
   String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
+
+  @override
+  String get enable_http2_for_annil => '为 Annil 启用 HTTP/2';
+
+  @override
+  String get enable_http2_for_annil_desc =>
+      'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
 }
 
 /// Flat map(s) containing all translations.
@@ -434,6 +446,9 @@ extension on _StringsEn {
       'settings.clear_lyric_cache_desc': 'Delete all lyric cache.',
       'settings.show_artist_in_bottom_player': 'Show artist in bottom player',
       'settings.show_artist_in_bottom_player_desc': 'Mobile only',
+      'settings.enable_http2_for_annil': 'Enable HTTP/2 for Annil',
+      'settings.enable_http2_for_annil_desc':
+          'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.',
       'search': 'Search',
       'track': 'Track',
       'recent_played': 'Recently played',
@@ -473,6 +488,9 @@ extension on _StringsZhCn {
       'settings.clear_lyric_cache_desc': '删除本地缓存的所有歌词。',
       'settings.show_artist_in_bottom_player': '在播放条中显示艺术家',
       'settings.show_artist_in_bottom_player_desc': '移动端设置，桌面端无效。',
+      'settings.enable_http2_for_annil': '为 Annil 启用 HTTP/2',
+      'settings.enable_http2_for_annil_desc':
+          'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。',
       'search': '搜索',
       'track': '单曲',
       'recent_played': '最近播放',

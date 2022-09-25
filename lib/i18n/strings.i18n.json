@@ -27,7 +27,9 @@
     "clear_lyric_cache": "Clear lyric cache",
     "clear_lyric_cache_desc": "Delete all lyric cache.",
     "show_artist_in_bottom_player": "Show artist in bottom player",
-    "show_artist_in_bottom_player_desc": "Mobile only"
+    "show_artist_in_bottom_player_desc": "Mobile only",
+    "enable_http2_for_annil": "Enable HTTP/2 for Annil",
+    "enable_http2_for_annil_desc": "HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk."
   },
   "search": "Search",
   "track": "Track",
