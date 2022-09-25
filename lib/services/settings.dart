@@ -51,6 +51,9 @@ class SettingsController {
     mobileShowArtistInBottomPlayer.addListener(saveChangedVariable(
         "annix_mobile_show_artist_in_bottom_player",
         mobileShowArtistInBottomPlayer));
+
+    enableHttp2ForAnnil = ValueNotifier(
+        Global.preferences.getBool("annix_enable_http2_for_annil") ?? false);
     enableHttp2ForAnnil.addListener(saveChangedVariable(
         "annix_enable_http2_for_annil", enableHttp2ForAnnil));
   }
