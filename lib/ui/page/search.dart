@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -108,6 +109,7 @@ class _SearchResult extends StatelessWidget {
                         final audio = await AnnilAudioSource.from(
                           id: e.id,
                           metadata: metadata,
+                          quality: Global.settings.defaultAudioQuality.value,
                         );
                         if (audio != null) {
                           await player.setPlayingQueue([audio]);

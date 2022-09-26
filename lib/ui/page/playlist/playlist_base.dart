@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/player.dart';
@@ -92,7 +91,13 @@ class BasePlaylistScreen extends StatelessWidget {
                           playFullList(
                             player: player,
                             tracks: tracks
-                                .map((track) => AnnilAudioSource(track: track))
+                                .map(
+                                  (track) => AnnilAudioSource(
+                                    track: track,
+                                    quality: Global
+                                        .settings.defaultAudioQuality.value,
+                                  ),
+                                )
                                 .toList(),
                             shuffle: false,
                           );
@@ -107,7 +112,11 @@ class BasePlaylistScreen extends StatelessWidget {
                           playFullList(
                             player: player,
                             tracks: tracks
-                                .map((track) => AnnilAudioSource(track: track))
+                                .map((track) => AnnilAudioSource(
+                                      track: track,
+                                      quality: Global
+                                          .settings.defaultAudioQuality.value,
+                                    ))
                                 .toList(),
                             shuffle: true,
                           );
@@ -143,7 +152,7 @@ class BasePlaylistScreen extends StatelessWidget {
                   .map(
                     (track) => AnnilAudioSource.spawnDownloadTask(
                       track: track,
-                      quality: PreferQuality.Medium,
+                      quality: Global.settings.defaultAudioQuality.value,
                     ),
                   )
                   .whereType<DownloadTask>()
@@ -203,10 +212,10 @@ void playFullList({
   int initialIndex = 0,
 }) async {
   assert(
-  // when shuffle is on, initialIndex can only be zero
-  (shuffle && initialIndex == 0) ||
-      // or disable shuffle
-      !shuffle,
+    // when shuffle is on, initialIndex can only be zero
+    (shuffle && initialIndex == 0) ||
+        // or disable shuffle
+        !shuffle,
   );
 
   final trackList = tracks;

@@ -1,4 +1,5 @@
 import 'package:annix/global.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:flutter/material.dart';
 
 class SettingsController {
@@ -28,6 +29,11 @@ class SettingsController {
   /// Default value: false
   late ValueNotifier<bool> enableHttp2ForAnnil;
 
+  /// Default audio quality
+  ///
+  /// Default value: Medium
+  late ValueNotifier<PreferQuality> defaultAudioQuality;
+
   void init() {
     useMobileNetwork = ValueNotifier(
         Global.preferences.getBool("annix_use_mobile_network") ?? true);
@@ -56,6 +62,12 @@ class SettingsController {
         Global.preferences.getBool("annix_enable_http2_for_annil") ?? false);
     enableHttp2ForAnnil.addListener(saveChangedVariable(
         "annix_enable_http2_for_annil", enableHttp2ForAnnil));
+
+    defaultAudioQuality = ValueNotifier(PreferQuality.values[
+        Global.preferences.getInt("annix_default_audio_quality") ??
+            PreferQuality.Medium.index]);
+    defaultAudioQuality.addListener(saveChangedVariable(
+        "annix_default_audio_quality", defaultAudioQuality));
   }
 
   void Function() saveChangedVariable<T>(
@@ -72,6 +84,8 @@ class SettingsController {
         Global.preferences.setInt(key, value);
       } else if (value is double) {
         Global.preferences.setDouble(key, value);
+      } else if (value is Enum) {
+        Global.preferences.setInt(key, value.index);
       } else {
         throw Exception("Unsupported type");
       }

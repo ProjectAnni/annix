@@ -505,7 +505,13 @@ class PlayerService extends ChangeNotifier {
 
         if (annil.isAvailable(id)) {
           if (track.type == TrackType.Normal) {
-            songs.add(AnnilAudioSource.from(id: id, metadata: metadata));
+            songs.add(
+              AnnilAudioSource.from(
+                id: id,
+                metadata: metadata,
+                quality: Global.settings.defaultAudioQuality.value,
+              ),
+            );
           }
         }
       }

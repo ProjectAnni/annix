@@ -11,7 +11,7 @@ class DownloadCancelledError extends Error {}
 class DownloadTask extends ChangeNotifier {
   static final Dio _client = Dio();
 
-  final dynamic data;
+  final DownloadTaskData data;
   final DownloadCategory category;
 
   final String url;
@@ -26,7 +26,7 @@ class DownloadTask extends ChangeNotifier {
   DownloadCallback<Response<dynamic>>? onSuccess;
 
   DownloadTask({
-    this.data,
+    this.data = const DownloadTaskData(),
     required this.category,
     required this.url,
     this.headers = const {},

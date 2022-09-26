@@ -67,7 +67,12 @@ class FavoriteScreen extends StatelessWidget {
               playFullList(
                 player: player,
                 tracks: tracks
-                    .map((track) => AnnilAudioSource(track: track))
+                    .map(
+                      (track) => AnnilAudioSource(
+                        track: track,
+                        quality: Global.settings.defaultAudioQuality.value,
+                      ),
+                    )
                     .toList(),
                 initialIndex: index,
               );

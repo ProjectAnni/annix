@@ -1,5 +1,7 @@
 import 'package:annix/global.dart';
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/ui/dialogs/loading.dart';
+import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/store.dart';
@@ -76,6 +78,18 @@ class SettingsScreen extends StatelessWidget {
                   leading: const Icon(Icons.http),
                   title: Text(t.settings.enable_http2_for_annil),
                   description: Text(t.settings.enable_http2_for_annil_desc),
+                ),
+              ),
+              SettingsTileBuilder<PreferQuality>(
+                value: settings.defaultAudioQuality,
+                builder: (context, p, child) => SettingsTile.navigation(
+                  onPressed: (context) async {
+                    final quality = await showPreferQualityDialog(context);
+                    Global.settings.defaultAudioQuality.value = quality;
+                  },
+                  leading: const Icon(Icons.high_quality),
+                  title: const Text("Default audio quality"),
+                  description: Text(p.toString()),
                 ),
               ),
             ],

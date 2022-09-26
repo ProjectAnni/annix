@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -107,7 +108,12 @@ class PlaylistDetailScreen extends StatelessWidget {
               playFullList(
                 player: player,
                 tracks: tracks
-                    .map((track) => AnnilAudioSource(track: track))
+                    .map(
+                      (track) => AnnilAudioSource(
+                        track: track,
+                        quality: Global.settings.defaultAudioQuality.value,
+                      ),
+                    )
                     .toList(),
                 initialIndex: index,
               );

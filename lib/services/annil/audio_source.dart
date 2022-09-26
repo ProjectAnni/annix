@@ -28,13 +28,13 @@ class AnnilAudioSource extends Source {
 
   AnnilAudioSource({
     required this.track,
-    this.quality = PreferQuality.Medium,
+    required this.quality,
   });
 
   static Future<AnnilAudioSource?> from({
     required MetadataService metadata,
     required TrackIdentifier id,
-    PreferQuality quality = PreferQuality.Medium,
+    required PreferQuality quality,
   }) async {
     final track = await metadata.getTrack(id);
     if (track != null) {
@@ -113,7 +113,7 @@ class AnnilAudioSource extends Source {
       category: DownloadCategory.audio,
       url: url,
       savePath: savePath,
-      data: track,
+      data: TrackDownloadTaskData(info: track, quality: quality),
     );
   }
 

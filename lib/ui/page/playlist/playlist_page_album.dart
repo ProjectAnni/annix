@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -107,7 +108,7 @@ class AlbumDetailScreen extends StatelessWidget {
       var trackId = 1;
       list.addAll(
         disc.tracks.map(
-          (track) {
+              (track) {
             final trackIndex = trackId;
             trackId++;
 
@@ -133,7 +134,12 @@ class AlbumDetailScreen extends StatelessWidget {
                 playFullList(
                   player: player,
                   tracks: tracks
-                      .map((track) => AnnilAudioSource(track: track))
+                      .map(
+                        (track) => AnnilAudioSource(
+                          track: track,
+                          quality: Global.settings.defaultAudioQuality.value,
+                        ),
+                      )
                       .toList(),
                   initialIndex: totalTrackIndex,
                 );
