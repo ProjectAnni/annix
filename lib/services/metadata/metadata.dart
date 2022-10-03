@@ -71,13 +71,13 @@ class MetadataService {
   }
 
   /// Get album id by tag name
-  Future<List<String>> getAlbumsByTag(String tag) async {
+  Future<Set<String>> getAlbumsByTag(String tag) async {
     for (final source in sources) {
       final albums = await source.getAlbumsByTag(tag);
       if (albums.isNotEmpty) {
         return albums;
       }
     }
-    return [];
+    return {};
   }
 }

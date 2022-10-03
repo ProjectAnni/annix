@@ -3,8 +3,8 @@ import 'package:annix/services/metadata/metadata_source.dart';
 
 class OfflineMetadataSource extends MetadataSource {
   @override
-  Future<List<String>> getAlbumsByTag(String tag) async {
-    return [];
+  Future<Set<String>> getAlbumsByTag(String tag) async {
+    return {};
   }
 
   @override

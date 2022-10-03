@@ -469,7 +469,7 @@ class PlayerService extends ChangeNotifier {
 
   Future<void> fullShuffleMode(BuildContext context,
       {int count = 30, bool waitUntilPlayback = false}) async {
-    final CombinedOnlineAnnilClient annil = context.read();
+    final AnnilService annil = context.read();
     final albums = annil.albums;
     if (albums.isEmpty) {
       return;

@@ -14,14 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 
-class CombinedOnlineAnnilClient extends ChangeNotifier {
-  final Map<String, OnlineAnnilClient> clients;
-  final List<OnlineAnnilClient> _clients;
+class AnnilService extends ChangeNotifier {
+  final Map<String, AnnilClient> clients;
+  final List<AnnilClient> _clients;
 
-  List<OnlineAnnilClient> get sortedClients => _clients;
+  List<AnnilClient> get sortedClients => _clients;
   List<String> albums = [];
 
-  CombinedOnlineAnnilClient(List<OnlineAnnilClient> clients)
+  AnnilService._([List<AnnilClient> clients = const []])
       : _clients = clients,
         clients = Map.fromEntries(clients.map((e) => MapEntry(e.id, e))) {
     _sort();
@@ -36,15 +36,15 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
   }
 
   // TODO: load from / save to sqlite instead of shared preferences
-  static CombinedOnlineAnnilClient loadFromLocal() {
+  static AnnilService loadFromLocal() {
     List<String>? tokens = Global.preferences.getStringList("annil_clients");
     if (tokens != null) {
       final clients = tokens
-          .map((token) => OnlineAnnilClient.fromJson(jsonDecode(token)))
+          .map((token) => AnnilClient.fromJson(jsonDecode(token)))
           .toList();
-      return CombinedOnlineAnnilClient(clients);
+      return AnnilService._(clients);
     } else {
-      return CombinedOnlineAnnilClient([]);
+      return AnnilService._();
     }
   }
 
@@ -83,7 +83,7 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
     clients.addAll(
       Map.fromEntries(
         remoteList
-            .map((e) => OnlineAnnilClient.remote(
+            .map((e) => AnnilClient.remote(
                   id: e.id,
                   name: e.name,
                   url: e.url,
@@ -132,7 +132,7 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
         try {
           return await client.getAlbums();
         } catch (e) {
-          FLog.error(
+          FLog.warning(
             text: "Failed to refresh annil client ${client.name}",
             exception: e,
           );
@@ -146,19 +146,41 @@ class CombinedOnlineAnnilClient extends ChangeNotifier {
       albums.replaceRange(0, albums.length, newAlbums);
       await saveToLocal();
     } else {
-      var localAlbums = await OfflineAnnilClient().getAlbums();
+      var localAlbums = await getCachedAlbums();
       albums.replaceRange(0, albums.length, localAlbums);
     }
     notifyListeners();
   }
 
   bool isAvailable(TrackIdentifier id) {
-    return OfflineAnnilClient().isAvailable(id) ||
+    return isCacheAvailable(id) ||
         (NetworkService.isOnline && albums.contains(id.albumId));
+  }
+
+  static Future<List<String>> getCachedAlbums() async {
+    final root = p.join(Global.storageRoot, 'audio');
+    return Directory(root)
+        .list()
+        .where((entry) {
+          if (entry is! Directory) {
+            return false;
+          }
+          // return true if music file exists (any file with no extension)
+          return entry
+              .listSync()
+              .any((e) => e is File && !p.basename(e.path).contains('.'));
+        })
+        .map((entry) => p.basename(entry.path))
+        .toList();
+  }
+
+  static bool isCacheAvailable(TrackIdentifier id) {
+    final path = getAudioCachePath(id);
+    return File(path).existsSync();
   }
 }
 
-class OnlineAnnilClient {
+class AnnilClient {
   final Dio client;
   final String id;
   String name;
@@ -171,7 +193,7 @@ class OnlineAnnilClient {
   String eTag = "";
   List<String> albums = [];
 
-  OnlineAnnilClient._({
+  AnnilClient._({
     required this.id,
     required this.name,
     required this.url,
@@ -187,7 +209,7 @@ class OnlineAnnilClient {
     });
   }
 
-  factory OnlineAnnilClient.remote({
+  factory AnnilClient.remote({
     required String id,
     required String name,
     required String url,
@@ -197,7 +219,7 @@ class OnlineAnnilClient {
     if (url.endsWith('/')) {
       url = url.substring(0, url.length - 1);
     }
-    return OnlineAnnilClient._(
+    return AnnilClient._(
       id: id,
       name: name,
       url: url,
@@ -207,13 +229,13 @@ class OnlineAnnilClient {
     );
   }
 
-  factory OnlineAnnilClient.local({
+  factory AnnilClient.local({
     required String name,
     required String url,
     required String token,
     required int priority,
   }) =>
-      OnlineAnnilClient._(
+      AnnilClient._(
         id: const Uuid().v4(),
         name: name,
         url: url,
@@ -235,8 +257,8 @@ class OnlineAnnilClient {
     };
   }
 
-  factory OnlineAnnilClient.fromJson(Map<String, dynamic> json) {
-    final client = OnlineAnnilClient._(
+  factory AnnilClient.fromJson(Map<String, dynamic> json) {
+    final client = AnnilClient._(
       id: json['id'] as String,
       name: json['name'] as String,
       url: json['url'] as String,
@@ -277,6 +299,7 @@ class OnlineAnnilClient {
       if (e.response?.statusCode == 304) {
         FLog.trace(text: "Annil cache HIT, etag: $eTag");
       } else {
+        albums = [];
         rethrow;
       }
     }
@@ -325,29 +348,5 @@ enum PreferQuality {
       default:
         return PreferQuality.Medium;
     }
-  }
-}
-
-class OfflineAnnilClient {
-  Future<List<String>> getAlbums() async {
-    final root = p.join(Global.storageRoot, 'audio');
-    return Directory(root)
-        .list()
-        .where((entry) {
-          if (entry is! Directory) {
-            return false;
-          }
-          // return true if music file exists (any file with no extension)
-          return entry
-              .listSync()
-              .any((e) => e is File && !p.basename(e.path).contains('.'));
-        })
-        .map((entry) => p.basename(entry.path))
-        .toList();
-  }
-
-  bool isAvailable(TrackIdentifier id) {
-    final path = getAudioCachePath(id);
-    return File(path).existsSync();
   }
 }

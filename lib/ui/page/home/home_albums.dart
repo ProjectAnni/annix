@@ -23,7 +23,7 @@ class HomeAlbums extends StatelessWidget {
           ),
           SizedBox(
             height: height,
-            child: Consumer<CombinedOnlineAnnilClient>(
+            child: Consumer<AnnilService>(
               builder: (context, annil, child) {
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,

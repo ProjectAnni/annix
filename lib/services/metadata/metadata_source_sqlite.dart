@@ -90,7 +90,7 @@ class SqliteMetadataSource extends MetadataSource {
   }
 
   @override
-  Future<List<String>> getAlbumsByTag(String tag) async {
+  Future<Set<String>> getAlbumsByTag(String tag) async {
     final albums = await database.rawQuery('''
 WITH RECURSIVE recursive_tags(tag_id) AS (
   SELECT tag_id FROM repo_tag WHERE name = ?
@@ -110,7 +110,7 @@ SELECT lower(hex(album_id)) album_id FROM repo_album WHERE album_id IN (
         .map((e) => e['album_id'] as String)
         .map((str) =>
             "${str.substring(0, 8)}-${str.substring(8, 12)}-${str.substring(12, 16)}-${str.substring(16, 20)}-${str.substring(20, 32)}")
-        .toList();
+        .toSet();
   }
 
   @override

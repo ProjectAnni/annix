@@ -30,7 +30,7 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             final NetworkService network = context.read();
-            final annil = CombinedOnlineAnnilClient.loadFromLocal();
+            final annil = AnnilService.loadFromLocal();
             network.addListener(() => annil.reloadClients());
             return annil;
           },
@@ -50,7 +50,7 @@ class AnnixApp extends StatelessWidget {
         final AnnixRouterDelegate delegate = context.read();
 
         // load local / remote album list
-        context.read<CombinedOnlineAnnilClient>().reloadClients();
+        context.read<AnnilService>().reloadClients();
         return MaterialApp.router(
           title: "Annix",
           debugShowCheckedModeBanner: false,

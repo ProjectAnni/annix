@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata.dart';

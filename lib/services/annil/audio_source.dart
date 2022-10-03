@@ -104,7 +104,7 @@ class AnnilAudioSource extends Source {
   }) {
     final downloadQuality =
         quality ?? Global.settings.defaultAudioQuality.value;
-    final CombinedOnlineAnnilClient annil = Global.context.read();
+    final AnnilService annil = Global.context.read();
     final url = annil.getAudioUrl(id: track.id, quality: downloadQuality);
     if (url == null) {
       return null;

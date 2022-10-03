@@ -1,4 +1,3 @@
-import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -67,7 +66,7 @@ class AlbumDetailScreen extends StatelessWidget {
   }
 
   Future<List<TrackInfoWithAlbum>> onTracks(BuildContext context) async {
-    final CombinedOnlineAnnilClient annil = context.read();
+    final AnnilService annil = context.read();
 
     List<TrackInfoWithAlbum> songs = [];
 
@@ -85,7 +84,7 @@ class AlbumDetailScreen extends StatelessWidget {
   }
 
   ListView _getAlbumTracks(BuildContext context) {
-    final CombinedOnlineAnnilClient annil = context.read();
+    final AnnilService annil = context.read();
     final List<Widget> list = [];
 
     bool needDiscId = false;

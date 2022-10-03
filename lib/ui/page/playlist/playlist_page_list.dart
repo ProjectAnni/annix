@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -59,7 +58,7 @@ class PlaylistDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CombinedOnlineAnnilClient annil = context.read();
+    final AnnilService annil = context.read();
 
     return BasePlaylistScreen(
       title: playlist.intro.name,

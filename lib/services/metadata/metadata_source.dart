@@ -27,7 +27,7 @@ abstract class MetadataSource {
   Future<Map<String, TagEntry>> getTags();
 
   /// Get album id by tag name
-  Future<List<String>> getAlbumsByTag(String tag);
+  Future<Set<String>> getAlbumsByTag(String tag);
 }
 
 mixin CachedMetadataStore {

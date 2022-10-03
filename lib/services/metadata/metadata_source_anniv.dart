@@ -25,7 +25,7 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
   }
 
   @override
-  Future<List<String>> getAlbumsByTag(String tag) async {
+  Future<Set<String>> getAlbumsByTag(String tag) async {
     final anniv = Provider.of<AnnivService>(Global.context, listen: false);
     final client = anniv.client;
 
@@ -34,9 +34,9 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
       for (final album in albums) {
         persist(album);
       }
-      return albums.map((e) => e.albumId).toList();
+      return albums.map((e) => e.albumId).toSet();
     } else {
-      return [];
+      return {};
     }
   }
 

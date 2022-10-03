@@ -12,16 +12,14 @@ class TagDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final annil =
-        Provider.of<CombinedOnlineAnnilClient>(context, listen: false);
-    final MetadataService metadata =
-        Provider.of<MetadataService>(context, listen: false);
+    final annil = context.read<AnnilService>();
+    final MetadataService metadata = context.read<MetadataService>();
 
     return Scaffold(
       appBar: AppBar(title: Text(name)),
       body: FutureBuilder<List<String>>(
-          future: metadata.getAlbumsByTag(name).then((albums) =>
-              albums..removeWhere((album) => !annil.albums.contains(album))),
+          future: metadata.getAlbumsByTag(name).then(
+              (albums) => albums.intersection(annil.albums.toSet()).toList()),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {

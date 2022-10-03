@@ -143,7 +143,7 @@ class AnnivCard extends StatelessWidget {
 ///////////////////////////////////////////////////////////////////////////////
 /// Annil
 class AnnilListTile extends StatelessWidget {
-  final OnlineAnnilClient annil;
+  final AnnilClient annil;
 
   const AnnilListTile({Key? key, required this.annil}) : super(key: key);
 
@@ -173,7 +173,7 @@ class AnnilDialog extends StatelessWidget {
   final serverNameController = TextEditingController();
   final serverUrlController = TextEditingController();
   final serverTokenController = TextEditingController();
-  final void Function(OnlineAnnilClient annil) onSubmit;
+  final void Function(AnnilClient annil) onSubmit;
 
   AnnilDialog({Key? key, required this.onSubmit}) : super(key: key);
 
@@ -273,7 +273,7 @@ class ServerView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Consumer<CombinedOnlineAnnilClient>(
+            child: Consumer<AnnilService>(
               builder: (context, annil, child) {
                 final sortedClients = annil.sortedClients;
 

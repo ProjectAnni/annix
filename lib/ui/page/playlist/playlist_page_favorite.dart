@@ -20,7 +20,7 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final AnnivService anniv = context.read();
     final PlayerService player = context.read();
-    final CombinedOnlineAnnilClient annil = context.read();
+    final AnnilService annil = context.read();
 
     final List<Favorite> favorites = context.watch();
     final reversedFavorite = favorites.reversed;
@@ -79,7 +79,7 @@ class FavoriteScreen extends StatelessWidget {
   }
 
   Future<List<TrackInfoWithAlbum>> onTracks(List<Favorite> favorites) async {
-    final CombinedOnlineAnnilClient annil = Global.context.read();
+    final AnnilService annil = Global.context.read();
 
     return favorites.reversed
         .map(

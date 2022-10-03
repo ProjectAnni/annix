@@ -80,7 +80,7 @@ class AnnivService extends ChangeNotifier {
       // do not await here
       Future.wait([
         (() async {
-          final CombinedOnlineAnnilClient annil = Global.context.read();
+          final AnnilService annil = Global.context.read();
           final annilTokens = await client.getCredentials();
           annil.sync(annilTokens);
           return annil.reloadClients();
@@ -100,7 +100,7 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    final annil = Global.context.read<CombinedOnlineAnnilClient>();
+    final annil = Global.context.read<AnnilService>();
 
     // 1. clear anniv info
     info = null;
