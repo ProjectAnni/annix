@@ -1,7 +1,7 @@
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/local/database.dart' hide PlaylistItem;
+import 'package:annix/services/local/database.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playlist/playlist_base.dart';
@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class Playlist {
   final PlaylistData intro;
-  final List<PlaylistItem> items;
+  final List<AnnivPlaylistItem> items;
 
   const Playlist({required this.intro, required this.items});
 }
@@ -82,7 +82,7 @@ class PlaylistDetailScreen extends StatelessWidget {
         itemCount: playlist.items.length,
         itemBuilder: (context, index) {
           final track = playlist.items[index];
-          if (track is! PlaylistItemTrack) {
+          if (track is! AnnivPlaylistItemTrack) {
             return ListTile(
               title: const Text('TODO'),
               subtitle: Text(track.description ?? ''),
@@ -154,7 +154,7 @@ class PlaylistDetailScreen extends StatelessWidget {
     return playlist.items
         .map<TrackInfoWithAlbum?>(
           (item) {
-            if (item is PlaylistItemTrack) {
+            if (item is AnnivPlaylistItemTrack) {
               return item.info;
             } else {
               return null;
@@ -168,9 +168,9 @@ class PlaylistDetailScreen extends StatelessWidget {
 
   String? _firstAvailableCover() {
     for (final item in playlist.items) {
-      if (item is PlaylistItemTrack) {
+      if (item is AnnivPlaylistItemTrack) {
         return item.info.id.albumId;
-      } else if (item is PlaylistItemAlbum) {
+      } else if (item is AnnivPlaylistItemAlbum) {
         return item.albumId;
       } else {
         continue;

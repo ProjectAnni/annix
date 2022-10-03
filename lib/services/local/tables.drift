@@ -1,5 +1,7 @@
+----------------------------------------------------------------------
 -- tables
 
+---> playlist
 CREATE TABLE playlist (
     -- local properties
     "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -30,7 +32,8 @@ CREATE TABLE playlist_item (
     FOREIGN KEY("playlist_id") REFERENCES "playlist"("id")
 );
 
-CREATE TABLE favorites (
+---> favorites
+CREATE TABLE local_favorites (
     "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     "album_id"        TEXT NOT NULL,
     "disc_id"         INT NOT NULL,
@@ -43,12 +46,35 @@ CREATE TABLE favorites (
     "type"            TEXT NOT NULL DEFAULT 'normal' CHECK ("type" IN ('normal', 'instrumental', 'absolute', 'drama', 'radio', 'vocal'))
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS "favorites_index" ON favorites (
+CREATE UNIQUE INDEX IF NOT EXISTS "local_favorites_index" ON local_favorites (
   "album_id",
   "disc_id",
   "track_id"
 );
 
+---> annil
+CREATE TABLE local_annil_server (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "remote_id"       TEXT,
+    "name"            TEXT NOT NULL,
+    "url"             TEXT NOT NULL,
+    "token"           TEXT NOT NULL,
+    "priority"        INT NOT NULL,
+    "etag"            TEXT
+);
+
+CREATE TABLE local_annil_data (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "annil_id"        INT NOT NULL,
+    "album_id"        TEXT NOT NULL,
+
+    FOREIGN KEY("annil_id") REFERENCES "local_annil_server"("id")
+);
+
+----------------------------------------------------------------------
+-- queries:
 playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";
 
-isTrackFavorite: SELECT EXISTS (SELECT 1 FROM favorites WHERE album_id = ? AND disc_id = ? AND track_id = ?);
+isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorites WHERE album_id = ? AND disc_id = ? AND track_id = ?);
+
+annilToUse: SELECT id FROM local_annil_server WHERE id IN (SELECT annil_id FROM local_annil_data WHERE album_id = ?) ORDER BY priority;

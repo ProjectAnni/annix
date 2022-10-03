@@ -22,7 +22,7 @@ class FavoriteScreen extends StatelessWidget {
     final PlaybackService player = context.read();
     final AnnilService annil = context.read();
 
-    final List<Favorite> favorites = context.watch();
+    final List<LocalFavorite> favorites = context.watch();
     final reversedFavorite = favorites.reversed;
 
     final cover = favorites.isNotEmpty
@@ -83,7 +83,7 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 
-  List<AnnilAudioSource> getTracks(List<Favorite> favorites) {
+  List<AnnilAudioSource> getTracks(List<LocalFavorite> favorites) {
     final annil = Global.context.read<AnnilService>();
 
     return favorites.reversed

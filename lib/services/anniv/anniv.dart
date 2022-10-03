@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:annix/services/annil/client.dart';
-import 'package:annix/services/local/database.dart' hide Playlist, PlaylistItem;
+import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -154,8 +153,8 @@ class AnnivService extends ChangeNotifier {
       final trackMetadata = await metadata.getTrack(track);
 
       await client?.addFavorite(track);
-      await db.favorites.insert().insert(
-            FavoritesCompanion.insert(
+      await db.localFavorites.insert().insert(
+            LocalFavoritesCompanion.insert(
               albumId: track.albumId,
               discId: track.discId,
               trackId: track.trackId,
@@ -172,7 +171,7 @@ class AnnivService extends ChangeNotifier {
     if (client != null) {
       final db = Provider.of<LocalDatabase>(Global.context, listen: false);
       await client?.removeFavorite(id);
-      await (db.favorites.delete()
+      await (db.localFavorites.delete()
             ..where((f) =>
                 f.albumId.equals(id.albumId) &
                 f.discId.equals(id.discId) &
@@ -204,15 +203,15 @@ class AnnivService extends ChangeNotifier {
 
     await db.transaction(() async {
       // clear favorite list
-      await db.favorites.delete().go();
+      await db.localFavorites.delete().go();
       // write new favorite list in
       await db.batch(
         (batch) => batch.insertAll(
-          db.favorites,
+          db.localFavorites,
           // reverse the list so that the latest favorite is at the end of the list
           list.reversed
               .map(
-                (e) => FavoritesCompanion.insert(
+                (e) => LocalFavoritesCompanion.insert(
                   albumId: e.id.albumId,
                   discId: e.id.discId,
                   trackId: e.id.trackId,
@@ -265,7 +264,8 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<List<PlaylistItem>?> getPlaylistItems(PlaylistData playlist) async {
+  Future<List<AnnivPlaylistItem>?> getPlaylistItems(
+      PlaylistData playlist) async {
     final db = Provider.of<LocalDatabase>(Global.context, listen: false);
     if (!playlist.hasItems) {
       // remote playlist without track items
@@ -296,7 +296,7 @@ class AnnivService extends ChangeNotifier {
     }
 
     final items = await db.playlistItems(playlist.id).get();
-    return items.map((e) => PlaylistItem.fromDatabase(e)).toList();
+    return items.map((e) => AnnivPlaylistItem.fromDatabase(e)).toList();
   }
 
   /////////////////////////////// Database ///////////////////////////////
@@ -315,6 +315,4 @@ class AnnivService extends ChangeNotifier {
       //
     }
   }
-
-/////////////////////////////// Playlist ///////////////////////////////
 }

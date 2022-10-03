@@ -7,7 +7,7 @@ part of 'database.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
-class Favorite extends DataClass implements Insertable<Favorite> {
+class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
   final int id;
   final String albumId;
   final int discId;
@@ -16,7 +16,7 @@ class Favorite extends DataClass implements Insertable<Favorite> {
   final String? artist;
   final String? albumTitle;
   final String type;
-  const Favorite(
+  const LocalFavorite(
       {required this.id,
       required this.albumId,
       required this.discId,
@@ -45,8 +45,8 @@ class Favorite extends DataClass implements Insertable<Favorite> {
     return map;
   }
 
-  FavoritesCompanion toCompanion(bool nullToAbsent) {
-    return FavoritesCompanion(
+  LocalFavoritesCompanion toCompanion(bool nullToAbsent) {
+    return LocalFavoritesCompanion(
       id: Value(id),
       albumId: Value(albumId),
       discId: Value(discId),
@@ -62,10 +62,10 @@ class Favorite extends DataClass implements Insertable<Favorite> {
     );
   }
 
-  factory Favorite.fromJson(Map<String, dynamic> json,
+  factory LocalFavorite.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Favorite(
+    return LocalFavorite(
       id: serializer.fromJson<int>(json['id']),
       albumId: serializer.fromJson<String>(json['album_id']),
       discId: serializer.fromJson<int>(json['disc_id']),
@@ -91,7 +91,7 @@ class Favorite extends DataClass implements Insertable<Favorite> {
     };
   }
 
-  Favorite copyWith(
+  LocalFavorite copyWith(
           {int? id,
           String? albumId,
           int? discId,
@@ -100,7 +100,7 @@ class Favorite extends DataClass implements Insertable<Favorite> {
           Value<String?> artist = const Value.absent(),
           Value<String?> albumTitle = const Value.absent(),
           String? type}) =>
-      Favorite(
+      LocalFavorite(
         id: id ?? this.id,
         albumId: albumId ?? this.albumId,
         discId: discId ?? this.discId,
@@ -112,7 +112,7 @@ class Favorite extends DataClass implements Insertable<Favorite> {
       );
   @override
   String toString() {
-    return (StringBuffer('Favorite(')
+    return (StringBuffer('LocalFavorite(')
           ..write('id: $id, ')
           ..write('albumId: $albumId, ')
           ..write('discId: $discId, ')
@@ -131,7 +131,7 @@ class Favorite extends DataClass implements Insertable<Favorite> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Favorite &&
+      (other is LocalFavorite &&
           other.id == this.id &&
           other.albumId == this.albumId &&
           other.discId == this.discId &&
@@ -142,7 +142,7 @@ class Favorite extends DataClass implements Insertable<Favorite> {
           other.type == this.type);
 }
 
-class FavoritesCompanion extends UpdateCompanion<Favorite> {
+class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
   final Value<int> id;
   final Value<String> albumId;
   final Value<int> discId;
@@ -151,7 +151,7 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
   final Value<String?> artist;
   final Value<String?> albumTitle;
   final Value<String> type;
-  const FavoritesCompanion({
+  const LocalFavoritesCompanion({
     this.id = const Value.absent(),
     this.albumId = const Value.absent(),
     this.discId = const Value.absent(),
@@ -161,7 +161,7 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
     this.albumTitle = const Value.absent(),
     this.type = const Value.absent(),
   });
-  FavoritesCompanion.insert({
+  LocalFavoritesCompanion.insert({
     this.id = const Value.absent(),
     required String albumId,
     required int discId,
@@ -173,7 +173,7 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
   })  : albumId = Value(albumId),
         discId = Value(discId),
         trackId = Value(trackId);
-  static Insertable<Favorite> custom({
+  static Insertable<LocalFavorite> custom({
     Expression<int>? id,
     Expression<String>? albumId,
     Expression<int>? discId,
@@ -195,7 +195,7 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
     });
   }
 
-  FavoritesCompanion copyWith(
+  LocalFavoritesCompanion copyWith(
       {Value<int>? id,
       Value<String>? albumId,
       Value<int>? discId,
@@ -204,7 +204,7 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
       Value<String?>? artist,
       Value<String?>? albumTitle,
       Value<String>? type}) {
-    return FavoritesCompanion(
+    return LocalFavoritesCompanion(
       id: id ?? this.id,
       albumId: albumId ?? this.albumId,
       discId: discId ?? this.discId,
@@ -248,7 +248,7 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
 
   @override
   String toString() {
-    return (StringBuffer('FavoritesCompanion(')
+    return (StringBuffer('LocalFavoritesCompanion(')
           ..write('id: $id, ')
           ..write('albumId: $albumId, ')
           ..write('discId: $discId, ')
@@ -262,11 +262,12 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
   }
 }
 
-class Favorites extends Table with TableInfo<Favorites, Favorite> {
+class LocalFavorites extends Table
+    with TableInfo<LocalFavorites, LocalFavorite> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Favorites(this.attachedDatabase, [this._alias]);
+  LocalFavorites(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -321,11 +322,11 @@ class Favorites extends Table with TableInfo<Favorites, Favorite> {
   List<GeneratedColumn> get $columns =>
       [id, albumId, discId, trackId, title, artist, albumTitle, type];
   @override
-  String get aliasedName => _alias ?? 'favorites';
+  String get aliasedName => _alias ?? 'local_favorites';
   @override
-  String get actualTableName => 'favorites';
+  String get actualTableName => 'local_favorites';
   @override
-  VerificationContext validateIntegrity(Insertable<Favorite> instance,
+  VerificationContext validateIntegrity(Insertable<LocalFavorite> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -374,9 +375,9 @@ class Favorites extends Table with TableInfo<Favorites, Favorite> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Favorite map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalFavorite map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Favorite(
+    return LocalFavorite(
       id: attachedDatabase.options.types
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       albumId: attachedDatabase.options.types
@@ -397,8 +398,8 @@ class Favorites extends Table with TableInfo<Favorites, Favorite> {
   }
 
   @override
-  Favorites createAlias(String alias) {
-    return Favorites(attachedDatabase, alias);
+  LocalFavorites createAlias(String alias) {
+    return LocalFavorites(attachedDatabase, alias);
   }
 
   @override
@@ -1229,9 +1230,9 @@ class PlaylistItem extends Table
 
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
-  late final Favorites favorites = Favorites(this);
-  late final Index favoritesIndex = Index('favorites_index',
-      'CREATE UNIQUE INDEX IF NOT EXISTS favorites_index ON favorites (album_id, disc_id, track_id)');
+  late final LocalFavorites localFavorites = LocalFavorites(this);
+  late final Index localFavoritesIndex = Index('local_favorites_index',
+      'CREATE UNIQUE INDEX IF NOT EXISTS local_favorites_index ON local_favorites (album_id, disc_id, track_id)');
   late final Playlist playlist = Playlist(this);
   late final PlaylistItem playlistItem = PlaylistItem(this);
   Selectable<PlaylistItemData> playlistItems(int var1) {
@@ -1247,14 +1248,14 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
 
   Selectable<bool> isTrackFavorite(String var1, int var2, int var3) {
     return customSelect(
-        'SELECT EXISTS (SELECT 1 AS _c1 FROM favorites WHERE album_id = ?1 AND disc_id = ?2 AND track_id = ?3) AS _c0',
+        'SELECT EXISTS (SELECT 1 AS _c1 FROM local_favorites WHERE album_id = ?1 AND disc_id = ?2 AND track_id = ?3) AS _c0',
         variables: [
           Variable<String>(var1),
           Variable<int>(var2),
           Variable<int>(var3)
         ],
         readsFrom: {
-          favorites,
+          localFavorites,
         }).map((QueryRow row) => row.read<bool>('_c0'));
   }
 
@@ -1263,5 +1264,5 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [favorites, favoritesIndex, playlist, playlistItem];
+      [localFavorites, localFavoritesIndex, playlist, playlistItem];
 }

@@ -20,7 +20,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
   final AnnivService anniv;
   final LocalDatabase database;
 
-  List<Favorite> _favorites = [];
+  List<LocalFavorite> _favorites = [];
 
   static Future<void> init(BuildContext context) async {
     if (Platform.isLinux) {
@@ -91,7 +91,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         anniv = context.read(),
         database = context.read() {
     player.addListener(() => _updatePlaybackState());
-    database.favorites
+    database.localFavorites
         .select()
         .watch()
         .listen((favorites) => _updatePlaybackState(favorites));
@@ -135,7 +135,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
     }
   }
 
-  void _updatePlaybackState([List<Favorite>? favorites]) {
+  void _updatePlaybackState([List<LocalFavorite>? favorites]) {
     if (favorites != null) {
       _favorites = favorites;
     }

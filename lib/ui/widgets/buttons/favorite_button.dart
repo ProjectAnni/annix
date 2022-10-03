@@ -12,7 +12,7 @@ class FavoriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final AnnivService anniv = context.read();
 
-    return Consumer2<PlaybackService, List<Favorite>>(
+    return Consumer2<PlaybackService, List<LocalFavorite>>(
       builder: (context, player, favorites, child) => IconButton(
         isSelected: favorites.any((f) =>
             player.playing?.identifier ==

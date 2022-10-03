@@ -349,14 +349,15 @@ class PatchedPlaylistInfo {
 class Playlist {
   PlaylistInfo intro;
 
-  List<PlaylistItem> items;
+  List<AnnivPlaylistItem> items;
 
   Playlist({required this.intro, required this.items});
 
   factory Playlist.fromJson(Map<String, dynamic> json) {
     final intro = PlaylistInfo.fromJson(json);
-    final items =
-        (json['items'] as List).map((e) => PlaylistItem.fromJson(e)).toList();
+    final items = (json['items'] as List)
+        .map((e) => AnnivPlaylistItem.fromJson(e))
+        .toList();
     return Playlist(intro: intro, items: items);
   }
 }
@@ -378,12 +379,12 @@ enum PlaylistItemType {
     }
   }
 
-  factory PlaylistItemType.fromInstance(PlaylistItem item) {
-    if (item is PlaylistItemTrack) {
+  factory PlaylistItemType.fromInstance(AnnivPlaylistItem item) {
+    if (item is AnnivPlaylistItemTrack) {
       return PlaylistItemType.normal;
-    } else if (item is PlaylistItemDummyTrack) {
+    } else if (item is AnnivPlaylistItemDummyTrack) {
       return PlaylistItemType.dummy;
-    } else if (item is PlaylistItemAlbum) {
+    } else if (item is AnnivPlaylistItemAlbum) {
       return PlaylistItemType.album;
     } else {
       throw ArgumentError('Unknown item type');
@@ -391,28 +392,28 @@ enum PlaylistItemType {
   }
 }
 
-abstract class PlaylistItem {
+abstract class AnnivPlaylistItem {
   String? description;
 
-  PlaylistItem({this.description});
+  AnnivPlaylistItem({this.description});
 
-  factory PlaylistItem.fromDatabase(PlaylistItemData data) {
-    return PlaylistItem.fromJson({
+  factory AnnivPlaylistItem.fromDatabase(PlaylistItemData data) {
+    return AnnivPlaylistItem.fromJson({
       'type': data.type,
       'description': data.description,
       'info': jsonDecode(data.info),
     });
   }
 
-  factory PlaylistItem.fromJson(Map<String, dynamic> json) {
+  factory AnnivPlaylistItem.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
     switch (type) {
       case 'normal':
-        return PlaylistItemTrack.fromJson(json);
+        return AnnivPlaylistItemTrack.fromJson(json);
       case 'dummy':
-        return PlaylistItemDummyTrack.fromJson(json);
+        return AnnivPlaylistItemDummyTrack.fromJson(json);
       case 'album':
-        return PlaylistItemAlbum.fromJson(json);
+        return AnnivPlaylistItemAlbum.fromJson(json);
       default:
         throw Exception('Unknown playlist item type: $type');
     }
@@ -425,8 +426,10 @@ abstract class PlaylistItem {
     };
   }
 
-  PlaylistItemCompanion toCompanion(
-      {required int playlistId, required int order}) {
+  PlaylistItemCompanion toCompanion({
+    required int playlistId,
+    required int order,
+  }) {
     return PlaylistItemCompanion(
       playlistId: Value(playlistId),
       type: Value(PlaylistItemType.fromInstance(this).toString()),
@@ -437,13 +440,13 @@ abstract class PlaylistItem {
   }
 }
 
-class PlaylistItemTrack extends PlaylistItem {
+class AnnivPlaylistItemTrack extends AnnivPlaylistItem {
   final TrackInfoWithAlbum info;
 
-  PlaylistItemTrack({super.description, required this.info});
+  AnnivPlaylistItemTrack({super.description, required this.info});
 
-  factory PlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
-      PlaylistItemTrack(
+  factory AnnivPlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
+      AnnivPlaylistItemTrack(
         info: TrackInfoWithAlbum.fromJson(json['info']),
         description: json['description'],
       );
@@ -456,13 +459,13 @@ class PlaylistItemTrack extends PlaylistItem {
   }
 }
 
-class PlaylistItemDummyTrack extends PlaylistItem {
+class AnnivPlaylistItemDummyTrack extends AnnivPlaylistItem {
   final RequiredTrackInfo info;
 
-  PlaylistItemDummyTrack({super.description, required this.info});
+  AnnivPlaylistItemDummyTrack({super.description, required this.info});
 
-  factory PlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
-      PlaylistItemDummyTrack(
+  factory AnnivPlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
+      AnnivPlaylistItemDummyTrack(
         info: RequiredTrackInfo.fromJson(json['info']),
         description: json['description'],
       );
@@ -475,13 +478,13 @@ class PlaylistItemDummyTrack extends PlaylistItem {
   }
 }
 
-class PlaylistItemAlbum extends PlaylistItem {
+class AnnivPlaylistItemAlbum extends AnnivPlaylistItem {
   String albumId;
 
-  PlaylistItemAlbum({super.description, required this.albumId});
+  AnnivPlaylistItemAlbum({super.description, required this.albumId});
 
-  factory PlaylistItemAlbum.fromJson(Map<String, dynamic> json) =>
-      PlaylistItemAlbum(
+  factory AnnivPlaylistItemAlbum.fromJson(Map<String, dynamic> json) =>
+      AnnivPlaylistItemAlbum(
         albumId: json['info'],
         description: json['description'],
       );

@@ -17,7 +17,7 @@ class PlaylistView extends StatelessWidget {
             (context, index) {
               if (index == 0) {
                 // fav
-                return Consumer<List<Favorite>>(
+                return Consumer<List<LocalFavorite>>(
                   builder: (context, favorites, child) {
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(
