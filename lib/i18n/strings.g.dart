@@ -3,12 +3,13 @@
 /// Locales: 2
 /// Strings: 66 (33 per locale)
 ///
-/// Built on 2022-09-25 at 13:15 UTC
+/// Built on 2022-10-03 at 16:24 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
 
 import 'package:flutter/widgets.dart';
+import 'package:slang/builder/model/node.dart';
 import 'package:slang_flutter/slang_flutter.dart';
 export 'package:slang_flutter/slang_flutter.dart';
 
@@ -20,27 +21,19 @@ const AppLocale _baseLocale = AppLocale.en;
 /// - LocaleSettings.setLocale(AppLocale.en) // set locale
 /// - Locale locale = AppLocale.en.flutterLocale // get flutter locale from enum
 /// - if (LocaleSettings.currentLocale == AppLocale.en) // locale check
-enum AppLocale with BaseAppLocale<_StringsEn> {
-  en(languageCode: 'en', build: _StringsEn.build),
-  zhCn(languageCode: 'zh', countryCode: 'CN', build: _StringsZhCn.build);
+enum AppLocale with BaseAppLocale<AppLocale, _StringsEn> {
+	en(languageCode: 'en', build: _StringsEn.build),
+	zhCn(languageCode: 'zh', countryCode: 'CN', build: _StringsZhCn.build);
 
-  const AppLocale(
-      {required this.languageCode,
-      this.scriptCode,
-      this.countryCode,
-      required this.build}); // ignore: unused_element
+	const AppLocale({required this.languageCode, this.scriptCode, this.countryCode, required this.build}); // ignore: unused_element
 
-  @override
-  final String languageCode;
-  @override
-  final String? scriptCode;
-  @override
-  final String? countryCode;
-  @override
-  final TranslationBuilder<_StringsEn> build;
+	@override final String languageCode;
+	@override final String? scriptCode;
+	@override final String? countryCode;
+	@override final TranslationBuilder<AppLocale, _StringsEn> build;
 
-  /// Gets current instance managed by [LocaleSettings].
-  _StringsEn get translations => LocaleSettings.instance.translationMap[this]!;
+	/// Gets current instance managed by [LocaleSettings].
+	_StringsEn get translations => LocaleSettings.instance.translationMap[this]!;
 }
 
 /// Method A: Simple
@@ -72,21 +65,17 @@ _StringsEn get t => LocaleSettings.instance.currentTranslations;
 class Translations {
 	Translations._(); // no constructor
 
-	static _StringsEn of(BuildContext context) =>
-      InheritedLocaleData.of<AppLocale, _StringsEn>(context).translations;
+	static _StringsEn of(BuildContext context) => InheritedLocaleData.of<AppLocale, _StringsEn>(context).translations;
 }
 
 /// The provider for method B
-class TranslationProvider
-    extends BaseTranslationProvider<AppLocale, _StringsEn> {
-  TranslationProvider({required super.child})
-      : super(
-          initLocale: LocaleSettings.instance.currentLocale,
-          initTranslations: LocaleSettings.instance.currentTranslations,
-        );
+class TranslationProvider extends BaseTranslationProvider<AppLocale, _StringsEn> {
+	TranslationProvider({required super.child}) : super(
+		initLocale: LocaleSettings.instance.currentLocale,
+		initTranslations: LocaleSettings.instance.currentTranslations,
+	);
 
-  static InheritedLocaleData<AppLocale, _StringsEn> of(BuildContext context) =>
-      InheritedLocaleData.of<AppLocale, _StringsEn>(context);
+	static InheritedLocaleData<AppLocale, _StringsEn> of(BuildContext context) => InheritedLocaleData.of<AppLocale, _StringsEn>(context);
 }
 
 /// Method B shorthand via [BuildContext] extension method.
@@ -100,402 +89,281 @@ extension BuildContextTranslationsExtension on BuildContext {
 
 /// Manages all translation instances and the current locale
 class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
-  LocaleSettings._()
-      : super(
-          locales: AppLocale.values,
-          baseLocale: _baseLocale,
-          utils: AppLocaleUtils.instance,
-        );
+	LocaleSettings._() : super(locales: AppLocale.values, baseLocale: _baseLocale, utils: AppLocaleUtils.instance);
 
-  static final instance = LocaleSettings._();
+	static final instance = LocaleSettings._();
 
-  // static aliases (checkout base methods for documentation)
-  static AppLocale get currentLocale => instance.currentLocale;
-
-  static Stream<AppLocale> getLocaleStream() => instance.getLocaleStream();
-
-  static AppLocale setLocale(AppLocale locale) => instance.setLocale(locale);
-
-  static AppLocale setLocaleRaw(String rawLocale) =>
-      instance.setLocaleRaw(rawLocale);
-
-  static AppLocale useDeviceLocale() => instance.useDeviceLocale();
-
-  static List<Locale> get supportedLocales => instance.supportedLocales;
-
-  static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
-
-  static void setPluralResolver(
-          {String? language,
-          AppLocale? locale,
-          PluralResolver? cardinalResolver,
-          PluralResolver? ordinalResolver}) =>
-      instance.setPluralResolver(
-        language: language,
-        locale: locale,
-        cardinalResolver: cardinalResolver,
-        ordinalResolver: ordinalResolver,
-      );
+	// static aliases (checkout base methods for documentation)
+	static AppLocale get currentLocale => instance.currentLocale;
+	static Stream<AppLocale> getLocaleStream() => instance.getLocaleStream();
+	static AppLocale setLocale(AppLocale locale) => instance.setLocale(locale);
+	static AppLocale setLocaleRaw(String rawLocale) => instance.setLocaleRaw(rawLocale);
+	static AppLocale useDeviceLocale() => instance.useDeviceLocale();
+	static List<Locale> get supportedLocales => instance.supportedLocales;
+	static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
+	static void setPluralResolver({String? language, AppLocale? locale, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.setPluralResolver(
+		language: language,
+		locale: locale,
+		cardinalResolver: cardinalResolver,
+		ordinalResolver: ordinalResolver,
+	);
 }
 
 /// Provides utility functions without any side effects.
 class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, _StringsEn> {
-	AppLocaleUtils._()
-      : super(baseLocale: _baseLocale, locales: AppLocale.values);
+	AppLocaleUtils._() : super(baseLocale: _baseLocale, locales: AppLocale.values);
 
-  static final instance = AppLocaleUtils._();
+	static final instance = AppLocaleUtils._();
 
-  // static aliases (checkout base methods for documentation)
-  static AppLocale parse(String rawLocale) => instance.parse(rawLocale);
-
-  static AppLocale findDeviceLocale() => instance.findDeviceLocale();
+	// static aliases (checkout base methods for documentation)
+	static AppLocale parse(String rawLocale) => instance.parse(rawLocale);
+	static AppLocale parseLocaleParts({required String languageCode, String? scriptCode, String? countryCode}) => instance.parseLocaleParts(languageCode: languageCode, scriptCode: scriptCode, countryCode: countryCode);
+	static AppLocale findDeviceLocale() => instance.findDeviceLocale();
 }
 
 // translations
 
 // Path: <root>
-class _StringsEn implements BaseTranslations {
-  /// You can call this constructor and build your own translation instance of this locale.
-  /// Constructing via the enum [AppLocale.build] is preferred.
-  _StringsEn.build(
-      {PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-      : _cardinalResolver = cardinalResolver,
-        _ordinalResolver = ordinalResolver;
+class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 
-  /// Access flat map
-  dynamic operator [](String key) => _flatMap[key];
+	/// You can call this constructor and build your own translation instance of this locale.
+	/// Constructing via the enum [AppLocale.build] is preferred.
+	_StringsEn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
+		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
+		  $meta = TranslationMetadata(
+		    locale: AppLocale.en,
+		    overrides: overrides ?? {},
+		    cardinalResolver: cardinalResolver,
+		    ordinalResolver: ordinalResolver,
+		  ) {
+		$meta.setFlatMapFunction(_flatMapFunction);
+	}
 
-  // Internal flat map initialized lazily
-  late final Map<String, dynamic> _flatMap = _buildFlatMap();
+	/// Metadata for the translations of <en>.
+	@override final TranslationMetadata<AppLocale, _StringsEn> $meta;
 
-  final PluralResolver? _cardinalResolver; // ignore: unused_field
-  final PluralResolver? _ordinalResolver; // ignore: unused_field
+	/// Access flat map
+	dynamic operator[](String key) => $meta.getTranslation(key);
 
-  late final _StringsEn _root = this; // ignore: unused_field
+	late final _StringsEn _root = this; // ignore: unused_field
 
-  // Translations
-  String get playing => 'Playing';
-
-  String get progress => 'Progress';
-
-  String get home => 'Home';
-
-  String get category => 'Categories';
-
-  String get albums => 'Albums';
-
-  String get playlists => 'Playlists';
-
-  String get shuffle_mode => 'Shuffle Mode';
-
-  String get my_favorite => 'My Favorite';
-  late final _StringsServerEn server = _StringsServerEn._(_root);
-  late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
-
-  String get search => 'Search';
-
-  String get track => 'Track';
-
-  String get recent_played => 'Recently played';
-
-  String get no_lyric_found => 'No lyric found';
-
-  String get download_manager => 'Download manager';
+	// Translations
+	String get playing => 'Playing';
+	String get progress => 'Progress';
+	String get home => 'Home';
+	String get category => 'Categories';
+	String get albums => 'Albums';
+	String get playlists => 'Playlists';
+	String get shuffle_mode => 'Shuffle Mode';
+	String get my_favorite => 'My Favorite';
+	late final _StringsServerEn server = _StringsServerEn._(_root);
+	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
+	String get search => 'Search';
+	String get track => 'Track';
+	String get recent_played => 'Recently played';
+	String get no_lyric_found => 'No lyric found';
+	String get download_manager => 'Download manager';
 }
 
 // Path: server
 class _StringsServerEn {
 	_StringsServerEn._(this._root);
 
-  final _StringsEn _root; // ignore: unused_field
+	final _StringsEn _root; // ignore: unused_field
 
-  // Translations
-  String get server => 'Server';
-
-  String get login => 'Login';
-
-  String get logout => 'Logout';
-
-  String get not_logged_in => 'Not logged in';
-
-  String get libraries => 'Libraries';
-
-  String get anniv_features =>
-      'Login to Anniv for playlist, statistics and more features!';
+	// Translations
+	String get server => 'Server';
+	String get login => 'Login';
+	String get logout => 'Logout';
+	String get not_logged_in => 'Not logged in';
+	String get libraries => 'Libraries';
+	String get anniv_features => 'Login to Anniv for playlist, statistics and more features!';
 }
 
 // Path: settings
 class _StringsSettingsEn {
 	_StringsSettingsEn._(this._root);
 
-  final _StringsEn _root; // ignore: unused_field
+	final _StringsEn _root; // ignore: unused_field
 
-  // Translations
-  String get settings => 'Settings';
-
-  String get skip_cert => 'Skip SSL Certificate Verification';
-
-  String get auto_scale_ui => 'Auto scale UI';
-
-  String get use_mobile_network => 'Play under mobile network';
-
-  String get view_logs => 'Logs';
-
-  String get view_logs_desc => 'View Logs';
-
-  String get clear_metadata_cache => 'Clear metadata cache';
-
-  String get clear_metadata_cache_desc =>
-      'You might need to re-fetch metadata from metadata source for local playback.';
-
-  String get clear_lyric_cache => 'Clear lyric cache';
-
-  String get clear_lyric_cache_desc => 'Delete all lyric cache.';
-
-  String get show_artist_in_bottom_player => 'Show artist in bottom player';
-
-  String get show_artist_in_bottom_player_desc => 'Mobile only';
-
-  String get enable_http2_for_annil => 'Enable HTTP/2 for Annil';
-
-  String get enable_http2_for_annil_desc =>
-      'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
+	// Translations
+	String get settings => 'Settings';
+	String get skip_cert => 'Skip SSL Certificate Verification';
+	String get auto_scale_ui => 'Auto scale UI';
+	String get use_mobile_network => 'Play under mobile network';
+	String get view_logs => 'Logs';
+	String get view_logs_desc => 'View Logs';
+	String get clear_metadata_cache => 'Clear metadata cache';
+	String get clear_metadata_cache_desc => 'You might need to re-fetch metadata from metadata source for local playback.';
+	String get clear_lyric_cache => 'Clear lyric cache';
+	String get clear_lyric_cache_desc => 'Delete all lyric cache.';
+	String get show_artist_in_bottom_player => 'Show artist in bottom player';
+	String get show_artist_in_bottom_player_desc => 'Mobile only';
+	String get enable_http2_for_annil => 'Enable HTTP/2 for Annil';
+	String get enable_http2_for_annil_desc => 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
 }
 
 // Path: <root>
 class _StringsZhCn implements _StringsEn {
-  /// You can call this constructor and build your own translation instance of this locale.
-  /// Constructing via the enum [AppLocale.build] is preferred.
-  _StringsZhCn.build(
-      {PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-      : _cardinalResolver = cardinalResolver,
-        _ordinalResolver = ordinalResolver;
 
-  /// Access flat map
-  @override
-  dynamic operator [](String key) => _flatMap[key];
+	/// You can call this constructor and build your own translation instance of this locale.
+	/// Constructing via the enum [AppLocale.build] is preferred.
+	_StringsZhCn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
+		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
+		  $meta = TranslationMetadata(
+		    locale: AppLocale.zhCn,
+		    overrides: overrides ?? {},
+		    cardinalResolver: cardinalResolver,
+		    ordinalResolver: ordinalResolver,
+		  ) {
+		$meta.setFlatMapFunction(_flatMapFunction);
+	}
 
-  // Internal flat map initialized lazily
-  @override
-  late final Map<String, dynamic> _flatMap = _buildFlatMap();
+	/// Metadata for the translations of <zh-CN>.
+	@override final TranslationMetadata<AppLocale, _StringsEn> $meta;
 
-  @override
-  final PluralResolver? _cardinalResolver; // ignore: unused_field
-  @override
-  final PluralResolver? _ordinalResolver; // ignore: unused_field
+	/// Access flat map
+	@override dynamic operator[](String key) => $meta.getTranslation(key);
 
-  @override
-  late final _StringsZhCn _root = this; // ignore: unused_field
+	@override late final _StringsZhCn _root = this; // ignore: unused_field
 
-  // Translations
-  @override
-  String get playing => '播放';
-
-  @override
-  String get progress => '进度';
-
-  @override
-  String get home => '首页';
-
-  @override
-  String get category => '分类';
-
-  @override
-  String get albums => '专辑';
-
-  @override
-  String get playlists => '播放列表';
-
-  @override
-  String get shuffle_mode => '随机模式';
-
-  @override
-  String get my_favorite => '我的收藏';
-  @override
-  late final _StringsServerZhCn server = _StringsServerZhCn._(_root);
-  @override
-  late final _StringsSettingsZhCn settings = _StringsSettingsZhCn._(_root);
-
-  @override
-  String get search => '搜索';
-
-  @override
-  String get track => '单曲';
-
-  @override
-  String get recent_played => '最近播放';
-
-  @override
-  String get no_lyric_found => '未找到歌词';
-
-  @override
-  String get download_manager => '下载管理';
+	// Translations
+	@override String get playing => '播放';
+	@override String get progress => '进度';
+	@override String get home => '首页';
+	@override String get category => '分类';
+	@override String get albums => '专辑';
+	@override String get playlists => '播放列表';
+	@override String get shuffle_mode => '随机模式';
+	@override String get my_favorite => '我的收藏';
+	@override late final _StringsServerZhCn server = _StringsServerZhCn._(_root);
+	@override late final _StringsSettingsZhCn settings = _StringsSettingsZhCn._(_root);
+	@override String get search => '搜索';
+	@override String get track => '单曲';
+	@override String get recent_played => '最近播放';
+	@override String get no_lyric_found => '未找到歌词';
+	@override String get download_manager => '下载管理';
 }
 
 // Path: server
 class _StringsServerZhCn implements _StringsServerEn {
 	_StringsServerZhCn._(this._root);
 
-  @override
-  final _StringsZhCn _root; // ignore: unused_field
+	@override final _StringsZhCn _root; // ignore: unused_field
 
-  // Translations
-  @override
-  String get server => '服务器';
-
-  @override
-  String get login => '登录';
-
-  @override
-  String get logout => '退出登录';
-
-  @override
-  String get not_logged_in => '未登录';
-
-  @override
-  String get libraries => '音频仓库';
-
-  @override
-  String get anniv_features => '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
+	// Translations
+	@override String get server => '服务器';
+	@override String get login => '登录';
+	@override String get logout => '退出登录';
+	@override String get not_logged_in => '未登录';
+	@override String get libraries => '音频仓库';
+	@override String get anniv_features => '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
 }
 
 // Path: settings
 class _StringsSettingsZhCn implements _StringsSettingsEn {
 	_StringsSettingsZhCn._(this._root);
 
-  @override
-  final _StringsZhCn _root; // ignore: unused_field
+	@override final _StringsZhCn _root; // ignore: unused_field
 
-  // Translations
-  @override
-  String get settings => '设置';
-
-  @override
-  String get skip_cert => '忽略证书验证';
-
-  @override
-  String get auto_scale_ui => '自动 UI 缩放';
-
-  @override
-  String get use_mobile_network => '使用移动网络播放';
-
-  @override
-  String get view_logs => '应用日志';
-
-  @override
-  String get view_logs_desc => '查看应用日志。';
-
-  @override
-  String get clear_metadata_cache => '清除元数据缓存';
-
-  @override
-  String get clear_metadata_cache_desc =>
-      '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
-
-  @override
-  String get clear_lyric_cache => '清除歌词缓存';
-
-  @override
-  String get clear_lyric_cache_desc => '删除本地缓存的所有歌词。';
-
-  @override
-  String get show_artist_in_bottom_player => '在播放条中显示艺术家';
-
-  @override
-  String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
-
-  @override
-  String get enable_http2_for_annil => '为 Annil 启用 HTTP/2';
-
-  @override
-  String get enable_http2_for_annil_desc =>
-      'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
+	// Translations
+	@override String get settings => '设置';
+	@override String get skip_cert => '忽略证书验证';
+	@override String get auto_scale_ui => '自动 UI 缩放';
+	@override String get use_mobile_network => '使用移动网络播放';
+	@override String get view_logs => '应用日志';
+	@override String get view_logs_desc => '查看应用日志。';
+	@override String get clear_metadata_cache => '清除元数据缓存';
+	@override String get clear_metadata_cache_desc => '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
+	@override String get clear_lyric_cache => '清除歌词缓存';
+	@override String get clear_lyric_cache_desc => '删除本地缓存的所有歌词。';
+	@override String get show_artist_in_bottom_player => '在播放条中显示艺术家';
+	@override String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
+	@override String get enable_http2_for_annil => '为 Annil 启用 HTTP/2';
+	@override String get enable_http2_for_annil_desc => 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
 }
 
 /// Flat map(s) containing all translations.
 /// Only for edge cases! For simple maps, use the map function of this library.
 
 extension on _StringsEn {
-  Map<String, dynamic> _buildFlatMap() {
-    return <String, dynamic>{
-      'playing': 'Playing',
-      'progress': 'Progress',
-      'home': 'Home',
-      'category': 'Categories',
-      'albums': 'Albums',
-      'playlists': 'Playlists',
-      'shuffle_mode': 'Shuffle Mode',
-      'my_favorite': 'My Favorite',
-      'server.server': 'Server',
-      'server.login': 'Login',
-      'server.logout': 'Logout',
-      'server.not_logged_in': 'Not logged in',
-      'server.libraries': 'Libraries',
-      'server.anniv_features':
-          'Login to Anniv for playlist, statistics and more features!',
-      'settings.settings': 'Settings',
-      'settings.skip_cert': 'Skip SSL Certificate Verification',
-      'settings.auto_scale_ui': 'Auto scale UI',
-      'settings.use_mobile_network': 'Play under mobile network',
-      'settings.view_logs': 'Logs',
-      'settings.view_logs_desc': 'View Logs',
-      'settings.clear_metadata_cache': 'Clear metadata cache',
-      'settings.clear_metadata_cache_desc':
-          'You might need to re-fetch metadata from metadata source for local playback.',
-      'settings.clear_lyric_cache': 'Clear lyric cache',
-      'settings.clear_lyric_cache_desc': 'Delete all lyric cache.',
-      'settings.show_artist_in_bottom_player': 'Show artist in bottom player',
-      'settings.show_artist_in_bottom_player_desc': 'Mobile only',
-      'settings.enable_http2_for_annil': 'Enable HTTP/2 for Annil',
-      'settings.enable_http2_for_annil_desc':
-          'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.',
-      'search': 'Search',
-      'track': 'Track',
-      'recent_played': 'Recently played',
-      'no_lyric_found': 'No lyric found',
-      'download_manager': 'Download manager',
-    };
-  }
+	dynamic _flatMapFunction(String path) {
+		switch (path) {
+			case 'playing': return 'Playing';
+			case 'progress': return 'Progress';
+			case 'home': return 'Home';
+			case 'category': return 'Categories';
+			case 'albums': return 'Albums';
+			case 'playlists': return 'Playlists';
+			case 'shuffle_mode': return 'Shuffle Mode';
+			case 'my_favorite': return 'My Favorite';
+			case 'server.server': return 'Server';
+			case 'server.login': return 'Login';
+			case 'server.logout': return 'Logout';
+			case 'server.not_logged_in': return 'Not logged in';
+			case 'server.libraries': return 'Libraries';
+			case 'server.anniv_features': return 'Login to Anniv for playlist, statistics and more features!';
+			case 'settings.settings': return 'Settings';
+			case 'settings.skip_cert': return 'Skip SSL Certificate Verification';
+			case 'settings.auto_scale_ui': return 'Auto scale UI';
+			case 'settings.use_mobile_network': return 'Play under mobile network';
+			case 'settings.view_logs': return 'Logs';
+			case 'settings.view_logs_desc': return 'View Logs';
+			case 'settings.clear_metadata_cache': return 'Clear metadata cache';
+			case 'settings.clear_metadata_cache_desc': return 'You might need to re-fetch metadata from metadata source for local playback.';
+			case 'settings.clear_lyric_cache': return 'Clear lyric cache';
+			case 'settings.clear_lyric_cache_desc': return 'Delete all lyric cache.';
+			case 'settings.show_artist_in_bottom_player': return 'Show artist in bottom player';
+			case 'settings.show_artist_in_bottom_player_desc': return 'Mobile only';
+			case 'settings.enable_http2_for_annil': return 'Enable HTTP/2 for Annil';
+			case 'settings.enable_http2_for_annil_desc': return 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
+			case 'search': return 'Search';
+			case 'track': return 'Track';
+			case 'recent_played': return 'Recently played';
+			case 'no_lyric_found': return 'No lyric found';
+			case 'download_manager': return 'Download manager';
+			default: return null;
+		}
+	}
 }
 
 extension on _StringsZhCn {
-  Map<String, dynamic> _buildFlatMap() {
-    return <String, dynamic>{
-      'playing': '播放',
-      'progress': '进度',
-      'home': '首页',
-      'category': '分类',
-      'albums': '专辑',
-      'playlists': '播放列表',
-      'shuffle_mode': '随机模式',
-      'my_favorite': '我的收藏',
-      'server.server': '服务器',
-      'server.login': '登录',
-      'server.logout': '退出登录',
-      'server.not_logged_in': '未登录',
-      'server.libraries': '音频仓库',
-      'server.anniv_features': '登录 Anniv 以启用播放列表、播放统计等诸多功能。',
-      'settings.settings': '设置',
-      'settings.skip_cert': '忽略证书验证',
-      'settings.auto_scale_ui': '自动 UI 缩放',
-      'settings.use_mobile_network': '使用移动网络播放',
-      'settings.view_logs': '应用日志',
-      'settings.view_logs_desc': '查看应用日志。',
-      'settings.clear_metadata_cache': '清除元数据缓存',
-      'settings.clear_metadata_cache_desc':
-          '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。',
-      'settings.clear_lyric_cache': '清除歌词缓存',
-      'settings.clear_lyric_cache_desc': '删除本地缓存的所有歌词。',
-      'settings.show_artist_in_bottom_player': '在播放条中显示艺术家',
-      'settings.show_artist_in_bottom_player_desc': '移动端设置，桌面端无效。',
-      'settings.enable_http2_for_annil': '为 Annil 启用 HTTP/2',
-      'settings.enable_http2_for_annil_desc':
-          'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。',
-      'search': '搜索',
-      'track': '单曲',
-      'recent_played': '最近播放',
-      'no_lyric_found': '未找到歌词',
-      'download_manager': '下载管理',
-    };
-  }
+	dynamic _flatMapFunction(String path) {
+		switch (path) {
+			case 'playing': return '播放';
+			case 'progress': return '进度';
+			case 'home': return '首页';
+			case 'category': return '分类';
+			case 'albums': return '专辑';
+			case 'playlists': return '播放列表';
+			case 'shuffle_mode': return '随机模式';
+			case 'my_favorite': return '我的收藏';
+			case 'server.server': return '服务器';
+			case 'server.login': return '登录';
+			case 'server.logout': return '退出登录';
+			case 'server.not_logged_in': return '未登录';
+			case 'server.libraries': return '音频仓库';
+			case 'server.anniv_features': return '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
+			case 'settings.settings': return '设置';
+			case 'settings.skip_cert': return '忽略证书验证';
+			case 'settings.auto_scale_ui': return '自动 UI 缩放';
+			case 'settings.use_mobile_network': return '使用移动网络播放';
+			case 'settings.view_logs': return '应用日志';
+			case 'settings.view_logs_desc': return '查看应用日志。';
+			case 'settings.clear_metadata_cache': return '清除元数据缓存';
+			case 'settings.clear_metadata_cache_desc': return '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
+			case 'settings.clear_lyric_cache': return '清除歌词缓存';
+			case 'settings.clear_lyric_cache_desc': return '删除本地缓存的所有歌词。';
+			case 'settings.show_artist_in_bottom_player': return '在播放条中显示艺术家';
+			case 'settings.show_artist_in_bottom_player_desc': return '移动端设置，桌面端无效。';
+			case 'settings.enable_http2_for_annil': return '为 Annil 启用 HTTP/2';
+			case 'settings.enable_http2_for_annil_desc': return 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
+			case 'search': return '搜索';
+			case 'track': return '单曲';
+			case 'recent_played': return '最近播放';
+			case 'no_lyric_found': return '未找到歌词';
+			case 'download_manager': return '下载管理';
+			default: return null;
+		}
+	}
 }

@@ -21,11 +21,11 @@ dependencies:
       url: https://github.com/ProjectAnni/Flogs
   provider: ^6.0.3
   shared_preferences: ^2.0.15
-  connectivity_plus: ^2.3.6+1
+  connectivity_plus: ^2.3.7
 
   dio: ^4.0.6
   dio_cookie_manager: ^2.0.0
-  dio_http2_adapter: ^2.0.0
+  http: ^0.13.5
   cookie_jar: ^3.0.1
   http_plus: ^0.2.2
 
@@ -34,66 +34,53 @@ dependencies:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
   xml: ^6.1.0
 
-  audioplayers:
-    git:
-      url: https://github.com/ProjectAnni/audioplayers
-      path: packages/audioplayers
-      ref: prod
+  audioplayers: ^1.1.0
   audio_service: ^0.18.6
   audio_service_platform_interface: ^0.1.0
   audio_session: ^0.1.10
   anni_mpris_service: ^0.1.0
 
-  slang: ^2.7.0
-  slang_flutter: ^2.7.0
+  slang: ^3.0.0
+  slang_flutter: ^3.0.0
 
   ########################## Widgets ##########################
-  # https://github.com/suragch/audio_video_progress_bar/issues/23
-  # use official version until https://github.com/suragch/audio_video_progress_bar/pull/29 was merged
+  # It was merged but not released as a new version
+  # https://github.com/suragch/audio_video_progress_bar/releases/tag/vOnTap-SensibleDev
   audio_video_progress_bar:
     git:
-      url: https://github.com/Hwan-seok/audio_video_progress_bar
-      ref: 26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b
-  extended_image: ^6.3.0
-  #  extended_image:
-  #    git:
-  #      url: https://github.com/ProjectAnni/extended_image
-  #      ref: 7d07e2203c7ad45847a58714c921e315d79ad417
-  flutter_lyric:
-    git:
-      url: https://github.com/ProjectAnni/flutter_lyric
-      ref: master
+      url: https://github.com/suragch/audio_video_progress_bar
+      ref: 3ea22dd354d67b8d685680195e585d3174f216fa
+  extended_image: ^6.3.1
+  flutter_lyric: ^2.0.4+6
   settings_ui: ^2.0.2
-  we_slide:
-    git:
-      url: https://github.com/ProjectAnni/we_slide
-      ref: 43f703f542e6886c16d84a851a0ad36036f9f3bc
-  animations: ^2.0.4
+  cupertino_icons: ^1.0.5
+
+  we_slide: ^2.4.0
+  animations: ^2.0.5
   material_color_utilities: ^0.2.0 # on master
   crypto: ^3.0.2
 
   toml: ^0.13.1
-  json_serializable: ^6.2.0
-  json_annotation: ^4.5.0
+  json_serializable: ^6.4.1
+  json_annotation: ^4.7.0
 
   drift: ^2.1.0
-  sqlite3_flutter_libs: ^0.5.0
-  sqflite: ^2.0.1
+  sqlite3_flutter_libs: ^0.5.10
+  sqflite: ^2.1.0
   sqflite_common_ffi: ^2.1.1
 
   uuid: ^3.0.5
-  cupertino_icons: ^1.0.5
 
   responsive_framework: ^0.2.0
   bitsdojo_window: ^0.1.5
   file_picker: ^5.2.0+1
 
   # reverse proxy
-  shelf: ^1.3.2
+  shelf: ^1.4.0
   shelf_router: ^1.1.3
 
   pool: ^1.5.1
-  share_plus: ^4.1.0
+  share_plus: ^4.4.0
 
   # file 6.12 -> 6.14 is breaking, specify version manually
   file: ^6.1.4
@@ -103,8 +90,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   drift_dev: ^2.1.0
-  build_runner: ^2.2.0
-  slang_build_runner: ^2.7.0
+  build_runner: ^2.2.1
+  slang_build_runner: ^3.0.0
 
 flutter:
   uses-material-design: true

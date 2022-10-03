@@ -28,7 +28,7 @@ packages:
       name: animations
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   anni_mpris_service:
     dependency: "direct main"
     description:
@@ -89,66 +89,60 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b"
-      resolved-ref: "26a48f9b7f76e821c2a7250cdb78f1aa2fc3995b"
-      url: "https://github.com/Hwan-seok/audio_video_progress_bar"
+      ref: "3ea22dd354d67b8d685680195e585d3174f216fa"
+      resolved-ref: "3ea22dd354d67b8d685680195e585d3174f216fa"
+      url: "https://github.com/suragch/audio_video_progress_bar"
     source: git
     version: "0.10.0"
   audioplayers:
     dependency: "direct main"
     description:
-      path: "packages/audioplayers"
-      ref: prod
-      resolved-ref: "238f842b3f5fb6a4dd85e24930b278d04a73566e"
-      url: "https://github.com/ProjectAnni/audioplayers"
-    source: git
-    version: "1.0.1"
+      name: audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   audioplayers_android:
     dependency: transitive
     description:
       name: audioplayers_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   audioplayers_darwin:
     dependency: transitive
     description:
       name: audioplayers_darwin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   audioplayers_linux:
     dependency: transitive
     description:
-      path: "packages/audioplayers_linux"
-      ref: prod
-      resolved-ref: "238f842b3f5fb6a4dd85e24930b278d04a73566e"
-      url: "https://github.com/ProjectAnni/audioplayers"
-    source: git
-    version: "1.0.0"
+      name: audioplayers_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   audioplayers_platform_interface:
     dependency: transitive
     description:
       name: audioplayers_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.0"
   audioplayers_web:
     dependency: transitive
     description:
       name: audioplayers_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.0"
   audioplayers_windows:
     dependency: transitive
     description:
-      path: "packages/audioplayers_windows"
-      ref: prod
-      resolved-ref: "238f842b3f5fb6a4dd85e24930b278d04a73566e"
-      url: "https://github.com/ProjectAnni/audioplayers"
-    source: git
-    version: "1.0.0"
+      name: audioplayers_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   bitsdojo_window:
     dependency: "direct main"
     description:
@@ -225,7 +219,7 @@ packages:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   build_runner_core:
     dependency: transitive
     description:
@@ -302,7 +296,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.6+1"
+    version: "2.3.7"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -401,13 +395,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  dio_http2_adapter:
-    dependency: "direct main"
-    description:
-      name: dio_http2_adapter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   drift:
     dependency: "direct main"
     description:
@@ -435,7 +422,7 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.3.0"
+    version: "6.3.1"
   extended_image_library:
     dependency: transitive
     description:
@@ -514,12 +501,10 @@ packages:
   flutter_lyric:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "34b04266c815f1c3ccec137431ca27e843433abe"
-      url: "https://github.com/ProjectAnni/flutter_lyric"
-    source: git
-    version: "2.0.4+5"
+      name: flutter_lyric
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.4+6"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -559,7 +544,7 @@ packages:
     source: hosted
     version: "2.1.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.dartlang.org"
@@ -634,14 +619,14 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.6.0"
+    version: "4.7.0"
   json_serializable:
     dependency: "direct main"
     description:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.3.1"
+    version: "6.4.1"
   lints:
     dependency: transitive
     description:
@@ -888,7 +873,7 @@ packages:
       name: share_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.4.0"
   share_plus_linux:
     dependency: transitive
     description:
@@ -986,7 +971,7 @@ packages:
       name: shelf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.2"
+    version: "1.4.0"
   shelf_router:
     dependency: "direct main"
     description:
@@ -1012,21 +997,21 @@ packages:
       name: slang
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.7.0"
+    version: "3.0.0"
   slang_build_runner:
     dependency: "direct dev"
     description:
       name: slang_build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.7.0"
+    version: "3.0.0"
   slang_flutter:
     dependency: "direct main"
     description:
       name: slang_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.7.0"
+    version: "3.0.0"
   source_gen:
     dependency: transitive
     description:
@@ -1054,14 +1039,14 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3+1"
+    version: "2.1.0"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1+1"
+    version: "2.3.0"
   sqflite_common_ffi:
     dependency: "direct main"
     description:
@@ -1082,7 +1067,7 @@ packages:
       name: sqlite3_flutter_libs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.9"
+    version: "0.5.10"
   sqlparser:
     dependency: transitive
     description:
@@ -1103,7 +1088,7 @@ packages:
       name: stream_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   stream_transform:
     dependency: transitive
     description:
@@ -1138,7 +1123,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.13"
+    version: "0.4.14"
   timing:
     dependency: transitive
     description:
@@ -1229,7 +1214,7 @@ packages:
       name: vector_math
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4"
   watcher:
     dependency: transitive
     description:
@@ -1240,12 +1225,10 @@ packages:
   we_slide:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "43f703f542e6886c16d84a851a0ad36036f9f3bc"
-      resolved-ref: "43f703f542e6886c16d84a851a0ad36036f9f3bc"
-      url: "https://github.com/ProjectAnni/we_slide"
-    source: git
-    version: "2.3.0"
+      name: we_slide
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.4.0"
   web_socket_channel:
     dependency: transitive
     description:

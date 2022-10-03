@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:annix/services/download/download_models.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 typedef DownloadCallback<T> = void Function(T);
 

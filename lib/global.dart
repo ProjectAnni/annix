@@ -31,8 +31,8 @@ class Global {
 
   static BuildContext get context => navigatorKey.currentContext!;
 
-  static final mobileWeSlideController = WeSlideController();
-  static final mobileWeSlideFooterController = WeSlideController(true);
+  static final mobileWeSlideController = WeSlideController(initial: false);
+  static final mobileWeSlideFooterController = WeSlideController(initial: true);
 
   static AnnixProxy proxy = AnnixProxy();
 
