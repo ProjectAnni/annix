@@ -56,7 +56,7 @@ class DownloadTask extends ChangeNotifier {
       final client = this.client ?? _client;
       final response = await client.download(
         url,
-        "$savePath.tmp",
+        '$savePath.tmp',
         options: Options(headers: headers),
         onReceiveProgress: (count, total) {
           status = DownloadTaskStatus.downloading;
@@ -73,7 +73,7 @@ class DownloadTask extends ChangeNotifier {
       status = DownloadTaskStatus.completed;
       notifyListeners();
 
-      File("$savePath.tmp").renameSync(savePath);
+      File('$savePath.tmp').renameSync(savePath);
       onSuccess?.call(response);
       return response;
     } catch (e) {

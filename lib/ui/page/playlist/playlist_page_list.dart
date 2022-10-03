@@ -84,13 +84,13 @@ class PlaylistDetailScreen extends StatelessWidget {
           final track = playlist.items[index];
           if (track is! PlaylistItemTrack) {
             return ListTile(
-              title: const Text("TODO"),
+              title: const Text('TODO'),
               subtitle: Text(track.description ?? ''),
             );
           }
 
           return ListTile(
-            leading: Text("${index + 1}"),
+            leading: Text('${index + 1}'),
             minLeadingWidth: 16,
             dense: true,
             visualDensity: VisualDensity.compact,
@@ -124,8 +124,8 @@ class PlaylistDetailScreen extends StatelessWidget {
   Widget _cover(BuildContext context) {
     String? coverIdentifier = playlist.intro.cover;
     if (coverIdentifier == null ||
-        coverIdentifier == "" ||
-        coverIdentifier.startsWith("/")) {
+        coverIdentifier == '' ||
+        coverIdentifier.startsWith('/')) {
       coverIdentifier = _firstAvailableCover();
 
       final AnnivService anniv = context.read();

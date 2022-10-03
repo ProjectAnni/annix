@@ -37,7 +37,8 @@ class AnnilService extends ChangeNotifier {
 
   // TODO: load from / save to sqlite instead of shared preferences
   static AnnilService loadFromLocal() {
-    List<String>? tokens = Global.preferences.getStringList("annil_clients");
+    final List<String>? tokens =
+        Global.preferences.getStringList('annil_clients');
     if (tokens != null) {
       final clients = tokens
           .map((token) => AnnilClient.fromJson(jsonDecode(token)))
@@ -52,7 +53,7 @@ class AnnilService extends ChangeNotifier {
     // TODO: save to database instead of shared_preferences
     final tokens =
         clients.values.map((client) => jsonEncode(client.toJson())).toList();
-    await Global.preferences.setStringList("annil_clients", tokens);
+    await Global.preferences.setStringList('annil_clients', tokens);
   }
 
   /// Keep sync with new credential list
@@ -128,12 +129,12 @@ class AnnilService extends ChangeNotifier {
   /// Refresh all annil servers
   Future<void> reloadClients() async {
     if (NetworkService.isOnline) {
-      var newAlbums = (await Future.wait(clients.values.map((client) async {
+      final newAlbums = (await Future.wait(clients.values.map((client) async {
         try {
           return await client.getAlbums();
         } catch (e) {
           FLog.warning(
-            text: "Failed to refresh annil client ${client.name}",
+            text: 'Failed to refresh annil client ${client.name}',
             exception: e,
           );
           // TODO: use local copy
@@ -146,7 +147,7 @@ class AnnilService extends ChangeNotifier {
       albums.replaceRange(0, albums.length, newAlbums);
       await saveToLocal();
     } else {
-      var localAlbums = await getCachedAlbums();
+      final localAlbums = await getCachedAlbums();
       albums.replaceRange(0, albums.length, localAlbums);
     }
     notifyListeners();
@@ -190,7 +191,7 @@ class AnnilClient {
   final bool local;
 
   // cached album list in client
-  String eTag = "";
+  String eTag = '';
   List<String> albums = [];
 
   AnnilClient._({
@@ -288,7 +289,7 @@ class AnnilClient {
       );
       final newETag = response.headers['etag']![0];
       FLog.debug(
-        text: "Annil cache MISSED, old etag: $eTag, new etag: $newETag",
+        text: 'Annil cache MISSED, old etag: $eTag, new etag: $newETag',
       );
       eTag = newETag;
 
@@ -297,9 +298,9 @@ class AnnilClient {
           .toList();
     } on DioError catch (e) {
       if (e.response?.statusCode == 304) {
-        FLog.trace(text: "Annil cache HIT, etag: $eTag");
+        FLog.trace(text: 'Annil cache HIT, etag: $eTag');
       } else {
-        eTag = "";
+        eTag = '';
         albums = [];
         rethrow;
       }
@@ -326,25 +327,25 @@ enum PreferQuality {
   String toString() {
     switch (this) {
       case PreferQuality.Low:
-        return "low";
+        return 'low';
       case PreferQuality.Medium:
-        return "medium";
+        return 'medium';
       case PreferQuality.High:
-        return "high";
+        return 'high';
       case PreferQuality.Lossless:
-        return "lossless";
+        return 'lossless';
     }
   }
 
   factory PreferQuality.fromString(String str) {
     switch (str) {
-      case "low":
+      case 'low':
         return PreferQuality.Low;
-      case "medium":
+      case 'medium':
         return PreferQuality.Medium;
-      case "high":
+      case 'high':
         return PreferQuality.High;
-      case "lossless":
+      case 'lossless':
         return PreferQuality.Lossless;
       default:
         return PreferQuality.Medium;

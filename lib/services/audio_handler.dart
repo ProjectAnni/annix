@@ -278,8 +278,8 @@ class AnnixMPRISService extends MPRISService {
   AnnixMPRISService(BuildContext context)
       : player = Provider.of<PlaybackService>(context, listen: false),
         super(
-          "annix",
-          identity: "Annix",
+          'annix',
+          identity: 'Annix',
           emitSeekedSignal: false,
           canPlay: true,
           canPause: true,

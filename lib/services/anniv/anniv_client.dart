@@ -51,16 +51,16 @@ class AnnivClient {
           ));
         } else if (response.requestOptions.responseType == ResponseType.json) {
           final resp = response.data as Map<String, dynamic>;
-          final status = resp["status"] as int;
+          final status = resp['status'] as int;
           if (status != 0) {
             final error = AnnivError(
               status: status,
-              message: resp["message"].toString(),
+              message: resp['message'].toString(),
             );
             if (status != 902000) {
               // skip logging [lyric not found] error
               // TODO: show error to user
-              FLog.error(text: resp["message"].toString(), exception: error);
+              FLog.error(text: resp['message'].toString(), exception: error);
             }
             // business logic error code
             handler.reject(DioError(
@@ -70,7 +70,7 @@ class AnnivClient {
               error: error,
             ));
           } else {
-            dynamic data = resp['data'];
+            final dynamic data = resp['data'];
             handler.resolve(Response(
               requestOptions: response.requestOptions,
               data: data,
@@ -101,7 +101,7 @@ class AnnivClient {
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
   static AnnivClient? load() {
-    String? annivUrl = Global.preferences.getString('anniv_url');
+    final annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
@@ -119,13 +119,13 @@ class AnnivClient {
   /// This method should be called before any other requests were sent to the server.
   /// https://book.anni.rs/06.anniv/01.info.html
   Future<SiteInfo> getSiteInfo() async {
-    final response = await _client.get("/api/info");
+    final response = await _client.get('/api/info');
     return SiteInfo.fromJson(response.data);
   }
 
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF
   Future<UserInfo> getUserInfo() async {
-    final response = await _client.get("/api/user/info");
+    final response = await _client.get('/api/user/info');
     return UserInfo.fromJson(response.data);
   }
 
@@ -135,7 +135,7 @@ class AnnivClient {
     required String password,
   }) async {
     final response = await _client.post(
-      "/api/user/login",
+      '/api/user/login',
       data: {
         'email': email,
         'password': sha256(password),
@@ -147,7 +147,7 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     // do not wait here
-    _client.post("/api/user/logout").catchError((err) {});
+    _client.post('/api/user/logout').catchError((err) {});
     _cookieJar.deleteAll();
     await Global.preferences.remove('anniv_url');
     return;
@@ -155,7 +155,7 @@ class AnnivClient {
 
   /// https://book.anni.rs/06.anniv/04.credential.html#%E8%8E%B7%E5%8F%96-token
   Future<List<AnnilToken>> getCredentials() async {
-    final response = await _client.get("/api/credential");
+    final response = await _client.get('/api/credential');
     return (response.data as List<dynamic>)
         .map((e) => AnnilToken.fromJson(e))
         .toList();
@@ -165,7 +165,7 @@ class AnnivClient {
   Future<Map<String, Album>> getAlbumMetadata(List<String> albums) async {
     final response =
         await _client.get('/api/meta/album', queryParameters: {'id[]': albums});
-    Map<String, dynamic> responseAlbums = response.data;
+    final Map<String, dynamic> responseAlbums = response.data;
     return responseAlbums
         .map((key, value) => MapEntry(key, value as Map<String, dynamic>))
         .map(
@@ -258,7 +258,7 @@ class AnnivClient {
   }) async {
     final response = await _client.patch('/api/playlist', data: {
       'id': playlistId,
-      'command': "info",
+      'command': 'info',
       'payload': info.toJson(),
     });
     return Playlist.fromJson(response.data);
@@ -297,8 +297,8 @@ class AnnivClient {
   Future<void> downloadRepoDatabase(String saveRoot) async {
     // 1. download json
     final jsonPath = p.join(saveRoot, 'repo.json');
-    await _client.download('/api/meta/db/repo.json', "$jsonPath.downloading");
-    final jsonFile = File("$jsonPath.downloading");
+    await _client.download('/api/meta/db/repo.json', '$jsonPath.downloading');
+    final jsonFile = File('$jsonPath.downloading');
 
     // 2. download db
     final dbPath = p.join(saveRoot, 'repo.db');

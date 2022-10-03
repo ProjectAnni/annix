@@ -17,20 +17,20 @@ class Artist {
 }
 
 Artist _readArtist(_ArtistParser reader) {
-  String name = "";
+  String name = '';
   final children = <Artist>[];
 
   // Read artist name
   while (reader.idx < reader.data.length) {
-    if (reader.data[reader.idx] == "、") {
-      if (reader.data[reader.idx + 1] == "、") {
+    if (reader.data[reader.idx] == '、') {
+      if (reader.data[reader.idx + 1] == '、') {
         reader.idx += 1;
-        name = "$name、";
+        name = '$name、';
       } else {
         break;
       }
-    } else if (reader.data[reader.idx] == "（" ||
-        reader.data[reader.idx] == "）") {
+    } else if (reader.data[reader.idx] == '（' ||
+        reader.data[reader.idx] == '）') {
       break;
     } else {
       name = name + reader.data[reader.idx];
@@ -38,13 +38,13 @@ Artist _readArtist(_ArtistParser reader) {
     reader.idx += 1;
   }
   // Read children
-  if (reader.data.length > reader.idx && reader.data[reader.idx] == "（") {
+  if (reader.data.length > reader.idx && reader.data[reader.idx] == '（') {
     reader.idx += 1;
     do {
       children.add(_readArtist(reader));
       reader.idx += 1;
     } while (
-        reader.data.length > reader.idx && reader.data[reader.idx - 1] == "、");
+        reader.data.length > reader.idx && reader.data[reader.idx - 1] == '、');
   }
 
   return Artist(name: name, children: children);
@@ -53,7 +53,7 @@ Artist _readArtist(_ArtistParser reader) {
 List<Artist> _readArtists(_ArtistParser reader) {
   final res = <Artist>[];
   res.add(_readArtist(reader));
-  while (reader.data.length > reader.idx && reader.data[reader.idx] == "、") {
+  while (reader.data.length > reader.idx && reader.data[reader.idx] == '、') {
     reader.idx += 1;
     res.add(_readArtist(reader));
   }
@@ -103,7 +103,7 @@ class _ArtistTextState extends State<ArtistText> {
             child: Text(
               fullArtist
                   ? widget.artist
-                  : widget.artists.map((e) => e.name).join("、"),
+                  : widget.artists.map((e) => e.name).join('、'),
               style: widget.style,
               overflow: widget.overflow,
               maxLines: 1,

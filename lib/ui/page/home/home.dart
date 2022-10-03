@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
                             icon: const Icon(Icons.archive_outlined),
                             onPressed: () {
                               AnnixRouterDelegate.of(context)
-                                  .to(name: "/downloading");
+                                  .to(name: '/downloading');
                             },
                           ),
                           IconButton(
@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
                             icon: const Icon(Icons.search),
                             onPressed: () {
                               AnnixRouterDelegate.of(context)
-                                  .to(name: "/search");
+                                  .to(name: '/search');
                             },
                           ),
                           const ThemeButton(),

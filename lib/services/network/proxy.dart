@@ -9,7 +9,7 @@ class AnnixProxy {
   late HttpServer server;
 
   Future<void> start() async {
-    var app = Router();
+    final app = Router();
 
     app.get('/cover/<albumId>', (Request request, String albumId) async {
       final image =

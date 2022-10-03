@@ -28,7 +28,7 @@ class FontService {
     if (_fontId == 0) {
       return null;
     } else {
-      return "font_$_fontId";
+      return 'font_$_fontId';
     }
   }
 }

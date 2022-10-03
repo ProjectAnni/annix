@@ -83,11 +83,11 @@ class _SearchResult extends StatelessWidget {
             indicatorSize: TabBarIndicatorSize.tab,
             labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             tabs: [
-              Tab(child: Text("${t.track} (${result.tracks?.length ?? 0})")),
-              Tab(child: Text("${t.albums} (${result.albums?.length ?? 0})")),
+              Tab(child: Text('${t.track} (${result.tracks?.length ?? 0})')),
+              Tab(child: Text('${t.albums} (${result.albums?.length ?? 0})')),
               Tab(
                 child:
-                    Text("${t.playlists} (${result.playlists?.length ?? 0})"),
+                    Text('${t.playlists} (${result.playlists?.length ?? 0})'),
               ),
             ],
           ),
@@ -98,7 +98,7 @@ class _SearchResult extends StatelessWidget {
                 // Tracks
                 ListView.builder(
                   itemBuilder: (context, index) {
-                    var e = result.tracks![index];
+                    final e = result.tracks![index];
                     return ListTile(
                       title: Text(e.title),
                       subtitle: ArtistText(e.artist),
@@ -211,7 +211,7 @@ class SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: isLoading
                   ? const CircularProgressIndicator(strokeWidth: 2)
-                  : const Text("Search results would display here"),
+                  : const Text('Search results would display here'),
             )
           : _SearchResult(result: _result!),
     );

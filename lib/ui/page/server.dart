@@ -107,10 +107,10 @@ class AnnivCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: [
-              if (info.site.features.contains("metadata-db"))
+              if (info.site.features.contains('metadata-db'))
                 // TODO: move this button to somewhere else
                 TextButton(
-                  child: const Text("Update Database"),
+                  child: const Text('Update Database'),
                   onPressed: () async {
                     final anniv =
                         Provider.of<AnnivService>(context, listen: false);
@@ -190,7 +190,7 @@ class AnnilDialog extends StatelessWidget {
                 size: 32,
               ),
             ),
-            Text("Annil Library"),
+            Text('Annil Library'),
           ],
         ),
       ),
@@ -198,9 +198,9 @@ class AnnilDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SimpleTextField(label: "Name", controller: serverNameController),
-            SimpleTextField(label: "Server", controller: serverUrlController),
-            SimpleTextField(label: "Token", controller: serverTokenController),
+            SimpleTextField(label: 'Name', controller: serverNameController),
+            SimpleTextField(label: 'Server', controller: serverUrlController),
+            SimpleTextField(label: 'Token', controller: serverTokenController),
           ],
         ),
       ),

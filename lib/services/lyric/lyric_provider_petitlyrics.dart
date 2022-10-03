@@ -6,7 +6,7 @@ import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:flutter_lyric/lyrics_reader_model.dart';
 import 'package:xml/xml.dart';
 import 'dart:convert';
-import "dart:typed_data";
+import 'dart:typed_data';
 
 class PetitLyricsClient {
   static final PetitLyricsClient _instance = PetitLyricsClient._();
@@ -20,15 +20,15 @@ class PetitLyricsClient {
   Future<XmlDocument> getLyric(String title,
       {String? artist, String? album, int lyricType = 1, int? lyricId}) async {
     final data = await _client.post(
-      "http://p0.petitlyrics.com/api/GetPetitLyricsData.php",
+      'http://p0.petitlyrics.com/api/GetPetitLyricsData.php',
       data: {
-        "clientAppId": "p1110417",
-        "lyricsType": lyricType,
-        "terminalType": 10,
-        "key_artist": artist,
-        "key_title": title,
-        "key_album": album,
-        "key_lyricsId": lyricId ?? "",
+        'clientAppId': 'p1110417',
+        'lyricsType': lyricType,
+        'terminalType': 10,
+        'key_artist': artist,
+        'key_title': title,
+        'key_album': album,
+        'key_lyricsId': lyricId ?? '',
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
@@ -38,12 +38,12 @@ class PetitLyricsClient {
 
   Future<XmlDocument> getLyricById(int lyricId, {int lyricType = 1}) async {
     final data = await _client.post(
-      "http://p0.petitlyrics.com/api/GetPetitLyricsData.php",
+      'http://p0.petitlyrics.com/api/GetPetitLyricsData.php',
       data: {
-        "clientAppId": "p1110417",
-        "lyricsType": lyricType,
-        "terminalType": 10,
-        "key_lyricsId": lyricId,
+        'clientAppId': 'p1110417',
+        'lyricsType': lyricType,
+        'terminalType': 10,
+        'key_lyricsId': lyricId,
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
@@ -75,7 +75,7 @@ class PetitLyricsClient {
 
     // add empty lines
     while (lyric.length < lineCount) {
-      lyric.add("");
+      lyric.add('');
     }
 
     final List<String> time = [];
@@ -85,7 +85,7 @@ class PetitLyricsClient {
       final timeRaw = data.getUint16(timeBeginByteIndex, Endian.little);
       final timeCs = timeRaw ^ projectionKey;
 
-      final line = "[${cs2mmssff(timeCs + offset * 65536)}] ${lyric[i]}";
+      final line = '[${cs2mmssff(timeCs + offset * 65536)}] ${lyric[i]}';
       time.add(line);
       offset += timeCs ~/ 65536;
     }
@@ -110,17 +110,17 @@ class LyricProviderPetitLyrics extends LyricProvider {
       album: album,
       lyricType: 3,
     );
-    final songs = document.findAllElements("song");
+    final songs = document.findAllElements('song');
     return songs.map(
       (song) {
-        final lyricType = int.parse(song.findElements("lyricsType").first.text);
-        final lyricData = song.findElements("lyricsData").first.text;
+        final lyricType = int.parse(song.findElements('lyricsType').first.text);
+        final lyricData = song.findElements('lyricsData').first.text;
         return LyricSearchResponsePetitLyrics(
-          lyricId: int.parse(song.findElements("lyricsId").first.text),
+          lyricId: int.parse(song.findElements('lyricsId').first.text),
           lyricType: lyricType,
-          trackTitle: song.findElements("title").first.text,
-          albumTitle: song.findElements("album").first.text,
-          artistsName: [song.findElements("artist").first.text],
+          trackTitle: song.findElements('title').first.text,
+          albumTitle: song.findElements('album').first.text,
+          artistsName: [song.findElements('artist').first.text],
           lyricText:
               lyricType != 2 ? utf8.decode(base64Decode(lyricData)) : lyricData,
         );
@@ -166,9 +166,9 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
       // lrc
       final text = await _client.getLyricById(lyricId, lyricType: 1);
 
-      final songs = text.findAllElements("song");
+      final songs = text.findAllElements('song');
       final lyricPlainText = utf8.decode(
-          base64Decode(songs.first.findElements("lyricsData").first.text));
+          base64Decode(songs.first.findElements('lyricsData').first.text));
       final encrypted = base64Decode(lyricText);
       return LyricResult(
         text: lyricPlainText,
@@ -182,7 +182,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
       // lyric type = 3, karaoke
       final xml = XmlDocument.parse(lyricText);
       final lines = xml
-          .findAllElements("line")
+          .findAllElements('line')
           .map((line) => WsyLyricLine.fromXml(line))
           .toList();
 
@@ -219,7 +219,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
 
       final model =
           (LyricsModelBuilder.create()..mainLines = linesModel).getModel();
-      final lyric = lines.map((e) => e.toString()).join("\n");
+      final lyric = lines.map((e) => e.toString()).join('\n');
       return LyricResult(
         text: lyric,
         model: model,
@@ -235,7 +235,7 @@ String cs2mmssff(int cs) {
   final ff = (cs % 100).toString().padLeft(2, '0');
   final ss = ((cs ~/ 100) % 60).toString().padLeft(2, '0');
   final mm = ((cs ~/ 6000) % 60).toString().padLeft(2, '0');
-  return "$mm:$ss.$ff";
+  return '$mm:$ss.$ff';
 }
 
 class WsyLyricLine {
@@ -245,7 +245,7 @@ class WsyLyricLine {
 
   factory WsyLyricLine.fromXml(XmlElement line) {
     final words = line
-        .findAllElements("word")
+        .findAllElements('word')
         .map((word) => WsyLyricWord.fromXml(word))
         .toList();
     return WsyLyricLine(words);
@@ -270,17 +270,17 @@ class WsyLyricWord {
 
   factory WsyLyricWord.fromXml(XmlElement word) {
     return WsyLyricWord(
-      text: word.getElement("wordstring")!.text,
-      startTime: int.parse(word.getElement("starttime")!.text),
-      endTime: int.parse(word.getElement("endtime")!.text),
+      text: word.getElement('wordstring')!.text,
+      startTime: int.parse(word.getElement('starttime')!.text),
+      endTime: int.parse(word.getElement('endtime')!.text),
     );
   }
 
   @override
   String toString() {
     if (startTime == endTime) {
-      return "";
+      return '';
     }
-    return "$text($startTime,${endTime - startTime})";
+    return '$text($startTime,${endTime - startTime})';
   }
 }

@@ -68,12 +68,12 @@ AlbumInfo _$AlbumInfoFromJson(Map<String, dynamic> json) => AlbumInfo(
     );
 
 const _$TrackTypeEnumMap = {
-  TrackType.Normal: 'normal',
-  TrackType.Instrumental: 'instrumental',
-  TrackType.Absolute: 'absolute',
-  TrackType.Drama: 'drama',
-  TrackType.Radio: 'radio',
-  TrackType.Vocal: 'vocal',
+  TrackType.normal: 'normal',
+  TrackType.instrumental: 'instrumental',
+  TrackType.absolute: 'absolute',
+  TrackType.drama: 'drama',
+  TrackType.radio: 'radio',
+  TrackType.vocal: 'vocal',
 };
 
 DiscInfo _$DiscInfoFromJson(Map<String, dynamic> json) => DiscInfo(

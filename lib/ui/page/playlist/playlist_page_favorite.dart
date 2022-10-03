@@ -32,7 +32,7 @@ class FavoriteScreen extends StatelessWidget {
     return BasePlaylistScreen(
       title: t.my_favorite,
       cover: cover,
-      intro: [Text("${favorites.length} songs")],
+      intro: [Text('${favorites.length} songs')],
       onRefresh: () async {
         await anniv.syncFavorite();
       },
@@ -50,16 +50,16 @@ class FavoriteScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final favorite = reversedFavorite.elementAt(index);
           return ListTile(
-            leading: Text("${index + 1}"),
+            leading: Text('${index + 1}'),
             minLeadingWidth: 16,
             dense: true,
             visualDensity: VisualDensity.compact,
             title: Text(
-              favorite.title ?? "--",
+              favorite.title ?? '--',
               overflow: TextOverflow.ellipsis,
             ),
             subtitle: ArtistText(
-              favorite.artist ?? "--",
+              favorite.artist ?? '--',
               overflow: TextOverflow.ellipsis,
             ),
             enabled: annil.isAvailable(

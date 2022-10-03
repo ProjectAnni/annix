@@ -17,7 +17,7 @@ void showLoadingDialog(BuildContext context) {
                   strokeWidth: 2,
                 ),
                 SizedBox(width: 12),
-                Text("Loading..."),
+                Text('Loading...'),
               ],
             ),
           ),

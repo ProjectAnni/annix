@@ -65,7 +65,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                 Consumer<PlaybackService>(
                   builder: (context, player, child) => Center(
                     child: Text(
-                      player.playing?.track.title ?? "",
+                      player.playing?.track.title ?? '',
                       style: context.textTheme.titleLarge,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -73,7 +73,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                 ),
                 Consumer<PlaybackService>(
                   builder: (context, player, child) => ArtistText(
-                    player.playing?.track.artist ?? "",
+                    player.playing?.track.artist ?? '',
                     style: context.textTheme.titleMedium,
                     overflow: TextOverflow.ellipsis,
                   ),

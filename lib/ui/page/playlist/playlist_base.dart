@@ -99,12 +99,12 @@ class BasePlaylistScreen extends StatelessWidget {
           children: [
             TextButton.icon(
               icon: const Icon(Icons.play_arrow),
-              label: const Text("Play"),
+              label: const Text('Play'),
               onPressed: onPlay == null ? null : () => onPlay!(false),
             ),
             OutlinedButton.icon(
               icon: const Icon(Icons.shuffle),
-              label: const Text("Shuffle"),
+              label: const Text('Shuffle'),
               onPressed: onPlay == null ? null : () => onPlay!(true),
             ),
           ],

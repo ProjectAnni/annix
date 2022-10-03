@@ -15,7 +15,7 @@ class AnnixStore {
 
   AnnixStore._()
       : _database = openDatabase(
-          p.join(Global.dataRoot, "store.db"),
+          p.join(Global.dataRoot, 'store.db'),
           version: 1,
           onCreate: ((db, version) async {
             await db.execute('''
@@ -60,8 +60,8 @@ class AnnixStoreCategory {
     }
 
     final db = await _store._database;
-    List<Map<String, Object?>> values = await db.rawQuery(
-        "SELECT value FROM store WHERE category = ? AND key = ?",
+    final List<Map<String, Object?>> values = await db.rawQuery(
+        'SELECT value FROM store WHERE category = ? AND key = ?',
         [_category, key]);
     if (values.isEmpty) {
       return null;
@@ -76,11 +76,11 @@ class AnnixStoreCategory {
     return _cache.containsKey(key) || await get(key) != null;
   }
 
-  Future<void> set(String key, dynamic value) async {
+  Future<void> set(String key, value) async {
     _cache[key] = value;
     final db = await _store._database;
     await db.insert(
-      "store",
+      'store',
       {
         'category': _category,
         'key': key,
@@ -94,8 +94,8 @@ class AnnixStoreCategory {
     _cache.clear();
     final db = await _store._database;
     await db.delete(
-      "store",
-      where: "category = ?",
+      'store',
+      where: 'category = ?',
       whereArgs: [_category],
     );
   }

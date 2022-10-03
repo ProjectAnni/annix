@@ -21,7 +21,7 @@ class PlayingMoreMenu extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.playlist_add),
           minLeadingWidth: 0,
-          title: const Text("Add to playlist"),
+          title: const Text('Add to playlist'),
           dense: true,
           onTap: () {
             // TODO: add to playlist
@@ -43,7 +43,7 @@ class PlayingMoreMenu extends StatelessWidget {
             // hide playing page
             Global.mobileWeSlideController.hide();
             // jump to album page
-            delegate.to(name: "/album", arguments: track.id.albumId);
+            delegate.to(name: '/album', arguments: track.id.albumId);
           },
         ),
         ListTile(
@@ -63,13 +63,13 @@ class PlayingMoreMenu extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.share),
           minLeadingWidth: 0,
-          title: const Text("Share File"),
+          title: const Text('Share File'),
           dense: true,
           onTap: () {
             final id = track.id;
             Share.shareFiles(
               [getAudioCachePath(id)],
-              mimeTypes: ["audio/flac"],
+              mimeTypes: ['audio/flac'],
             );
           },
         ),

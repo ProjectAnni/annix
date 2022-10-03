@@ -37,6 +37,6 @@ class TrackLyric {
   bool get isEmpty => lyric.isEmpty;
 
   factory TrackLyric.empty() {
-    return TrackLyric(lyric: LyricResult.empty(), type: TrackType.Normal);
+    return TrackLyric(lyric: LyricResult.empty(), type: TrackType.normal);
   }
 }

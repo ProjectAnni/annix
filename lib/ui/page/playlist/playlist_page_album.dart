@@ -24,7 +24,7 @@ class LazyAlbumDetailScreen extends StatelessWidget {
           .read<MetadataService>()
           .getAlbum(albumId: albumId)
           .then((album) {
-        if (album == null) throw "Album not found";
+        if (album == null) throw 'Album not found';
         return album;
       }),
       builder: (album) => AlbumDetailScreen(album: album),
@@ -75,7 +75,7 @@ class AlbumDetailScreen extends StatelessWidget {
   List<AnnilAudioSource> getTracks(BuildContext context) {
     final annil = context.read<AnnilService>();
 
-    List<AnnilAudioSource> songs = [];
+    final List<AnnilAudioSource> songs = [];
 
     for (final disc in album.discs) {
       for (final track in disc.tracks) {
@@ -107,7 +107,7 @@ class AlbumDetailScreen extends StatelessWidget {
     for (final disc in album.discs) {
       if (needDiscId) {
         var discTitle = 'Disc $discId';
-        if (disc.title != "") {
+        if (disc.title != '') {
           discTitle += ' - ${disc.title}';
         }
         list.add(ListTile(title: Text(discTitle)));
@@ -123,7 +123,7 @@ class AlbumDetailScreen extends StatelessWidget {
             final totalTrackIndex = totalTrackId;
             totalTrackId++;
             return ListTile(
-              leading: Text("$trackIndex"),
+              leading: Text('$trackIndex'),
               minLeadingWidth: 16,
               dense: true,
               visualDensity: VisualDensity.compact,

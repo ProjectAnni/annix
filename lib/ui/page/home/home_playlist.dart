@@ -31,7 +31,7 @@ class PlaylistView extends StatelessWidget {
                       title: Text(t.my_favorite),
                       visualDensity: VisualDensity.standard,
                       onTap: () {
-                        AnnixRouterDelegate.of(context).to(name: "/favorite");
+                        AnnixRouterDelegate.of(context).to(name: '/favorite');
                       },
                     );
                   },
@@ -60,7 +60,7 @@ class PlaylistView extends StatelessWidget {
                 visualDensity: VisualDensity.standard,
                 onTap: () async {
                   final delegate = AnnixRouterDelegate.of(context);
-                  delegate.to(name: "/playlist", arguments: playlist.id);
+                  delegate.to(name: '/playlist', arguments: playlist.id);
                 },
               );
             },

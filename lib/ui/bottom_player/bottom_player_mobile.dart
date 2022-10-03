@@ -40,7 +40,7 @@ class MobileBottomPlayer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    player.playing?.track.title ?? "",
+                    player.playing?.track.title ?? '',
                     style: context.textTheme.titleSmall,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
@@ -51,7 +51,7 @@ class MobileBottomPlayer extends StatelessWidget {
                     builder: (context, showArtist, _) {
                       if (showArtist) {
                         return ArtistText(
-                          player.playing?.track.artist ?? "",
+                          player.playing?.track.artist ?? '',
                           style: context.textTheme.bodySmall,
                         );
                       } else {

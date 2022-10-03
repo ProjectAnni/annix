@@ -398,9 +398,9 @@ abstract class PlaylistItem {
 
   factory PlaylistItem.fromDatabase(PlaylistItemData data) {
     return PlaylistItem.fromJson({
-      "type": data.type,
-      "description": data.description,
-      "info": jsonDecode(data.info),
+      'type': data.type,
+      'description': data.description,
+      'info': jsonDecode(data.info),
     });
   }
 
@@ -431,7 +431,7 @@ abstract class PlaylistItem {
       playlistId: Value(playlistId),
       type: Value(PlaylistItemType.fromInstance(this).toString()),
       description: Value(description),
-      info: Value(jsonEncode(toJson()["info"])),
+      info: Value(jsonEncode(toJson()['info'])),
       order: Value(order),
     );
   }
@@ -444,14 +444,14 @@ class PlaylistItemTrack extends PlaylistItem {
 
   factory PlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
       PlaylistItemTrack(
-        info: TrackInfoWithAlbum.fromJson(json["info"]),
+        info: TrackInfoWithAlbum.fromJson(json['info']),
         description: json['description'],
       );
 
   @override
   Map<String, dynamic> toJson() {
     final json = super.toJson();
-    json["info"] = info.toJson();
+    json['info'] = info.toJson();
     return json;
   }
 }
@@ -463,14 +463,14 @@ class PlaylistItemDummyTrack extends PlaylistItem {
 
   factory PlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
       PlaylistItemDummyTrack(
-        info: RequiredTrackInfo.fromJson(json["info"]),
+        info: RequiredTrackInfo.fromJson(json['info']),
         description: json['description'],
       );
 
   @override
   Map<String, dynamic> toJson() {
     final json = super.toJson();
-    json["info"] = info.toJson();
+    json['info'] = info.toJson();
     return json;
   }
 }
@@ -489,7 +489,7 @@ class PlaylistItemAlbum extends PlaylistItem {
   @override
   Map<String, dynamic> toJson() {
     final json = super.toJson();
-    json["info"] = albumId;
+    json['info'] = albumId;
     return json;
   }
 }

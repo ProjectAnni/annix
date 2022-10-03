@@ -82,7 +82,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                                     children: [
                                       Text(
                                         player.playing?.track.title ??
-                                            "Not playing",
+                                            'Not playing',
                                         style: DefaultTextStyle.of(context)
                                             .style
                                             .apply(
@@ -92,7 +92,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       ArtistText(
-                                        player.playing?.track.artist ?? "",
+                                        player.playing?.track.artist ?? '',
                                         style: DefaultTextStyle.of(context)
                                             .style
                                             .apply(fontSizeFactor: 0.75),

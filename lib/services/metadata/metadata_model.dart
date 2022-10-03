@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:toml/toml.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,12 +12,12 @@ class ReleaseDate {
 
   ReleaseDate({required this.year, this.month, this.day});
 
-  static ReleaseDate fromDynamic(dynamic value) {
+  static ReleaseDate fromDynamic(value) {
     if (value is String) {
       // "yyyy-mm-dd"
       // "yyyy-mm"
       // "yyyy"
-      var parts = value.split('-');
+      final parts = value.split('-');
       return ReleaseDate(
         year: int.parse(parts[0]),
         month: parts.length > 1 ? int.parse(parts[1]) : null,
@@ -40,7 +38,7 @@ class ReleaseDate {
         day: value.date.day,
       );
     } else {
-      throw UnsupportedError("Unsupported release date format");
+      throw UnsupportedError('Unsupported release date format');
     }
   }
 
@@ -58,57 +56,31 @@ class ReleaseDate {
 
   static readValue(Map map, String key) => map[key] as dynamic;
 
-  factory ReleaseDate.fromJson(dynamic json) => fromDynamic(json);
+  factory ReleaseDate.fromJson(json) => fromDynamic(json);
 
   Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
 }
 
 @JsonEnum(fieldRename: FieldRename.snake)
 enum TrackType {
-  Normal,
-  Instrumental,
-  Absolute,
-  Drama,
-  Radio,
-  Vocal;
+  normal,
+  instrumental,
+  absolute,
+  drama,
+  radio,
+  vocal;
 
   factory TrackType.fromString(String value) {
-    switch (value) {
-      case "normal":
-        return TrackType.Normal;
-      case "instrumental":
-        return TrackType.Instrumental;
-      case "absolute":
-        return TrackType.Absolute;
-      case "drama":
-        return TrackType.Drama;
-      case "radio":
-        return TrackType.Radio;
-      case "vocal":
-        return TrackType.Vocal;
-      default:
-        return TrackType.Normal;
-    }
+    return $enumDecode(
+      _$TrackTypeEnumMap,
+      value,
+      unknownValue: TrackType.normal,
+    );
   }
 
   @override
   String toString() {
-    switch (this) {
-      case TrackType.Normal:
-        return "normal";
-      case TrackType.Instrumental:
-        return "instrumental";
-      case TrackType.Absolute:
-        return "absolute";
-      case TrackType.Drama:
-        return "drama";
-      case TrackType.Radio:
-        return "radio";
-      case TrackType.Vocal:
-        return "vocal";
-      default:
-        return "unknown";
-    }
+    return _$TrackTypeEnumMap[this]!;
   }
 }
 
@@ -125,7 +97,7 @@ class Album {
   final List<String>? tags;
   final List<Disc> discs;
 
-  String get fullTitle => title + (edition != null ? "【$edition】" : "");
+  String get fullTitle => title + (edition != null ? '【$edition】' : '');
 
   Album({
     required this.albumId,
@@ -143,32 +115,32 @@ class Album {
     }
   }
 
-  static Album fromMap(Map<String, dynamic> map) {
-    String albumId = map['album']['album_id'];
-    String title = map['album']['title'];
-    String? edition = map['album']['edition'];
-    String catalog = map['album']['catalog'];
-    String artist = map['album']['artist'];
-    TrackType type = TrackType.fromString(map['album']['type']!);
-    ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
-    List<String>? tags = (map['album']['tags'] as List<dynamic>?)
-        ?.map((e) => e.toString())
-        .toList();
-    List<Disc> discs = (map['discs'] as List<dynamic>)
-        .map((e) => Disc.fromMap(e as Map<String, dynamic>))
-        .toList();
-    return Album(
-      albumId: albumId,
-      title: title,
-      edition: edition,
-      catalog: catalog,
-      artist: artist,
-      type: type,
-      date: date,
-      tags: tags,
-      discs: discs,
-    );
-  }
+  // static Album fromMap(Map<String, dynamic> map) {
+  //   final String albumId = map['album']['album_id'];
+  //   final String title = map['album']['title'];
+  //   final String? edition = map['album']['edition'];
+  //   final String catalog = map['album']['catalog'];
+  //   final String artist = map['album']['artist'];
+  //   final TrackType type = TrackType.fromString(map['album']['type']!);
+  //   final ReleaseDate date = ReleaseDate.fromDynamic(map['album']['date']);
+  //   final List<String>? tags = (map['album']['tags'] as List<dynamic>?)
+  //       ?.map((e) => e.toString())
+  //       .toList();
+  //   final List<Disc> discs = (map['discs'] as List<dynamic>)
+  //       .map((e) => Disc.fromMap(e as Map<String, dynamic>))
+  //       .toList();
+  //   return Album(
+  //     albumId: albumId,
+  //     title: title,
+  //     edition: edition,
+  //     catalog: catalog,
+  //     artist: artist,
+  //     type: type,
+  //     date: date,
+  //     tags: tags,
+  //     discs: discs,
+  //   );
+  // }
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
 
@@ -208,26 +180,26 @@ class Disc {
 
   TrackType get type => _type ?? album.type;
 
-  static Disc fromMap(Map<String, dynamic> map) {
-    String? title = map['title'];
-    String catalog = map['catalog'];
-    String? artist = map['artist'];
-    TrackType? type = TrackType.fromString(map['type']);
-    List<String>? tags =
-        (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
+  // static Disc fromMap(Map<String, dynamic> map) {
+  //   final String? title = map['title'];
+  //   final String catalog = map['catalog'];
+  //   final String? artist = map['artist'];
+  //   final TrackType? type = TrackType.fromString(map['type']);
+  //   final List<String>? tags =
+  //       (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
 
-    List<Track> tracks = (map['tracks'] as List<Map<String, dynamic>>)
-        .map((e) => Track.fromMap(e))
-        .toList();
-    return Disc(
-      title: title,
-      catalog: catalog,
-      artist: artist,
-      type: type,
-      tags: tags,
-      tracks: tracks,
-    );
-  }
+  //   final List<Track> tracks = (map['tracks'] as List<Map<String, dynamic>>)
+  //       .map((e) => Track.fromMap(e))
+  //       .toList();
+  //   return Disc(
+  //     title: title,
+  //     catalog: catalog,
+  //     artist: artist,
+  //     type: type,
+  //     tags: tags,
+  //     tracks: tracks,
+  //   );
+  // }
 
   factory Disc.fromJson(Map<String, dynamic> json) => _$DiscFromJson(json);
 
@@ -262,15 +234,15 @@ class Track {
         trackId: disc.tracks.indexOf(this) + 1,
       );
 
-  static Track fromMap(Map<String, dynamic> map) {
-    String title = map['title'];
-    String? artist = map['artist'];
+  // static Track fromMap(Map<String, dynamic> map) {
+  //   final String title = map['title'];
+  //   final String? artist = map['artist'];
 
-    TrackType? type = TrackType.fromString(map['type']);
-    List<String>? tags =
-        (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
-    return Track(title: title, artist: artist, type: type, tags: tags);
-  }
+  //   final TrackType? type = TrackType.fromString(map['type']);
+  //   final List<String>? tags =
+  //       (map['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList();
+  //   return Track(title: title, artist: artist, type: type, tags: tags);
+  // }
 
   factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
 

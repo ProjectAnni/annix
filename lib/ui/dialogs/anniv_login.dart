@@ -30,7 +30,7 @@ class AnnivLoginDialog extends StatelessWidget {
                 size: 32,
               ),
             ),
-            Text("Login to Anniv"),
+            Text('Login to Anniv'),
           ],
         ),
       ),
@@ -40,19 +40,19 @@ class AnnivLoginDialog extends StatelessWidget {
           children: [
             TextFormField(
               decoration: const InputDecoration(
-                labelText: "Server",
+                labelText: 'Server',
               ),
               controller: _serverUrlController,
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: "Email",
+                labelText: 'Email',
               ),
               controller: _emailController,
             ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: "Password",
+                labelText: 'Password',
               ),
               controller: _passwordController,
               obscureText: true,
@@ -73,15 +73,15 @@ class AnnivLoginDialog extends StatelessWidget {
             final password = _passwordController.text;
             final delegate = AnnixRouterDelegate.of(context);
             if (url.isEmpty) {
-              _showSnackBar(context, "Please enter a valid URL");
+              _showSnackBar(context, 'Please enter a valid URL');
             } else if (email.isEmpty || !email.contains('@')) {
-              _showSnackBar(context, "Please enter a valid email");
+              _showSnackBar(context, 'Please enter a valid email');
             } else if (password.isEmpty) {
-              _showSnackBar(context, "Please enter a password");
+              _showSnackBar(context, 'Please enter a password');
             } else {
               email = email.trim();
-              if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                url = "https://$url";
+              if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://$url';
               }
               try {
                 // TODO: alert progress

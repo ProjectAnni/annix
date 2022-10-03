@@ -89,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                     Global.settings.defaultAudioQuality.value = quality;
                   },
                   leading: const Icon(Icons.high_quality),
-                  title: const Text("Default audio quality"),
+                  title: const Text('Default audio quality'),
                   description: Text(p.toString()),
                 ),
               ),
@@ -114,11 +114,11 @@ class SettingsScreen extends StatelessWidget {
                 value: settings.fontPath,
                 builder: (context, p, _) => SettingsTile.navigation(
                   leading: const Icon(Icons.font_download),
-                  title: const Text("Custom font path"),
-                  trailing: Text(p ?? "Not Specified"),
+                  title: const Text('Custom font path'),
+                  trailing: Text(p ?? 'Not Specified'),
                   onPressed: (context) async {
-                    FilePickerResult? result = await FilePicker.platform
-                        .pickFiles(allowedExtensions: ["ttf", "otf"]);
+                    final result = await FilePicker.platform
+                        .pickFiles(allowedExtensions: ['ttf', 'otf']);
 
                     if (result != null) {
                       settings.fontPath.value = result.files.single.path;
@@ -180,7 +180,7 @@ class SettingsScreen extends StatelessWidget {
                 onPressed: (context) async {
                   final delegate = AnnixRouterDelegate.of(context);
                   showLoadingDialog(context);
-                  await AnnixStore().clear("album");
+                  await AnnixStore().clear('album');
                   delegate.popRoute();
                 },
               ),
@@ -204,7 +204,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     barrierDismissible: false,
                   );
-                  AnnixStore().clear("lyric").then((_) => navigator.pop());
+                  AnnixStore().clear('lyric').then((_) => navigator.pop());
                 },
               ),
             ],

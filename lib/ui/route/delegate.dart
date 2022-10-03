@@ -25,7 +25,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
 
   AnnixRouterDelegate() {
-    to(name: "/home");
+    to(name: '/home');
   }
 
   @override
@@ -72,7 +72,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     return _pages.length > 1;
   }
 
-  bool _onPopPage(Route route, dynamic result) {
+  bool _onPopPage<T>(Route<T> route, T result) {
     if (!route.didPop(result)) return false;
 
     if (canPop()) {
@@ -84,7 +84,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     }
   }
 
-  void to({required String name, dynamic arguments}) {
+  void to({required String name, arguments}) {
     // FIXME: dedup
     // if (currentRoute == name) {
     //   return;
@@ -94,12 +94,12 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     notifyListeners();
   }
 
-  void off({required String name, dynamic arguments}) {
+  void off({required String name, arguments}) {
     _pages.clear();
     to(name: name, arguments: arguments);
   }
 
-  void replace({required String name, dynamic arguments}) {
+  void replace({required String name, arguments}) {
     if (_pages.isNotEmpty) {
       _pages.removeLast();
     }
@@ -115,16 +115,16 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     bool disableAppBarDismissal = false;
 
     switch (routeSettings.name) {
-      case "/playing":
-      // /playing route is only available on desktop
+      case '/playing':
+        // /playing route is only available on desktop
         child = const PlayingDesktopScreen();
         disableAppBarDismissal = true;
         break;
-      case "/home":
+      case '/home':
         child = const HomePage();
         disableAppBarDismissal = true;
         break;
-      case "/album":
+      case '/album':
         if (routeSettings.arguments is String) {
           // albumId
           child =
@@ -133,35 +133,35 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
           child = AlbumDetailScreen(album: routeSettings.arguments as Album);
         }
         break;
-      case "/tag":
+      case '/tag':
         child = TagDetailScreen(
           name: routeSettings.arguments as String,
         );
         break;
-      case "/tags":
+      case '/tags':
         child = const TagListView();
         disableAppBarDismissal = true;
         break;
-      case "/server":
+      case '/server':
         child = const ServerView();
         disableAppBarDismissal = true;
         break;
-      case "/favorite":
+      case '/favorite':
         child = const FavoriteScreen();
         break;
-      case "/playlist":
+      case '/playlist':
         child = LazyPlaylistDetailScreen(id: routeSettings.arguments as int);
         break;
-      case "/search":
+      case '/search':
         child = const SearchScreen();
         break;
-      case "/settings":
+      case '/settings':
         child = const SettingsScreen();
         break;
-      case "/settings/log":
+      case '/settings/log':
         child = const SettingsLogView();
         break;
-      case "/downloading":
+      case '/downloading':
         child = const DownloadManagerPage();
         break;
       default:
@@ -177,7 +177,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       disableAppBarDismissal: disableAppBarDismissal,
     );
 
-    if (routeSettings.name == "/playing" || routeSettings.name == "/tags") {
+    if (routeSettings.name == '/playing' || routeSettings.name == '/tags') {
       _reservedPages[routeSettings.name!] = page;
     }
     return page;

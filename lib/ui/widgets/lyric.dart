@@ -141,10 +141,10 @@ class _LyricView extends StatelessWidget {
     if (lyric == null) {
       return Align(
         alignment: lyricAlign.alignment,
-        child: const Text("Loading..."),
+        child: const Text('Loading...'),
       );
     } else if (lyric!.isEmpty) {
-      if (lyric!.type == TrackType.Normal) {
+      if (lyric!.type == TrackType.normal) {
         return Align(
           alignment: lyricAlign.alignment,
           child: Text(t.no_lyric_found),

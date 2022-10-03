@@ -24,7 +24,7 @@ class TagDetailScreen extends StatelessWidget {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
                 return const Center(
-                  child: Text("No available album."),
+                  child: Text('No available album.'),
                 );
               }
 

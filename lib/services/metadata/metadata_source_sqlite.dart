@@ -15,7 +15,7 @@ class SqliteMetadataSource extends MetadataSource {
 
   @override
   Future<void> prepare() async {
-    database = await openDatabase(p.join(dbPath, "repo.db"), readOnly: true);
+    database = await openDatabase(p.join(dbPath, 'repo.db'), readOnly: true);
   }
 
   @override
@@ -24,25 +24,26 @@ class SqliteMetadataSource extends MetadataSource {
   }
 
   Future<Album?> _getAlbum(String albumId) async {
-    var albumUuid = albumId.replaceAll('-', '').toUpperCase();
-    List<Map<String, Object?>> discs = await database.rawQuery(
-        "SELECT * FROM repo_disc WHERE hex(album_id) = ? ORDER BY disc_id",
+    final albumUuid = albumId.replaceAll('-', '').toUpperCase();
+    final List<Map<String, Object?>> discs = await database.rawQuery(
+        'SELECT * FROM repo_disc WHERE hex(album_id) = ? ORDER BY disc_id',
         [albumUuid]);
 
-    List<Disc> albumDiscs = await Future.wait(discs.map((disc) async {
-      int discId = disc['disc_id'] as int;
-      String discTitle = disc['title'] as String;
-      String discArtist = disc['artist'] as String;
-      String discCatalog = disc['catalog'] as String;
-      TrackType discType = TrackType.fromString(disc['disc_type'] as String);
+    final List<Disc> albumDiscs = await Future.wait(discs.map((disc) async {
+      final int discId = disc['disc_id'] as int;
+      final String discTitle = disc['title'] as String;
+      final String discArtist = disc['artist'] as String;
+      final String discCatalog = disc['catalog'] as String;
+      final TrackType discType =
+          TrackType.fromString(disc['disc_type'] as String);
 
-      List<Map<String, Object?>> tracks = await database.rawQuery(
-          "SELECT title, artist, track_type FROM repo_track WHERE hex(album_id) = ? AND disc_id = ? ORDER BY disc_id",
+      final List<Map<String, Object?>> tracks = await database.rawQuery(
+          'SELECT title, artist, track_type FROM repo_track WHERE hex(album_id) = ? AND disc_id = ? ORDER BY disc_id',
           [albumUuid, discId]);
-      List<Track> discTracks = tracks.map((track) {
-        String trackTitle = track['title'] as String;
-        String trackArtist = track['artist'] as String;
-        TrackType trackType =
+      final List<Track> discTracks = tracks.map((track) {
+        final String trackTitle = track['title'] as String;
+        final String trackArtist = track['artist'] as String;
+        final TrackType trackType =
             TrackType.fromString(track['track_type'] as String);
         return Track(title: trackTitle, artist: trackArtist, type: trackType);
       }).toList();
@@ -55,15 +56,15 @@ class SqliteMetadataSource extends MetadataSource {
         tracks: discTracks,
       );
     }));
-    List<Map<String, Object?>> album = await database.rawQuery(
-        "SELECT * FROM repo_album WHERE hex(album_id) = ?", [albumUuid]);
+    final List<Map<String, Object?>> album = await database.rawQuery(
+        'SELECT * FROM repo_album WHERE hex(album_id) = ?', [albumUuid]);
     if (album.isNotEmpty) {
-      String title = album[0]['title'] as String;
-      String? edition = album[0]['edition'] as String?;
-      String catalog = album[0]['catalog'] as String;
-      String artist = album[0]['artist'] as String;
-      String releaseDate = album[0]['release_date'] as String;
-      TrackType albumType =
+      final String title = album[0]['title'] as String;
+      final String? edition = album[0]['edition'] as String?;
+      final String catalog = album[0]['catalog'] as String;
+      final String artist = album[0]['artist'] as String;
+      final String releaseDate = album[0]['release_date'] as String;
+      final TrackType albumType =
           TrackType.fromString(album[0]['album_type'] as String);
 
       return Album(
@@ -109,22 +110,22 @@ SELECT lower(hex(album_id)) album_id FROM repo_album WHERE album_id IN (
     return albums
         .map((e) => e['album_id'] as String)
         .map((str) =>
-            "${str.substring(0, 8)}-${str.substring(8, 12)}-${str.substring(12, 16)}-${str.substring(16, 20)}-${str.substring(20, 32)}")
+            '${str.substring(0, 8)}-${str.substring(8, 12)}-${str.substring(12, 16)}-${str.substring(16, 20)}-${str.substring(20, 32)}')
         .toSet();
   }
 
   @override
   Future<Map<String, TagEntry>> getTags() async {
     final tags = await database.rawQuery(
-      "SELECT tag_id, name, tag_type, children FROM repo_tag LEFT JOIN (SELECT parent_id, group_concat(tag_id) children FROM repo_tag_relation GROUP BY parent_id) ON repo_tag.tag_id = parent_id",
+      'SELECT tag_id, name, tag_type, children FROM repo_tag LEFT JOIN (SELECT parent_id, group_concat(tag_id) children FROM repo_tag_relation GROUP BY parent_id) ON repo_tag.tag_id = parent_id',
     );
     final tagsMap = Map.fromEntries(tags.map(
       (e) => MapEntry(
-        e["tag_id"] as int,
+        e['tag_id'] as int,
         TagEntry(
-          name: e["name"] as String,
-          type: TagType.fromString(e["tag_type"] as String),
-          children: [(e["children"] as String?) ?? ""],
+          name: e['name'] as String,
+          type: TagType.fromString(e['tag_type'] as String),
+          children: [(e['children'] as String?) ?? ''],
         ),
       ),
     ));
@@ -144,7 +145,7 @@ SELECT lower(hex(album_id)) album_id FROM repo_album WHERE album_id IN (
   }
 
   Future<RepoDatabaseDescription> getDescription() async {
-    final data = await File(p.join(dbPath, "repo.json")).readAsString();
+    final data = await File(p.join(dbPath, 'repo.json')).readAsString();
     return RepoDatabaseDescription.fromJson(jsonDecode(data));
   }
 }

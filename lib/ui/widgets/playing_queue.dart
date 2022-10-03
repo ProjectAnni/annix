@@ -13,9 +13,9 @@ class PlayingQueue extends StatelessWidget {
             initialScrollOffset: 32.0 * (player.playingIndex ?? 0)),
         itemCount: player.queue.length,
         itemBuilder: (context, index) {
-          var song = player.queue[index];
+          final song = player.queue[index];
           return ListTile(
-            leading: Text("${index + 1}"),
+            leading: Text('${index + 1}'),
             title: Text(song.track.title, overflow: TextOverflow.ellipsis),
             minLeadingWidth: 16,
             selected: player.playingIndex == index,

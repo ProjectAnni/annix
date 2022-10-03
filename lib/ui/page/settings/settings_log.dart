@@ -35,7 +35,7 @@ class SettingsLogView extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              child: const Text("Close"),
+              child: const Text('Close'),
               onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
             ),
           ],
@@ -84,7 +84,7 @@ class SettingsLogView extends StatelessWidget {
                 final log = snapshot.data![index];
                 return ListTile(
                   leading: getLogLevelIcon(log.logLevel!),
-                  title: Text(log.text ?? "[No log message]"),
+                  title: Text(log.text ?? '[No log message]'),
                   subtitle: Text(
                       '${DateTime.fromMillisecondsSinceEpoch(log.timeInMillis!)}, ${log.className}.${log.methodName}'),
                   onTap: () => showDetailDialog(context, log),

@@ -17,7 +17,7 @@ class HomeAppBar extends StatelessWidget {
             child: Text(info!.user.nickname.substring(0, 1)),
           ),
           const SizedBox(width: 8),
-          Text("Welcome back, ${info!.user.nickname}."),
+          Text('Welcome back, ${info!.user.nickname}.'),
         ],
       );
     } else {

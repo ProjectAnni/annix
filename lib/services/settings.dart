@@ -44,42 +44,42 @@ class SettingsController {
 
   void init() {
     useMobileNetwork = ValueNotifier(
-        Global.preferences.getBool("annix_use_mobile_network") ?? true);
+        Global.preferences.getBool('annix_use_mobile_network') ?? true);
     useMobileNetwork.addListener(
-        saveChangedVariable("annix_use_mobile_network", useMobileNetwork));
+        saveChangedVariable('annix_use_mobile_network', useMobileNetwork));
 
     skipCertificateVerification = ValueNotifier(
-        Global.preferences.getBool("annix_skip_certificate_verification") ??
+        Global.preferences.getBool('annix_skip_certificate_verification') ??
             false);
     skipCertificateVerification.addListener(saveChangedVariable(
-        "annix_skip_certificate_verification", skipCertificateVerification));
+        'annix_skip_certificate_verification', skipCertificateVerification));
 
     autoScaleUI = ValueNotifier(
-        Global.preferences.getBool("annix_auto_scale_ui") ?? false);
+        Global.preferences.getBool('annix_auto_scale_ui') ?? false);
     autoScaleUI
-        .addListener(saveChangedVariable("annix_auto_scale_ui", autoScaleUI));
+        .addListener(saveChangedVariable('annix_auto_scale_ui', autoScaleUI));
 
     mobileShowArtistInBottomPlayer = ValueNotifier(Global.preferences
-            .getBool("annix_mobile_show_artist_in_bottom_player") ??
+            .getBool('annix_mobile_show_artist_in_bottom_player') ??
         false);
     mobileShowArtistInBottomPlayer.addListener(saveChangedVariable(
-        "annix_mobile_show_artist_in_bottom_player",
+        'annix_mobile_show_artist_in_bottom_player',
         mobileShowArtistInBottomPlayer));
 
     enableHttp2ForAnnil = ValueNotifier(
-        Global.preferences.getBool("annix_enable_http2_for_annil") ?? false);
+        Global.preferences.getBool('annix_enable_http2_for_annil') ?? false);
     enableHttp2ForAnnil.addListener(saveChangedVariable(
-        "annix_enable_http2_for_annil", enableHttp2ForAnnil));
+        'annix_enable_http2_for_annil', enableHttp2ForAnnil));
 
     defaultAudioQuality = ValueNotifier(PreferQuality.values[
-        Global.preferences.getInt("annix_default_audio_quality") ??
+        Global.preferences.getInt('annix_default_audio_quality') ??
             PreferQuality.Medium.index]);
     defaultAudioQuality.addListener(saveChangedVariable(
-        "annix_default_audio_quality", defaultAudioQuality));
+        'annix_default_audio_quality', defaultAudioQuality));
 
-    fontPath = ValueNotifier(Global.preferences.getString("annix_font_path"));
+    fontPath = ValueNotifier(Global.preferences.getString('annix_font_path'));
     fontPath.addListener(() async {
-      await saveChangedVariable("annix_font_path", fontPath)();
+      await saveChangedVariable('annix_font_path', fontPath)();
       final family = await FontService.load(fontPath.value);
       // ignore: use_build_context_synchronously
       Global.context.read<AnnixTheme>().setFontFamily(family);
@@ -105,7 +105,7 @@ class SettingsController {
       } else if (value == null) {
         await Global.preferences.remove(key);
       } else {
-        throw Exception("Unsupported type");
+        throw Exception('Unsupported type');
       }
     };
   }

@@ -122,8 +122,8 @@ class AnnivService extends ChangeNotifier {
   }
 
   void _loadInfo() {
-    final site = Global.preferences.getString("anniv_site");
-    final user = Global.preferences.getString("anniv_user");
+    final site = Global.preferences.getString('anniv_site');
+    final user = Global.preferences.getString('anniv_user');
     if (site != null && user != null) {
       info = SiteUserInfo(
         site: SiteInfo.fromJson(jsonDecode(site)),
@@ -136,11 +136,11 @@ class AnnivService extends ChangeNotifier {
     if (info != null) {
       final site = info!.site.toJson();
       final user = info!.user.toJson();
-      await Global.preferences.setString("anniv_site", jsonEncode(site));
-      await Global.preferences.setString("anniv_user", jsonEncode(user));
+      await Global.preferences.setString('anniv_site', jsonEncode(site));
+      await Global.preferences.setString('anniv_user', jsonEncode(user));
     } else {
-      await Global.preferences.remove("anniv_site");
-      await Global.preferences.remove("anniv_user");
+      await Global.preferences.remove('anniv_site');
+      await Global.preferences.remove('anniv_user');
     }
     notifyListeners();
   }
@@ -162,7 +162,7 @@ class AnnivService extends ChangeNotifier {
               title: Value(trackMetadata?.title),
               artist: Value(trackMetadata?.artist),
               albumTitle: Value(trackMetadata?.disc.album.fullTitle),
-              type: Value(trackMetadata?.type.toString() ?? "normal"),
+              type: Value(trackMetadata?.type.toString() ?? 'normal'),
             ),
           );
     }

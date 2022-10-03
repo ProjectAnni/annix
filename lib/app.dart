@@ -52,7 +52,7 @@ class AnnixApp extends StatelessWidget {
         // load local / remote album list
         context.read<AnnilService>().reloadClients();
         return MaterialApp.router(
-          title: "Annix",
+          title: 'Annix',
           debugShowCheckedModeBanner: false,
 
           // theme

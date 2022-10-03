@@ -55,7 +55,7 @@ class MetadataService {
 
   /// Get track information
   Future<Track?> getTrack(TrackIdentifier id) async {
-    Album? album = await getAlbum(albumId: id.albumId);
+    final album = await getAlbum(albumId: id.albumId);
     return album?.discs[id.discId - 1].tracks[id.trackId - 1];
   }
 

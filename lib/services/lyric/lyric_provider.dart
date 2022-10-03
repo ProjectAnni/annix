@@ -53,7 +53,7 @@ class LyricSearchResponseText extends LyricSearchResponse {
     required this.trackTitle,
     this.artistsName = const [],
     required this.lyricText,
-    this.lyricType = "text",
+    this.lyricType = 'text',
   });
 
   @override
@@ -79,18 +79,18 @@ class LyricResult {
   });
 
   factory LyricResult.empty() {
-    return LyricResult(text: "");
+    return LyricResult(text: '');
   }
 
   bool get isEmpty => text.isEmpty && model.isNullOrEmpty;
 
-  factory LyricResult.fromJson(dynamic json) {
+  factory LyricResult.fromJson(json) {
     if (json is String) {
       json = jsonDecode(json);
     }
 
-    final text = json["text"] as String;
-    final modelJson = json["model"] as List<dynamic>?;
+    final text = json['text'] as String;
+    final modelJson = json['model'] as List<dynamic>?;
     return LyricResult(
       text: text,
       model: modelJson == null
@@ -98,19 +98,19 @@ class LyricResult {
           : (LyricsModelBuilder.create()
                 ..mainLines = modelJson.map((lineJson) {
                   final line = LyricsLineModel();
-                  line.startTime = lineJson["startTime"];
-                  line.mainText = lineJson["mainText"];
-                  line.extText = lineJson["extText"];
+                  line.startTime = lineJson['startTime'];
+                  line.mainText = lineJson['mainText'];
+                  line.extText = lineJson['extText'];
 
-                  if (lineJson["spanList"] != null) {
-                    final spans = lineJson["spanList"] as List<dynamic>;
+                  if (lineJson['spanList'] != null) {
+                    final spans = lineJson['spanList'] as List<dynamic>;
                     line.spanList = spans.map((spanJson) {
                       final span = LyricSpanInfo();
-                      span.index = spanJson["index"];
-                      span.start = spanJson["start"];
-                      span.duration = spanJson["duration"];
-                      span.length = spanJson["length"];
-                      span.raw = spanJson["raw"];
+                      span.index = spanJson['index'];
+                      span.start = spanJson['start'];
+                      span.duration = spanJson['duration'];
+                      span.length = spanJson['length'];
+                      span.raw = spanJson['raw'];
                       return span;
                     }).toList();
                   }
@@ -122,26 +122,26 @@ class LyricResult {
 
   String toJson() {
     final json = <String, dynamic>{};
-    json["text"] = text;
+    json['text'] = text;
     if (model == null) {
-      json["model"] = null;
+      json['model'] = null;
     } else {
-      json["model"] = model!.lyrics.map((line) {
+      json['model'] = model!.lyrics.map((line) {
         final lineJson = <String, dynamic>{};
-        lineJson["startTime"] = line.startTime;
-        lineJson["mainText"] = line.mainText;
-        lineJson["extText"] = line.extText;
+        lineJson['startTime'] = line.startTime;
+        lineJson['mainText'] = line.mainText;
+        lineJson['extText'] = line.extText;
 
         if (line.spanList == null) {
-          lineJson["spanList"] = null;
+          lineJson['spanList'] = null;
         } else {
-          lineJson["spanList"] = line.spanList!.map((span) {
+          lineJson['spanList'] = line.spanList!.map((span) {
             final spanJson = <String, dynamic>{};
-            spanJson["index"] = span.index;
-            spanJson["start"] = span.start;
-            spanJson["duration"] = span.duration;
-            spanJson["length"] = span.length;
-            spanJson["raw"] = span.raw;
+            spanJson['index'] = span.index;
+            spanJson['start'] = span.start;
+            spanJson['duration'] = span.duration;
+            spanJson['length'] = span.length;
+            spanJson['raw'] = span.raw;
             return spanJson;
           }).toList();
         }

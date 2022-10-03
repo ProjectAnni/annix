@@ -14,6 +14,6 @@ Future<void> main() async {
   try {
     runApp(TranslationProvider(child: const AnnixApp()));
   } catch (e) {
-    FLog.error(text: "Uncaught exception", exception: e);
+    FLog.error(text: 'Uncaught exception', exception: e);
   }
 }

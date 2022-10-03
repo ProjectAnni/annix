@@ -3,7 +3,7 @@ import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-import 'layout.dart';
+import 'package:annix/ui/layout/layout.dart';
 
 /// F |
 ///   |
@@ -56,7 +56,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     leading: FloatingActionButton(
                       child: const Icon(Icons.search_outlined),
                       onPressed: () {
-                        router.to(name: "/search");
+                        router.to(name: '/search');
                       },
                     ),
                     groupAlignment: -0.7,

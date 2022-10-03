@@ -79,22 +79,22 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
   Widget build(BuildContext context) {
     if (_state == LyricSearchState.userInput) {
       return SimpleDialog(
-        title: const Text("Search Lyrics"),
+        title: const Text('Search Lyrics'),
         contentPadding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
           DropdownButtonFormField<LyricProviders>(
             isExpanded: true,
             decoration: const InputDecoration(
-              labelText: "Lyric Provider",
+              labelText: 'Lyric Provider',
             ),
             items: const [
               DropdownMenuItem(
                 value: LyricProviders.PetitLyrics,
-                child: Text("PetitLyrics"),
+                child: Text('PetitLyrics'),
               ),
               DropdownMenuItem(
                 value: LyricProviders.Netease,
-                child: Text("Netease Music"),
+                child: Text('Netease Music'),
               ),
             ],
             value: _lyricProvider,
@@ -103,19 +103,19 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
           ),
           TextFormField(
             decoration: const InputDecoration(
-              labelText: "Title",
+              labelText: 'Title',
             ),
             controller: _titleController,
           ),
           TextFormField(
             decoration: const InputDecoration(
-              labelText: "Artist",
+              labelText: 'Artist',
             ),
             controller: _artistController,
           ),
           TextFormField(
             decoration: const InputDecoration(
-              labelText: "Album",
+              labelText: 'Album',
             ),
             controller: _albumController,
           ),
@@ -123,7 +123,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
             children: [
               TextButton(
                 onPressed: _searchLyric,
-                child: const Text("Search"),
+                child: const Text('Search'),
               ),
             ],
           )
@@ -137,7 +137,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
       );
     } else if (_state == LyricSearchState.displaySearchResultList) {
       return SimpleDialog(
-        title: const Text("Search Result"),
+        title: const Text('Search Result'),
         contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         children: [
           SizedBox(
@@ -155,7 +155,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Text(
-                          result.artists.join("、"),
+                          result.artists.join('、'),
                           overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {

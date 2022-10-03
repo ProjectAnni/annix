@@ -139,7 +139,7 @@ class AnnilAudioSource extends Source {
           map[id] = Duration(seconds: duration + 1);
         });
       } else {
-        throw UnsupportedError("No available annil server found");
+        throw UnsupportedError('No available annil server found');
       }
     }
     preloaded = true;

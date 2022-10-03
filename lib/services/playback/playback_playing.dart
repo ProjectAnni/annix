@@ -47,7 +47,7 @@ class PlayingTrack extends ChangeNotifier {
   }
 
   Future<TrackLyric?> getLyric() async {
-    if (track.type != TrackType.Normal) {
+    if (track.type != TrackType.normal) {
       return TrackLyric(lyric: LyricResult.empty(), type: track.type);
     }
 
@@ -69,7 +69,7 @@ class PlayingTrack extends ChangeNotifier {
 
       // 3. lyric provider
       if (lyric == null) {
-        LyricProvider provider = LyricProviderPetitLyrics();
+        final LyricProvider provider = LyricProviderPetitLyrics();
         final songs = await provider.search(
           track: identifier,
           title: track.title,
@@ -89,7 +89,7 @@ class PlayingTrack extends ChangeNotifier {
 
       return null;
     } catch (e) {
-      FLog.error(text: "Failed to fetch lyric", exception: e);
+      FLog.error(text: 'Failed to fetch lyric', exception: e);
       return null;
     }
   }

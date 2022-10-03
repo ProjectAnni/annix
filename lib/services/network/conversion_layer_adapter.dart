@@ -48,8 +48,8 @@ class ConversionLayerAdapter extends HttpClientAdapter {
     request.maxRedirects = options.maxRedirects;
 
     if (requestStream != null) {
-      var completer = Completer<Uint8List>();
-      var sink = ByteConversionSink.withCallback(
+      final completer = Completer<Uint8List>();
+      final sink = ByteConversionSink.withCallback(
         (bytes) => completer.complete(Uint8List.fromList(bytes)),
       );
       requestStream.listen(
@@ -58,7 +58,7 @@ class ConversionLayerAdapter extends HttpClientAdapter {
         onDone: sink.close,
         cancelOnError: true,
       );
-      var bytes = await completer.future;
+      final bytes = await completer.future;
 
       request.bodyBytes = bytes;
     }

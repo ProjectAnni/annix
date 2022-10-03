@@ -41,8 +41,8 @@ class DownloadManagerPage extends StatelessWidget {
                     indicatorSize: TabBarIndicatorSize.tab,
                     labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     tabs: const [
-                      Tab(text: "Music"),
-                      Tab(text: "Others"),
+                      Tab(text: 'Music'),
+                      Tab(text: 'Others'),
                     ],
                   ),
                   Expanded(
@@ -99,7 +99,7 @@ class DownloadTaskListTile extends StatelessWidget {
                   : task.status == DownloadTaskStatus.paused
                       ? const Icon(Icons.pause)
                       : Text(
-                          "${bytesToString(task.progress.current)} / ${bytesToString(totalBytes)}");
+                          '${bytesToString(task.progress.current)} / ${bytesToString(totalBytes)}');
 
           if (task.data is TrackDownloadTaskData) {
             final track = task.data as TrackDownloadTaskData;

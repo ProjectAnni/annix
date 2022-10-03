@@ -14,5 +14,5 @@ String getAudioCachePath(TrackIdentifier id) {
 
 String getCoverCachePath(String albumId, int? discId) {
   final fileName = "${discId == null ? albumId : "${albumId}_$discId"}.jpg";
-  return p.join(Global.storageRoot, "cover", fileName);
+  return p.join(Global.storageRoot, 'cover', fileName);
 }

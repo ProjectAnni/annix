@@ -89,7 +89,7 @@ class MusicCover extends StatelessWidget {
   });
 
   Widget? _loadStateChanged(ExtendedImageState state) {
-    final id = "$albumId/$discId";
+    final id = '$albumId/$discId';
     switch (state.extendedImageLoadState) {
       case LoadState.completed:
         final image = state.extendedImageInfo!.image;
@@ -140,7 +140,7 @@ class MusicCover extends StatelessWidget {
     }
 
     final cover = Hero(
-      tag: "$tag/$albumId/$discId",
+      tag: '$tag/$albumId/$discId',
       child: image,
     );
 
