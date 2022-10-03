@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';

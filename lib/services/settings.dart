@@ -1,5 +1,5 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/font.dart';
 import 'package:annix/services/theme.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,7 @@ class SettingsController {
 
     defaultAudioQuality = ValueNotifier(PreferQuality.values[
         Global.preferences.getInt('annix_default_audio_quality') ??
-            PreferQuality.Medium.index]);
+            PreferQuality.medium.index]);
     defaultAudioQuality.addListener(saveChangedVariable(
         'annix_default_audio_quality', defaultAudioQuality));
 

@@ -1,4 +1,4 @@
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/ui/widgets/album_grid.dart';

@@ -3,7 +3,7 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:annix/services/playback/playback.dart';

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';

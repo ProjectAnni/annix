@@ -1,5 +1,5 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/ui/route/delegate.dart';

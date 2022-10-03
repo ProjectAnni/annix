@@ -1,6 +1,6 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';

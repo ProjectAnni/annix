@@ -285,25 +285,21 @@ class AnnilService extends ChangeNotifier {
 }
 
 enum PreferQuality {
-  // ignore: constant_identifier_names
-  Low,
-  // ignore: constant_identifier_names
-  Medium,
-  // ignore: constant_identifier_names
-  High,
-  // ignore: constant_identifier_names
-  Lossless;
+  low,
+  medium,
+  high,
+  lossless;
 
   @override
   String toString() {
     switch (this) {
-      case PreferQuality.Low:
+      case PreferQuality.low:
         return 'low';
-      case PreferQuality.Medium:
+      case PreferQuality.medium:
         return 'medium';
-      case PreferQuality.High:
+      case PreferQuality.high:
         return 'high';
-      case PreferQuality.Lossless:
+      case PreferQuality.lossless:
         return 'lossless';
     }
   }
@@ -311,15 +307,15 @@ enum PreferQuality {
   factory PreferQuality.fromString(String str) {
     switch (str) {
       case 'low':
-        return PreferQuality.Low;
+        return PreferQuality.low;
       case 'medium':
-        return PreferQuality.Medium;
+        return PreferQuality.medium;
       case 'high':
-        return PreferQuality.High;
+        return PreferQuality.high;
       case 'lossless':
-        return PreferQuality.Lossless;
+        return PreferQuality.lossless;
       default:
-        return PreferQuality.Medium;
+        return PreferQuality.medium;
     }
   }
 }

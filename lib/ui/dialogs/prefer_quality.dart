@@ -1,5 +1,5 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:flutter/material.dart';
 
 Future<PreferQuality> showPreferQualityDialog(BuildContext context) async {
@@ -18,7 +18,7 @@ Future<PreferQuality> showPreferQualityDialog(BuildContext context) async {
               children: [
                 RadioListTile<PreferQuality>(
                   title: const Text('Lossless'),
-                  value: PreferQuality.Lossless,
+                  value: PreferQuality.lossless,
                   groupValue: quality,
                   onChanged: (value) {
                     quality = value ?? quality;
@@ -27,7 +27,7 @@ Future<PreferQuality> showPreferQualityDialog(BuildContext context) async {
                 ),
                 RadioListTile<PreferQuality>(
                   title: const Text('High'),
-                  value: PreferQuality.High,
+                  value: PreferQuality.high,
                   groupValue: quality,
                   onChanged: (value) {
                     quality = value ?? quality;
@@ -36,7 +36,7 @@ Future<PreferQuality> showPreferQualityDialog(BuildContext context) async {
                 ),
                 RadioListTile<PreferQuality>(
                   title: const Text('Medium'),
-                  value: PreferQuality.Medium,
+                  value: PreferQuality.medium,
                   groupValue: quality,
                   onChanged: (value) {
                     quality = value ?? quality;
@@ -45,7 +45,7 @@ Future<PreferQuality> showPreferQualityDialog(BuildContext context) async {
                 ),
                 RadioListTile<PreferQuality>(
                   title: const Text('Low'),
-                  value: PreferQuality.Low,
+                  value: PreferQuality.low,
                   groupValue: quality,
                   onChanged: (value) {
                     quality = value ?? quality;

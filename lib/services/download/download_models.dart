@@ -1,4 +1,4 @@
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 
 enum DownloadCategory {

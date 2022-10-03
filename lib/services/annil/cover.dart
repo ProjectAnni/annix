@@ -1,6 +1,6 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/annil/annil.dart';
 import 'package:http_plus/http_plus.dart';
 import 'dart:io' show File;
 
