@@ -1834,9 +1834,18 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         }).map((QueryRow row) => row.read<bool>('_c0'));
   }
 
+  Selectable<LocalAnnilServer> sortedAnnilServers() {
+    return customSelect(
+        'SELECT * FROM local_annil_servers ORDER BY priority DESC',
+        variables: [],
+        readsFrom: {
+          localAnnilServers,
+        }).asyncMap(localAnnilServers.mapFromRow);
+  }
+
   Selectable<LocalAnnilServer> annilToUse(String var1) {
     return customSelect(
-        'SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?1) ORDER BY priority',
+        'SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?1) ORDER BY priority DESC',
         variables: [
           Variable<String>(var1)
         ],
@@ -1844,6 +1853,23 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
           localAnnilServers,
           localAnnilAlbums,
         }).asyncMap(localAnnilServers.mapFromRow);
+  }
+
+  Future<int> updateAnnilETag(String? var1, int var2) {
+    return customUpdate(
+      'UPDATE local_annil_servers SET etag = ?1 WHERE id = ?2',
+      variables: [Variable<String>(var1), Variable<int>(var2)],
+      updates: {localAnnilServers},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Selectable<String> availableAlbums() {
+    return customSelect('SELECT DISTINCT album_id FROM local_annil_albums',
+        variables: [],
+        readsFrom: {
+          localAnnilAlbums,
+        }).map((QueryRow row) => row.read<String>('album_id'));
   }
 
   @override

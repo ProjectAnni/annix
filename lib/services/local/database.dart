@@ -42,10 +42,12 @@ class LocalDatabase extends _$LocalDatabase {
   static StreamProvider<List<LocalAnnilServer>> annilProvider = StreamProvider(
     create: (context) {
       final database = context.read<LocalDatabase>();
-      final stream = database.localAnnilServers.select().watch();
+      final stream = database.sortedAnnilServers().watch();
       stream.listen((event) {
-        final annil = context.read<AnnilService>();
-        annil.reloadClients();
+        try {
+          final annil = Global.context.read<AnnilService>();
+          annil.reloadClients();
+        } catch (e) {}
       });
       return stream;
     },

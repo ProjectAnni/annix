@@ -77,4 +77,7 @@ playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order
 
 isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorites WHERE album_id = ? AND disc_id = ? AND track_id = ?);
 
-annilToUse: SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?) ORDER BY priority;
+sortedAnnilServers: SELECT * FROM local_annil_servers ORDER BY priority DESC;
+annilToUse: SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?) ORDER BY priority DESC;
+updateAnnilETag: UPDATE local_annil_servers SET etag = ? WHERE id = ?;
+availableAlbums: SELECT DISTINCT album_id FROM local_annil_albums;
