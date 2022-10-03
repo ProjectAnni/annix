@@ -299,6 +299,7 @@ class AnnilClient {
       if (e.response?.statusCode == 304) {
         FLog.trace(text: "Annil cache HIT, etag: $eTag");
       } else {
+        eTag = "";
         albums = [];
         rethrow;
       }

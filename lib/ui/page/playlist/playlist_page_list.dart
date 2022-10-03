@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -58,7 +56,8 @@ class PlaylistDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AnnilService annil = context.read();
+    final annil = context.read<AnnilService>();
+    final player = context.read<PlaybackService>();
 
     return BasePlaylistScreen(
       title: playlist.intro.name,
@@ -71,7 +70,14 @@ class PlaylistDetailScreen extends StatelessWidget {
             ]
           : [],
       cover: _cover(context),
-      onTracks: onTracks,
+      onPlay: (shuffle) {
+        final tracks = getTracks();
+        playFullList(
+          player: player,
+          tracks: tracks,
+          shuffle: shuffle,
+        );
+      },
       child: ListView.builder(
         itemCount: playlist.items.length,
         itemBuilder: (context, index) {
@@ -102,13 +108,10 @@ class PlaylistDetailScreen extends StatelessWidget {
                 : ArtistText(track.info.artist),
             enabled: annil.isAvailable(track.info.id),
             onTap: () async {
-              final player = context.read<PlaybackService>();
-              final tracks = await onTracks();
+              final tracks = getTracks();
               playFullList(
                 player: player,
-                tracks: tracks
-                    .map((track) => AnnilAudioSource(track: track))
-                    .toList(),
+                tracks: tracks,
                 initialIndex: index,
               );
             },
@@ -147,7 +150,7 @@ class PlaylistDetailScreen extends StatelessWidget {
     }
   }
 
-  Future<List<TrackInfoWithAlbum>> onTracks() async {
+  List<AnnilAudioSource> getTracks() {
     return playlist.items
         .map<TrackInfoWithAlbum?>(
           (item) {
@@ -159,6 +162,7 @@ class PlaylistDetailScreen extends StatelessWidget {
           },
         )
         .whereType<TrackInfoWithAlbum>()
+        .map((track) => AnnilAudioSource(track: track))
         .toList();
   }
 

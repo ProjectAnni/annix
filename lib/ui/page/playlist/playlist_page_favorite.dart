@@ -33,10 +33,17 @@ class FavoriteScreen extends StatelessWidget {
       title: t.my_favorite,
       cover: cover,
       intro: [Text("${favorites.length} songs")],
-      refresh: () async {
+      onRefresh: () async {
         await anniv.syncFavorite();
       },
-      onTracks: () => onTracks(favorites),
+      onPlay: (shuffle) {
+        final tracks = getTracks(favorites);
+        playFullList(
+          player: player,
+          tracks: tracks,
+          shuffle: shuffle,
+        );
+      },
       child: ListView.builder(
         itemCount: reversedFavorite.length,
         padding: EdgeInsets.zero,
@@ -63,12 +70,10 @@ class FavoriteScreen extends StatelessWidget {
               ),
             ),
             onTap: () async {
-              final tracks = await onTracks(favorites);
+              final tracks = getTracks(favorites);
               playFullList(
                 player: player,
-                tracks: tracks
-                    .map((track) => AnnilAudioSource(track: track))
-                    .toList(),
+                tracks: tracks,
                 initialIndex: index,
               );
             },
@@ -78,8 +83,8 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 
-  Future<List<TrackInfoWithAlbum>> onTracks(List<Favorite> favorites) async {
-    final AnnilService annil = Global.context.read();
+  List<AnnilAudioSource> getTracks(List<Favorite> favorites) {
+    final annil = Global.context.read<AnnilService>();
 
     return favorites.reversed
         .map(
@@ -104,6 +109,7 @@ class FavoriteScreen extends StatelessWidget {
           },
         )
         .whereType<TrackInfoWithAlbum>()
+        .map((track) => AnnilAudioSource(track: track))
         .toList();
   }
 }

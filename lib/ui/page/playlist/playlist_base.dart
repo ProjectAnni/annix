@@ -1,22 +1,17 @@
-import 'dart:io';
-
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-typedef TrackListCallback = Future<List<TrackInfoWithAlbum>> Function();
+typedef PlaybackCallback = void Function(bool shuffle);
 
 class BasePlaylistScreen extends StatelessWidget {
   /// Page title
   final Widget? pageTitle;
 
   /// Page actions
-  final List<Widget>? pageActions;
+  final List<Widget> actions;
 
   /// Cover image of the playlist.
   final Widget cover;
@@ -30,22 +25,26 @@ class BasePlaylistScreen extends StatelessWidget {
   /// Widget to show track list
   final Widget child;
 
-  /// Tracks to play
-  final TrackListCallback onTracks;
+  /// Playback callback
+  final PlaybackCallback? onPlay;
 
   /// Refresh callback
-  final RefreshCallback? refresh;
+  final RefreshCallback? onRefresh;
+
+  /// Download callback
+  final VoidCallback? onDownload;
 
   const BasePlaylistScreen({
     super.key,
     this.pageTitle,
-    this.pageActions,
+    this.actions = const [],
     required this.cover,
     required this.title,
     required this.intro,
     required this.child,
-    required this.onTracks,
-    this.refresh,
+    this.onPlay,
+    this.onRefresh,
+    this.onDownload,
   });
 
   Widget _albumIntro(BuildContext context) {
@@ -79,45 +78,10 @@ class BasePlaylistScreen extends StatelessWidget {
                     style: context.textTheme.titleMedium,
                   ),
                   ...intro,
-                  ButtonBar(
-                    alignment: MainAxisAlignment.start,
-                    children: [
-                      TextButton.icon(
-                        icon: const Icon(Icons.play_arrow),
-                        label: const Text("Play"),
-                        onPressed: () async {
-                          final player = context.read<PlaybackService>();
-                          final tracks = await onTracks();
-                          playFullList(
-                            player: player,
-                            tracks: tracks
-                                .map((track) => AnnilAudioSource(track: track))
-                                .toList(),
-                            shuffle: false,
-                          );
-                        },
-                      ),
-                      OutlinedButton.icon(
-                        icon: const Icon(Icons.shuffle),
-                        label: const Text("Shuffle"),
-                        onPressed: () async {
-                          final player = context.read<PlaybackService>();
-                          final tracks = await onTracks();
-                          playFullList(
-                            player: player,
-                            tracks: tracks
-                                .map((track) => AnnilAudioSource(track: track))
-                                .toList(),
-                            shuffle: true,
-                          );
-                        },
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -128,53 +92,48 @@ class BasePlaylistScreen extends StatelessWidget {
     Widget result = Column(
       children: [
         _albumIntro(context),
+
+        // buttons
+        ButtonBar(
+          alignment: MainAxisAlignment.start,
+          children: [
+            TextButton.icon(
+              icon: const Icon(Icons.play_arrow),
+              label: const Text("Play"),
+              onPressed: onPlay == null ? null : () => onPlay!(false),
+            ),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.shuffle),
+              label: const Text("Shuffle"),
+              onPressed: onPlay == null ? null : () => onPlay!(true),
+            ),
+          ],
+        ),
         Expanded(child: child),
       ],
     );
 
-    final actions = (pageActions ?? []) +
+    final pageActions = actions +
         [
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: () async {
-              final scaffold = ScaffoldMessenger.of(context);
-              final tracks = (await onTracks())
-                  .map((track) =>
-                      AnnilAudioSource.spawnDownloadTask(track: track))
-                  .whereType<DownloadTask>()
-                  .where((task) => !File(task.savePath).existsSync())
-                  .toList();
-              if (tracks.isNotEmpty) {
-                Global.downloadManager.addAll(tracks);
-
-                scaffold.showSnackBar(
-                  SnackBar(
-                    content: Text('Downloading ${tracks.length} tracks'),
-                  ),
-                );
-              } else {
-                scaffold.showSnackBar(
-                  const SnackBar(
-                    content: Text('All tracks are already downloaded'),
-                  ),
-                );
-              }
-            },
-          ),
+          if (onDownload != null)
+            IconButton(
+              icon: const Icon(Icons.download),
+              onPressed: onDownload,
+            ),
         ];
-    if (refresh != null) {
+    if (onRefresh != null) {
       if (Global.isDesktop) {
         // sync button on desktop
-        actions.add(
+        pageActions.add(
           IconButton(
             icon: const Icon(Icons.sync),
-            onPressed: refresh,
+            onPressed: onRefresh,
           ),
         );
       } else {
         // refresh indicator on mobile
         result = RefreshIndicator(
-          onRefresh: refresh!,
+          onRefresh: onRefresh!,
           child: result,
         );
       }
@@ -184,7 +143,7 @@ class BasePlaylistScreen extends StatelessWidget {
       appBar: AppBar(
         title: pageTitle,
         scrolledUnderElevation: 0,
-        actions: actions,
+        actions: pageActions,
       ),
       body: result,
     );

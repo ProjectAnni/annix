@@ -60,22 +60,31 @@ class AlbumDetailScreen extends StatelessWidget {
         //   ],
         // ),
       ],
-      onTracks: () => onTracks(context),
+      onPlay: (shuffle) {
+        final player = context.read<PlaybackService>();
+        playFullList(
+          player: player,
+          tracks: getTracks(context),
+          shuffle: shuffle,
+        );
+      },
       child: _getAlbumTracks(context),
     );
   }
 
-  Future<List<TrackInfoWithAlbum>> onTracks(BuildContext context) async {
-    final AnnilService annil = context.read();
+  List<AnnilAudioSource> getTracks(BuildContext context) {
+    final annil = context.read<AnnilService>();
 
-    List<TrackInfoWithAlbum> songs = [];
+    List<AnnilAudioSource> songs = [];
 
     for (final disc in album.discs) {
       for (final track in disc.tracks) {
         // check if available
         final trackId = track.id;
         if (annil.isAvailable(trackId)) {
-          songs.add(TrackInfoWithAlbum.fromTrack(track));
+          songs.add(
+            AnnilAudioSource(track: TrackInfoWithAlbum.fromTrack(track)),
+          );
         }
       }
     }
@@ -129,12 +138,10 @@ class AlbumDetailScreen extends StatelessWidget {
               ),
               onTap: () async {
                 final player = context.read<PlaybackService>();
-                final tracks = await onTracks(context);
+                final tracks = getTracks(context);
                 playFullList(
                   player: player,
-                  tracks: tracks
-                      .map((track) => AnnilAudioSource(track: track))
-                      .toList(),
+                  tracks: tracks,
                   initialIndex: totalTrackIndex,
                 );
               },
