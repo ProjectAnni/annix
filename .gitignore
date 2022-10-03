@@ -47,3 +47,7 @@ app.*.map.json
 /android/app/src/main/jniLibs
 
 keystore*
+
+# Font files
+*.ttf
+*.otf

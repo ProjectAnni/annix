@@ -1,5 +1,6 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/client.dart';
+import 'package:annix/ui/dialogs/input.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -8,6 +9,7 @@ import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:file_picker/file_picker.dart';
 
 typedef WidgetCallback = Widget Function();
 
@@ -107,6 +109,24 @@ class SettingsScreen extends StatelessWidget {
                   initialValue: p,
                   leading: const Icon(Icons.smart_screen_outlined),
                   title: Text(t.settings.auto_scale_ui),
+                ),
+              ),
+              SettingsTileBuilder<String?>(
+                value: settings.fontPath,
+                builder: (context, p, _) => SettingsTile.navigation(
+                  leading: const Icon(Icons.font_download),
+                  title: const Text("Custom font path"),
+                  trailing: Text(p ?? "Not Specified"),
+                  onPressed: (context) async {
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(allowedExtensions: ["ttf", "otf"]);
+
+                    if (result != null) {
+                      settings.fontPath.value = result.files.single.path;
+                    } else {
+                      settings.fontPath.value = null;
+                    }
+                  },
                 ),
               ),
               if (Global.isMobile)

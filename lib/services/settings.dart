@@ -1,6 +1,9 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/font.dart';
+import 'package:annix/services/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsController {
   /// Download audio files using mobile network
@@ -33,6 +36,11 @@ class SettingsController {
   ///
   /// Default value: Medium
   late ValueNotifier<PreferQuality> defaultAudioQuality;
+
+  /// Custom font path
+  ///
+  /// Default value: null
+  late ValueNotifier<String?> fontPath;
 
   void init() {
     useMobileNetwork = ValueNotifier(
@@ -68,24 +76,34 @@ class SettingsController {
             PreferQuality.Medium.index]);
     defaultAudioQuality.addListener(saveChangedVariable(
         "annix_default_audio_quality", defaultAudioQuality));
+
+    fontPath = ValueNotifier(Global.preferences.getString("annix_font_path"));
+    fontPath.addListener(() async {
+      await saveChangedVariable("annix_font_path", fontPath)();
+      final family = await FontService.load(fontPath.value);
+      // ignore: use_build_context_synchronously
+      Global.context.read<AnnixTheme>().setFontFamily(family);
+    });
   }
 
-  void Function() saveChangedVariable<T>(
+  Future<void> Function() saveChangedVariable<T>(
     String key,
     ValueNotifier<T> notifier,
   ) {
-    return () {
+    return () async {
       final value = notifier.value;
       if (value is String) {
-        Global.preferences.setString(key, value);
+        await Global.preferences.setString(key, value);
       } else if (value is bool) {
-        Global.preferences.setBool(key, value);
+        await Global.preferences.setBool(key, value);
       } else if (value is int) {
-        Global.preferences.setInt(key, value);
+        await Global.preferences.setInt(key, value);
       } else if (value is double) {
-        Global.preferences.setDouble(key, value);
+        await Global.preferences.setDouble(key, value);
       } else if (value is Enum) {
-        Global.preferences.setInt(key, value.index);
+        await Global.preferences.setInt(key, value.index);
+      } else if (value == null) {
+        await Global.preferences.remove(key);
       } else {
         throw Exception("Unsupported type");
       }

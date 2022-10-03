@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/services/download/download_manager.dart';
+import 'package:annix/services/font.dart';
 import 'package:annix/services/network/proxy.dart';
 import 'package:annix/services/settings.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -41,6 +42,8 @@ class Global {
     preferences = await SharedPreferences.getInstance();
     await proxy.start();
     settings.init();
+
+    await FontService.load(settings.fontPath.value);
 
     if (isDesktop) {
       doWhenWindowReady(() {
