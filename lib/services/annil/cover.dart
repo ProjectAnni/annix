@@ -42,7 +42,7 @@ class CoverReverseProxy {
     final file = File(coverImagePath);
     if (!await file.exists()) {
       final uri =
-          annil.getCoverUrl(albumId: cover.albumId, discId: cover.discId);
+          await annil.getCoverUrl(albumId: cover.albumId, discId: cover.discId);
       if (uri == null) {
         return null;
       }

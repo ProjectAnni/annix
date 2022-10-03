@@ -53,7 +53,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS "local_favorites_index" ON local_favorites (
 );
 
 ---> annil
-CREATE TABLE local_annil_server (
+CREATE TABLE local_annil_servers (
     "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     "remote_id"       TEXT,
     "name"            TEXT NOT NULL,
@@ -63,12 +63,12 @@ CREATE TABLE local_annil_server (
     "etag"            TEXT
 );
 
-CREATE TABLE local_annil_data (
+CREATE TABLE local_annil_albums (
     "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     "annil_id"        INT NOT NULL,
     "album_id"        TEXT NOT NULL,
 
-    FOREIGN KEY("annil_id") REFERENCES "local_annil_server"("id")
+    FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")
 );
 
 ----------------------------------------------------------------------
@@ -77,4 +77,4 @@ playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order
 
 isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorites WHERE album_id = ? AND disc_id = ? AND track_id = ?);
 
-annilToUse: SELECT id FROM local_annil_server WHERE id IN (SELECT annil_id FROM local_annil_data WHERE album_id = ?) ORDER BY priority;
+annilToUse: SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?) ORDER BY priority;

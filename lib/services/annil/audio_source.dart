@@ -97,15 +97,16 @@ class AnnilAudioSource extends Source {
 
   bool preloaded = false;
 
-  static DownloadTask? spawnDownloadTask({
+  static Future<DownloadTask?> spawnDownloadTask({
     required TrackInfoWithAlbum track,
     PreferQuality? quality,
     String? savePath,
-  }) {
+  }) async {
     final downloadQuality =
         quality ?? Global.settings.defaultAudioQuality.value;
     final annil = Global.context.read<AnnilService>();
-    final url = annil.getAudioUrl(id: track.id, quality: downloadQuality);
+    final url =
+        await annil.getAudioUrl(track: track.id, quality: downloadQuality);
     if (url == null) {
       return null;
     }
@@ -123,7 +124,7 @@ class AnnilAudioSource extends Source {
     final savePath = getAudioCachePath(track.id);
     final file = File(savePath);
     if (!file.existsSync()) {
-      final task = spawnDownloadTask(
+      final task = await spawnDownloadTask(
         track: track,
         savePath: savePath,
       );

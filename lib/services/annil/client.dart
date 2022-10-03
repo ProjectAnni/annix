@@ -1,125 +1,177 @@
-// ignore_for_file: constant_identifier_names
-
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/global.dart';
+import 'package:annix/services/local/database.dart';
 import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
+import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
 
 class AnnilService extends ChangeNotifier {
-  final Map<String, AnnilClient> clients;
-  final List<AnnilClient> _clients;
+  final BuildContext context;
+  final Dio _client = Dio()
+    ..httpClientAdapter =
+        createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
 
-  List<AnnilClient> get sortedClients => _clients;
   List<String> albums = [];
 
-  AnnilService._([List<AnnilClient> clients = const []])
-      : _clients = clients,
-        clients = Map.fromEntries(clients.map((e) => MapEntry(e.id, e))) {
-    _sort();
+  AnnilService(this.context) {
+    final network = context.read<NetworkService>();
+    network.addListener(() => reloadClients());
+
+    Global.settings.enableHttp2ForAnnil.addListener(() {
+      _client.httpClientAdapter =
+          createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
+    });
   }
 
-  bool get isEmpty => clients.isEmpty;
-
-  bool get isNotEmpty => !isEmpty;
-
-  void _sort() {
-    _clients.sort((a, b) => b.priority - a.priority);
-  }
-
-  // TODO: load from / save to sqlite instead of shared preferences
-  static AnnilService loadFromLocal() {
-    final List<String>? tokens =
-        Global.preferences.getStringList('annil_clients');
-    if (tokens != null) {
-      final clients = tokens
-          .map((token) => AnnilClient.fromJson(jsonDecode(token)))
-          .toList();
-      return AnnilService._(clients);
-    } else {
-      return AnnilService._();
+  Future<void> createRemoteClient({
+    required String name,
+    required String url,
+    required String token,
+    required int priority,
+    required String remoteId,
+  }) async {
+    if (url.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
     }
+
+    final db = Global.context.read<LocalDatabase>();
+    await db.localAnnilServers.insertOne(
+      LocalAnnilServersCompanion.insert(
+        name: name,
+        url: url,
+        token: token,
+        priority: priority,
+        remoteId: Value(remoteId),
+      ),
+    );
   }
 
-  Future<void> saveToLocal() async {
-    // TODO: save to database instead of shared_preferences
-    final tokens =
-        clients.values.map((client) => jsonEncode(client.toJson())).toList();
-    await Global.preferences.setStringList('annil_clients', tokens);
+  Future<void> createLocalClient({
+    required String name,
+    required String url,
+    required String token,
+    required int priority,
+  }) async {
+    if (url.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
+    }
+
+    final db = Global.context.read<LocalDatabase>();
+    await db.localAnnilServers.insertOne(
+      LocalAnnilServersCompanion.insert(
+        name: name,
+        url: url,
+        token: token,
+        priority: priority,
+      ),
+    );
   }
 
   /// Keep sync with new credential list
-  void sync(List<AnnilToken> remoteList) {
-    final remoteIds = remoteList.map((e) => e.id).toList();
-    // update existing client info
-    clients.removeWhere((id, client) {
-      final index = remoteIds.indexOf(id);
-      if (index != -1) {
-        // exist both in local and remote, update client info
-        final newClient = remoteList[index];
-        client.name = newClient.name;
-        client.url = newClient.url;
-        client.token = newClient.token;
-        client.priority = newClient.priority;
-        remoteIds.removeAt(index);
-        remoteList.removeAt(index);
-      } else if (!client.local) {
-        // remote client which only exist in local, remove it
-        return true;
-      }
+  Future<void> sync(List<AnnilToken> remoteList) async {
+    final db = Global.context.read<LocalDatabase>();
+    final clients = Global.context.read<List<LocalAnnilServer>>();
 
-      // do not remove the remaining
-      return false;
+    final toUpdate = clients
+        .map((client) {
+          // local annil
+          if (client.remoteId == null) {
+            return null;
+          }
+
+          return remoteList
+              .firstWhere((remote) => remote.id == client.remoteId);
+        })
+        .whereType<LocalAnnilServer>()
+        .toList();
+    final toUpdateIds = toUpdate.map((e) => e.remoteId).toList();
+    final toRemove = clients
+        .map((client) {
+          if (client.remoteId == null) {
+            return null;
+          }
+
+          return toUpdate.contains(client) ? null : client.id;
+        })
+        .whereType<int>()
+        .toList();
+    final toAdd =
+        remoteList.where((remote) => !toUpdateIds.contains(remote.id));
+    await db.transaction(() async {
+      // exist both in local and remote, update client info
+      for (final client in toUpdate) {
+        await (db.localAnnilServers.update()
+              ..where((tbl) => tbl.id.equals(client.id)))
+            .write(
+          LocalAnnilServersCompanion(
+            name: Value(client.name),
+            url: Value(client.url),
+            token: Value(client.token),
+            priority: Value(client.priority),
+          ),
+        );
+      }
+      // remove deleted servers
+      await db.localAnnilServers.deleteWhere((tbl) => tbl.id.isIn(toRemove));
+      // add new servers
+      await db.batch(
+        (batch) => batch.insertAll(
+          db.localAnnilServers,
+          toAdd.map(
+            (e) => LocalAnnilServersCompanion.insert(
+              name: e.name,
+              url: e.url,
+              token: e.token,
+              priority: e.priority,
+              remoteId: Value(e.id),
+              // TODO: controlled property
+              // controlled: e.controlled,
+            ),
+          ),
+        ),
+      );
     });
-
-    // add new clients
-    clients.addAll(
-      Map.fromEntries(
-        remoteList
-            .map((e) => AnnilClient.remote(
-                  id: e.id,
-                  name: e.name,
-                  url: e.url,
-                  token: e.token,
-                  priority: e.priority,
-                ))
-            .map((c) => MapEntry(c.id, c)),
-      ),
-    );
-
-    // sort with priority
-    _clients.clear();
-    _clients.addAll(clients.values);
-    _sort();
-    notifyListeners();
   }
 
-  String? getAudioUrl({
-    required TrackIdentifier id,
+  static Future<List<LocalAnnilServer>> _getActiveServerByAlbumId(
+      String albumId) async {
+    final db = Global.context.read<LocalDatabase>();
+    return await db.annilToUse(albumId).get();
+  }
+
+  Future<String?> getAudioUrl({
+    required TrackIdentifier track,
     required PreferQuality quality,
-  }) {
-    for (final client in _clients) {
-      if (client.albums.contains(id.albumId)) {
-        return '${client.url}/${id.albumId}/${id.discId}/${id.trackId}?auth=${client.token}&quality=$quality';
-      }
+  }) async {
+    final servers = await _getActiveServerByAlbumId(track.albumId);
+    if (servers.isEmpty) {
+      return null;
+    } else {
+      final server = servers.first;
+      return '${server.url}/${track.albumId}/${track.discId}/${track.trackId}?auth=${server.token}&quality=$quality';
     }
-
-    return null;
   }
 
-  Uri? getCoverUrl({required String albumId, int? discId}) {
+  Future<Uri?> getCoverUrl({required String albumId, int? discId}) async {
     if (NetworkService.isOnline) {
-      for (final client in _clients) {
-        if (client.albums.contains(albumId)) {
-          return client.getCoverUrl(albumId: albumId, discId: discId);
+      final servers = await _getActiveServerByAlbumId(albumId);
+      if (servers.isEmpty) {
+        return null;
+      } else {
+        final server = servers.first;
+
+        if (discId == null) {
+          return Uri.parse('${server.url}/$albumId/cover');
+        } else {
+          return Uri.parse('${server.url}/$albumId/$discId/cover');
         }
       }
     }
@@ -129,28 +181,22 @@ class AnnilService extends ChangeNotifier {
   /// Refresh all annil servers
   Future<void> reloadClients() async {
     if (NetworkService.isOnline) {
-      final newAlbums = (await Future.wait(clients.values.map((client) async {
+      final servers = context.watch<List<LocalAnnilServer>>();
+      await Future.wait(servers.map((server) async {
         try {
-          return await client.getAlbums();
+          await updateAlbums(server);
         } catch (e) {
           FLog.warning(
-            text: 'Failed to refresh annil client ${client.name}',
+            text: 'Failed to refresh annil client ${server.name}',
             exception: e,
           );
-          // TODO: use local copy
-          return <String>[];
         }
-      })))
-          .expand((e) => e)
-          .toSet()
-          .toList();
-      albums.replaceRange(0, albums.length, newAlbums);
-      await saveToLocal();
+        return;
+      }));
     } else {
       final localAlbums = await getCachedAlbums();
       albums.replaceRange(0, albums.length, localAlbums);
     }
-    notifyListeners();
   }
 
   bool isAvailable(TrackIdentifier id) {
@@ -179,140 +225,39 @@ class AnnilService extends ChangeNotifier {
     final path = getAudioCachePath(id);
     return File(path).existsSync();
   }
-}
-
-class AnnilClient {
-  final Dio client;
-  final String id;
-  String name;
-  String url;
-  String token;
-  int priority;
-  final bool local;
-
-  // cached album list in client
-  String eTag = '';
-  List<String> albums = [];
-
-  AnnilClient._({
-    required this.id,
-    required this.name,
-    required this.url,
-    required this.token,
-    required this.priority,
-    this.local = false,
-  }) : client = Dio(BaseOptions(baseUrl: url))
-          ..httpClientAdapter =
-              createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value) {
-    Global.settings.enableHttp2ForAnnil.addListener(() {
-      client.httpClientAdapter =
-          createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
-    });
-  }
-
-  factory AnnilClient.remote({
-    required String id,
-    required String name,
-    required String url,
-    required String token,
-    required int priority,
-  }) {
-    if (url.endsWith('/')) {
-      url = url.substring(0, url.length - 1);
-    }
-    return AnnilClient._(
-      id: id,
-      name: name,
-      url: url,
-      token: token,
-      priority: priority,
-      local: false,
-    );
-  }
-
-  factory AnnilClient.local({
-    required String name,
-    required String url,
-    required String token,
-    required int priority,
-  }) =>
-      AnnilClient._(
-        id: const Uuid().v4(),
-        name: name,
-        url: url,
-        token: token,
-        priority: priority,
-        local: true,
-      );
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'url': url,
-      'token': token,
-      'priority': priority,
-      'local': local,
-      'albums': albums,
-      'etag': eTag,
-    };
-  }
-
-  factory AnnilClient.fromJson(Map<String, dynamic> json) {
-    final client = AnnilClient._(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      url: json['url'] as String,
-      token: json['token'] as String,
-      priority: json['priority'] as int,
-      local: json['local'] as bool,
-    );
-    client.albums = (json['albums'] as List<dynamic>)
-        .map((album) => album as String)
-        .toList();
-    client.eTag = json['etag'] as String;
-    return client;
-  }
 
   /// Get the available album list of an Annil server.
-  Future<List<String>> getAlbums() async {
+  Future<void> updateAlbums(LocalAnnilServer server) async {
     try {
-      final response = await client.get(
-        '/albums',
+      final response = await _client.getUri(
+        Uri.parse('${server.url}/albums'),
         options: Options(
           responseType: ResponseType.json,
           headers: {
-            'Authorization': token,
-            'If-None-Match': eTag,
+            'Authorization': server.token,
+            'If-None-Match': server.etag,
           },
         ),
       );
       final newETag = response.headers['etag']![0];
       FLog.debug(
-        text: 'Annil cache MISSED, old etag: $eTag, new etag: $newETag',
+        text:
+            'Annil cache MISSED, old etag: ${server.etag}, new etag: $newETag',
       );
-      eTag = newETag;
+      // TODO: update etag
+      // eTag = newETag;
 
       albums = (response.data as List<dynamic>)
           .map((album) => album.toString())
           .toList();
     } on DioError catch (e) {
       if (e.response?.statusCode == 304) {
-        FLog.trace(text: 'Annil cache HIT, etag: $eTag');
+        FLog.trace(text: 'Annil cache HIT, etag: ${server.etag}');
       } else {
-        eTag = '';
-        albums = [];
+        // TODO: update etag
+        // eTag = '';
         rethrow;
       }
-    }
-    return List.unmodifiable(albums);
-  }
-
-  Uri getCoverUrl({required String albumId, int? discId}) {
-    if (discId == null) {
-      return Uri.parse('$url/$albumId/cover');
-    } else {
-      return Uri.parse('$url/$albumId/$discId/cover');
     }
   }
 }

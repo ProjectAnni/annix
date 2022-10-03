@@ -1,5 +1,5 @@
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/simple_text_field.dart';
@@ -143,7 +143,7 @@ class AnnivCard extends StatelessWidget {
 ///////////////////////////////////////////////////////////////////////////////
 /// Annil
 class AnnilListTile extends StatelessWidget {
-  final AnnilClient annil;
+  final LocalAnnilServer annil;
 
   const AnnilListTile({Key? key, required this.annil}) : super(key: key);
 
@@ -173,7 +173,7 @@ class AnnilDialog extends StatelessWidget {
   final serverNameController = TextEditingController();
   final serverUrlController = TextEditingController();
   final serverTokenController = TextEditingController();
-  final void Function(AnnilClient annil) onSubmit;
+  final void Function(LocalAnnilServer annil) onSubmit;
 
   AnnilDialog({Key? key, required this.onSubmit}) : super(key: key);
 
@@ -273,15 +273,13 @@ class ServerView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Consumer<AnnilService>(
-              builder: (context, annil, child) {
-                final sortedClients = annil.sortedClients;
-
+            child: Consumer<List<LocalAnnilServer>>(
+              builder: (context, servers, child) {
                 return ReorderableListView(
                   padding: EdgeInsets.zero,
                   buildDefaultDragHandles: true,
                   onReorder: (oldIndex, newIndex) {},
-                  children: sortedClients
+                  children: servers
                       .map(
                         (value) => AnnilListTile(
                           annil: value,

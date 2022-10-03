@@ -81,8 +81,8 @@ class AnnivService extends ChangeNotifier {
         (() async {
           final annil = Global.context.read<AnnilService>();
           final annilTokens = await client.getCredentials();
-          annil.sync(annilTokens);
-          return annil.reloadClients();
+          await annil.sync(annilTokens);
+          await annil.reloadClients();
         })(),
         // reload favorite list
         syncFavorite(),
@@ -112,7 +112,7 @@ class AnnivService extends ChangeNotifier {
     client = null;
 
     // 4. clear annil cache
-    annil.sync([]);
+    await annil.sync([]);
     await annil.reloadClients();
 
     // 5. clear favorites and remote playlists
@@ -147,7 +147,7 @@ class AnnivService extends ChangeNotifier {
   //////////////////////////////// Favorite ///////////////////////////////
   Future<void> addFavorite(TrackIdentifier track) async {
     if (client != null) {
-      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+      final db = Global.context.read<LocalDatabase>();
       final MetadataService metadata =
           Provider.of<MetadataService>(Global.context, listen: false);
       final trackMetadata = await metadata.getTrack(track);

@@ -27,15 +27,8 @@ class AnnixApp extends StatelessWidget {
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,
         LocalDatabase.favoritesProvider,
-        ChangeNotifierProvider(
-          create: (context) {
-            final NetworkService network = context.read();
-            final annil = AnnilService.loadFromLocal();
-            network.addListener(() => annil.reloadClients());
-            return annil;
-          },
-          lazy: false,
-        ),
+        LocalDatabase.annilProvider,
+        ChangeNotifierProvider(create: (context) => AnnilService(context)),
         ChangeNotifierProvider(
           create: (_) => AnnixRouterDelegate(),
           lazy: false,

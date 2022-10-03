@@ -1228,6 +1228,579 @@ class PlaylistItem extends Table
   bool get dontWriteConstraints => true;
 }
 
+class LocalAnnilServer extends DataClass
+    implements Insertable<LocalAnnilServer> {
+  final int id;
+  final String? remoteId;
+  final String name;
+  final String url;
+  final String token;
+  final int priority;
+  final String? etag;
+  const LocalAnnilServer(
+      {required this.id,
+      this.remoteId,
+      required this.name,
+      required this.url,
+      required this.token,
+      required this.priority,
+      this.etag});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || remoteId != null) {
+      map['remote_id'] = Variable<String>(remoteId);
+    }
+    map['name'] = Variable<String>(name);
+    map['url'] = Variable<String>(url);
+    map['token'] = Variable<String>(token);
+    map['priority'] = Variable<int>(priority);
+    if (!nullToAbsent || etag != null) {
+      map['etag'] = Variable<String>(etag);
+    }
+    return map;
+  }
+
+  LocalAnnilServersCompanion toCompanion(bool nullToAbsent) {
+    return LocalAnnilServersCompanion(
+      id: Value(id),
+      remoteId: remoteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remoteId),
+      name: Value(name),
+      url: Value(url),
+      token: Value(token),
+      priority: Value(priority),
+      etag: etag == null && nullToAbsent ? const Value.absent() : Value(etag),
+    );
+  }
+
+  factory LocalAnnilServer.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalAnnilServer(
+      id: serializer.fromJson<int>(json['id']),
+      remoteId: serializer.fromJson<String?>(json['remote_id']),
+      name: serializer.fromJson<String>(json['name']),
+      url: serializer.fromJson<String>(json['url']),
+      token: serializer.fromJson<String>(json['token']),
+      priority: serializer.fromJson<int>(json['priority']),
+      etag: serializer.fromJson<String?>(json['etag']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'remote_id': serializer.toJson<String?>(remoteId),
+      'name': serializer.toJson<String>(name),
+      'url': serializer.toJson<String>(url),
+      'token': serializer.toJson<String>(token),
+      'priority': serializer.toJson<int>(priority),
+      'etag': serializer.toJson<String?>(etag),
+    };
+  }
+
+  LocalAnnilServer copyWith(
+          {int? id,
+          Value<String?> remoteId = const Value.absent(),
+          String? name,
+          String? url,
+          String? token,
+          int? priority,
+          Value<String?> etag = const Value.absent()}) =>
+      LocalAnnilServer(
+        id: id ?? this.id,
+        remoteId: remoteId.present ? remoteId.value : this.remoteId,
+        name: name ?? this.name,
+        url: url ?? this.url,
+        token: token ?? this.token,
+        priority: priority ?? this.priority,
+        etag: etag.present ? etag.value : this.etag,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LocalAnnilServer(')
+          ..write('id: $id, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('name: $name, ')
+          ..write('url: $url, ')
+          ..write('token: $token, ')
+          ..write('priority: $priority, ')
+          ..write('etag: $etag')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, remoteId, name, url, token, priority, etag);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalAnnilServer &&
+          other.id == this.id &&
+          other.remoteId == this.remoteId &&
+          other.name == this.name &&
+          other.url == this.url &&
+          other.token == this.token &&
+          other.priority == this.priority &&
+          other.etag == this.etag);
+}
+
+class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
+  final Value<int> id;
+  final Value<String?> remoteId;
+  final Value<String> name;
+  final Value<String> url;
+  final Value<String> token;
+  final Value<int> priority;
+  final Value<String?> etag;
+  const LocalAnnilServersCompanion({
+    this.id = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.url = const Value.absent(),
+    this.token = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.etag = const Value.absent(),
+  });
+  LocalAnnilServersCompanion.insert({
+    this.id = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    required String name,
+    required String url,
+    required String token,
+    required int priority,
+    this.etag = const Value.absent(),
+  })  : name = Value(name),
+        url = Value(url),
+        token = Value(token),
+        priority = Value(priority);
+  static Insertable<LocalAnnilServer> custom({
+    Expression<int>? id,
+    Expression<String>? remoteId,
+    Expression<String>? name,
+    Expression<String>? url,
+    Expression<String>? token,
+    Expression<int>? priority,
+    Expression<String>? etag,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (remoteId != null) 'remote_id': remoteId,
+      if (name != null) 'name': name,
+      if (url != null) 'url': url,
+      if (token != null) 'token': token,
+      if (priority != null) 'priority': priority,
+      if (etag != null) 'etag': etag,
+    });
+  }
+
+  LocalAnnilServersCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? remoteId,
+      Value<String>? name,
+      Value<String>? url,
+      Value<String>? token,
+      Value<int>? priority,
+      Value<String?>? etag}) {
+    return LocalAnnilServersCompanion(
+      id: id ?? this.id,
+      remoteId: remoteId ?? this.remoteId,
+      name: name ?? this.name,
+      url: url ?? this.url,
+      token: token ?? this.token,
+      priority: priority ?? this.priority,
+      etag: etag ?? this.etag,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (remoteId.present) {
+      map['remote_id'] = Variable<String>(remoteId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (token.present) {
+      map['token'] = Variable<String>(token.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (etag.present) {
+      map['etag'] = Variable<String>(etag.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalAnnilServersCompanion(')
+          ..write('id: $id, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('name: $name, ')
+          ..write('url: $url, ')
+          ..write('token: $token, ')
+          ..write('priority: $priority, ')
+          ..write('etag: $etag')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class LocalAnnilServers extends Table
+    with TableInfo<LocalAnnilServers, LocalAnnilServer> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  LocalAnnilServers(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _remoteIdMeta = const VerificationMeta('remoteId');
+  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
+      'remote_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _urlMeta = const VerificationMeta('url');
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+      'url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _tokenMeta = const VerificationMeta('token');
+  late final GeneratedColumn<String> token = GeneratedColumn<String>(
+      'token', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _priorityMeta = const VerificationMeta('priority');
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+      'priority', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _etagMeta = const VerificationMeta('etag');
+  late final GeneratedColumn<String> etag = GeneratedColumn<String>(
+      'etag', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, remoteId, name, url, token, priority, etag];
+  @override
+  String get aliasedName => _alias ?? 'local_annil_servers';
+  @override
+  String get actualTableName => 'local_annil_servers';
+  @override
+  VerificationContext validateIntegrity(Insertable<LocalAnnilServer> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('remote_id')) {
+      context.handle(_remoteIdMeta,
+          remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('url')) {
+      context.handle(
+          _urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    if (data.containsKey('token')) {
+      context.handle(
+          _tokenMeta, token.isAcceptableOrUnknown(data['token']!, _tokenMeta));
+    } else if (isInserting) {
+      context.missing(_tokenMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    } else if (isInserting) {
+      context.missing(_priorityMeta);
+    }
+    if (data.containsKey('etag')) {
+      context.handle(
+          _etagMeta, etag.isAcceptableOrUnknown(data['etag']!, _etagMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocalAnnilServer map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalAnnilServer(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      remoteId: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}remote_id']),
+      name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      url: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}url'])!,
+      token: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}token'])!,
+      priority: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
+      etag: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}etag']),
+    );
+  }
+
+  @override
+  LocalAnnilServers createAlias(String alias) {
+    return LocalAnnilServers(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class LocalAnnilAlbum extends DataClass implements Insertable<LocalAnnilAlbum> {
+  final int id;
+  final int annilId;
+  final String albumId;
+  const LocalAnnilAlbum(
+      {required this.id, required this.annilId, required this.albumId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['annil_id'] = Variable<int>(annilId);
+    map['album_id'] = Variable<String>(albumId);
+    return map;
+  }
+
+  LocalAnnilAlbumsCompanion toCompanion(bool nullToAbsent) {
+    return LocalAnnilAlbumsCompanion(
+      id: Value(id),
+      annilId: Value(annilId),
+      albumId: Value(albumId),
+    );
+  }
+
+  factory LocalAnnilAlbum.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalAnnilAlbum(
+      id: serializer.fromJson<int>(json['id']),
+      annilId: serializer.fromJson<int>(json['annil_id']),
+      albumId: serializer.fromJson<String>(json['album_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'annil_id': serializer.toJson<int>(annilId),
+      'album_id': serializer.toJson<String>(albumId),
+    };
+  }
+
+  LocalAnnilAlbum copyWith({int? id, int? annilId, String? albumId}) =>
+      LocalAnnilAlbum(
+        id: id ?? this.id,
+        annilId: annilId ?? this.annilId,
+        albumId: albumId ?? this.albumId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LocalAnnilAlbum(')
+          ..write('id: $id, ')
+          ..write('annilId: $annilId, ')
+          ..write('albumId: $albumId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, annilId, albumId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalAnnilAlbum &&
+          other.id == this.id &&
+          other.annilId == this.annilId &&
+          other.albumId == this.albumId);
+}
+
+class LocalAnnilAlbumsCompanion extends UpdateCompanion<LocalAnnilAlbum> {
+  final Value<int> id;
+  final Value<int> annilId;
+  final Value<String> albumId;
+  const LocalAnnilAlbumsCompanion({
+    this.id = const Value.absent(),
+    this.annilId = const Value.absent(),
+    this.albumId = const Value.absent(),
+  });
+  LocalAnnilAlbumsCompanion.insert({
+    this.id = const Value.absent(),
+    required int annilId,
+    required String albumId,
+  })  : annilId = Value(annilId),
+        albumId = Value(albumId);
+  static Insertable<LocalAnnilAlbum> custom({
+    Expression<int>? id,
+    Expression<int>? annilId,
+    Expression<String>? albumId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (annilId != null) 'annil_id': annilId,
+      if (albumId != null) 'album_id': albumId,
+    });
+  }
+
+  LocalAnnilAlbumsCompanion copyWith(
+      {Value<int>? id, Value<int>? annilId, Value<String>? albumId}) {
+    return LocalAnnilAlbumsCompanion(
+      id: id ?? this.id,
+      annilId: annilId ?? this.annilId,
+      albumId: albumId ?? this.albumId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (annilId.present) {
+      map['annil_id'] = Variable<int>(annilId.value);
+    }
+    if (albumId.present) {
+      map['album_id'] = Variable<String>(albumId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalAnnilAlbumsCompanion(')
+          ..write('id: $id, ')
+          ..write('annilId: $annilId, ')
+          ..write('albumId: $albumId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class LocalAnnilAlbums extends Table
+    with TableInfo<LocalAnnilAlbums, LocalAnnilAlbum> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  LocalAnnilAlbums(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _annilIdMeta = const VerificationMeta('annilId');
+  late final GeneratedColumn<int> annilId = GeneratedColumn<int>(
+      'annil_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
+  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
+      'album_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  @override
+  List<GeneratedColumn> get $columns => [id, annilId, albumId];
+  @override
+  String get aliasedName => _alias ?? 'local_annil_albums';
+  @override
+  String get actualTableName => 'local_annil_albums';
+  @override
+  VerificationContext validateIntegrity(Insertable<LocalAnnilAlbum> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('annil_id')) {
+      context.handle(_annilIdMeta,
+          annilId.isAcceptableOrUnknown(data['annil_id']!, _annilIdMeta));
+    } else if (isInserting) {
+      context.missing(_annilIdMeta);
+    }
+    if (data.containsKey('album_id')) {
+      context.handle(_albumIdMeta,
+          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    } else if (isInserting) {
+      context.missing(_albumIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocalAnnilAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalAnnilAlbum(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      annilId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}annil_id'])!,
+      albumId: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+    );
+  }
+
+  @override
+  LocalAnnilAlbums createAlias(String alias) {
+    return LocalAnnilAlbums(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints =>
+      const ['FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")'];
+  @override
+  bool get dontWriteConstraints => true;
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
   late final LocalFavorites localFavorites = LocalFavorites(this);
@@ -1235,6 +1808,8 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       'CREATE UNIQUE INDEX IF NOT EXISTS local_favorites_index ON local_favorites (album_id, disc_id, track_id)');
   late final Playlist playlist = Playlist(this);
   late final PlaylistItem playlistItem = PlaylistItem(this);
+  late final LocalAnnilServers localAnnilServers = LocalAnnilServers(this);
+  late final LocalAnnilAlbums localAnnilAlbums = LocalAnnilAlbums(this);
   Selectable<PlaylistItemData> playlistItems(int var1) {
     return customSelect(
         'SELECT * FROM playlist_item WHERE playlist_id = ?1 ORDER BY "order"',
@@ -1259,10 +1834,28 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         }).map((QueryRow row) => row.read<bool>('_c0'));
   }
 
+  Selectable<LocalAnnilServer> annilToUse(String var1) {
+    return customSelect(
+        'SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?1) ORDER BY priority',
+        variables: [
+          Variable<String>(var1)
+        ],
+        readsFrom: {
+          localAnnilServers,
+          localAnnilAlbums,
+        }).asyncMap(localAnnilServers.mapFromRow);
+  }
+
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [localFavorites, localFavoritesIndex, playlist, playlistItem];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        localFavorites,
+        localFavoritesIndex,
+        playlist,
+        playlistItem,
+        localAnnilServers,
+        localAnnilAlbums
+      ];
 }
