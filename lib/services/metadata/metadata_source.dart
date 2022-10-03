@@ -66,15 +66,17 @@ mixin CachedMetadataStore {
       }
     }
 
-    final got = await getAlbumsDetail(toFetch);
-    for (final albumId in toFetch) {
-      final album = got[albumId];
-      if (album != null) {
-        await persist(album);
-        _albumCache[albumId] = album;
+    if (toFetch.isNotEmpty) {
+      final got = await getAlbumsDetail(toFetch);
+      for (final albumId in toFetch) {
+        final album = got[albumId];
+        if (album != null) {
+          await persist(album);
+          _albumCache[albumId] = album;
+        }
       }
+      result.addAll(got);
     }
-    result.addAll(got);
     return result;
   }
 
