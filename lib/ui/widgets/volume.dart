@@ -1,4 +1,4 @@
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,7 @@ class VolumeController extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Consumer<PlayerService>(
+        Consumer<PlaybackService>(
           builder: (context, player, child) {
             return IconButton(
               icon: const Icon(Icons.volume_up_outlined),
@@ -28,7 +28,7 @@ class VolumeController extends StatelessWidget {
         const SizedBox(width: 4),
         SizedBox(
           width: 100,
-          child: Consumer<PlayerService>(
+          child: Consumer<PlaybackService>(
             builder: (context, player, child) => ProgressBar(
               progress: Duration(seconds: (player.volume * 100).toInt()),
               total: const Duration(seconds: 100),

@@ -1,5 +1,5 @@
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/global.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/page/home/home_albums.dart';
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
                             onPressed: () {
                               showLoadingDialog(context);
                               context
-                                  .read<PlayerService>()
+                                  .read<PlaybackService>()
                                   .fullShuffleMode(context)
                                   .then(
                                 (value) {

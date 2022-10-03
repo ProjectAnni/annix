@@ -1,7 +1,7 @@
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +12,7 @@ class FavoriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final AnnivService anniv = context.read();
 
-    return Consumer2<PlayerService, List<Favorite>>(
+    return Consumer2<PlaybackService, List<Favorite>>(
       builder: (context, player, favorites, child) => IconButton(
         isSelected: favorites.any((f) =>
             player.playing?.identifier ==

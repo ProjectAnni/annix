@@ -1,4 +1,4 @@
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/buttons/animated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +35,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
   void initState() {
     super.initState();
 
-    final player = Provider.of<PlayerService>(context, listen: false);
+    final player = context.read<PlaybackService>();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 250),
@@ -53,11 +53,11 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
 
   @override
   Widget build(BuildContext context) {
-    final player = Provider.of<PlayerService>(context, listen: false);
+    final player = context.read<PlaybackService>();
     return SizedBox(
       height: widget.size,
       width: widget.size,
-      child: Selector<PlayerService, bool>(
+      child: Selector<PlaybackService, bool>(
         selector: (context, player) =>
             player.playerStatus == PlayerStatus.buffering,
         builder: (context, isBuffering, child) {

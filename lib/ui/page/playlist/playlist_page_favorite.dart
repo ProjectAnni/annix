@@ -5,7 +5,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playlist/playlist_base.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -19,7 +19,7 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AnnivService anniv = context.read();
-    final PlayerService player = context.read();
+    final PlaybackService player = context.read();
     final AnnilService annil = context.read();
 
     final List<Favorite> favorites = context.watch();

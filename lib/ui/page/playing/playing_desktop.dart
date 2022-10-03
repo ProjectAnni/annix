@@ -1,4 +1,4 @@
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -35,7 +35,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Consumer<PlayerService>(
+                      Consumer<PlaybackService>(
                         builder: (context, player, child) {
                           return TextButton(
                             child: Text(
@@ -53,7 +53,7 @@ class PlayingDesktopScreen extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 4),
-                      Consumer<PlayerService>(
+                      Consumer<PlaybackService>(
                         builder: (context, player, child) {
                           final track = player.playing?.track;
                           if (track == null) {

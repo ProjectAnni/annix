@@ -3,7 +3,7 @@ import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/utils/bytes.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +113,7 @@ class DownloadTaskListTile extends StatelessWidget {
               trailing: downloadProgressText,
               onTap: () {
                 if (task.status == DownloadTaskStatus.completed) {
-                  final player = context.read<PlayerService>();
+                  final player = context.read<PlaybackService>();
                   player.setPlayingQueue([
                     AnnilAudioSource(track: track.info, quality: track.quality)
                   ]);

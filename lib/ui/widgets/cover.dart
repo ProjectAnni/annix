@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:annix/global.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_color_utilities/quantize/quantizer_celebi.dart';
 import 'package:material_color_utilities/score/score.dart';
-import 'package:annix/services/player.dart';
 import 'package:provider/provider.dart';
 
 class PlayingMusicCover extends StatelessWidget {
@@ -26,7 +26,7 @@ class PlayingMusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerService, PlayingTrack?>(
+    return Selector<PlaybackService, PlayingTrack?>(
       selector: (context, player) => player.playing,
       builder: (context, playing, child) {
         if (playing == null) {

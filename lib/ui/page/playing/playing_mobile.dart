@@ -1,5 +1,5 @@
 import 'package:animations/animations.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/dialogs/playing_more_menu.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
@@ -62,7 +62,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Consumer<PlayerService>(
+                Consumer<PlaybackService>(
                   builder: (context, player, child) => Center(
                     child: Text(
                       player.playing?.track.title ?? "",
@@ -71,7 +71,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                     ),
                   ),
                 ),
-                Consumer<PlayerService>(
+                Consumer<PlaybackService>(
                   builder: (context, player, child) => ArtistText(
                     player.playing?.track.artist ?? "",
                     style: context.textTheme.titleMedium,
@@ -82,7 +82,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
             ),
             Column(
               children: [
-                Consumer<PlayerService>(
+                Consumer<PlaybackService>(
                   builder: (context, player, child) {
                     return ChangeNotifierProvider.value(
                       value: player.playing,
@@ -111,16 +111,13 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                       icon: const Icon(Icons.skip_previous),
                       iconSize: 32,
                       onPressed: () =>
-                          Provider.of<PlayerService>(context, listen: false)
-                              .previous(),
+                          context.read<PlaybackService>().previous(),
                     ),
                     PlayPauseButton.large(),
                     IconButton(
                       icon: const Icon(Icons.skip_next),
                       iconSize: 32,
-                      onPressed: () =>
-                          Provider.of<PlayerService>(context, listen: false)
-                              .next(),
+                      onPressed: () => context.read<PlaybackService>().next(),
                     ),
                     const LoopModeButton(),
                   ],
@@ -147,8 +144,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                 },
               ),
               onLongPress: () {
-                final player =
-                    Provider.of<PlayerService>(context, listen: false);
+                final player = context.read<PlaybackService>();
                 final playing = player.playing?.track;
                 if (playing != null) {
                   showDialog(
@@ -190,8 +186,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                   context: context,
                   isScrollControlled: true,
                   builder: (context) {
-                    final player =
-                        Provider.of<PlayerService>(context, listen: false);
+                    final player = context.read<PlaybackService>();
                     return FractionallySizedBox(
                       heightFactor: 0.7,
                       child: PlayingMoreMenu(track: player.playing!.track),

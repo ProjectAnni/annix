@@ -1,4 +1,4 @@
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +7,7 @@ class PlayingQueue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayerService>(
+    return Consumer<PlaybackService>(
       builder: (context, player, child) => ListView.builder(
         controller: ScrollController(
             initialScrollOffset: 32.0 * (player.playingIndex ?? 0)),

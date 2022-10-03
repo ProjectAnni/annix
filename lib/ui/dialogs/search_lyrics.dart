@@ -2,7 +2,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/lyric/lyric_provider.dart';
 import 'package:annix/services/lyric/lyric_provider_netease.dart';
 import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -159,7 +159,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
-                          final PlayerService player = context.read();
+                          final player = context.read<PlaybackService>();
                           result.lyric.then((lyric) {
                             player.playing?.updateLyric(TrackLyric(
                               lyric: lyric,

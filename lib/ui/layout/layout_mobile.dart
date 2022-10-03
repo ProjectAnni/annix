@@ -1,5 +1,5 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
@@ -31,7 +31,7 @@ class AnnixLayoutMobile extends AnnixLayout {
     final double panelMaxSize = MediaQuery.of(context).size.height;
 
     final root = Scaffold(
-      body: Selector2<PlayerService, AnnixRouterDelegate, List<bool>>(
+      body: Selector2<PlaybackService, AnnixRouterDelegate, List<bool>>(
         selector: (context, player, delegate) {
           final isPlaying = player.playing != null;
           final isMainPage = pages.contains(delegate.currentRoute);

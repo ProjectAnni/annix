@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/download/download_task.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +86,7 @@ class BasePlaylistScreen extends StatelessWidget {
                         icon: const Icon(Icons.play_arrow),
                         label: const Text("Play"),
                         onPressed: () async {
-                          final player = context.read<PlayerService>();
+                          final player = context.read<PlaybackService>();
                           final tracks = await onTracks();
                           playFullList(
                             player: player,
@@ -101,7 +101,7 @@ class BasePlaylistScreen extends StatelessWidget {
                         icon: const Icon(Icons.shuffle),
                         label: const Text("Shuffle"),
                         onPressed: () async {
-                          final player = context.read<PlayerService>();
+                          final player = context.read<PlaybackService>();
                           final tracks = await onTracks();
                           playFullList(
                             player: player,
@@ -192,7 +192,7 @@ class BasePlaylistScreen extends StatelessWidget {
 }
 
 void playFullList({
-  required PlayerService player,
+  required PlaybackService player,
   required List<AnnilAudioSource> tracks,
   bool shuffle = false,
   int initialIndex = 0,

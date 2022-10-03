@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -103,7 +103,7 @@ class _SearchResult extends StatelessWidget {
                       title: Text(e.title),
                       subtitle: ArtistText(e.artist),
                       onTap: () async {
-                        final player = context.read<PlayerService>();
+                        final player = context.read<PlaybackService>();
                         final metadata = context.read<MetadataService>();
                         final audio = await AnnilAudioSource.from(
                           id: e.id,

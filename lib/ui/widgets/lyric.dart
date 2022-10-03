@@ -1,5 +1,5 @@
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +104,7 @@ class LyricView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerService, PlayingTrack?>(
+    return Selector<PlaybackService, PlayingTrack?>(
       selector: (_, player) => player.playing,
       builder: (context, playing, child) {
         return ChangeNotifierProvider.value(
@@ -169,7 +169,7 @@ class _LyricView extends StatelessWidget {
           align: lyricAlign,
           isKaraoke: isKaraoke,
         );
-        return Consumer<PlayerService>(
+        return Consumer<PlaybackService>(
           builder: (iconColor, player, child) {
             return ChangeNotifierProvider.value(
               value: player.playing,

@@ -7,7 +7,7 @@ import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
@@ -135,7 +135,7 @@ class AnnilAudioSource extends Source {
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // +1 to avoid duration exceeding
-        PlayerService.durationMap.update((map) {
+        PlaybackService.durationMap.update((map) {
           map[id] = Duration(seconds: duration + 1);
         });
       } else {

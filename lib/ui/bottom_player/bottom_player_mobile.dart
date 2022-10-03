@@ -1,5 +1,5 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
@@ -34,7 +34,7 @@ class MobileBottomPlayer extends StatelessWidget {
           ),
           Expanded(
             flex: 1,
-            child: Consumer<PlayerService>(
+            child: Consumer<PlaybackService>(
               builder: (context, player, child) => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,

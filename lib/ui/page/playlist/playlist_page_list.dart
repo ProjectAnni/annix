@@ -4,8 +4,8 @@ import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart' hide PlaylistItem;
-import 'package:annix/services/player.dart';
 import 'package:annix/services/annil/client.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playlist/playlist_base.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -102,7 +102,7 @@ class PlaylistDetailScreen extends StatelessWidget {
                 : ArtistText(track.info.artist),
             enabled: annil.isAvailable(track.info.id),
             onTap: () async {
-              final player = context.read<PlayerService>();
+              final player = context.read<PlaybackService>();
               final tracks = await onTracks();
               playFullList(
                 player: player,

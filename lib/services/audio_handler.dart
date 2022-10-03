@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/services/player.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
@@ -14,7 +14,7 @@ import 'package:anni_mpris_service/anni_mpris_service.dart';
 import 'package:provider/provider.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
-  final PlayerService player;
+  final PlaybackService player;
   PlayingTrack? playing;
 
   final AnnivService anniv;
@@ -273,12 +273,12 @@ class LinuxAudioService extends AudioServicePlatform {
 }
 
 class AnnixMPRISService extends MPRISService {
-  final PlayerService player;
+  final PlaybackService player;
 
   AnnixMPRISService(BuildContext context)
-      : player = Provider.of<PlayerService>(context, listen: false),
+      : player = Provider.of<PlaybackService>(context, listen: false),
         super(
-        "annix",
+          "annix",
           identity: "Annix",
           emitSeekedSignal: false,
           canPlay: true,

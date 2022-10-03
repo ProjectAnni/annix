@@ -1,4 +1,4 @@
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -25,7 +25,7 @@ class DesktopBottomPlayer extends StatelessWidget {
         child: Column(
           children: [
             RepaintBoundary(
-              child: Consumer<PlayerService>(
+              child: Consumer<PlaybackService>(
                 builder: (context, player, child) {
                   return ChangeNotifierProvider.value(
                     value: player.playing,
@@ -73,7 +73,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                             child: Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
-                              child: Consumer<PlayerService>(
+                              child: Consumer<PlaybackService>(
                                 builder: (context, player, child) {
                                   return Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -115,8 +115,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           icon: const Icon(Icons.skip_previous),
                           iconSize: 28,
                           onPressed: () =>
-                              Provider.of<PlayerService>(context, listen: false)
-                                  .previous(),
+                              context.read<PlaybackService>().previous(),
                         ),
                         const PlayPauseButton(
                           type: PlayPauseButtonType.elevated,
@@ -126,8 +125,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                           icon: const Icon(Icons.skip_next),
                           iconSize: 28,
                           onPressed: () =>
-                              Provider.of<PlayerService>(context, listen: false)
-                                  .next(),
+                              context.read<PlaybackService>().next(),
                         ),
                         const LoopModeButton(),
                         IconButton(

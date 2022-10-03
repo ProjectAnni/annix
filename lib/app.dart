@@ -6,7 +6,7 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/network/network.dart';
-import 'package:annix/services/player.dart';
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class AnnixApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
         ChangeNotifierProvider(create: (_) => NetworkService(), lazy: false),
-        ChangeNotifierProvider(create: (_) => PlayerService(), lazy: false),
+        ChangeNotifierProvider(create: (_) => PlaybackService(), lazy: false),
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,
         LocalDatabase.favoritesProvider,
