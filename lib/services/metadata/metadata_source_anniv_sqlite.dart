@@ -8,7 +8,7 @@ class AnnivSqliteMetadataSource extends SqliteMetadataSource {
 
   @override
   Future<bool> canUpdate() async {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
+    final anniv = Global.context.read<AnnivService>();
     final client = anniv.client;
     if (client == null) {
       return false;
@@ -27,10 +27,13 @@ class AnnivSqliteMetadataSource extends SqliteMetadataSource {
 
   @override
   Future<bool> doUpdate() async {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
+    final anniv = Global.context.read<AnnivService>();
+    if (anniv.client == null) {
+      return false;
+    }
 
     try {
-      await anniv.client?.downloadRepoDatabase(dbPath);
+      await anniv.client?.downloadRepoDatabase(dbFolderPath);
       return true;
     } catch (e) {
       return false;

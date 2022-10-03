@@ -8,14 +8,15 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
 class SqliteMetadataSource extends MetadataSource {
-  String dbPath;
+  String dbFolderPath;
   late Database database;
 
-  SqliteMetadataSource(this.dbPath);
+  SqliteMetadataSource(this.dbFolderPath);
 
   @override
   Future<void> prepare() async {
-    database = await openDatabase(p.join(dbPath, 'repo.db'), readOnly: true);
+    database =
+        await openDatabase(p.join(dbFolderPath, 'repo.db'), readOnly: true);
   }
 
   @override
@@ -145,7 +146,7 @@ SELECT lower(hex(album_id)) album_id FROM repo_album WHERE album_id IN (
   }
 
   Future<RepoDatabaseDescription> getDescription() async {
-    final data = await File(p.join(dbPath, 'repo.json')).readAsString();
+    final data = await File(p.join(dbFolderPath, 'repo.json')).readAsString();
     return RepoDatabaseDescription.fromJson(jsonDecode(data));
   }
 }

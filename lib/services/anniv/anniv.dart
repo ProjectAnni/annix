@@ -37,15 +37,15 @@ class AnnivService extends ChangeNotifier {
     _loadInfo();
 
     // check login status
-    final network = Provider.of<NetworkService>(context, listen: false);
-    if (NetworkService.isOnline) {
-      checkLogin(client);
-    }
+    final network = context.read<NetworkService>();
     network.addListener(() {
       if (NetworkService.isOnline) {
         checkLogin(client);
       }
     });
+    if (NetworkService.isOnline) {
+      checkLogin(client);
+    }
 
     // try to load database
     loadDatabase();
@@ -80,7 +80,7 @@ class AnnivService extends ChangeNotifier {
       // do not await here
       Future.wait([
         (() async {
-          final AnnilService annil = Global.context.read();
+          final annil = Global.context.read<AnnilService>();
           final annilTokens = await client.getCredentials();
           annil.sync(annilTokens);
           return annil.reloadClients();
@@ -306,13 +306,13 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> loadDatabase() async {
-    if (File(Global.storageRoot).existsSync()) {
-      final metadata =
-          Provider.of<MetadataService>(Global.context, listen: false);
-
+    try {
+      final metadata = Global.context.read<MetadataService>();
       final db = AnnivSqliteMetadataSource();
       await db.prepare();
       metadata.sources.insert(0, db);
+    } catch (e) {
+      //
     }
   }
 
