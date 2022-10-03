@@ -91,13 +91,7 @@ class BasePlaylistScreen extends StatelessWidget {
                           playFullList(
                             player: player,
                             tracks: tracks
-                                .map(
-                                  (track) => AnnilAudioSource(
-                                    track: track,
-                                    quality: Global
-                                        .settings.defaultAudioQuality.value,
-                                  ),
-                                )
+                                .map((track) => AnnilAudioSource(track: track))
                                 .toList(),
                             shuffle: false,
                           );
@@ -112,11 +106,7 @@ class BasePlaylistScreen extends StatelessWidget {
                           playFullList(
                             player: player,
                             tracks: tracks
-                                .map((track) => AnnilAudioSource(
-                                      track: track,
-                                      quality: Global
-                                          .settings.defaultAudioQuality.value,
-                                    ))
+                                .map((track) => AnnilAudioSource(track: track))
                                 .toList(),
                             shuffle: true,
                           );
@@ -149,12 +139,8 @@ class BasePlaylistScreen extends StatelessWidget {
             onPressed: () async {
               final scaffold = ScaffoldMessenger.of(context);
               final tracks = (await onTracks())
-                  .map(
-                    (track) => AnnilAudioSource.spawnDownloadTask(
-                      track: track,
-                      quality: Global.settings.defaultAudioQuality.value,
-                    ),
-                  )
+                  .map((track) =>
+                      AnnilAudioSource.spawnDownloadTask(track: track))
                   .whereType<DownloadTask>()
                   .where((task) => !File(task.savePath).existsSync())
                   .toList();

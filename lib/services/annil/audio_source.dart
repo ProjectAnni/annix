@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 class AudioCancelledError extends Error {}
 
 class AnnilAudioSource extends Source {
-  final PreferQuality quality;
+  final PreferQuality? quality;
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
 
@@ -28,13 +28,13 @@ class AnnilAudioSource extends Source {
 
   AnnilAudioSource({
     required this.track,
-    required this.quality,
+    this.quality,
   });
 
   static Future<AnnilAudioSource?> from({
     required MetadataService metadata,
     required TrackIdentifier id,
-    required PreferQuality quality,
+    PreferQuality? quality,
   }) async {
     final track = await metadata.getTrack(id);
     if (track != null) {
@@ -99,11 +99,13 @@ class AnnilAudioSource extends Source {
 
   static DownloadTask? spawnDownloadTask({
     required TrackInfoWithAlbum track,
-    required PreferQuality quality,
+    PreferQuality? quality,
     String? savePath,
   }) {
+    final downloadQuality =
+        quality ?? Global.settings.defaultAudioQuality.value;
     final CombinedOnlineAnnilClient annil = Global.context.read();
-    final url = annil.getAudioUrl(id: track.id, quality: quality);
+    final url = annil.getAudioUrl(id: track.id, quality: downloadQuality);
     if (url == null) {
       return null;
     }
@@ -113,7 +115,7 @@ class AnnilAudioSource extends Source {
       category: DownloadCategory.audio,
       url: url,
       savePath: savePath,
-      data: TrackDownloadTaskData(info: track, quality: quality),
+      data: TrackDownloadTaskData(info: track, quality: downloadQuality),
     );
   }
 
@@ -123,7 +125,6 @@ class AnnilAudioSource extends Source {
     if (!file.existsSync()) {
       final task = spawnDownloadTask(
         track: track,
-        quality: quality,
         savePath: savePath,
       );
       if (task != null) {

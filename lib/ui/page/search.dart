@@ -109,7 +109,6 @@ class _SearchResult extends StatelessWidget {
                         final audio = await AnnilAudioSource.from(
                           id: e.id,
                           metadata: metadata,
-                          quality: Global.settings.defaultAudioQuality.value,
                         );
                         if (audio != null) {
                           await player.setPlayingQueue([audio]);

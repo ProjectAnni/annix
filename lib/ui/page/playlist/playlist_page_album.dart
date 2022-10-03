@@ -108,7 +108,7 @@ class AlbumDetailScreen extends StatelessWidget {
       var trackId = 1;
       list.addAll(
         disc.tracks.map(
-              (track) {
+          (track) {
             final trackIndex = trackId;
             trackId++;
 
@@ -134,12 +134,7 @@ class AlbumDetailScreen extends StatelessWidget {
                 playFullList(
                   player: player,
                   tracks: tracks
-                      .map(
-                        (track) => AnnilAudioSource(
-                          track: track,
-                          quality: Global.settings.defaultAudioQuality.value,
-                        ),
-                      )
+                      .map((track) => AnnilAudioSource(track: track))
                       .toList(),
                   initialIndex: totalTrackIndex,
                 );

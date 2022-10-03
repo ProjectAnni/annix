@@ -108,12 +108,7 @@ class PlaylistDetailScreen extends StatelessWidget {
               playFullList(
                 player: player,
                 tracks: tracks
-                    .map(
-                      (track) => AnnilAudioSource(
-                        track: track,
-                        quality: Global.settings.defaultAudioQuality.value,
-                      ),
-                    )
+                    .map((track) => AnnilAudioSource(track: track))
                     .toList(),
                 initialIndex: index,
               );
