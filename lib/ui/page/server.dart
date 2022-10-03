@@ -1,3 +1,4 @@
+import 'package:annix/services/annil/client.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
@@ -273,13 +274,13 @@ class ServerView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Consumer<List<LocalAnnilServer>>(
-              builder: (context, servers, child) {
+            child: Consumer<AnnilService>(
+              builder: (context, annil, child) {
                 return ReorderableListView(
                   padding: EdgeInsets.zero,
                   buildDefaultDragHandles: true,
                   onReorder: (oldIndex, newIndex) {},
-                  children: servers
+                  children: annil.servers
                       .map(
                         (value) => AnnilListTile(
                           annil: value,

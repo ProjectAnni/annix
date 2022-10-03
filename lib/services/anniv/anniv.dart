@@ -82,7 +82,7 @@ class AnnivService extends ChangeNotifier {
           final annil = Global.context.read<AnnilService>();
           final annilTokens = await client.getCredentials();
           await annil.sync(annilTokens);
-          await annil.reloadClients();
+          await annil.reload();
         })(),
         // reload favorite list
         syncFavorite(),
@@ -113,7 +113,7 @@ class AnnivService extends ChangeNotifier {
 
     // 4. clear annil cache
     await annil.sync([]);
-    await annil.reloadClients();
+    await annil.reload();
 
     // 5. clear favorites and remote playlists
     await _syncFavorite([]);

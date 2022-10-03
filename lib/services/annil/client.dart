@@ -19,11 +19,19 @@ class AnnilService extends ChangeNotifier {
     ..httpClientAdapter =
         createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
 
+  List<LocalAnnilServer> servers = [];
   List<String> albums = [];
 
   AnnilService(this.context) {
+    final database = context.read<LocalDatabase>();
+    final stream = database.sortedAnnilServers().watch();
+    stream.listen((event) {
+      servers = event;
+      reload();
+    });
+
     final network = context.read<NetworkService>();
-    network.addListener(() => reloadClients());
+    network.addListener(() => reload());
 
     Global.settings.enableHttp2ForAnnil.addListener(() {
       _client.httpClientAdapter =
@@ -31,7 +39,7 @@ class AnnilService extends ChangeNotifier {
     });
   }
 
-  Future<void> createRemoteClient({
+  Future<void> addRemoteServer({
     required String name,
     required String url,
     required String token,
@@ -54,7 +62,7 @@ class AnnilService extends ChangeNotifier {
     );
   }
 
-  Future<void> createLocalClient({
+  Future<void> addLocalServer({
     required String name,
     required String url,
     required String token,
@@ -78,37 +86,35 @@ class AnnilService extends ChangeNotifier {
   /// Keep sync with new credential list
   Future<void> sync(List<AnnilToken> remoteList) async {
     final db = context.read<LocalDatabase>();
-    final clients = context.read<List<LocalAnnilServer>>();
-
-    final toUpdate = clients
-        .map((client) {
+    final toUpdate = servers
+        .map((server) {
           // local annil
-          if (client.remoteId == null) {
+          if (server.remoteId == null) {
             return null;
           }
 
           return remoteList
-              .firstWhere((remote) => remote.id == client.remoteId);
+              .firstWhere((remote) => remote.id == server.remoteId);
         })
         .whereType<AnnilToken>()
         .toList();
     final toUpdateIds = toUpdate.map((e) => e.id).toList();
-    final toRemove = clients
-        .map((client) {
-          if (client.remoteId == null) {
+    final toRemove = servers
+        .map((server) {
+          if (server.remoteId == null) {
             return null;
           }
 
-          return toUpdate.where((e) => client.remoteId == e.id).isNotEmpty
+          return toUpdate.where((e) => server.remoteId == e.id).isNotEmpty
               ? null
-              : client.id;
+              : server.id;
         })
         .whereType<int>()
         .toList();
     final toAdd =
         remoteList.where((remote) => !toUpdateIds.contains(remote.id));
     await db.transaction(() async {
-      // exist both in local and remote, update client info
+      // exist both in local and remote, update server info
       for (final e in toUpdate) {
         await (db.localAnnilServers.update()
               ..where((tbl) => tbl.remoteId.equals(e.id)))
@@ -183,16 +189,15 @@ class AnnilService extends ChangeNotifier {
   }
 
   /// Refresh all annil servers
-  Future<void> reloadClients() async {
+  Future<void> reload() async {
     if (NetworkService.isOnline) {
-      final servers = context.read<List<LocalAnnilServer>>();
       final db = context.read<LocalDatabase>();
       await Future.wait(servers.map((server) async {
         try {
           await updateAlbums(server);
         } catch (e) {
           FLog.warning(
-            text: 'Failed to refresh annil client ${server.name}',
+            text: 'Failed to refresh annil ${server.name}',
             exception: e,
           );
         }

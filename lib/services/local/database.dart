@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:annix/global.dart';
-import 'package:annix/services/annil/client.dart';
 import 'package:drift/drift.dart';
 
 import 'package:drift/native.dart';
@@ -35,21 +34,6 @@ class LocalDatabase extends _$LocalDatabase {
     create: (context) {
       final database = context.read<LocalDatabase>();
       return database.localFavorites.select().watch();
-    },
-    initialData: const [],
-  );
-
-  static StreamProvider<List<LocalAnnilServer>> annilProvider = StreamProvider(
-    create: (context) {
-      final database = context.read<LocalDatabase>();
-      final stream = database.sortedAnnilServers().watch();
-      stream.listen((event) {
-        try {
-          final annil = Global.context.read<AnnilService>();
-          annil.reloadClients();
-        } catch (e) {}
-      });
-      return stream;
     },
     initialData: const [],
   );

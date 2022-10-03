@@ -27,7 +27,6 @@ class AnnixApp extends StatelessWidget {
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,
         LocalDatabase.favoritesProvider,
-        LocalDatabase.annilProvider,
         ChangeNotifierProvider(create: (context) => AnnilService(context)),
         ChangeNotifierProvider(
           create: (_) => AnnixRouterDelegate(),
@@ -43,7 +42,7 @@ class AnnixApp extends StatelessWidget {
         final AnnixRouterDelegate delegate = context.read();
 
         // load local / remote album list
-        context.read<AnnilService>().reloadClients();
+        context.read<AnnilService>().reload();
         return MaterialApp.router(
           title: 'Annix',
           debugShowCheckedModeBanner: false,
