@@ -22,13 +22,15 @@ class SiteUserInfo {
 }
 
 class AnnivService extends ChangeNotifier {
+  BuildContext context;
+
   AnnivClient? client;
 
   SiteUserInfo? info;
 
   bool get isLogin => info != null;
 
-  AnnivService(BuildContext context) {
+  AnnivService(this.context) {
     // 1. init client
     client = AnnivClient.load();
 
@@ -79,7 +81,7 @@ class AnnivService extends ChangeNotifier {
       // do not await here
       Future.wait([
         (() async {
-          final annil = Global.context.read<AnnilService>();
+          final annil = context.read<AnnilService>();
           final annilTokens = await client.getCredentials();
           await annil.sync(annilTokens);
         })(),
@@ -306,12 +308,12 @@ class AnnivService extends ChangeNotifier {
 
   Future<void> loadDatabase() async {
     try {
-      final metadata = Global.context.read<MetadataService>();
+      final metadata = context.read<MetadataService>();
       final db = AnnivSqliteMetadataSource();
       await db.prepare();
       metadata.sources.insert(0, db);
     } catch (e) {
-      //
+      print(e);
     }
   }
 }

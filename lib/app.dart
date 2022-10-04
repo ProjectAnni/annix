@@ -32,10 +32,9 @@ class AnnixApp extends StatelessWidget {
           create: (_) => AnnixRouterDelegate(),
           lazy: false,
         ),
-        // Anniv controller
+        Provider(create: (c) => MetadataService()),
         ChangeNotifierProvider(create: (c) => AnnivService(c), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
-        Provider(create: (c) => MetadataService()),
       ],
       builder: (context, child) {
         final AnnixTheme theme = context.watch();
