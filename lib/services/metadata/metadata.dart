@@ -24,15 +24,31 @@ class MetadataService {
     return false;
   }
 
+  Set<String> _getAlbumDebounceList = {};
+  Future<Map<String, Album>>? _getAlbumDebouncer;
+
   /// Get album information
   Future<Album?> getAlbum({required String albumId}) async {
-    for (final source in sources) {
-      final album = await source.getAlbums([albumId]);
-      if (album.isNotEmpty) {
-        return album.values.first;
+    _getAlbumDebounceList.add(albumId);
+    _getAlbumDebouncer ??=
+        Future.delayed(const Duration(milliseconds: 200)).then((_) async {
+      final albumsToGet = _getAlbumDebounceList;
+      _getAlbumDebounceList = {};
+      _getAlbumDebouncer = null;
+
+      final Map<String, Album> result = {};
+      for (final source in sources) {
+        final album = await source.getAlbums(albumsToGet.toList());
+        result.addAll(album);
+        if (result.length == albumsToGet.length) {
+          break;
+        }
       }
-    }
-    return null;
+
+      return result;
+    });
+    final albums = await _getAlbumDebouncer!;
+    return albums[albumId];
   }
 
   Future<Map<String, Album>> getAlbums(List<String> albums) async {
