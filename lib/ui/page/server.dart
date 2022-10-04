@@ -1,10 +1,11 @@
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/ui/dialogs/annil.dart';
 import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
-import 'package:annix/ui/widgets/simple_text_field.dart';
 import 'package:annix/utils/context_extension.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -113,8 +114,7 @@ class AnnivCard extends StatelessWidget {
                 TextButton(
                   child: const Text('Update Database'),
                   onPressed: () async {
-                    final anniv =
-                        Provider.of<AnnivService>(context, listen: false);
+                    final anniv = context.read<AnnivService>();
                     await anniv.updateDatabase();
                   },
                 ),
@@ -145,91 +145,26 @@ class AnnivCard extends StatelessWidget {
 /// Annil
 class AnnilListTile extends StatelessWidget {
   final LocalAnnilServer annil;
+  final bool enabled;
 
-  const AnnilListTile({Key? key, required this.annil}) : super(key: key);
+  const AnnilListTile({Key? key, required this.annil, required this.enabled})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(annil.name),
-      leading: const Icon(Icons.drag_handle_outlined),
-      trailing: IconButton(
-        icon: const Icon(Icons.edit_outlined),
-        onPressed: () {
-          // FIXME: edit annil
-          // Get.generalDialog(
-          //   pageBuilder: (context, animation, secondaryAnimation) {
-          //     return Container();
-          //   },
-          // );
-        },
-      ),
-      dense: true,
+      leading: const Icon(Icons.library_music_outlined),
       selected: true,
-    );
-  }
-}
-
-class AnnilDialog extends StatelessWidget {
-  final serverNameController = TextEditingController();
-  final serverUrlController = TextEditingController();
-  final serverTokenController = TextEditingController();
-  final void Function(LocalAnnilServer annil) onSubmit;
-
-  AnnilDialog({Key? key, required this.onSubmit}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(
-        child: Column(
-          children: const [
-            Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: Icon(
-                Icons.add_box_outlined,
-                size: 32,
-              ),
-            ),
-            Text('Annil Library'),
-          ],
-        ),
-      ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SimpleTextField(label: 'Name', controller: serverNameController),
-            SimpleTextField(label: 'Server', controller: serverUrlController),
-            SimpleTextField(label: 'Token', controller: serverTokenController),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: context.textTheme.labelLarge,
-          ),
-          child: const Text('Cancel'),
-          onPressed: () => AnnixRouterDelegate.of(context).popRoute(),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: context.textTheme.labelLarge,
-          ),
-          child: const Text('Add'),
-          onPressed: () {
-            // TODO: Add annil
-            AnnixRouterDelegate.of(context).popRoute();
-          },
-        ),
-      ],
-      titlePadding: const EdgeInsets.only(top: 8),
-      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      actionsPadding: EdgeInsets.zero,
-      insetPadding: EdgeInsets.zero,
-      buttonPadding: EdgeInsets.zero,
-      elevation: 16,
+      enabled: enabled,
+      onTap: () {
+        // FIXME: edit annil
+        // Get.generalDialog(
+        //   pageBuilder: (context, animation, secondaryAnimation) {
+        //     return Container();
+        //   },
+        // );
+      },
     );
   }
 }
@@ -264,8 +199,8 @@ class ServerView extends StatelessWidget {
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => AnnilDialog(
-                    onSubmit: (annil) {
+                  builder: (context) => AnnilAddDialog(
+                    onSubmit: (name, url, token) {
                       // TODO: save annil
                     },
                   ),
@@ -277,14 +212,44 @@ class ServerView extends StatelessWidget {
             child: Consumer<AnnilService>(
               builder: (context, annil, child) {
                 return ReorderableListView(
-                  padding: EdgeInsets.zero,
                   buildDefaultDragHandles: true,
-                  onReorder: (oldIndex, newIndex) {},
+                  onReorder: (oldIndex, newIndex) async {
+                    var oldAnnil = annil.servers[oldIndex];
+                    final newAnnil = annil.servers[newIndex];
+
+                    final db = context.read<LocalDatabase>();
+                    final anniv = context.read<AnnivService>();
+                    if (oldIndex < newIndex) {
+                      // - priority
+                      oldAnnil =
+                          oldAnnil.copyWith(priority: newAnnil.priority - 1);
+                      await (db.localAnnilServers.update()
+                            ..where((tbl) => tbl.id.equals(oldAnnil.id)))
+                          .write(oldAnnil);
+                    } else if (oldIndex > newIndex) {
+                      // + priority
+                      oldAnnil =
+                          oldAnnil.copyWith(priority: newAnnil.priority + 1);
+                      await (db.localAnnilServers.update()
+                            ..where((tbl) => tbl.id.equals(oldAnnil.id)))
+                          .write(oldAnnil);
+                    }
+
+                    if (oldAnnil.remoteId != null) {
+                      // update to anniv
+                      // TODO: write to local after request
+                      await anniv.client?.updateCredential(
+                        oldAnnil.remoteId!,
+                        priority: oldAnnil.priority,
+                      );
+                    }
+                  },
                   children: annil.servers
                       .map(
-                        (value) => AnnilListTile(
-                          annil: value,
-                          key: ValueKey(value.priority),
+                        (server) => AnnilListTile(
+                          annil: server,
+                          key: ValueKey(server.priority),
+                          enabled: annil.etags[server.id] != null,
                         ),
                       )
                       .toList(),

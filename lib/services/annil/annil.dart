@@ -9,6 +9,7 @@ import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
@@ -20,14 +21,21 @@ class AnnilService extends ChangeNotifier {
         createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
 
   List<LocalAnnilServer> servers = [];
+  Map<int, String?> etags = {};
   List<String> albums = [];
 
   AnnilService(this.context) {
-    final database = context.read<LocalDatabase>();
-    final stream = database.sortedAnnilServers().watch();
-    stream.listen((event) {
-      servers = event;
-      reload();
+    final db = context.read<LocalDatabase>();
+    db.localAnnilCaches.select().get().then((value) {
+      etags.addAll(
+          Map.fromEntries(value.map((e) => MapEntry(e.annilId, e.etag))));
+    });
+    final annilServersStream = db.sortedAnnilServers().watch();
+    annilServersStream.listen((event) {
+      if (!listEquals(event, servers)) {
+        servers = event;
+        reload();
+      }
     });
 
     final network = context.read<NetworkService>();
@@ -240,6 +248,7 @@ class AnnilService extends ChangeNotifier {
   /// Get the available album list of an Annil server.
   Future<void> updateAlbums(LocalAnnilServer server) async {
     final db = context.read<LocalDatabase>();
+    final etag = etags[server.id];
 
     try {
       final response = await _client.getUri(
@@ -248,33 +257,35 @@ class AnnilService extends ChangeNotifier {
           responseType: ResponseType.json,
           headers: {
             'Authorization': server.token,
-            if (server.etag != null) 'If-None-Match': server.etag,
+            if (etag != null) 'If-None-Match': etag,
           },
         ),
       );
       final newETag = response.headers['etag']![0];
       FLog.debug(
-        text:
-            'Annil cache MISSED, old etag: ${server.etag}, new etag: $newETag',
+        text: 'Annil cache MISSED, old etag: $etag, new etag: $newETag',
       );
-      await db.transaction(() async {
-        await db.updateAnnilETag(newETag, server.id);
-        await db.localAnnilAlbums
-            .deleteWhere((tbl) => tbl.annilId.equals(server.id));
-        await db.batch((batch) => batch.insertAll(db.localAnnilAlbums, [
-              for (final album in response.data as List<dynamic>)
-                LocalAnnilAlbumsCompanion.insert(
-                  annilId: server.id,
-                  albumId: album.toString(),
-                )
-            ]));
-      });
+      if (etag != newETag) {
+        etags[server.id] = newETag;
+        await db.transaction(() async {
+          await db.updateAnnilETag(server.id, newETag);
+          await db.localAnnilAlbums
+              .deleteWhere((tbl) => tbl.annilId.equals(server.id));
+          await db.batch((batch) => batch.insertAll(db.localAnnilAlbums, [
+                for (final album in response.data as List<dynamic>)
+                  LocalAnnilAlbumsCompanion.insert(
+                    annilId: server.id,
+                    albumId: album.toString(),
+                  )
+              ]));
+        });
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode == 304) {
-        FLog.trace(text: 'Annil cache HIT, etag: ${server.etag}');
+        FLog.trace(text: 'Annil cache HIT, etag: $etag');
       } else {
         await db.transaction(() async {
-          await db.updateAnnilETag(null, server.id);
+          await db.updateAnnilETag(server.id, null);
           await db.localAnnilAlbums
               .deleteWhere((tbl) => tbl.annilId.equals(server.id));
         });

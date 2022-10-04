@@ -1236,15 +1236,13 @@ class LocalAnnilServer extends DataClass
   final String url;
   final String token;
   final int priority;
-  final String? etag;
   const LocalAnnilServer(
       {required this.id,
       this.remoteId,
       required this.name,
       required this.url,
       required this.token,
-      required this.priority,
-      this.etag});
+      required this.priority});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1256,9 +1254,6 @@ class LocalAnnilServer extends DataClass
     map['url'] = Variable<String>(url);
     map['token'] = Variable<String>(token);
     map['priority'] = Variable<int>(priority);
-    if (!nullToAbsent || etag != null) {
-      map['etag'] = Variable<String>(etag);
-    }
     return map;
   }
 
@@ -1272,7 +1267,6 @@ class LocalAnnilServer extends DataClass
       url: Value(url),
       token: Value(token),
       priority: Value(priority),
-      etag: etag == null && nullToAbsent ? const Value.absent() : Value(etag),
     );
   }
 
@@ -1286,7 +1280,6 @@ class LocalAnnilServer extends DataClass
       url: serializer.fromJson<String>(json['url']),
       token: serializer.fromJson<String>(json['token']),
       priority: serializer.fromJson<int>(json['priority']),
-      etag: serializer.fromJson<String?>(json['etag']),
     );
   }
   @override
@@ -1299,7 +1292,6 @@ class LocalAnnilServer extends DataClass
       'url': serializer.toJson<String>(url),
       'token': serializer.toJson<String>(token),
       'priority': serializer.toJson<int>(priority),
-      'etag': serializer.toJson<String?>(etag),
     };
   }
 
@@ -1309,8 +1301,7 @@ class LocalAnnilServer extends DataClass
           String? name,
           String? url,
           String? token,
-          int? priority,
-          Value<String?> etag = const Value.absent()}) =>
+          int? priority}) =>
       LocalAnnilServer(
         id: id ?? this.id,
         remoteId: remoteId.present ? remoteId.value : this.remoteId,
@@ -1318,7 +1309,6 @@ class LocalAnnilServer extends DataClass
         url: url ?? this.url,
         token: token ?? this.token,
         priority: priority ?? this.priority,
-        etag: etag.present ? etag.value : this.etag,
       );
   @override
   String toString() {
@@ -1328,15 +1318,13 @@ class LocalAnnilServer extends DataClass
           ..write('name: $name, ')
           ..write('url: $url, ')
           ..write('token: $token, ')
-          ..write('priority: $priority, ')
-          ..write('etag: $etag')
+          ..write('priority: $priority')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, remoteId, name, url, token, priority, etag);
+  int get hashCode => Object.hash(id, remoteId, name, url, token, priority);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1346,8 +1334,7 @@ class LocalAnnilServer extends DataClass
           other.name == this.name &&
           other.url == this.url &&
           other.token == this.token &&
-          other.priority == this.priority &&
-          other.etag == this.etag);
+          other.priority == this.priority);
 }
 
 class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
@@ -1357,7 +1344,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
   final Value<String> url;
   final Value<String> token;
   final Value<int> priority;
-  final Value<String?> etag;
   const LocalAnnilServersCompanion({
     this.id = const Value.absent(),
     this.remoteId = const Value.absent(),
@@ -1365,7 +1351,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
     this.url = const Value.absent(),
     this.token = const Value.absent(),
     this.priority = const Value.absent(),
-    this.etag = const Value.absent(),
   });
   LocalAnnilServersCompanion.insert({
     this.id = const Value.absent(),
@@ -1374,7 +1359,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
     required String url,
     required String token,
     required int priority,
-    this.etag = const Value.absent(),
   })  : name = Value(name),
         url = Value(url),
         token = Value(token),
@@ -1386,7 +1370,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
     Expression<String>? url,
     Expression<String>? token,
     Expression<int>? priority,
-    Expression<String>? etag,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1395,7 +1378,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
       if (url != null) 'url': url,
       if (token != null) 'token': token,
       if (priority != null) 'priority': priority,
-      if (etag != null) 'etag': etag,
     });
   }
 
@@ -1405,8 +1387,7 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
       Value<String>? name,
       Value<String>? url,
       Value<String>? token,
-      Value<int>? priority,
-      Value<String?>? etag}) {
+      Value<int>? priority}) {
     return LocalAnnilServersCompanion(
       id: id ?? this.id,
       remoteId: remoteId ?? this.remoteId,
@@ -1414,7 +1395,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
       url: url ?? this.url,
       token: token ?? this.token,
       priority: priority ?? this.priority,
-      etag: etag ?? this.etag,
     );
   }
 
@@ -1439,9 +1419,6 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
     if (priority.present) {
       map['priority'] = Variable<int>(priority.value);
     }
-    if (etag.present) {
-      map['etag'] = Variable<String>(etag.value);
-    }
     return map;
   }
 
@@ -1453,8 +1430,7 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
           ..write('name: $name, ')
           ..write('url: $url, ')
           ..write('token: $token, ')
-          ..write('priority: $priority, ')
-          ..write('etag: $etag')
+          ..write('priority: $priority')
           ..write(')'))
         .toString();
   }
@@ -1502,15 +1478,9 @@ class LocalAnnilServers extends Table
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _etagMeta = const VerificationMeta('etag');
-  late final GeneratedColumn<String> etag = GeneratedColumn<String>(
-      'etag', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns =>
-      [id, remoteId, name, url, token, priority, etag];
+      [id, remoteId, name, url, token, priority];
   @override
   String get aliasedName => _alias ?? 'local_annil_servers';
   @override
@@ -1551,10 +1521,6 @@ class LocalAnnilServers extends Table
     } else if (isInserting) {
       context.missing(_priorityMeta);
     }
-    if (data.containsKey('etag')) {
-      context.handle(
-          _etagMeta, etag.isAcceptableOrUnknown(data['etag']!, _etagMeta));
-    }
     return context;
   }
 
@@ -1576,8 +1542,6 @@ class LocalAnnilServers extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}token'])!,
       priority: attachedDatabase.options.types
           .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
-      etag: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}etag']),
     );
   }
 
@@ -1586,6 +1550,185 @@ class LocalAnnilServers extends Table
     return LocalAnnilServers(attachedDatabase, alias);
   }
 
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class LocalAnnilCache extends DataClass implements Insertable<LocalAnnilCache> {
+  final int annilId;
+  final String? etag;
+  const LocalAnnilCache({required this.annilId, this.etag});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['annil_id'] = Variable<int>(annilId);
+    if (!nullToAbsent || etag != null) {
+      map['etag'] = Variable<String>(etag);
+    }
+    return map;
+  }
+
+  LocalAnnilCachesCompanion toCompanion(bool nullToAbsent) {
+    return LocalAnnilCachesCompanion(
+      annilId: Value(annilId),
+      etag: etag == null && nullToAbsent ? const Value.absent() : Value(etag),
+    );
+  }
+
+  factory LocalAnnilCache.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalAnnilCache(
+      annilId: serializer.fromJson<int>(json['annil_id']),
+      etag: serializer.fromJson<String?>(json['etag']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'annil_id': serializer.toJson<int>(annilId),
+      'etag': serializer.toJson<String?>(etag),
+    };
+  }
+
+  LocalAnnilCache copyWith(
+          {int? annilId, Value<String?> etag = const Value.absent()}) =>
+      LocalAnnilCache(
+        annilId: annilId ?? this.annilId,
+        etag: etag.present ? etag.value : this.etag,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LocalAnnilCache(')
+          ..write('annilId: $annilId, ')
+          ..write('etag: $etag')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(annilId, etag);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalAnnilCache &&
+          other.annilId == this.annilId &&
+          other.etag == this.etag);
+}
+
+class LocalAnnilCachesCompanion extends UpdateCompanion<LocalAnnilCache> {
+  final Value<int> annilId;
+  final Value<String?> etag;
+  const LocalAnnilCachesCompanion({
+    this.annilId = const Value.absent(),
+    this.etag = const Value.absent(),
+  });
+  LocalAnnilCachesCompanion.insert({
+    this.annilId = const Value.absent(),
+    this.etag = const Value.absent(),
+  });
+  static Insertable<LocalAnnilCache> custom({
+    Expression<int>? annilId,
+    Expression<String>? etag,
+  }) {
+    return RawValuesInsertable({
+      if (annilId != null) 'annil_id': annilId,
+      if (etag != null) 'etag': etag,
+    });
+  }
+
+  LocalAnnilCachesCompanion copyWith(
+      {Value<int>? annilId, Value<String?>? etag}) {
+    return LocalAnnilCachesCompanion(
+      annilId: annilId ?? this.annilId,
+      etag: etag ?? this.etag,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (annilId.present) {
+      map['annil_id'] = Variable<int>(annilId.value);
+    }
+    if (etag.present) {
+      map['etag'] = Variable<String>(etag.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalAnnilCachesCompanion(')
+          ..write('annilId: $annilId, ')
+          ..write('etag: $etag')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class LocalAnnilCaches extends Table
+    with TableInfo<LocalAnnilCaches, LocalAnnilCache> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  LocalAnnilCaches(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _annilIdMeta = const VerificationMeta('annilId');
+  late final GeneratedColumn<int> annilId = GeneratedColumn<int>(
+      'annil_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY');
+  final VerificationMeta _etagMeta = const VerificationMeta('etag');
+  late final GeneratedColumn<String> etag = GeneratedColumn<String>(
+      'etag', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  @override
+  List<GeneratedColumn> get $columns => [annilId, etag];
+  @override
+  String get aliasedName => _alias ?? 'local_annil_caches';
+  @override
+  String get actualTableName => 'local_annil_caches';
+  @override
+  VerificationContext validateIntegrity(Insertable<LocalAnnilCache> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('annil_id')) {
+      context.handle(_annilIdMeta,
+          annilId.isAcceptableOrUnknown(data['annil_id']!, _annilIdMeta));
+    }
+    if (data.containsKey('etag')) {
+      context.handle(
+          _etagMeta, etag.isAcceptableOrUnknown(data['etag']!, _etagMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {annilId};
+  @override
+  LocalAnnilCache map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalAnnilCache(
+      annilId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}annil_id'])!,
+      etag: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}etag']),
+    );
+  }
+
+  @override
+  LocalAnnilCaches createAlias(String alias) {
+    return LocalAnnilCaches(attachedDatabase, alias);
+  }
+
+  @override
+  List<String> get customConstraints =>
+      const ['FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")'];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1809,6 +1952,7 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   late final Playlist playlist = Playlist(this);
   late final PlaylistItem playlistItem = PlaylistItem(this);
   late final LocalAnnilServers localAnnilServers = LocalAnnilServers(this);
+  late final LocalAnnilCaches localAnnilCaches = LocalAnnilCaches(this);
   late final LocalAnnilAlbums localAnnilAlbums = LocalAnnilAlbums(this);
   Selectable<PlaylistItemData> playlistItems(int var1) {
     return customSelect(
@@ -1855,12 +1999,11 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         }).asyncMap(localAnnilServers.mapFromRow);
   }
 
-  Future<int> updateAnnilETag(String? var1, int var2) {
-    return customUpdate(
-      'UPDATE local_annil_servers SET etag = ?1 WHERE id = ?2',
-      variables: [Variable<String>(var1), Variable<int>(var2)],
-      updates: {localAnnilServers},
-      updateKind: UpdateKind.update,
+  Future<int> updateAnnilETag(int var1, String? var2) {
+    return customInsert(
+      'INSERT OR REPLACE INTO local_annil_caches (annil_id, etag) VALUES (?1, ?2)',
+      variables: [Variable<int>(var1), Variable<String>(var2)],
+      updates: {localAnnilCaches},
     );
   }
 
@@ -1882,6 +2025,7 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         playlist,
         playlistItem,
         localAnnilServers,
+        localAnnilCaches,
         localAnnilAlbums
       ];
 }

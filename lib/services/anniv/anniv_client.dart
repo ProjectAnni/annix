@@ -161,6 +161,23 @@ class AnnivClient {
         .toList();
   }
 
+  /// https://book.anni.rs/06.anniv/04.credential.html#%E4%BF%AE%E6%94%B9-token
+  Future<void> updateCredential(
+    String id, {
+    String? name,
+    String? url,
+    String? token,
+    int? priority,
+  }) async {
+    await _client.patch('/api/credential', data: {
+      'id': id,
+      if (name != null) 'name': name,
+      if (url != null) 'url': url,
+      if (token != null) 'token': token,
+      if (priority != null) 'priority': priority,
+    });
+  }
+
   // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF
   Future<Map<String, Album>> getAlbumMetadata(List<String> albums) async {
     final response =

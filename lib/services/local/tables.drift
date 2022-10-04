@@ -59,8 +59,14 @@ CREATE TABLE local_annil_servers (
     "name"            TEXT NOT NULL,
     "url"             TEXT NOT NULL,
     "token"           TEXT NOT NULL,
-    "priority"        INT NOT NULL,
-    "etag"            TEXT
+    "priority"        INT NOT NULL
+);
+
+CREATE TABLE local_annil_caches (
+    "annil_id"        INT NOT NULL PRIMARY KEY,
+    "etag"            TEXT,
+
+    FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")
 );
 
 CREATE TABLE local_annil_albums (
@@ -79,5 +85,5 @@ isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorites WHERE album_id = ?
 
 sortedAnnilServers: SELECT * FROM local_annil_servers ORDER BY priority DESC;
 annilToUse: SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?) ORDER BY priority DESC;
-updateAnnilETag: UPDATE local_annil_servers SET etag = ? WHERE id = ?;
+updateAnnilETag: INSERT OR REPLACE INTO local_annil_caches(annil_id, etag) VALUES (?, ?);
 availableAlbums: SELECT DISTINCT album_id FROM local_annil_albums;
