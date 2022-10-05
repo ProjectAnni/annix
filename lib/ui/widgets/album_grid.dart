@@ -26,6 +26,7 @@ class AlbumGrid extends StatelessWidget {
     }
 
     final child = InkWell(
+      borderRadius: BorderRadius.circular(8),
       onTap: () => toAlbum(context),
       child: Card(
         clipBehavior: Clip.hardEdge,

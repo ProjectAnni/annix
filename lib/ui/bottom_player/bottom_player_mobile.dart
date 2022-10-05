@@ -22,7 +22,10 @@ class MobileBottomPlayer extends StatelessWidget {
           topRight: Radius.circular(12),
         ),
         color: ElevationOverlay.colorWithOverlay(
-            context.colorScheme.surface, context.colorScheme.primary, 3.0),
+          context.colorScheme.surface,
+          context.colorScheme.primary,
+          3.0,
+        ),
       ),
       height: height,
       child: Row(

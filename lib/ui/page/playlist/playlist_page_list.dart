@@ -89,9 +89,11 @@ class PlaylistDetailScreen extends StatelessWidget {
             );
           }
 
+          final useThreeLine =
+              track.description != null && track.description!.isNotEmpty;
           return ListTile(
             leading: MusicCover(albumId: track.info.id.albumId),
-            isThreeLine: true,
+            isThreeLine: useThreeLine,
             title: Text(
               track.info.title,
               overflow: TextOverflow.ellipsis,
@@ -100,7 +102,7 @@ class PlaylistDetailScreen extends StatelessWidget {
             subtitle: Row(
               children: [
                 ArtistText(track.info.artist),
-                if (track.description != null && track.description!.isNotEmpty)
+                if (useThreeLine)
                   Text(
                     track.description!,
                     overflow: TextOverflow.ellipsis,
