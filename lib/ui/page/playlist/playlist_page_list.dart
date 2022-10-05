@@ -90,7 +90,7 @@ class PlaylistDetailScreen extends StatelessWidget {
           }
 
           return ListTile(
-            leading: Text('${index + 1}'),
+            leading: MusicCover(albumId: track.info.id.albumId),
             minLeadingWidth: 16,
             dense: true,
             visualDensity: VisualDensity.compact,

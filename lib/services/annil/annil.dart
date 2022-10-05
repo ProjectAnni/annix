@@ -170,12 +170,14 @@ class AnnilService extends ChangeNotifier {
     required PreferQuality quality,
   }) async {
     final servers = await _getActiveServerByAlbumId(track.albumId);
-    if (servers.isEmpty) {
-      return null;
-    } else {
-      final server = servers.first;
-      return '${server.url}/${track.albumId}/${track.discId}/${track.trackId}?auth=${server.token}&quality=$quality';
+    if (servers.isNotEmpty) {
+      for (final server in servers) {
+        if (etags[server.id] != null) {
+          return '${server.url}/${track.albumId}/${track.discId}/${track.trackId}?auth=${server.token}&quality=$quality';
+        }
+      }
     }
+    return null;
   }
 
   Future<Uri?> getCoverUrl({required String albumId, int? discId}) async {

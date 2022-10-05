@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
+import 'package:annix/ui/dialogs/tag.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -13,57 +15,114 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-// class CategoryChip extends StatelessWidget {
-//   final String name;
-//   final RxBool selected = false.obs;
-//
-//   CategoryChip({super.key, required this.name});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(
-//       () => FilterChip(
-//         label: Text(name),
-//         selected: selected.value,
-//         onSelected: (value) {
-//           selected.value = value;
-//         },
-//       ),
-//     );
-//   }
-// }
+class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
 
-// class SearchPage extends StatelessWidget {
-//   const SearchPage({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: TextField(
-//           autofocus: true,
-//           decoration: InputDecoration(hintText: I18n.SEARCH.tr),
-//           onSubmitted: (value) {},
-//         ),
-//       ),
-//       body: ButtonBar(
-//         alignment: MainAxisAlignment.start,
-//         children: [
-//           ActionChip(
-//             label: const Icon(Icons.tune_outlined),
-//             padding: EdgeInsets.zero,
-//             onPressed: () {
-//               //
-//             },
-//           ),
-//           CategoryChip(name: "OP"),
-//           CategoryChip(name: "ED"),
-//           CategoryChip(name: "OST"),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  SearchResult? _result;
+  bool isLoading = false;
+
+  Future<void> search(AnnivClient anniv, String keyword) async {
+    primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
+    setState(() {
+      _result = null;
+      isLoading = true;
+    });
+
+    try {
+      final result = await anniv.search(
+        keyword,
+        searchTracks: true,
+        searchAlbums: true,
+        searchPlaylists: true,
+      );
+      _result = result;
+    } catch (e) {
+      rethrow;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Set<TagEntry> tags = {};
+
+  @override
+  Widget build(BuildContext context) {
+    final anniv = context.read<AnnivService>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          autofocus: true,
+          decoration: InputDecoration(hintText: t.search),
+          onSubmitted: (keyword) => search(anniv.client!, keyword),
+        ),
+      ),
+      body: Column(
+        children: [
+          ButtonBar(
+            alignment: MainAxisAlignment.start,
+            children: [
+              ActionChip(
+                avatar: const Icon(Icons.filter_list_outlined),
+                label: const Text('Tag filters'),
+                padding: EdgeInsets.zero,
+                elevation: 12,
+                onPressed: () async {
+                  final tag = await showTagListDialog(context);
+                  if (tag != null) {
+                    setState(() {
+                      tags.add(tag);
+                    });
+                  }
+                },
+              ),
+              ...tags.map(
+                (tag) {
+                  if (tag.type == TagType.Category) {
+                    return InputChip(
+                      label: Text(tag.name),
+                      selected: true,
+                      onDeleted: () {
+                        setState(() {
+                          tags.remove(tag);
+                        });
+                      },
+                    );
+                  } else {
+                    return InputChip(
+                      label: Text(tag.name),
+                      onDeleted: () {
+                        setState(() {
+                          tags.remove(tag);
+                        });
+                      },
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          Expanded(
+            child: _result == null
+                ? Center(
+                    child: isLoading
+                        ? const CircularProgressIndicator(strokeWidth: 2)
+                        : const Text('Search results would display here'),
+                  )
+                : _SearchResult(result: _result!),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class _SearchResult extends StatelessWidget {
   final SearchResult result;
@@ -152,68 +211,6 @@ class _SearchResult extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
-
-  @override
-  SearchScreenState createState() => SearchScreenState();
-}
-
-class SearchScreenState extends State<SearchScreen> {
-  SearchResult? _result;
-  bool isLoading = false;
-
-  Future<void> search(AnnivClient anniv, String keyword) async {
-    primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
-    setState(() {
-      _result = null;
-      isLoading = true;
-    });
-
-    try {
-      final result = await anniv.search(
-        keyword,
-        searchTracks: true,
-        searchAlbums: true,
-        searchPlaylists: true,
-      );
-      _result = result;
-    } catch (e) {
-      rethrow;
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final anniv = Provider.of<AnnivService>(context, listen: false);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: t.search,
-          ),
-          onSubmitted: (keyword) => search(anniv.client!, keyword),
-        ),
-      ),
-      body: _result == null
-          ? Container(
-              alignment: Alignment.topCenter,
-              padding: const EdgeInsets.only(top: 8),
-              child: isLoading
-                  ? const CircularProgressIndicator(strokeWidth: 2)
-                  : const Text('Search results would display here'),
-            )
-          : _SearchResult(result: _result!),
     );
   }
 }
