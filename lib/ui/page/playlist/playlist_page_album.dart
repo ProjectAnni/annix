@@ -8,6 +8,7 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -106,11 +107,16 @@ class AlbumDetailScreen extends StatelessWidget {
     var discId = 1;
     for (final disc in album.discs) {
       if (needDiscId) {
-        var discTitle = 'Disc $discId';
-        if (disc.title != '') {
-          discTitle += ' - ${disc.title}';
-        }
-        list.add(ListTile(title: Text(discTitle)));
+        list.add(
+          ListTile(
+            textColor: context.theme.primaryColor,
+            iconColor: context.theme.primaryColor,
+            leading: const Icon(Icons.album_outlined),
+            title: Text(disc.title),
+            trailing: Text('Disc $discId'),
+            minLeadingWidth: 16,
+          ),
+        );
       }
 
       var trackId = 1;
@@ -124,9 +130,7 @@ class AlbumDetailScreen extends StatelessWidget {
             totalTrackId++;
             return ListTile(
               leading: Text('$trackIndex'),
-              minLeadingWidth: 16,
-              dense: true,
-              visualDensity: VisualDensity.compact,
+              // dense: true,
               title: Text(track.title, overflow: TextOverflow.ellipsis),
               subtitle: ArtistText(track.artist),
               enabled: annil.isAvailable(

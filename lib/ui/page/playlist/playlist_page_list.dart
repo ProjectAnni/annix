@@ -91,21 +91,24 @@ class PlaylistDetailScreen extends StatelessWidget {
 
           return ListTile(
             leading: MusicCover(albumId: track.info.id.albumId),
-            minLeadingWidth: 16,
-            dense: true,
-            visualDensity: VisualDensity.compact,
+            isThreeLine: true,
             title: Text(
               track.info.title,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
-            subtitle: track.description != null && track.description!.isNotEmpty
-                ? Text(
+            subtitle: Row(
+              children: [
+                ArtistText(track.info.artist),
+                if (track.description != null && track.description!.isNotEmpty)
+                  Text(
                     track.description!,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   )
-                : ArtistText(track.info.artist),
+              ],
+            ),
+            trailing: Text('${index + 1}'),
             enabled: annil.isAvailable(track.info.id),
             onTap: () async {
               final tracks = getTracks();

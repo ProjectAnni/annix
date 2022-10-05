@@ -35,15 +35,19 @@ class DownloadManagerPage extends StatelessWidget {
               length: 2,
               child: Column(
                 children: [
-                  TabBar(
-                    labelColor: context.textTheme.titleMedium?.color,
-                    indicatorColor: context.colorScheme.primary,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    tabs: const [
-                      Tab(text: 'Music'),
-                      Tab(text: 'Others'),
-                    ],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      labelColor: context.textTheme.titleMedium?.color,
+                      indicatorColor: context.colorScheme.primary,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      isScrollable: true,
+                      tabs: const [
+                        Tab(text: 'Music'),
+                        Tab(text: 'Others'),
+                      ],
+                    ),
                   ),
                   Expanded(
                     flex: 1,

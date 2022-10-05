@@ -50,10 +50,7 @@ class FavoriteScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final favorite = reversedFavorite.elementAt(index);
           return ListTile(
-            leading: Text('${index + 1}'),
-            minLeadingWidth: 16,
-            dense: true,
-            visualDensity: VisualDensity.compact,
+            leading: MusicCover(albumId: favorite.albumId),
             title: Text(
               favorite.title ?? '--',
               overflow: TextOverflow.ellipsis,
@@ -62,6 +59,7 @@ class FavoriteScreen extends StatelessWidget {
               favorite.artist ?? '--',
               overflow: TextOverflow.ellipsis,
             ),
+            trailing: Text('${index + 1}'),
             enabled: annil.isAvailable(
               TrackIdentifier(
                 albumId: favorite.albumId,

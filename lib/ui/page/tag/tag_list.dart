@@ -18,12 +18,15 @@ class TagList extends StatelessWidget {
       length: TagType.values.length,
       child: Column(
         children: [
-          TabBar(
-            labelColor: context.textTheme.titleMedium?.color,
-            indicatorColor: context.colorScheme.primary,
-            indicatorSize: TabBarIndicatorSize.tab,
-            tabs: TagType.values.map((type) => Tab(text: type.name)).toList(),
-            isScrollable: true,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              labelColor: context.textTheme.titleMedium?.color,
+              indicatorColor: context.colorScheme.primary,
+              indicatorSize: TabBarIndicatorSize.tab,
+              tabs: TagType.values.map((type) => Tab(text: type.name)).toList(),
+              isScrollable: true,
+            ),
           ),
           FutureBuilder<Map<String, TagEntry>>(
               future: context.read<MetadataService>().getTags(),
@@ -39,14 +42,14 @@ class TagList extends StatelessWidget {
                         return ListView(
                           children: sorted.values
                               .where((element) => element.type == type)
-                              .map((e) => ListTile(
-                                    leading:
-                                        const Icon(Icons.local_offer_outlined),
-                                    title: Text(e.name),
-                                    onTap: () {
-                                      onSelected(e);
-                                    },
-                                  ))
+                              .map(
+                                (e) => ListTile(
+                                  leading:
+                                      const Icon(Icons.local_offer_outlined),
+                                  title: Text(e.name),
+                                  onTap: () => onSelected(e),
+                                ),
+                              )
                               .toList(),
                         );
                       }),
