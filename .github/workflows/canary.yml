@@ -20,7 +20,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
@@ -41,6 +41,43 @@ jobs:
             ./build/app/outputs/apk/*.apk
           retention-days: 1
 
+  iOS:
+    runs-on: macos-12
+    env:
+      KEYCHAIN: job-${{ github.job }}-${{ github.run_id	}}-${{ github.run_number }}-${{ github.run_attempt }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+      - name: Setup | Certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          keychain: ${{ env.KEYCHAIN }}
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
+      - name: Setup | Dependencies
+        run: flutter pub get
+      - name: Build | iOS
+        run: flutter build ipa --verbose
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-ios
+          path:
+            ./build/ios/ipa/*.ipa
+          retention-days: 1
+      - name: Cleanup | Delete keychain
+        if: always()
+        run: |
+          security delete-keychain "${{ env.KEYCHAIN }}".keychain
+
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +90,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: |
           sudo apt-get update -y
@@ -84,7 +121,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | macOS
@@ -112,7 +149,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: |
           flutter config --enable-windows-desktop
@@ -132,7 +169,7 @@ jobs:
           retention-days: 1
 
   publish:
-    needs: [ linux, android, macOS, windows ]
+    needs: [ android, iOS, linux, macOS, windows ]
     runs-on: ubuntu-20.04
     env:
       GH_REPO: ${{ github.repository }}
@@ -151,4 +188,4 @@ jobs:
           git push origin :canary || true
       - name: Publish release
         run: |
-          gh release create canary --prerelease --title "$SUBJECT" --target $GITHUB_SHA annix-android/*.apk annix-linux64/* annix-macos/* annix-win64/*
+          gh release create canary --prerelease --title "$SUBJECT" --target $GITHUB_SHA annix-android/*.apk annix-linux64/* annix-macos/* annix-win64/* annix-ios/*
