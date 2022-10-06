@@ -5,7 +5,7 @@ Desktop / Mobile client for Project Anni.
 ## Features
 
 - Cross-platform player designed for Project Anni
-    - Tested on Linux(Manjaro KDE), macOS, Windows and Android
+    - Tested on Linux(Manjaro KDE), macOS, Windows, Android and iOS(iPad mini5)
 - Control through MPRIS on Linux
 - Portable mode (create a file named `portable.enable`)
 

@@ -1,7 +1,7 @@
 import 'package:annix/services/annil/annil.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +31,7 @@ class TagDetailScreen extends StatelessWidget {
               return GridView.builder(
                 padding: const EdgeInsets.all(4.0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: Global.isDesktop ? 4 : 2,
+                  crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
                   mainAxisSpacing: 4,
                   crossAxisSpacing: 4,
                   childAspectRatio: 0.87,

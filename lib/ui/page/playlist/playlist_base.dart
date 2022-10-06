@@ -1,6 +1,5 @@
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -75,11 +74,12 @@ class BasePlaylistScreen extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: context.textTheme.titleMedium,
+                    style: context.textTheme.titleMedium
+                        ?.apply(fontSizeDelta: 2.0),
                   ),
                 ),
                 ...intro,
-                if (Global.isDesktop) _playButtons(context),
+                if (context.isDesktopOrLandscape) _playButtons(context),
               ],
             ),
           ),
@@ -111,7 +111,7 @@ class BasePlaylistScreen extends StatelessWidget {
     Widget result = Column(
       children: [
         _albumIntro(context),
-        if (Global.isMobile) _playButtons(context),
+        if (!context.isDesktopOrLandscape) _playButtons(context),
         Expanded(child: child),
       ],
     );
@@ -125,7 +125,7 @@ class BasePlaylistScreen extends StatelessWidget {
             ),
         ];
     if (onRefresh != null) {
-      if (Global.isDesktop) {
+      if (context.isDesktopOrLandscape) {
         // sync button on desktop
         pageActions.add(
           IconButton(

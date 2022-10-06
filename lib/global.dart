@@ -5,6 +5,7 @@ import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/font.dart';
 import 'package:annix/services/network/proxy.dart';
 import 'package:annix/services/settings.dart';
+import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:we_slide/we_slide.dart';
 
 class Global {
   static late SharedPreferences preferences;
@@ -31,8 +31,9 @@ class Global {
 
   static BuildContext get context => navigatorKey.currentContext!;
 
-  static final mobileWeSlideController = WeSlideController(initial: false);
-  static final mobileWeSlideFooterController = WeSlideController(initial: true);
+  static final mobileWeSlideController = AnniWeSlideController(initial: false);
+  static final mobileWeSlideFooterController =
+      AnniWeSlideController(initial: true);
 
   static AnnixProxy proxy = AnnixProxy();
 
@@ -78,7 +79,7 @@ class Global {
       // save data in getApplicationDocumentsDirectory() on mobile
       dataRoot = (await getApplicationDocumentsDirectory()).path;
       if (Platform.isIOS) {
-        storageRoot = (await getApplicationDocumentsDirectory()).path;
+        storageRoot = (await getLibraryDirectory()).path;
       } else {
         storageRoot = (await getExternalStorageDirectory())!.path;
       }

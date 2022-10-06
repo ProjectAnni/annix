@@ -1,7 +1,7 @@
 import 'package:annix/services/annil/annil.dart';
-import 'package:annix/global.dart';
 import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/widgets/album_grid.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -11,7 +11,7 @@ class HomeAlbums extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = Global.isDesktop ? 280.0 : 240.0;
+    final height = context.isDesktopOrLandscape ? 280.0 : 240.0;
 
     return SliverToBoxAdapter(
       child: Column(

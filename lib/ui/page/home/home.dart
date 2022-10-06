@@ -1,6 +1,5 @@
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/global.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/page/home/home_albums.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
@@ -9,6 +8,7 @@ import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -51,20 +51,21 @@ class HomePage extends StatelessWidget {
                               );
                             },
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: () {
-                              AnnixRouterDelegate.of(context)
-                                  .to(name: '/search');
-                            },
-                          ),
+                          if (!context.isDesktopOrLandscape)
+                            IconButton(
+                              icon: const Icon(Icons.search),
+                              onPressed: () {
+                                AnnixRouterDelegate.of(context)
+                                    .to(name: '/search');
+                              },
+                            ),
                           const ThemeButton(),
                         ],
                       );
                     },
                   ),
                 ] +
-                content())
+                content(context))
             .map(
               (sliver) => SliverPadding(
                 padding: EdgeInsets.symmetric(
@@ -80,7 +81,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  List<Widget> content() {
+  List<Widget> content(BuildContext context) {
     return <Widget>[
       const HomeAlbums(),
 
@@ -88,7 +89,7 @@ class HomePage extends StatelessWidget {
       SliverPadding(
         padding: const EdgeInsets.only(top: 48, left: 16, bottom: 16),
         sliver: TwoSideSliver(
-          leftPercentage: Global.isDesktop ? 0.5 : 1,
+          leftPercentage: context.isDesktopOrLandscape ? 0.5 : 1,
           left: HomeTitle(
             sliver: true,
             title: t.playlists,
@@ -102,7 +103,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       TwoSideSliver(
-        leftPercentage: Global.isDesktop ? 0.5 : 1,
+        leftPercentage: context.isDesktopOrLandscape ? 0.5 : 1,
         left: const PlaylistView(),
         right: const SliverToBoxAdapter(),
       ),

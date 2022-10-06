@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 
 class AnnilService extends ChangeNotifier {
   final BuildContext context;
@@ -25,6 +26,17 @@ class AnnilService extends ChangeNotifier {
   List<String> albums = [];
 
   AnnilService(this.context) {
+    _client.interceptors.add(RetryInterceptor(
+      dio: _client,
+      logPrint: (text) => FLog.error(text: text),
+      retries: 3,
+      retryDelays: const [
+        Duration(seconds: 1),
+        Duration(seconds: 2),
+        Duration(seconds: 3),
+      ],
+    ));
+
     final db = context.read<LocalDatabase>();
     db.localAnnilCaches.select().get().then((value) {
       etags.addAll(
@@ -200,8 +212,9 @@ class AnnilService extends ChangeNotifier {
 
   /// Refresh all annil servers
   Future<void> reload() async {
+    final db = context.read<LocalDatabase>();
+    final albumList = <String>{};
     if (NetworkService.isOnline) {
-      final db = context.read<LocalDatabase>();
       await Future.wait(servers.map((server) async {
         try {
           await updateAlbums(server);
@@ -213,10 +226,10 @@ class AnnilService extends ChangeNotifier {
         }
         return;
       }));
-      albums = await db.availableAlbums().get();
-    } else {
-      albums = await getCachedAlbums();
+      albumList.addAll(await db.availableAlbums().get());
     }
+    albumList.addAll(await getCachedAlbums());
+    albums = albumList.toList();
     notifyListeners();
   }
 
@@ -225,7 +238,7 @@ class AnnilService extends ChangeNotifier {
         (NetworkService.isOnline && albums.contains(id.albumId));
   }
 
-  static Future<List<String>> getCachedAlbums() async {
+  static Future<Set<String>> getCachedAlbums() async {
     final root = p.join(Global.storageRoot, 'audio');
     return Directory(root)
         .list()
@@ -233,13 +246,14 @@ class AnnilService extends ChangeNotifier {
           if (entry is! Directory) {
             return false;
           }
-          // return true if music file exists (any file with no extension)
-          return entry
-              .listSync()
-              .any((e) => e is File && !p.basename(e.path).contains('.'));
+          // return true if music file exists (any file with no extension, or flac extension)
+          return entry.listSync().any((e) =>
+              e is File &&
+              (p.basename(e.path).endsWith('.flac') ||
+                  !p.basename(e.path).contains('.')));
         })
         .map((entry) => p.basename(entry.path))
-        .toList();
+        .toSet();
   }
 
   static bool isCacheAvailable(TrackIdentifier id) {
@@ -286,6 +300,7 @@ class AnnilService extends ChangeNotifier {
       if (e.response?.statusCode == 304) {
         FLog.trace(text: 'Annil cache HIT, etag: $etag');
       } else {
+        etags.remove(server.id);
         await db.transaction(() async {
           await db.updateAnnilETag(server.id, null);
           await db.localAnnilAlbums

@@ -80,7 +80,7 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   double getPlayingLineBias() {
-    return Global.isDesktop
+    return Global.context.isDesktopOrLandscape
         ? 0.2 // on desktop, we tend to make lyric display at top
         : 0.5; // but on mobile phone, it would look better at the center of the screen
   }

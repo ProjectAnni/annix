@@ -8,7 +8,7 @@ import 'package:annix/ui/page/playlist/playlist_base.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,7 +99,9 @@ class PlaylistDetailScreen extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
-            subtitle: Row(
+            subtitle: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ArtistText(track.info.artist),
                 if (useThreeLine)

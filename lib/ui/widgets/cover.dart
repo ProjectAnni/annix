@@ -118,7 +118,7 @@ class MusicCover extends StatelessWidget {
           filterQuality: filterQuality,
         );
       default:
-        return const DummyMusicCover();
+        return DummyMusicCover(card: card);
     }
   }
 
@@ -181,10 +181,13 @@ class DummyMusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cover = Container(
-      color: Colors.black87,
-      child: const Center(
-        child: Icon(Icons.music_note, color: Colors.white, size: 32),
+    final cover = AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+        color: Colors.black87,
+        child: const Center(
+          child: Icon(Icons.music_note, color: Colors.white, size: 32),
+        ),
       ),
     );
 

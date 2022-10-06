@@ -9,11 +9,31 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
-import 'package:audio_session/audio_session.dart';
+import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// https://github.com/bluefireteam/audioplayers/issues/788#issuecomment-1268882883
+class PlaybackServiceHackForIOS {
+  static PlaybackServiceHackForIOS? _instance;
+
+  final AudioPlayer player = AudioPlayer(playerId: 'hack-for-ios');
+  PlaybackServiceHackForIOS._() {
+    init();
+  }
+
+  factory PlaybackServiceHackForIOS() {
+    _instance ??= PlaybackServiceHackForIOS._();
+    return _instance!;
+  }
+
+  Future<void> init() async {
+    await player.setReleaseMode(ReleaseMode.loop);
+    await player.play(AssetSource('silent.wav'));
+  }
+}
 
 class PlaybackService extends ChangeNotifier {
   static final AudioPlayer player = AudioPlayer();
@@ -93,6 +113,10 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> play({bool reload = false, setSourceOnly = false}) async {
+    if (Global.isApple) {
+      PlaybackServiceHackForIOS();
+    }
+
     if (queue.isEmpty) return;
 
     // activate audio session
@@ -146,7 +170,7 @@ class PlaybackService extends ChangeNotifier {
 
       // TODO: tell user why skipped
       FLog.error(text: 'Failed to play', exception: e);
-      next();
+      await next();
     }
 
     // when playback starts, set state to playing
@@ -182,7 +206,8 @@ class PlaybackService extends ChangeNotifier {
     playing?.updateDuration(Duration.zero);
     await Future.wait([
       if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
-      PlaybackService.player.release(),
+      if (!Global.isApple) PlaybackService.player.release(),
+      if (Global.isApple) PlaybackService.player.stop(),
     ]);
   }
 
@@ -346,7 +371,6 @@ class PlaybackService extends ChangeNotifier {
       return;
     }
 
-    final songs = <Future<AnnilAudioSource?>>[];
     final albumIds = <String>[];
 
     for (int i = 0; i < count; i++) {
@@ -356,6 +380,7 @@ class PlaybackService extends ChangeNotifier {
 
     final MetadataService metadata = context.read();
     final metadataMap = await metadata.getAlbums(albumIds);
+    final Set<TrackIdentifier> tracks = {};
     for (final albumId in albumIds) {
       final album = metadataMap[albumId];
       if (album != null) {
@@ -374,14 +399,14 @@ class PlaybackService extends ChangeNotifier {
 
         if (annil.isAvailable(id)) {
           if (track.type == TrackType.normal) {
-            songs.add(
-              AnnilAudioSource.from(id: id, metadata: metadata),
-            );
+            tracks.add(id);
           }
         }
       }
     }
 
+    final songs =
+        tracks.map((id) => AnnilAudioSource.from(id: id, metadata: metadata));
     await setLoopMode(LoopMode.off);
 
     final queue = await Future.wait(songs);

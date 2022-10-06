@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:annix/global.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class NetworkService extends ChangeNotifier {
@@ -9,6 +8,7 @@ class NetworkService extends ChangeNotifier {
   static bool isConnected = true;
 
   final Connectivity _connectivity = Connectivity();
+  final Dio _client = Dio();
 
   NetworkService() {
     _connectivity.onConnectivityChanged.listen(_updateState);
@@ -53,8 +53,11 @@ class NetworkService extends ChangeNotifier {
 
   Future<bool> _canVisitInternet() async {
     try {
-      final result = await InternetAddress.lookup('anni.rs');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      // Check network connection
+      // We used `InternetAddress.lookup` before, but it could be influenced by fakeip
+      final response =
+          await _client.getUri(Uri.parse('http://g.cn/generate_204'));
+      if (response.statusCode == 204) {
         return true;
       }
     } catch (_) {}

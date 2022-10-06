@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:flutter/material.dart';
 
 extension AnnixContextExtension on BuildContext {
@@ -8,4 +9,8 @@ extension AnnixContextExtension on BuildContext {
   TextTheme get textTheme => Theme.of(this).textTheme;
 
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
+
+  bool get isDesktopOrLandscape =>
+      Global.isDesktop ||
+      MediaQuery.of(this).orientation == Orientation.landscape;
 }

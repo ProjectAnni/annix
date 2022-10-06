@@ -161,17 +161,18 @@ class AnnixAudioHandler extends BaseAudioHandler {
         );
 
     final controls = [
-      isFavorite
-          ? const MediaControl(
-              label: 'Unfavorite',
-              androidIcon: 'drawable/ic_favorite',
-              action: MediaAction.fastForward,
-            )
-          : const MediaControl(
-              label: 'Favorite',
-              androidIcon: 'drawable/ic_favorite_border',
-              action: MediaAction.fastForward,
-            ),
+      if (!Global.isApple)
+        isFavorite
+            ? const MediaControl(
+                label: 'Unfavorite',
+                androidIcon: 'drawable/ic_favorite',
+                action: MediaAction.fastForward,
+              )
+            : const MediaControl(
+                label: 'Favorite',
+                androidIcon: 'drawable/ic_favorite_border',
+                action: MediaAction.fastForward,
+              ),
       if (hasPrevious) MediaControl.skipToPrevious,
       if (isPlaying) MediaControl.pause else MediaControl.play,
       MediaControl.stop,

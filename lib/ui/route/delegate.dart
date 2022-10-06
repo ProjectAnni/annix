@@ -35,10 +35,11 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         .toList();
 
     return AnnixLayout.build(
+      context,
       router: this,
       child: Navigator(
         key: navigatorKey,
-        pages: List.of(reserved + _pages),
+        pages: reserved + _pages,
         onPopPage: _onPopPage,
       ),
     );
@@ -169,6 +170,11 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
             "You've entered an unknown area! This should not happen.");
     }
 
+    final reserved = _reservedPages[routeSettings.name!];
+    if (reserved != null) {
+      return reserved;
+    }
+
     final page = AnnixPage(
       child: child,
       name: routeSettings.name,
@@ -177,7 +183,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       disableAppBarDismissal: disableAppBarDismissal,
     );
 
-    if (routeSettings.name == '/playing' || routeSettings.name == '/tags') {
+    if (routeSettings.name == '/playing') {
       _reservedPages[routeSettings.name!] = page;
     }
     return page;

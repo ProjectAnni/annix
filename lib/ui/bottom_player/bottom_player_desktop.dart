@@ -18,7 +18,10 @@ class DesktopBottomPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AnnixRouterDelegate.of(context).off(name: '/playing');
+        final player = context.read<PlaybackService>();
+        if (player.playing != null) {
+          AnnixRouterDelegate.of(context).off(name: '/playing');
+        }
       },
       child: Container(
         color: ElevationOverlay.colorWithOverlay(

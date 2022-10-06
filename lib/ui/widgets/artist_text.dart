@@ -1,4 +1,4 @@
-import 'package:annix/global.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
 // https://github.com/ProjectAnni/anniw/blob/d1770ded6cffb1c7c4ed74205b7d40ae8ec18998/src/utils/helper.ts#L62
@@ -109,7 +109,7 @@ class _ArtistTextState extends State<ArtistText> {
               maxLines: 1,
             ),
           ),
-          if (widget.isExtensible && Global.isDesktop)
+          if (widget.isExtensible && context.isDesktopOrLandscape)
             IconButton(
               onPressed: toggleExtend,
               isSelected: fullArtist,
@@ -119,6 +119,11 @@ class _ArtistTextState extends State<ArtistText> {
               constraints: const BoxConstraints(),
               visualDensity: VisualDensity.compact,
               padding: EdgeInsets.zero,
+              // must be specified on iOS to remove _InputPadding
+              // https://github.com/flutter/flutter/issues/96995#issuecomment-1018763723
+              style: const ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
             ),
         ],
       ),

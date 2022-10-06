@@ -8,7 +8,7 @@ import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 
 typedef WidgetCallback = Widget Function();
 
@@ -117,18 +117,20 @@ class SettingsScreen extends StatelessWidget {
                   title: const Text('Custom font path'),
                   trailing: Text(p ?? 'Not Specified'),
                   onPressed: (context) async {
-                    final result = await FilePicker.platform
-                        .pickFiles(allowedExtensions: ['ttf', 'otf']);
+                    // final result = await FilePicker.platform.pickFiles(
+                    //   allowedExtensions: ['ttf', 'otf'],
+                    //   type: FileType.custom,
+                    // );
 
-                    if (result != null) {
-                      settings.fontPath.value = result.files.single.path;
-                    } else {
-                      settings.fontPath.value = null;
-                    }
+                    // if (result != null) {
+                    //   settings.fontPath.value = result.files.single.path;
+                    // } else {
+                    //   settings.fontPath.value = null;
+                    // }
                   },
                 ),
               ),
-              if (Global.isMobile)
+              if (!context.isDesktopOrLandscape)
                 SettingsTileBuilder<bool>(
                   value: settings.mobileShowArtistInBottomPlayer,
                   builder: (context, p, _) => SettingsTile.switchTile(
