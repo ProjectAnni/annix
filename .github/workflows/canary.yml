@@ -62,10 +62,17 @@ jobs:
           keychain: ${{ env.KEYCHAIN }}
           p12-file-base64: ${{ secrets.IOS_CERTIFICATES_P12 }}
           p12-password: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
+      - name: Setup | Provisioning Profiles
+        uses: apple-actions/download-provisioning-profiles@v1
+        with:
+          bundle-id: 'rs.anni.annix'
+          issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
+          api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
+          api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | iOS
-        run: flutter build ipa --verbose
+        run: flutter build ipa --verbose --release
       - name: Deploy | Upload artifacts
         uses: actions/upload-artifact@v3
         with:
