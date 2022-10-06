@@ -53,6 +53,53 @@ jobs:
             ./build/app/outputs/bundle/**/*.aab
           retention-days: 1
 
+  iOS:
+    runs-on: macos-12
+    env:
+      KEYCHAIN: job-${{ github.job }}-${{ github.run_id	}}-${{ github.run_number }}-${{ github.run_attempt }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+      - name: Setup | Certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          keychain: ${{ env.KEYCHAIN }}
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
+      - name: Setup | Provisioning Profiles
+        uses: apple-actions/download-provisioning-profiles@v1
+        with:
+          bundle-id: "rs.anni.annix"
+          issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
+          api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
+          api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
+      - name: Setup | Dependencies
+        run: flutter pub get
+      - name: Build | iOS
+        run: |
+          flutter clean
+          flutter build ios --release --verbose
+          xcodebuild -workspace $PWD/ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive
+          xcodebuild -exportArchive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive -exportOptionsPlist $PWD/ios/exportOptions.plist -exportPath $PWD/build/ios/iphoneos/Runner.ipa
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-ios
+          path: ./build/ios/iphoneos/Runner.ipa/*.ipa
+          retention-days: 1
+      - name: Post Setup | Delete keychain
+        if: always()
+        run: |
+          security delete-keychain "${{ env.KEYCHAIN }}".keychain
+
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -167,9 +214,31 @@ jobs:
           status: completed
           track: internal
 
+  testflight:
+    needs: [ iOS ]
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+
+      - if: github.event_name == 'workflow_dispatch'
+        run: echo "TAG_NAME=${{ github.event.inputs.tag_name }}" >> $GITHUB_ENV
+      - if: github.event_name == 'schedule'
+        run: echo 'TAG_NAME=nightly' >> $GITHUB_ENV
+      - if: github.event_name == 'push'
+        run: |
+          TAG_NAME=${{ github.ref }}
+          echo "TAG_NAME=${TAG_NAME#refs/tags/}" >> $GITHUB_ENV
+
+      - uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: "annix-ios/annix.ipa"
+          issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
+          api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
+          api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
 
   publish:
-    needs: [ linux, android, macOS, windows ]
+    needs: [ android, iOS, linux, macOS, windows ]
     runs-on: ubuntu-20.04
     env:
       GH_REPO: ${{ github.repository }}
@@ -208,7 +277,7 @@ jobs:
           git push origin :stable || true
       - name: Publish release
         run: |
-          gh release create $TAG_NAME $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/**/*.apk annix-linux64/* annix-macos/* annix-win64/*
+          gh release create $TAG_NAME $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/**/*.apk annix-linux64/* annix-macos/* annix-win64/* annix-ios/*
           if [ "$TAG_NAME" != "nightly" ]; then
-            gh release create stable $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/**/*.apk annix-linux64/* annix-macos/* annix-win64/*
+            gh release create stable $PRERELEASE --title "$SUBJECT" --target $GITHUB_SHA annix-android/**/*.apk annix-linux64/* annix-macos/* annix-win64/* annix-ios/*
           fi
