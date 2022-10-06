@@ -73,7 +73,7 @@ jobs:
           path:
             ./build/ios/ipa/*.ipa
           retention-days: 1
-      - name: Cleanup | Delete keychain
+      - name: Post Setup | Delete keychain
         if: always()
         run: |
           security delete-keychain "${{ env.KEYCHAIN }}".keychain
