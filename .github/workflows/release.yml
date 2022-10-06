@@ -30,7 +30,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
@@ -112,7 +112,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: |
           sudo apt-get update -y
@@ -143,7 +143,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | macOS
@@ -171,7 +171,7 @@ jobs:
         with:
           channel: master
           cache: true
-          cache-key: 2c5ad5da-f2b8-4172-bc8b-f887070e35a7
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: |
           flutter config --enable-windows-desktop
