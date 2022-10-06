@@ -239,8 +239,12 @@ class AnnilService extends ChangeNotifier {
   }
 
   static Future<Set<String>> getCachedAlbums() async {
-    final root = p.join(Global.storageRoot, 'audio');
-    return Directory(root)
+    final root = Directory(p.join(Global.storageRoot, 'audio'));
+    if (!root.existsSync()) {
+      return {};
+    }
+
+    return root
         .list()
         .where((entry) {
           if (entry is! Directory) {
