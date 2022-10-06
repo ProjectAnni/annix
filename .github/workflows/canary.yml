@@ -1,6 +1,5 @@
 name: Canary Release
-on:
-  push
+on: push
 
 jobs:
   android:
@@ -65,20 +64,23 @@ jobs:
       - name: Setup | Provisioning Profiles
         uses: apple-actions/download-provisioning-profiles@v1
         with:
-          bundle-id: 'rs.anni.annix'
+          bundle-id: "rs.anni.annix"
           issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
           api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
           api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | iOS
-        run: flutter build ipa --verbose --release
+        run: |
+          flutter clean
+          flutter build ios --release --verbose
+          xcodebuild -workspace $PWD/ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive
+          xcodebuild -exportArchive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive -exportOptionsPlist $PWD/ios/exportOptions.plist -exportPath $PWD/build/ios/iphoneos/Runner.ipa
       - name: Deploy | Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: annix-ios
-          path:
-            ./build/ios/ipa/*.ipa
+          path: ./build/ios/iphoneos/Runner.ipa/*.ipa
           retention-days: 1
       - name: Post Setup | Delete keychain
         if: always()
@@ -176,7 +178,7 @@ jobs:
           retention-days: 1
 
   publish:
-    needs: [ android, iOS, linux, macOS, windows ]
+    needs: [android, iOS, linux, macOS, windows]
     runs-on: ubuntu-20.04
     env:
       GH_REPO: ${{ github.repository }}
