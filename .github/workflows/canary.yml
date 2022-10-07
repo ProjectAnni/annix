@@ -27,65 +27,14 @@ jobs:
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Build | Apk
-        run: |
-          flutter build apk --verbose
-          cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
-          flutter build apk --verbose --split-per-abi
-          cp ./build/app/outputs/apk/release/* ./build/app/outputs/apk/
+        run: flutter build apk --verbose --split-per-abi
       - name: Deploy | Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: annix-android
           path: |
-            ./build/app/outputs/apk/*.apk
+            ./build/app/outputs/apk/release/*.apk
           retention-days: 1
-
-  iOS:
-    runs-on: macos-12
-    env:
-      KEYCHAIN: job-${{ github.job }}-${{ github.run_id	}}-${{ github.run_number }}-${{ github.run_attempt }}
-    steps:
-      - name: Setup | Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup | Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: master
-          cache: true
-          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
-      - name: Setup | Certificates
-        uses: apple-actions/import-codesign-certs@v1
-        with:
-          keychain: ${{ env.KEYCHAIN }}
-          p12-file-base64: ${{ secrets.IOS_CERTIFICATES_P12 }}
-          p12-password: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
-      - name: Setup | Provisioning Profiles
-        uses: apple-actions/download-provisioning-profiles@v1
-        with:
-          bundle-id: "rs.anni.annix"
-          issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
-          api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
-          api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
-      - name: Setup | Dependencies
-        run: flutter pub get
-      - name: Build | iOS
-        run: |
-          flutter clean
-          flutter build ios --release --verbose
-          xcodebuild -workspace $PWD/ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive
-          xcodebuild -exportArchive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive -exportOptionsPlist $PWD/ios/exportOptions.plist -exportPath $PWD/build/ios/iphoneos/Runner.ipa
-      - name: Deploy | Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: annix-ios
-          path: ./build/ios/iphoneos/Runner.ipa/*.ipa
-          retention-days: 1
-      - name: Post Setup | Delete keychain
-        if: always()
-        run: |
-          security delete-keychain "${{ env.KEYCHAIN }}".keychain
 
   linux:
     runs-on: ubuntu-latest
@@ -178,7 +127,7 @@ jobs:
           retention-days: 1
 
   publish:
-    needs: [android, iOS, linux, macOS, windows]
+    needs: [ android, linux, macOS, windows ]
     runs-on: ubuntu-20.04
     env:
       GH_REPO: ${{ github.repository }}
@@ -197,4 +146,4 @@ jobs:
           git push origin :canary || true
       - name: Publish release
         run: |
-          gh release create canary --prerelease --title "$SUBJECT" --target $GITHUB_SHA annix-android/*.apk annix-linux64/* annix-macos/* annix-win64/* annix-ios/*
+          gh release create canary --prerelease --title "$SUBJECT" --target $GITHUB_SHA annix-android/*.apk annix-linux64/* annix-macos/* annix-win64/*
