@@ -20,16 +20,18 @@ class PlaybackServiceHackForIOS {
   static PlaybackServiceHackForIOS? _instance;
 
   final AudioPlayer player = AudioPlayer(playerId: 'hack-for-ios');
+
   PlaybackServiceHackForIOS._() {
-    init();
+    play();
   }
 
   factory PlaybackServiceHackForIOS() {
     _instance ??= PlaybackServiceHackForIOS._();
+    _instance!.player.resume();
     return _instance!;
   }
 
-  Future<void> init() async {
+  Future<void> play() async {
     await player.setReleaseMode(ReleaseMode.loop);
     await player.play(AssetSource('silent.wav'));
   }
@@ -107,6 +109,7 @@ class PlaybackService extends ChangeNotifier {
     this.loopMode = LoopMode.values[loopMode ?? 0];
 
     volume = Global.preferences.getDouble('player.volume') ?? 1.0;
+    PlaybackService.player.setVolume(volume);
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
@@ -158,10 +161,9 @@ class PlaybackService extends ChangeNotifier {
     try {
       // wait for audio file to download and play it
       if (setSourceOnly) {
-        await PlaybackService.player.setVolume(volume);
         await PlaybackService.player.setSource(source);
       } else {
-        await PlaybackService.player.play(source, volume: volume);
+        await PlaybackService.player.play(source);
       }
     } catch (e) {
       if (e is AudioCancelledError) {
