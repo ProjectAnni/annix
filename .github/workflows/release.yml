@@ -11,6 +11,8 @@ on:
   push:
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
+env:
+  BUNDLE_ID: rs.anni.annix
 
 jobs:
   android:
@@ -77,7 +79,7 @@ jobs:
       - name: Setup | Provisioning Profiles
         uses: apple-actions/download-provisioning-profiles@v1
         with:
-          bundle-id: "rs.anni.annix"
+          bundle-id: ${{ env.BUNDLE_ID }}
           issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
           api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
           api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
@@ -97,8 +99,7 @@ jobs:
           retention-days: 1
       - name: Post Setup | Delete keychain
         if: always()
-        run: |
-          security delete-keychain "${{ env.KEYCHAIN }}".keychain
+        run: security delete-keychain "${{ env.KEYCHAIN }}".keychain
 
   linux:
     runs-on: ubuntu-latest
@@ -209,7 +210,7 @@ jobs:
       - uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: rs.anni.annix
+          packageName: ${{ env.BUNDLE_ID }}
           releaseFiles: annix-android/bundle/release/app-release.aab
           status: completed
           track: internal
@@ -217,9 +218,15 @@ jobs:
   testflight:
     needs: [ iOS ]
     runs-on: macos-12
+    env:
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
+      - name: Setup | Codemagic-cli
+        run: pip3 install codemagic-cli-tools
 
       - if: github.event_name == 'workflow_dispatch'
         run: echo "TAG_NAME=${{ github.event.inputs.tag_name }}" >> $GITHUB_ENV
@@ -230,12 +237,19 @@ jobs:
           TAG_NAME=${{ github.ref }}
           echo "TAG_NAME=${TAG_NAME#refs/tags/}" >> $GITHUB_ENV
 
-      - uses: apple-actions/upload-testflight-build@v1
-        with:
-          app-path: "annix-ios/annix.ipa"
-          issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
-          api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
-          api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
+      - name: Publish
+        run: |
+          app-store-connect publish --testflight --beta-group 'Dev' 'GitHub' --path './annix-ios/annix.ipa'
+  #      - name: Upload to testflight
+  #        uses: apple-actions/upload-testflight-build@v1
+  #        with:
+  #          app-path: "annix-ios/annix.ipa"
+  #          issuer-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
+  #          api-key-id: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
+  #          api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
+  #      - name: Add build to Beta groups
+  #        run: |
+  #          app-store-connect beta-groups add-build ${{ github.run_number }} --beta-group
 
   publish:
     needs: [ android, iOS, linux, macOS, windows ]
