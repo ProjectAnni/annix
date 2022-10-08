@@ -133,7 +133,6 @@ class MusicCover extends StatelessWidget {
     } else {
       image = ExtendedImage.network(
         Global.proxy.coverUrl(albumId, discId),
-        cache: true,
         cacheHeight: 800,
         loadStateChanged: _loadStateChanged,
       );
