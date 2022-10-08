@@ -7,6 +7,8 @@ import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/utils/hash.dart';
+import 'package:annix/utils/cookie_storage.dart';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -84,7 +86,11 @@ class AnnivClient {
   }
 
   static PersistCookieJar _loadCookieJar() {
-    return PersistCookieJar(storage: FileStorage(Global.dataRoot));
+    return PersistCookieJar(
+      storage: CookieStorage(),
+      ignoreExpires: true,
+      persistSession: true,
+    );
   }
 
   static Future<AnnivClient> login({
