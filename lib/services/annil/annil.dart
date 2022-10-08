@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:collection/collection.dart';
 
 class AnnilService extends ChangeNotifier {
   final BuildContext context;
@@ -114,7 +115,7 @@ class AnnilService extends ChangeNotifier {
           }
 
           return remoteList
-              .firstWhere((remote) => remote.id == server.remoteId);
+              .firstWhereOrNull((remote) => remote.id == server.remoteId);
         })
         .whereType<AnnilToken>()
         .toList();
