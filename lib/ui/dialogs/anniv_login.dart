@@ -3,12 +3,17 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AnnivLoginDialog extends StatelessWidget {
+class AnnivLoginDialog extends StatefulWidget {
+  const AnnivLoginDialog({super.key});
+
+  @override
+  State<AnnivLoginDialog> createState() => _AnnivLoginDialogState();
+}
+
+class _AnnivLoginDialogState extends State<AnnivLoginDialog> {
   final _serverUrlController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  AnnivLoginDialog({Key? key}) : super(key: key);
 
   void _showSnackBar(BuildContext context, String text) {
     final snackBar = SnackBar(content: Text(text));
