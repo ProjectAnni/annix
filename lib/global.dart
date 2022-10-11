@@ -50,7 +50,6 @@ class Global {
       doWhenWindowReady(() {
         const initialSize = Size(1280, 800);
         appWindow.minSize = initialSize;
-        appWindow.size = initialSize;
         appWindow.alignment = Alignment.center;
         appWindow.show();
       });

@@ -12,24 +12,28 @@ Desktop / Mobile client for Project Anni.
 ## Build
 
 ```bash
-# Build models & ffi
+# [Optional] Build models
 flutter pub run build_runner build --delete-conflicting-outputs
 
 # Build apk
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 ```
 
-### Known issues
+## Distribution
 
-- Windows users should
-  download [`sqlite3.dll`](https://github.com/tekartik/sqflite/raw/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll)
-  manually and put it in the directory which includes `annix.exe`.
-- At this moment, annix does not work as
-  expected. [#1221](https://github.com/bluefireteam/audioplayers/pull/1221) has been merged, but no
-  update has been released yet.
-- Locale on linux desktop may fallback to `en_US` because
-  of [an issue of flutter engine](https://github.com/flutter/flutter/issues/111341) which makes
-  slang [failed to parse locale string](https://github.com/Tienisto/slang/issues/102).
+For `desktop` or `Android` users, please visit [Release](https://github.com/ProjectAnni/annix/releases) and  choose which asset to download accourding to your platform.
+
+For `Android` users, you can also get an official release to join our public beta test on [Play Store](https://play.google.com/store/apps/details?id=rs.anni.annix).
+
+For `iOS` users, only [Testflight](https://testflight.apple.com/join/ZWXnvupI) is available for now.
+
+### Release branches
+
+There're two release branches: `canary` and `nightly`.
+
+`Canary` builds are binaries built from `master` branch. There might be some some unknown bugs.
+
+`Nightly` builds are triggered daily or manually so most severe issues would be resolved. The daily cron job might be disabled in the future to makes `nightly` more stable.
 
 ## TODOs
 
@@ -54,7 +58,7 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
             - [ ] 2FA
         - [ ] Register
         - [x] Logout
-        - [ ] ~~Revoke account~~ (Would not be implemented in Annix)
+        - [ ] Revoke account
     - [ ] Playlist
         - [x] List playlist
         - [ ] Create playlist
@@ -68,13 +72,27 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
         - [x] Add favorite
         - [x] Remove favorite
         - [x] Favorite list
+        - [ ] Add favorite album
+        - [ ] Remove favorite album
+        - [ ] Favorite album list
     - [ ] Credentials
         - [x] Get credentials
         - [ ] Add credential
         - [ ] Edit credential
         - [ ] Delete credential
+        - [x] Reorder credential priority
+    - [ ] Play history
+      - [ ] Report history
+      - [ ] Query history
     - [x] Lyric
+      - [x] Get lyric
+      - [x] Lyric sources
+        - [x] Netease Music
+        - [x] PetitLyrics
+      - [ ] Edit lyric
+      - [ ] Upload lyric to Anniv
     - [x] Search
+      - [ ] Search with tags
 
 ## Thanks
 
