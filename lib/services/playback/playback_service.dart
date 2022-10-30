@@ -170,9 +170,9 @@ class PlaybackService extends ChangeNotifier {
         return;
       }
 
-      // TODO: tell user why skipped
+      // TODO: tell user why paused
       FLog.error(text: 'Failed to play', exception: e);
-      await next();
+      await pause();
     }
 
     // when playback starts, set state to playing
