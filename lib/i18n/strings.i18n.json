@@ -26,6 +26,8 @@
     "clear_metadata_cache_desc": "You might need to re-fetch metadata from metadata source for local playback.",
     "clear_lyric_cache": "Clear lyric cache",
     "clear_lyric_cache_desc": "Delete all lyric cache.",
+    "clear_database": "Clear database",
+    "clear_database_desc": "Delete main database. You need to restart the app.",
     "show_artist_in_bottom_player": "Show artist in bottom player",
     "show_artist_in_bottom_player_desc": "Mobile only",
     "enable_http2_for_annil": "Enable HTTP/2 for Annil",

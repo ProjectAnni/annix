@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/ui/dialogs/loading.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as p;
 
 typedef WidgetCallback = Widget Function();
 
@@ -141,7 +144,7 @@ class SettingsScreen extends StatelessWidget {
                     leading: const Icon(Icons.person_outline),
                     title: Text(t.settings.show_artist_in_bottom_player),
                     description:
-                        Text(t.settings.show_artist_in_bottom_player_desc),
+                    Text(t.settings.show_artist_in_bottom_player_desc),
                   ),
                 ),
             ],
@@ -172,6 +175,31 @@ class SettingsScreen extends StatelessWidget {
                 description: Text(t.settings.view_logs_desc),
                 onPressed: (context) {
                   AnnixRouterDelegate.of(context).to(name: '/settings/log');
+                },
+              ),
+              // remove local database
+              SettingsTile.navigation(
+                leading: const Icon(Icons.data_array),
+                title: Text(t.settings.clear_database),
+                description: Text(t.settings.clear_database_desc),
+                onPressed: (context) {
+                  final navigator = Navigator.of(context, rootNavigator: true);
+                  showDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (context) => SimpleDialog(
+                      title: Text(t.progress),
+                      children: const [
+                        Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ],
+                    ),
+                    barrierDismissible: false,
+                  );
+
+                  final file = File(p.join(Global.dataRoot, 'local.db'));
+                  file.delete().then((_) => navigator.pop());
                 },
               ),
               // clear local metadata cache

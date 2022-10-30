@@ -26,6 +26,8 @@
     "clear_metadata_cache_desc": "当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。",
     "clear_lyric_cache": "清除歌词缓存",
     "clear_lyric_cache_desc": "删除本地缓存的所有歌词。",
+    "clear_database": "清除主数据库",
+    "clear_database_desc": "删除主数据库。你需要重新启动应用以重新创建数据库。",
     "show_artist_in_bottom_player": "在播放条中显示艺术家",
     "show_artist_in_bottom_player_desc": "移动端设置，桌面端无效。",
     "enable_http2_for_annil": "为 Annil 启用 HTTP/2",
