@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -48,7 +49,7 @@ class BasePlaylistScreen extends StatelessWidget {
 
   Widget _albumIntro(BuildContext context) {
     return Container(
-      height: 240, // 240, 200, 160
+      height: Global.isDesktop ? 240 : 160, // 240, 200, 160
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -160,10 +161,10 @@ void playFullList({
   int initialIndex = 0,
 }) async {
   assert(
-    // when shuffle is on, initialIndex can only be zero
-    (shuffle && initialIndex == 0) ||
-        // or disable shuffle
-        !shuffle,
+  // when shuffle is on, initialIndex can only be zero
+  (shuffle && initialIndex == 0) ||
+      // or disable shuffle
+      !shuffle,
   );
 
   final trackList = tracks;
