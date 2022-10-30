@@ -38,7 +38,7 @@ class AnnivCard extends StatelessWidget {
                 showDialog(
                   context: context,
                   useRootNavigator: true,
-                  builder: (context) => AnnivLoginDialog(),
+                  builder: (context) => const AnnivLoginDialog(),
                 );
               },
             ),

@@ -12,7 +12,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  async: ^2.9.0
+  async: ^2.10.0
   collection: ^1.16.0
 
   path: ^1.8.2
@@ -20,9 +20,9 @@ dependencies:
   f_logs:
     git:
       url: https://github.com/ProjectAnni/Flogs
-  provider: ^6.0.3
+  provider: ^6.0.4
   shared_preferences: ^2.0.15
-  connectivity_plus: ^2.3.7
+  connectivity_plus: ^3.0.2
 
   dio: ^4.0.6
   dio_cookie_manager: ^2.0.0
@@ -34,16 +34,16 @@ dependencies:
   netease_music_api:
     git:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
-  xml: ^6.1.0
+  xml: ^6.2.0
 
-  audioplayers: ^1.1.0
+  audioplayers: ^1.1.1
   audio_service: ^0.18.6
   audio_service_platform_interface: ^0.1.0
   audio_session: ^0.1.10
   anni_mpris_service: ^0.1.0
 
-  slang: ^3.0.0
-  slang_flutter: ^3.0.0
+  slang: ^3.3.0
+  slang_flutter: ^3.3.0
 
   ########################## Widgets ##########################
   # It was merged but not released as a new version
@@ -66,23 +66,23 @@ dependencies:
   json_serializable: ^6.4.1
   json_annotation: ^4.7.0
 
-  drift: ^2.1.0
+  drift: ^2.2.0
   sqlite3_flutter_libs: ^0.5.10
-  sqflite: ^2.1.0
-  sqflite_common_ffi: ^2.1.1
+  sqflite: ^2.2.0+2
+  sqflite_common_ffi: ^2.2.0+1
 
   uuid: ^3.0.5
 
   responsive_framework: ^0.2.0
   bitsdojo_window: ^0.1.5
-  # file_picker: ^5.2.0+1
+  file_picker: ^5.2.2
 
   # reverse proxy
   shelf: ^1.4.0
   shelf_router: ^1.1.3
 
   pool: ^1.5.1
-  share_plus: ^4.4.0
+  share_plus: ^6.1.0
 
   # file 6.12 -> 6.14 is breaking, specify version manually
   file: ^6.1.4
