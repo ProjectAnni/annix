@@ -113,6 +113,19 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(t.settings.auto_scale_ui),
                 ),
               ),
+              if (Global.isMobile)
+                SettingsTileBuilder<bool>(
+                  value: settings.blurPlayingPage,
+                  builder: (context, p, _) => SettingsTile.switchTile(
+                    onToggle: (value) {
+                      settings.blurPlayingPage.value = value;
+                      AnnixRouterDelegate.of(context).popRoute();
+                    },
+                    initialValue: p,
+                    leading: const Icon(Icons.blur_circular),
+                    title: Text(t.settings.blur_playing_page),
+                  ),
+                ),
               SettingsTileBuilder<String?>(
                 value: settings.fontPath,
                 builder: (context, p, _) => SettingsTile.navigation(

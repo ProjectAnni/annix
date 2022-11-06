@@ -1,6 +1,7 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
+import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,9 @@ class AnnixLayoutMobile extends AnnixLayout {
               },
               child: const MobileBottomPlayer(),
             ),
-            panel: const PlayingScreenMobile(),
+            panel: Global.settings.blurPlayingPage.value
+                ? const PlayingScreenMobileBlur()
+                : const PlayingScreenMobile(),
             footerHeight: 80,
             footer: (() {
               final route = router.currentRoute;

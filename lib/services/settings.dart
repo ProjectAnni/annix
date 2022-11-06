@@ -42,6 +42,11 @@ class SettingsController {
   /// Default value: null
   late ValueNotifier<String?> fontPath;
 
+  /// Blur playing page on mobile
+  ///
+  /// Default value: null
+  late ValueNotifier<bool> blurPlayingPage;
+
   void init() {
     useMobileNetwork = ValueNotifier(
         Global.preferences.getBool('annix_use_mobile_network') ?? true);
@@ -84,6 +89,11 @@ class SettingsController {
       // ignore: use_build_context_synchronously
       Global.context.read<AnnixTheme>().setFontFamily();
     });
+
+    blurPlayingPage = ValueNotifier(
+        Global.preferences.getBool('annix_enable_blur_playing_page') ?? false);
+    blurPlayingPage.addListener(
+        saveChangedVariable('annix_enable_blur_playing_page', blurPlayingPage));
   }
 
   Future<void> Function() saveChangedVariable<T>(

@@ -128,25 +128,22 @@ class MusicCover extends StatelessWidget {
     if (this.image != null) {
       image = ExtendedImage(
         image: this.image!,
+        fit: fit,
         loadStateChanged: _loadStateChanged,
       );
     } else {
       image = ExtendedImage.network(
         Global.proxy.coverUrl(albumId, discId),
         cacheHeight: 800,
+        fit: fit,
         loadStateChanged: _loadStateChanged,
       );
     }
 
-    final cover = Hero(
-      tag: '$tag/$albumId/$discId',
-      child: image,
-    );
-
     if (!card) {
-      return cover;
+      return image;
     } else {
-      return _CoverCard(child: cover);
+      return _CoverCard(child: image);
     }
   }
 }

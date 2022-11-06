@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 70 (35 per locale)
+/// Strings: 72 (36 per locale)
 ///
-/// Built on 2022-10-30 at 05:39 UTC
+/// Built on 2022-11-06 at 16:22 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -189,9 +189,13 @@ class _StringsSettingsEn {
 	// Translations
 	String get settings => 'Settings';
 	String get skip_cert => 'Skip SSL Certificate Verification';
+
 	String get auto_scale_ui => 'Auto scale UI';
-	String get use_mobile_network => 'Play under mobile network';
-	String get view_logs => 'Logs';
+
+  String get blur_playing_page => 'Blur playing page';
+
+  String get use_mobile_network => 'Play under mobile network';
+  String get view_logs => 'Logs';
 	String get view_logs_desc => 'View Logs';
 	String get clear_metadata_cache => 'Clear metadata cache';
 	String get clear_metadata_cache_desc => 'You might need to re-fetch metadata from metadata source for local playback.';
@@ -271,9 +275,16 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 	// Translations
 	@override String get settings => '设置';
 	@override String get skip_cert => '忽略证书验证';
-	@override String get auto_scale_ui => '自动 UI 缩放';
-	@override String get use_mobile_network => '使用移动网络播放';
-	@override String get view_logs => '应用日志';
+
+	@override
+  String get auto_scale_ui => '自动 UI 缩放';
+
+  @override
+  String get blur_playing_page => '播放界面使用模糊背景';
+
+  @override
+  String get use_mobile_network => '使用移动网络播放';
+  @override String get view_logs => '应用日志';
 	@override String get view_logs_desc => '查看应用日志。';
 	@override String get clear_metadata_cache => '清除元数据缓存';
 	@override String get clear_metadata_cache_desc => '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
@@ -309,9 +320,13 @@ extension on _StringsEn {
 			case 'server.anniv_features': return 'Login to Anniv for playlist, statistics and more features!';
 			case 'settings.settings': return 'Settings';
 			case 'settings.skip_cert': return 'Skip SSL Certificate Verification';
-			case 'settings.auto_scale_ui': return 'Auto scale UI';
-			case 'settings.use_mobile_network': return 'Play under mobile network';
-			case 'settings.view_logs': return 'Logs';
+			case 'settings.auto_scale_ui':
+        return 'Auto scale UI';
+      case 'settings.blur_playing_page':
+        return 'Blur playing page';
+      case 'settings.use_mobile_network':
+        return 'Play under mobile network';
+      case 'settings.view_logs': return 'Logs';
 			case 'settings.view_logs_desc': return 'View Logs';
 			case 'settings.clear_metadata_cache': return 'Clear metadata cache';
 			case 'settings.clear_metadata_cache_desc': return 'You might need to re-fetch metadata from metadata source for local playback.';
@@ -352,9 +367,13 @@ extension on _StringsZhCn {
 			case 'server.anniv_features': return '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
 			case 'settings.settings': return '设置';
 			case 'settings.skip_cert': return '忽略证书验证';
-			case 'settings.auto_scale_ui': return '自动 UI 缩放';
-			case 'settings.use_mobile_network': return '使用移动网络播放';
-			case 'settings.view_logs': return '应用日志';
+			case 'settings.auto_scale_ui':
+        return '自动 UI 缩放';
+      case 'settings.blur_playing_page':
+        return '播放界面使用模糊背景';
+      case 'settings.use_mobile_network':
+        return '使用移动网络播放';
+      case 'settings.view_logs': return '应用日志';
 			case 'settings.view_logs_desc': return '查看应用日志。';
 			case 'settings.clear_metadata_cache': return '清除元数据缓存';
 			case 'settings.clear_metadata_cache_desc': return '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
