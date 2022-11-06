@@ -146,9 +146,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
     }
 
     final isPlaying = player.playerStatus == PlayerStatus.playing;
-    final hasPrevious = (player.playingIndex ?? 0) > 0;
-    final hasNext =
-        (player.playingIndex ?? player.queue.length) < player.queue.length - 1;
     final isFavorite = player.playing != null &&
         _favorites.any(
           (f) =>
@@ -173,10 +170,10 @@ class AnnixAudioHandler extends BaseAudioHandler {
                 androidIcon: 'drawable/ic_favorite_border',
                 action: MediaAction.fastForward,
               ),
-      if (hasPrevious) MediaControl.skipToPrevious,
+      MediaControl.skipToPrevious,
       if (isPlaying) MediaControl.pause else MediaControl.play,
+      MediaControl.skipToNext,
       MediaControl.stop,
-      if (hasNext) MediaControl.skipToNext,
     ];
 
     final playState = PlaybackState(
@@ -190,11 +187,12 @@ class AnnixAudioHandler extends BaseAudioHandler {
           .where((i) =>
               controls[i].action == MediaAction.fastForward ||
               controls[i].action == MediaAction.pause ||
-              controls[i].action == MediaAction.play)
+              controls[i].action == MediaAction.play ||
+              controls[i].action == MediaAction.skipToNext)
           .toList(),
       processingState: {
         PlayerStatus.playing: AudioProcessingState.ready,
-        PlayerStatus.stopped: AudioProcessingState.idle,
+        PlayerStatus.stopped: AudioProcessingState.ready,
         PlayerStatus.paused: AudioProcessingState.ready,
         PlayerStatus.buffering: AudioProcessingState.buffering,
       }[player.playerStatus]!,
