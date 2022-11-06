@@ -18,6 +18,7 @@
   "settings": {
     "settings": "Settings",
     "skip_cert": "Skip SSL Certificate Verification",
+    "default_audio_quality": "Default Audio Quality",
     "auto_scale_ui": "Auto scale UI",
     "blur_playing_page": "Blur playing page",
     "use_mobile_network": "Play under mobile network",
@@ -32,7 +33,9 @@
     "show_artist_in_bottom_player": "Show artist in bottom player",
     "show_artist_in_bottom_player_desc": "Mobile only",
     "enable_http2_for_annil": "Enable HTTP/2 for Annil",
-    "enable_http2_for_annil_desc": "HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk."
+    "enable_http2_for_annil_desc": "HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.",
+    "custom_font_path": "Custom Font Path",
+    "custom_font_not_specified": "Not specified"
   },
   "search": "Search",
   "track": "Track",

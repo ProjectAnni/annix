@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
                     Global.settings.defaultAudioQuality.value = quality;
                   },
                   leading: const Icon(Icons.high_quality),
-                  title: const Text('Default audio quality'),
+                  title: Text(t.settings.default_audio_quality),
                   description: Text(p.toString()),
                 ),
               ),
@@ -129,8 +129,8 @@ class SettingsScreen extends StatelessWidget {
                 value: settings.fontPath,
                 builder: (context, p, _) => SettingsTile.navigation(
                   leading: const Icon(Icons.font_download),
-                  title: const Text('Custom font path'),
-                  trailing: Text(p ?? 'Not Specified'),
+                  title: Text(t.settings.custom_font_path),
+                  description: Text(p ?? t.settings.custom_font_not_specified),
                   onPressed: (context) async {
                     final result = await FilePicker.platform.pickFiles(
                       allowedExtensions: ['ttf', 'otf'],
@@ -156,7 +156,7 @@ class SettingsScreen extends StatelessWidget {
                     leading: const Icon(Icons.person_outline),
                     title: Text(t.settings.show_artist_in_bottom_player),
                     description:
-                    Text(t.settings.show_artist_in_bottom_player_desc),
+                        Text(t.settings.show_artist_in_bottom_player_desc),
                   ),
                 ),
             ],

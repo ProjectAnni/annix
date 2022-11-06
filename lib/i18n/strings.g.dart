@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 72 (36 per locale)
+/// Strings: 78 (39 per locale)
 ///
-/// Built on 2022-11-06 at 16:22 UTC
+/// Built on 2022-11-06 at 16:39 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -184,29 +184,51 @@ class _StringsServerEn {
 class _StringsSettingsEn {
 	_StringsSettingsEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+  final _StringsEn _root; // ignore: unused_field
 
-	// Translations
-	String get settings => 'Settings';
-	String get skip_cert => 'Skip SSL Certificate Verification';
+  // Translations
+  String get settings => 'Settings';
 
-	String get auto_scale_ui => 'Auto scale UI';
+  String get skip_cert => 'Skip SSL Certificate Verification';
+
+  String get default_audio_quality => 'Default Audio Quality';
+
+  String get auto_scale_ui => 'Auto scale UI';
 
   String get blur_playing_page => 'Blur playing page';
 
   String get use_mobile_network => 'Play under mobile network';
+
   String get view_logs => 'Logs';
-	String get view_logs_desc => 'View Logs';
-	String get clear_metadata_cache => 'Clear metadata cache';
-	String get clear_metadata_cache_desc => 'You might need to re-fetch metadata from metadata source for local playback.';
-	String get clear_lyric_cache => 'Clear lyric cache';
-	String get clear_lyric_cache_desc => 'Delete all lyric cache.';
-	String get clear_database => 'Clear database';
-	String get clear_database_desc => 'Delete main database. You need to restart the app.';
-	String get show_artist_in_bottom_player => 'Show artist in bottom player';
-	String get show_artist_in_bottom_player_desc => 'Mobile only';
-	String get enable_http2_for_annil => 'Enable HTTP/2 for Annil';
-	String get enable_http2_for_annil_desc => 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
+
+  String get view_logs_desc => 'View Logs';
+
+  String get clear_metadata_cache => 'Clear metadata cache';
+
+  String get clear_metadata_cache_desc =>
+      'You might need to re-fetch metadata from metadata source for local playback.';
+
+  String get clear_lyric_cache => 'Clear lyric cache';
+
+  String get clear_lyric_cache_desc => 'Delete all lyric cache.';
+
+  String get clear_database => 'Clear database';
+
+  String get clear_database_desc =>
+      'Delete main database. You need to restart the app.';
+
+  String get show_artist_in_bottom_player => 'Show artist in bottom player';
+
+  String get show_artist_in_bottom_player_desc => 'Mobile only';
+
+  String get enable_http2_for_annil => 'Enable HTTP/2 for Annil';
+
+  String get enable_http2_for_annil_desc =>
+      'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
+
+  String get custom_font_path => 'Custom Font Path';
+
+  String get custom_font_not_specified => 'Not specified';
 }
 
 // Path: <root>
@@ -270,13 +292,20 @@ class _StringsServerZhCn implements _StringsServerEn {
 class _StringsSettingsZhCn implements _StringsSettingsEn {
 	_StringsSettingsZhCn._(this._root);
 
-	@override final _StringsZhCn _root; // ignore: unused_field
+  @override
+  final _StringsZhCn _root; // ignore: unused_field
 
-	// Translations
-	@override String get settings => '设置';
-	@override String get skip_cert => '忽略证书验证';
+  // Translations
+  @override
+  String get settings => '设置';
 
-	@override
+  @override
+  String get skip_cert => '忽略证书验证';
+
+  @override
+  String get default_audio_quality => '默认音质';
+
+  @override
   String get auto_scale_ui => '自动 UI 缩放';
 
   @override
@@ -284,18 +313,50 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 
   @override
   String get use_mobile_network => '使用移动网络播放';
-  @override String get view_logs => '应用日志';
-	@override String get view_logs_desc => '查看应用日志。';
-	@override String get clear_metadata_cache => '清除元数据缓存';
-	@override String get clear_metadata_cache_desc => '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
-	@override String get clear_lyric_cache => '清除歌词缓存';
-	@override String get clear_lyric_cache_desc => '删除本地缓存的所有歌词。';
-	@override String get clear_database => '清除主数据库';
-	@override String get clear_database_desc => '删除主数据库。你需要重新启动应用以重新创建数据库。';
-	@override String get show_artist_in_bottom_player => '在播放条中显示艺术家';
-	@override String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
-	@override String get enable_http2_for_annil => '为 Annil 启用 HTTP/2';
-	@override String get enable_http2_for_annil_desc => 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
+
+  @override
+  String get view_logs => '应用日志';
+
+  @override
+  String get view_logs_desc => '查看应用日志。';
+
+  @override
+  String get clear_metadata_cache => '清除元数据缓存';
+
+  @override
+  String get clear_metadata_cache_desc =>
+      '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
+
+  @override
+  String get clear_lyric_cache => '清除歌词缓存';
+
+  @override
+  String get clear_lyric_cache_desc => '删除本地缓存的所有歌词。';
+
+  @override
+  String get clear_database => '清除主数据库';
+
+  @override
+  String get clear_database_desc => '删除主数据库。你需要重新启动应用以重新创建数据库。';
+
+  @override
+  String get show_artist_in_bottom_player => '在播放条中显示艺术家';
+
+  @override
+  String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
+
+  @override
+  String get enable_http2_for_annil => '为 Annil 启用 HTTP/2';
+
+  @override
+  String get enable_http2_for_annil_desc =>
+      'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
+
+  @override
+  String get custom_font_path => '自定义字体路径';
+
+  @override
+  String get custom_font_not_specified => '默认字体';
 }
 
 /// Flat map(s) containing all translations.
@@ -310,42 +371,76 @@ extension on _StringsEn {
 			case 'category': return 'Categories';
 			case 'albums': return 'Albums';
 			case 'playlists': return 'Playlists';
-			case 'shuffle_mode': return 'Shuffle Mode';
-			case 'my_favorite': return 'My Favorite';
-			case 'server.server': return 'Server';
-			case 'server.login': return 'Login';
-			case 'server.logout': return 'Logout';
-			case 'server.not_logged_in': return 'Not logged in';
-			case 'server.libraries': return 'Libraries';
-			case 'server.anniv_features': return 'Login to Anniv for playlist, statistics and more features!';
-			case 'settings.settings': return 'Settings';
-			case 'settings.skip_cert': return 'Skip SSL Certificate Verification';
-			case 'settings.auto_scale_ui':
+      case 'shuffle_mode':
+        return 'Shuffle Mode';
+      case 'my_favorite':
+        return 'My Favorite';
+      case 'server.server':
+        return 'Server';
+      case 'server.login':
+        return 'Login';
+      case 'server.logout':
+        return 'Logout';
+      case 'server.not_logged_in':
+        return 'Not logged in';
+      case 'server.libraries':
+        return 'Libraries';
+      case 'server.anniv_features':
+        return 'Login to Anniv for playlist, statistics and more features!';
+      case 'settings.settings':
+        return 'Settings';
+      case 'settings.skip_cert':
+        return 'Skip SSL Certificate Verification';
+      case 'settings.default_audio_quality':
+        return 'Default Audio Quality';
+      case 'settings.auto_scale_ui':
         return 'Auto scale UI';
       case 'settings.blur_playing_page':
         return 'Blur playing page';
       case 'settings.use_mobile_network':
         return 'Play under mobile network';
-      case 'settings.view_logs': return 'Logs';
-			case 'settings.view_logs_desc': return 'View Logs';
-			case 'settings.clear_metadata_cache': return 'Clear metadata cache';
-			case 'settings.clear_metadata_cache_desc': return 'You might need to re-fetch metadata from metadata source for local playback.';
-			case 'settings.clear_lyric_cache': return 'Clear lyric cache';
-			case 'settings.clear_lyric_cache_desc': return 'Delete all lyric cache.';
-			case 'settings.clear_database': return 'Clear database';
-			case 'settings.clear_database_desc': return 'Delete main database. You need to restart the app.';
-			case 'settings.show_artist_in_bottom_player': return 'Show artist in bottom player';
-			case 'settings.show_artist_in_bottom_player_desc': return 'Mobile only';
-			case 'settings.enable_http2_for_annil': return 'Enable HTTP/2 for Annil';
-			case 'settings.enable_http2_for_annil_desc': return 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
-			case 'search': return 'Search';
-			case 'track': return 'Track';
-			case 'recent_played': return 'Recently played';
-			case 'no_lyric_found': return 'No lyric found';
-			case 'download_manager': return 'Download manager';
-			default: return null;
-		}
-	}
+      case 'settings.view_logs':
+        return 'Logs';
+      case 'settings.view_logs_desc':
+        return 'View Logs';
+      case 'settings.clear_metadata_cache':
+        return 'Clear metadata cache';
+      case 'settings.clear_metadata_cache_desc':
+        return 'You might need to re-fetch metadata from metadata source for local playback.';
+      case 'settings.clear_lyric_cache':
+        return 'Clear lyric cache';
+      case 'settings.clear_lyric_cache_desc':
+        return 'Delete all lyric cache.';
+      case 'settings.clear_database':
+        return 'Clear database';
+      case 'settings.clear_database_desc':
+        return 'Delete main database. You need to restart the app.';
+      case 'settings.show_artist_in_bottom_player':
+        return 'Show artist in bottom player';
+      case 'settings.show_artist_in_bottom_player_desc':
+        return 'Mobile only';
+      case 'settings.enable_http2_for_annil':
+        return 'Enable HTTP/2 for Annil';
+      case 'settings.enable_http2_for_annil_desc':
+        return 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
+      case 'settings.custom_font_path':
+        return 'Custom Font Path';
+      case 'settings.custom_font_not_specified':
+        return 'Not specified';
+      case 'search':
+        return 'Search';
+      case 'track':
+        return 'Track';
+      case 'recent_played':
+        return 'Recently played';
+      case 'no_lyric_found':
+        return 'No lyric found';
+      case 'download_manager':
+        return 'Download manager';
+      default:
+        return null;
+    }
+  }
 }
 
 extension on _StringsZhCn {
@@ -357,40 +452,74 @@ extension on _StringsZhCn {
 			case 'category': return '分类';
 			case 'albums': return '专辑';
 			case 'playlists': return '播放列表';
-			case 'shuffle_mode': return '随机模式';
-			case 'my_favorite': return '我的收藏';
-			case 'server.server': return '服务器';
-			case 'server.login': return '登录';
-			case 'server.logout': return '退出登录';
-			case 'server.not_logged_in': return '未登录';
-			case 'server.libraries': return '音频仓库';
-			case 'server.anniv_features': return '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
-			case 'settings.settings': return '设置';
-			case 'settings.skip_cert': return '忽略证书验证';
-			case 'settings.auto_scale_ui':
+      case 'shuffle_mode':
+        return '随机模式';
+      case 'my_favorite':
+        return '我的收藏';
+      case 'server.server':
+        return '服务器';
+      case 'server.login':
+        return '登录';
+      case 'server.logout':
+        return '退出登录';
+      case 'server.not_logged_in':
+        return '未登录';
+      case 'server.libraries':
+        return '音频仓库';
+      case 'server.anniv_features':
+        return '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
+      case 'settings.settings':
+        return '设置';
+      case 'settings.skip_cert':
+        return '忽略证书验证';
+      case 'settings.default_audio_quality':
+        return '默认音质';
+      case 'settings.auto_scale_ui':
         return '自动 UI 缩放';
       case 'settings.blur_playing_page':
         return '播放界面使用模糊背景';
       case 'settings.use_mobile_network':
         return '使用移动网络播放';
-      case 'settings.view_logs': return '应用日志';
-			case 'settings.view_logs_desc': return '查看应用日志。';
-			case 'settings.clear_metadata_cache': return '清除元数据缓存';
-			case 'settings.clear_metadata_cache_desc': return '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
-			case 'settings.clear_lyric_cache': return '清除歌词缓存';
-			case 'settings.clear_lyric_cache_desc': return '删除本地缓存的所有歌词。';
-			case 'settings.clear_database': return '清除主数据库';
-			case 'settings.clear_database_desc': return '删除主数据库。你需要重新启动应用以重新创建数据库。';
-			case 'settings.show_artist_in_bottom_player': return '在播放条中显示艺术家';
-			case 'settings.show_artist_in_bottom_player_desc': return '移动端设置，桌面端无效。';
-			case 'settings.enable_http2_for_annil': return '为 Annil 启用 HTTP/2';
-			case 'settings.enable_http2_for_annil_desc': return 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
-			case 'search': return '搜索';
-			case 'track': return '单曲';
-			case 'recent_played': return '最近播放';
-			case 'no_lyric_found': return '未找到歌词';
-			case 'download_manager': return '下载管理';
-			default: return null;
-		}
-	}
+      case 'settings.view_logs':
+        return '应用日志';
+      case 'settings.view_logs_desc':
+        return '查看应用日志。';
+      case 'settings.clear_metadata_cache':
+        return '清除元数据缓存';
+      case 'settings.clear_metadata_cache_desc':
+        return '当你使用的元数据来源为远程时，可能需要从远程重新获取本地音频缓存对应的元数据。';
+      case 'settings.clear_lyric_cache':
+        return '清除歌词缓存';
+      case 'settings.clear_lyric_cache_desc':
+        return '删除本地缓存的所有歌词。';
+      case 'settings.clear_database':
+        return '清除主数据库';
+      case 'settings.clear_database_desc':
+        return '删除主数据库。你需要重新启动应用以重新创建数据库。';
+      case 'settings.show_artist_in_bottom_player':
+        return '在播放条中显示艺术家';
+      case 'settings.show_artist_in_bottom_player_desc':
+        return '移动端设置，桌面端无效。';
+      case 'settings.enable_http2_for_annil':
+        return '为 Annil 启用 HTTP/2';
+      case 'settings.enable_http2_for_annil_desc':
+        return 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
+      case 'settings.custom_font_path':
+        return '自定义字体路径';
+      case 'settings.custom_font_not_specified':
+        return '默认字体';
+      case 'search':
+        return '搜索';
+      case 'track':
+        return '单曲';
+      case 'recent_played':
+        return '最近播放';
+      case 'no_lyric_found':
+        return '未找到歌词';
+      case 'download_manager':
+        return '下载管理';
+      default:
+        return null;
+    }
+  }
 }

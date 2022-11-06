@@ -18,6 +18,7 @@
   "settings": {
     "settings": "设置",
     "skip_cert": "忽略证书验证",
+    "default_audio_quality": "默认音质",
     "auto_scale_ui": "自动 UI 缩放",
     "blur_playing_page": "播放界面使用模糊背景",
     "use_mobile_network": "使用移动网络播放",
@@ -32,7 +33,9 @@
     "show_artist_in_bottom_player": "在播放条中显示艺术家",
     "show_artist_in_bottom_player_desc": "移动端设置，桌面端无效。",
     "enable_http2_for_annil": "为 Annil 启用 HTTP/2",
-    "enable_http2_for_annil_desc": "Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。"
+    "enable_http2_for_annil_desc": "Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。",
+    "custom_font_path": "自定义字体路径",
+    "custom_font_not_specified": "默认字体"
   },
   "search": "搜索",
   "track": "单曲",
