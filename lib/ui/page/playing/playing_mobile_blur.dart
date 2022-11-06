@@ -30,8 +30,9 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
 
   Widget _mainPlayingWidget() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        const SizedBox(height: 0),
         PageTransitionSwitcher(
           duration: const Duration(milliseconds: 200),
           transitionBuilder: (widget, primaryAnimation, secondaryAnimation) {
@@ -119,7 +120,8 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
               ],
             ),
           ],
-        )
+        ),
+        _bottomBar(),
       ],
     );
   }
@@ -160,12 +162,12 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
             icon: const Icon(Icons.queue_music_rounded),
             onPressed: () {
               showModalBottomSheet(
+                useSafeArea: true,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                backgroundColor: context.colorScheme.surface,
-                elevation: 1,
                 useRootNavigator: true,
+                backgroundColor: context.colorScheme.surface,
                 context: context,
                 builder: (context) {
                   return const PlayingQueue();
@@ -182,14 +184,11 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 useRootNavigator: true,
+                backgroundColor: context.colorScheme.surface,
                 context: context,
-                isScrollControlled: true,
                 builder: (context) {
                   final player = context.read<PlaybackService>();
-                  return FractionallySizedBox(
-                    heightFactor: 0.7,
-                    child: PlayingMoreMenu(track: player.playing!.track),
-                  );
+                  return PlayingMoreMenu(track: player.playing!.track);
                 },
               );
             },
@@ -214,17 +213,10 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
           ),
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    // color: context.colorScheme.secondaryContainer,
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
-                    child: _mainPlayingWidget(),
-                  ),
-                ),
-                _bottomBar(),
-              ],
+            child: Container(
+              // color: context.colorScheme.secondaryContainer,
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              child: _mainPlayingWidget(),
             ),
           ),
         ],

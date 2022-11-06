@@ -63,13 +63,14 @@ class PlayingMoreMenu extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.share),
           minLeadingWidth: 0,
-          title: const Text('Share File'),
+          title: const Text('Share Playing Status'),
           dense: true,
           onTap: () {
             final id = track.id;
-            Share.shareFiles(
-              [getAudioCachePath(id)],
-              mimeTypes: ['audio/flac'],
+            Share.shareXFiles(
+              [XFile(getCoverCachePath(id.albumId))],
+              text: '#NowPlaying ${track.title} - ${track.artist}',
+              subject: 'Now Playing',
             );
           },
         ),
