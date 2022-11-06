@@ -1,22 +1,18 @@
 import 'package:annix/services/font.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 class AnnixTheme extends ChangeNotifier {
-  String? fontFamily;
-
   AnnixTheme({Color seed = const Color.fromARGB(0xff, 0xbe, 0x08, 0x73)})
       : _seed = seed,
-        fontFamily = FontService.getFontFamilyName(),
-        _theme = ThemeData(
+        _theme = FlexThemeData.light(
           useMaterial3: true,
-          brightness: Brightness.light,
-          colorSchemeSeed: seed,
+          scheme: FlexScheme.indigo,
           fontFamily: FontService.getFontFamilyName(),
         ),
-        _darkTheme = ThemeData(
+        _darkTheme = FlexThemeData.dark(
           useMaterial3: true,
-          brightness: Brightness.dark,
-          colorSchemeSeed: seed,
+          scheme: FlexScheme.indigo,
           fontFamily: FontService.getFontFamilyName(),
         ),
         _themeMode = ThemeMode.system;
@@ -24,12 +20,15 @@ class AnnixTheme extends ChangeNotifier {
   Color _seed;
 
   ThemeData _theme;
+
   ThemeData get theme => _theme;
 
   ThemeData _darkTheme;
+
   ThemeData get darkTheme => _darkTheme;
 
   ThemeMode _themeMode;
+
   ThemeMode get themeMode => _themeMode;
 
   void setTheme(Color seed, {bool force = false}) {
@@ -42,13 +41,13 @@ class AnnixTheme extends ChangeNotifier {
       useMaterial3: true,
       brightness: Brightness.light,
       colorSchemeSeed: _seed,
-      fontFamily: fontFamily,
+      fontFamily: FontService.getFontFamilyName(),
     );
     _darkTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorSchemeSeed: _seed,
-      fontFamily: fontFamily,
+      fontFamily: FontService.getFontFamilyName(),
     );
     notifyListeners();
   }
@@ -60,8 +59,7 @@ class AnnixTheme extends ChangeNotifier {
     }
   }
 
-  void setFontFamily(String? fontFamily) {
-    this.fontFamily = fontFamily;
+  void setFontFamily() {
     setTheme(_seed, force: true);
   }
 }

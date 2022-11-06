@@ -7,6 +7,7 @@ class FontService {
 
   static Future<String?> load(String? path) async {
     if (path == null) {
+      _fontId = 0;
       return null;
     }
 

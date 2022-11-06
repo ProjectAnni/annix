@@ -56,6 +56,8 @@ dependencies:
   flutter_lyric: ^2.0.4+6
   settings_ui: ^2.0.2
   cupertino_icons: ^1.0.5
+  flex_seed_scheme: ^1.0.1
+  flex_color_scheme: ^6.0.1
 
   we_slide: ^2.4.0
   animations: ^2.0.5

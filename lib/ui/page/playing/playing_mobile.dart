@@ -127,9 +127,10 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
           ],
         ),
       ),
-      bottomSheet: BottomAppBar(
-        elevation: 5,
+      bottomSheet: Material(
         color: context.colorScheme.secondaryContainer,
+        type: MaterialType.canvas,
+        elevation: 5,
         child: ButtonBar(
           alignment: MainAxisAlignment.end,
           buttonPadding: EdgeInsets.zero,

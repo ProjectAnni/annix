@@ -80,9 +80,9 @@ class SettingsController {
     fontPath = ValueNotifier(Global.preferences.getString('annix_font_path'));
     fontPath.addListener(() async {
       await saveChangedVariable('annix_font_path', fontPath)();
-      final family = await FontService.load(fontPath.value);
+      await FontService.load(fontPath.value);
       // ignore: use_build_context_synchronously
-      Global.context.read<AnnixTheme>().setFontFamily(family);
+      Global.context.read<AnnixTheme>().setFontFamily();
     });
   }
 
