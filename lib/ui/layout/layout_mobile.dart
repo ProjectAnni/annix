@@ -68,9 +68,18 @@ class AnnixLayoutMobile extends AnnixLayout {
               },
               child: const MobileBottomPlayer(),
             ),
-            panel: Global.settings.blurPlayingPage.value
-                ? const PlayingScreenMobileBlur()
-                : const PlayingScreenMobile(),
+            panel: ValueListenableProvider.value(
+              value: Global.settings.blurPlayingPage,
+              updateShouldNotify: (old, value) => true,
+              child: Builder(
+                builder: (context) {
+                  final blur = context.watch<bool>();
+                  return blur
+                      ? const PlayingScreenMobileBlur()
+                      : const PlayingScreenMobile();
+                },
+              ),
+            ),
             footerHeight: 80,
             footer: (() {
               final route = router.currentRoute;

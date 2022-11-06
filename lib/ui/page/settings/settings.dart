@@ -119,7 +119,6 @@ class SettingsScreen extends StatelessWidget {
                   builder: (context, p, _) => SettingsTile.switchTile(
                     onToggle: (value) {
                       settings.blurPlayingPage.value = value;
-                      AnnixRouterDelegate.of(context).popRoute();
                     },
                     initialValue: p,
                     leading: const Icon(Icons.blur_circular),
