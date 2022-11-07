@@ -112,11 +112,26 @@ class AlbumDetailScreen extends StatelessWidget {
             textColor: context.colorScheme.primary,
             iconColor: context.colorScheme.primary,
             leading: const Icon(Icons.album_outlined),
-            title: Text(disc.title),
+            title: Text(
+              disc.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             trailing: Text('$discId'),
             minLeadingWidth: 12,
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             visualDensity: VisualDensity.compact,
+            onLongPress: () {
+              showDialog(
+                context: context,
+                builder: (context) => SimpleDialog(
+                  title: const Text('Disc information'),
+                  children: [
+                    SimpleDialogOption(child: SelectableText(disc.title)),
+                  ],
+                ),
+              );
+            },
           ),
         );
       }
