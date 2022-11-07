@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -7,8 +8,10 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
+import 'package:annix/services/settings.dart';
 import 'package:annix/ui/dialogs/tag.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
@@ -158,19 +161,42 @@ class _SearchResult extends StatelessWidget {
                 ListView.builder(
                   itemBuilder: (context, index) {
                     final e = result.tracks![index];
-                    return ListTile(
-                      title: Text(e.title),
-                      subtitle: ArtistText(e.artist),
-                      onTap: () async {
-                        final player = context.read<PlaybackService>();
-                        final metadata = context.read<MetadataService>();
-                        final audio = await AnnilAudioSource.from(
-                          id: e.id,
-                          metadata: metadata,
+
+                    return ValueListenableBuilder<SearchTrackDisplayType>(
+                      valueListenable: Global.settings.searchTrackDisplayType,
+                      builder: (context, type, _) {
+                        return ListTile(
+                          isThreeLine: type.isThreeLine,
+                          leading: MusicCover(albumId: e.id.albumId),
+                          title: Text(
+                            e.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (type.showArtist) ArtistText(e.artist),
+                              if (type.showAlbumTitle)
+                                Text(
+                                  e.albumTitle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            ],
+                          ),
+                          onTap: () async {
+                            final player = context.read<PlaybackService>();
+                            final metadata = context.read<MetadataService>();
+                            final audio = await AnnilAudioSource.from(
+                              id: e.id,
+                              metadata: metadata,
+                            );
+                            if (audio != null) {
+                              await player.setPlayingQueue([audio]);
+                            }
+                          },
                         );
-                        if (audio != null) {
-                          await player.setPlayingQueue([audio]);
-                        }
                       },
                     );
                   },
@@ -178,29 +204,43 @@ class _SearchResult extends StatelessWidget {
                 ),
                 // Albums
                 ListView.builder(
-                  itemBuilder: (context, index) => ListTile(
-                    title: Text(result.albums![index].title),
-                    subtitle: ArtistText(result.albums![index].artist),
-                    onTap: () {
-                      AnnixRouterDelegate.of(context)
-                          .to(name: '/album', arguments: result.albums![index]);
-                    },
-                  ),
+                  itemBuilder: (context, index) {
+                    final album = result.albums![index];
+                    return ListTile(
+                      leading: MusicCover(albumId: album.albumId),
+                      title: Text(
+                        album.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: ArtistText(album.artist),
+                      onTap: () {
+                        AnnixRouterDelegate.of(context)
+                            .to(name: '/album', arguments: album);
+                      },
+                    );
+                  },
                   itemCount: result.albums?.length ?? 0,
                 ),
                 // Playlists
                 ListView.builder(
                   itemBuilder: (context, index) {
                     final item = result.playlists![index];
+                    final coverAlbumId = item.cover?.albumId;
                     return ListTile(
-                      title: Text(item.name),
+                      leading: coverAlbumId != null
+                          ? MusicCover(albumId: coverAlbumId)
+                          : const DummyMusicCover(),
+                      title: Text(
+                        item.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       subtitle: Text(item.owner),
                       onTap: () async {
-                        // FIXME: jump to playlist in search
-                        //   final playlist =
-                        //       await PlaylistDetailScreen.remote(item.id);
-                        // AnnixRouterDelegate.of(context)
-                        //     .to(name: '/playlist/:id', arguments: playlist);
+                        // TODO: get playlist and save
+                        // final delegate = AnnixRouterDelegate.of(context);
+                        // delegate.to(name: '/playlist', arguments: item.id);
                       },
                     );
                   },

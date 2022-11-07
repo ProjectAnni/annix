@@ -5,6 +5,23 @@ import 'package:annix/services/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+enum SearchTrackDisplayType {
+  /// Display track artist.
+  artist,
+
+  /// Display album title.
+  albumTitle,
+
+  /// Display track artist and album title.
+  artistAndAlbumTitle;
+
+  bool get isThreeLine => this == artistAndAlbumTitle;
+
+  bool get showArtist => this == artist || this == artistAndAlbumTitle;
+
+  bool get showAlbumTitle => this == albumTitle || this == artistAndAlbumTitle;
+}
+
 class SettingsController {
   /// Download audio files using mobile network
   ///
@@ -46,6 +63,11 @@ class SettingsController {
   ///
   /// Default value: null
   late ValueNotifier<bool> blurPlayingPage;
+
+  /// Control what to display in search result
+  ///
+  /// Default value: SearchTrackDisplayType.artist
+  late ValueNotifier<SearchTrackDisplayType> searchTrackDisplayType;
 
   void init() {
     useMobileNetwork = ValueNotifier(
@@ -94,6 +116,12 @@ class SettingsController {
         Global.preferences.getBool('annix_enable_blur_playing_page') ?? false);
     blurPlayingPage.addListener(
         saveChangedVariable('annix_enable_blur_playing_page', blurPlayingPage));
+
+    searchTrackDisplayType = ValueNotifier(SearchTrackDisplayType.values[
+        Global.preferences.getInt('annix_search_track_display_type') ??
+            SearchTrackDisplayType.artist.index]);
+    searchTrackDisplayType.addListener(saveChangedVariable(
+        'annix_search_track_display_type', searchTrackDisplayType));
   }
 
   Future<void> Function() saveChangedVariable<T>(

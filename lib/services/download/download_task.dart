@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
+import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,7 +11,9 @@ typedef DownloadCallback<T> = void Function(T);
 class DownloadCancelledError extends Error {}
 
 class DownloadTask extends ChangeNotifier {
-  static final Dio _client = Dio();
+  static final Dio _client = Dio()
+    ..httpClientAdapter =
+        createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
 
   final DownloadTaskData data;
   final DownloadCategory category;

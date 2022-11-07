@@ -61,7 +61,7 @@ class PlayingMoreMenu extends StatelessWidget {
         //   },
         // ),
         ListTile(
-          leading: const Icon(Icons.share),
+          leading: const Icon(Icons.share_outlined),
           minLeadingWidth: 0,
           title: const Text('Share Playing Status'),
           dense: true,

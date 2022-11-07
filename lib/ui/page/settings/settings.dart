@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/annil.dart';
+import 'package:annix/services/settings.dart';
+import 'package:annix/ui/dialogs/enum_select.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -125,6 +127,27 @@ class SettingsScreen extends StatelessWidget {
                     title: Text(t.settings.blur_playing_page),
                   ),
                 ),
+              SettingsTileBuilder<SearchTrackDisplayType>(
+                value: settings.searchTrackDisplayType,
+                builder: (context, p, child) => SettingsTile.navigation(
+                  onPressed: (context) async {
+                    final result = await showEnumSelectDialog(
+                      context,
+                      {
+                        SearchTrackDisplayType.artist: const Text('Artist'),
+                        SearchTrackDisplayType.albumTitle: const Text('Album'),
+                        SearchTrackDisplayType.artistAndAlbumTitle:
+                            const Text('Both'),
+                      },
+                      settings.searchTrackDisplayType.value,
+                    );
+                    Global.settings.searchTrackDisplayType.value = result;
+                  },
+                  leading: const Icon(Icons.high_quality),
+                  title: const Text('SearchTrackDisplayType'),
+                  description: Text(p.toString()),
+                ),
+              ),
               SettingsTileBuilder<String?>(
                 value: settings.fontPath,
                 builder: (context, p, _) => SettingsTile.navigation(
