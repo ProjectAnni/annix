@@ -162,12 +162,12 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
               icon: const Icon(Icons.queue_music_rounded),
               onPressed: () {
                 showModalBottomSheet(
+                  useSafeArea: true,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  backgroundColor: context.colorScheme.surface,
-                  elevation: 1,
                   useRootNavigator: true,
+                  backgroundColor: context.colorScheme.surface,
                   context: context,
                   builder: (context) {
                     return const PlayingQueue();
@@ -184,14 +184,11 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   useRootNavigator: true,
+                  backgroundColor: context.colorScheme.surface,
                   context: context,
-                  isScrollControlled: true,
                   builder: (context) {
                     final player = context.read<PlaybackService>();
-                    return FractionallySizedBox(
-                      heightFactor: 0.7,
-                      child: PlayingMoreMenu(track: player.playing!.track),
-                    );
+                    return PlayingMoreMenu(track: player.playing!.track);
                   },
                 );
               },
