@@ -48,16 +48,15 @@ class BasePlaylistScreen extends StatelessWidget {
   });
 
   Widget _albumIntro(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: Global.isDesktop ? 240 : 160, // 240, 200, 160
-      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // cover
           Container(
-            padding: const EdgeInsets.only(left: 16, right: 32),
+            padding: const EdgeInsets.only(left: 16, right: 24),
             child: FractionallySizedBox(
               heightFactor: 1,
               child: cover,
@@ -89,19 +88,25 @@ class BasePlaylistScreen extends StatelessWidget {
     );
   }
 
-  Widget _playButtons(BuildContext context) {
+  Widget _playButtons(BuildContext context, [bool stretch = false]) {
     return ButtonBar(
-      alignment: MainAxisAlignment.start,
+      alignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
-        OutlinedButton.icon(
-          icon: const Icon(Icons.play_arrow),
-          label: const Text('Play'),
-          onPressed: onPlay == null ? null : () => onPlay!(false),
+        SizedBox(
+          width: stretch ? MediaQuery.of(context).size.width / 2.2 : null,
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.play_arrow),
+            label: const Text('Play'),
+            onPressed: onPlay == null ? null : () => onPlay!(false),
+          ),
         ),
-        TextButton.icon(
-          icon: const Icon(Icons.shuffle),
-          label: const Text('Shuffle'),
-          onPressed: onPlay == null ? null : () => onPlay!(true),
+        SizedBox(
+          width: stretch ? MediaQuery.of(context).size.width / 2.2 : null,
+          child: FilledButton.icon(
+            icon: const Icon(Icons.shuffle),
+            label: const Text('Shuffle'),
+            onPressed: onPlay == null ? null : () => onPlay!(true),
+          ),
         ),
       ],
     );
@@ -112,7 +117,7 @@ class BasePlaylistScreen extends StatelessWidget {
     Widget result = Column(
       children: [
         _albumIntro(context),
-        if (!context.isDesktopOrLandscape) _playButtons(context),
+        if (!context.isDesktopOrLandscape) _playButtons(context, true),
         Expanded(child: child),
       ],
     );
@@ -161,10 +166,10 @@ void playFullList({
   int initialIndex = 0,
 }) async {
   assert(
-  // when shuffle is on, initialIndex can only be zero
-  (shuffle && initialIndex == 0) ||
-      // or disable shuffle
-      !shuffle,
+    // when shuffle is on, initialIndex can only be zero
+    (shuffle && initialIndex == 0) ||
+        // or disable shuffle
+        !shuffle,
   );
 
   final trackList = tracks;

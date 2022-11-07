@@ -109,12 +109,14 @@ class AlbumDetailScreen extends StatelessWidget {
       if (needDiscId) {
         list.add(
           ListTile(
-            textColor: context.theme.primaryColor,
-            iconColor: context.theme.primaryColor,
+            textColor: context.colorScheme.primary,
+            iconColor: context.colorScheme.primary,
             leading: const Icon(Icons.album_outlined),
             title: Text(disc.title),
-            trailing: Text('Disc $discId'),
-            minLeadingWidth: 16,
+            trailing: Text('$discId'),
+            minLeadingWidth: 12,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            visualDensity: VisualDensity.compact,
           ),
         );
       }
@@ -140,6 +142,7 @@ class AlbumDetailScreen extends StatelessWidget {
                   trackId: trackIndex,
                 ),
               ),
+              minLeadingWidth: 12,
               onTap: () async {
                 final player = context.read<PlaybackService>();
                 final tracks = getTracks(context);
