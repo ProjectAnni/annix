@@ -84,29 +84,20 @@ class AnnivCard extends StatelessWidget {
               ),
               // TODO: Add more things in this card
               const SizedBox(height: 80),
-              MenuAnchor(
-                builder: (context, controller, child) {
-                  return IconButton(
-                    icon: const Icon(Icons.more_vert_outlined),
-                    onPressed: () {
-                      if (controller.isOpen) {
-                        controller.close();
-                      } else {
-                        controller.open();
-                      }
-                    },
-                  );
-                },
-                menuChildren: [
-                  MenuItemButton(
+              PopupMenuButton<String>(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'Logout',
                     child: Text(t.server.logout),
-                    onPressed: () {
-                      final anniv =
-                          Provider.of<AnnivService>(context, listen: false);
-                      anniv.logout();
-                    },
                   ),
                 ],
+                onSelected: (value) {
+                  if (value == 'Logout') {
+                    final anniv =
+                        Provider.of<AnnivService>(context, listen: false);
+                    anniv.logout();
+                  }
+                },
               ),
             ],
           ),

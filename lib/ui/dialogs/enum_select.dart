@@ -23,12 +23,7 @@ Future<T> showEnumSelectDialog<T extends Enum>(
     useRootNavigator: true,
     builder: (context) {
       return Center(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: child,
-          ),
-        ),
+        child: Card(child: child),
       );
     },
   );

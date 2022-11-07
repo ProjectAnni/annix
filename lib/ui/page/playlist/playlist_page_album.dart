@@ -167,6 +167,18 @@ class AlbumDetailScreen extends StatelessWidget {
                   initialIndex: totalTrackIndex,
                 );
               },
+              trailing: PopupMenuButton<String>(
+                icon: const Icon(Icons.more_horiz),
+                position: PopupMenuPosition.over,
+                itemBuilder: (context) => [
+                  // TODO: add actions
+                  // PopupMenuItem(
+                  //   value: 'Test',
+                  //   child: Text('Test'),
+                  // ),
+                ],
+                onSelected: (value) {},
+              ),
               // selected: TODO: indicate playing track,
             );
           },
