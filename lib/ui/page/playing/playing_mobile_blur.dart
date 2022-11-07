@@ -39,7 +39,7 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
             return FadeThroughTransition(
               animation: primaryAnimation,
               secondaryAnimation: secondaryAnimation,
-              fillColor: context.colorScheme.secondaryContainer,
+              fillColor: Colors.transparent,
               child: widget,
             );
           },
