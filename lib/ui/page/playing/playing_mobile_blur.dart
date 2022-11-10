@@ -211,10 +211,14 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
               fit: BoxFit.cover,
             ),
           ),
+          SizedBox.expand(
+            child: ColoredBox(
+              color: context.colorScheme.onPrimary.withOpacity(0.42),
+            ),
+          ),
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+            filter: ImageFilter.blur(sigmaX: 64, sigmaY: 64),
             child: Container(
-              // color: context.colorScheme.secondaryContainer,
               padding: const EdgeInsets.only(left: 24, right: 24),
               child: _mainPlayingWidget(),
             ),
