@@ -9,6 +9,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:drift/drift.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
 import 'package:provider/provider.dart';
@@ -200,7 +201,16 @@ class AnnixAudioHandler extends BaseAudioHandler {
       updatePosition: player.playing?.position ?? Duration.zero,
     );
     if (playbackState.value != playState) {
-      playbackState.add(playState);
+      try {
+        playbackState.add(playState);
+      } catch (e) {
+        FLog.error(
+          className: 'AnnixAudioHandler',
+          methodName: '_updatePlaybackState',
+          text: 'Failed to update playback state',
+          exception: e,
+        );
+      }
     }
 
     if (playing != null &&
