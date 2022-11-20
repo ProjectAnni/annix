@@ -123,7 +123,7 @@ class AnnilAudioSource extends Source {
   Future<void> _preload() async {
     final savePath = getAudioCachePath(track.id);
     final file = File(savePath);
-    if (!file.existsSync()) {
+    if (!file.existsSync() || file.lengthSync() == 0) {
       final task = await spawnDownloadTask(
         track: track,
         savePath: savePath,
