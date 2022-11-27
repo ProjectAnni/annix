@@ -10,7 +10,6 @@ import 'package:annix/ui/widgets/utils/two_side_sliver.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,65 +17,56 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CustomScrollView(
-        slivers: (<Widget>[
-                  Selector<AnnivService, SiteUserInfo?>(
-                    selector: (_, service) => service.info,
-                    builder: (context, info, child) {
-                      return SliverAppBar.large(
-                        title: HomeAppBar(info: info),
-                        centerTitle: true,
-                        scrolledUnderElevation: 0,
-                        actions: [
-                          IconButton(
-                            icon: const Icon(Icons.archive_outlined),
-                            onPressed: () {
-                              AnnixRouterDelegate.of(context)
-                                  .to(name: '/downloading');
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.shuffle_outlined),
-                            onPressed: () {
-                              showLoadingDialog(context);
-                              context
-                                  .read<PlaybackService>()
-                                  .fullShuffleMode(context)
-                                  .then(
-                                (value) {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                },
-                              );
-                            },
-                          ),
-                          if (!context.isDesktopOrLandscape)
-                            IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed: () {
-                                AnnixRouterDelegate.of(context)
-                                    .to(name: '/search');
-                              },
-                            ),
-                          const ThemeButton(),
-                        ],
-                      );
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar.large(
+              title: const HomeAppBar(),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.download),
+                  onPressed: () {
+                    AnnixRouterDelegate.of(context).to(name: '/downloading');
+                  },
+                ),
+                // IconButton(
+                //   icon: const Icon(Icons.shuffle_outlined),
+                //   onPressed: () {
+                //     showLoadingDialog(context);
+                //     context
+                //         .read<PlaybackService>()
+                //         .fullShuffleMode(context)
+                //         .then(
+                //       (value) {
+                //         Navigator.of(context, rootNavigator: true).pop();
+                //       },
+                //     );
+                //   },
+                // ),
+                if (!context.isDesktopOrLandscape)
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      AnnixRouterDelegate.of(context).to(name: '/search');
                     },
                   ),
-                ] +
-                content(context))
-            .map(
-              (sliver) => SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05,
-                ),
-                sliver: sliver,
-              ),
-            )
-            .toList(),
-
-        // (anniv.info.value != null ? content() : []),
+                const ThemeButton(),
+              ],
+            ),
+          ];
+        },
+        body: CustomScrollView(
+          slivers: content(context)
+              .map((sliver) => SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05,
+                    ),
+                    sliver: sliver,
+                  ))
+              .toList(),
+        ),
       ),
     );
   }

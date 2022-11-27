@@ -50,7 +50,6 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(t.settings.settings),
         centerTitle: true,
-        scrolledUnderElevation: 0,
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(

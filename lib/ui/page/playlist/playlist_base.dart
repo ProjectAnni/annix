@@ -151,7 +151,6 @@ class BasePlaylistScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: pageTitle,
-        scrolledUnderElevation: 0,
         actions: pageActions,
       ),
       body: result,
