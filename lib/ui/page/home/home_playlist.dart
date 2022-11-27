@@ -3,7 +3,6 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:annix/i18n/strings.g.dart';
 
 class PlaylistView extends StatelessWidget {
   const PlaylistView({super.key});
@@ -15,31 +14,6 @@ class PlaylistView extends StatelessWidget {
         return SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              if (index == 0) {
-                // fav
-                return Consumer<List<LocalFavorite>>(
-                  builder: (context, favorites, child) {
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      leading: AspectRatio(
-                        aspectRatio: 1,
-                        child: favorites.isEmpty
-                            ? const DummyMusicCover()
-                            : MusicCover(albumId: favorites.last.albumId),
-                      ),
-                      title: Text(t.my_favorite),
-                      visualDensity: VisualDensity.standard,
-                      onTap: () {
-                        AnnixRouterDelegate.of(context).to(name: '/favorite');
-                      },
-                    );
-                  },
-                );
-              } else {
-                index = index - 1;
-              }
-
               final playlist = playlists[index];
 
               final albumId =
@@ -64,7 +38,7 @@ class PlaylistView extends StatelessWidget {
                 },
               );
             },
-            childCount: playlists.length + 1,
+            childCount: playlists.length,
           ),
         );
       },

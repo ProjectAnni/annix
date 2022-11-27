@@ -1,4 +1,4 @@
-import 'package:annix/ui/page/home/home_albums.dart';
+import 'package:annix/ui/page/home/home_action_grid.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/home/home_title.dart';
@@ -22,26 +22,6 @@ class HomePage extends StatelessWidget {
               title: const HomeAppBar(),
               centerTitle: true,
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.download),
-                  onPressed: () {
-                    AnnixRouterDelegate.of(context).to(name: '/downloading');
-                  },
-                ),
-                // IconButton(
-                //   icon: const Icon(Icons.shuffle_outlined),
-                //   onPressed: () {
-                //     showLoadingDialog(context);
-                //     context
-                //         .read<PlaybackService>()
-                //         .fullShuffleMode(context)
-                //         .then(
-                //       (value) {
-                //         Navigator.of(context, rootNavigator: true).pop();
-                //       },
-                //     );
-                //   },
-                // ),
                 if (!context.isDesktopOrLandscape)
                   IconButton(
                     icon: const Icon(Icons.search),
@@ -70,11 +50,11 @@ class HomePage extends StatelessWidget {
 
   List<Widget> content(BuildContext context) {
     return <Widget>[
-      const HomeAlbums(),
+      const SliverToBoxAdapter(child: HomeActionGrid()),
 
       ////////////////////////////////////////////////
       SliverPadding(
-        padding: const EdgeInsets.only(top: 48, left: 16, bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         sliver: TwoSideSliver(
           leftPercentage: context.isDesktopOrLandscape ? 0.5 : 1,
           left: HomeTitle(

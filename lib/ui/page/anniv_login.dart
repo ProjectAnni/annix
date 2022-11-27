@@ -97,7 +97,8 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
             } catch (e) {
               _showSnackBar(context, e.toString());
             } finally {
-              delegate.popRoute();
+              // hide loading dialog
+              Navigator.of(context, rootNavigator: true).pop();
             }
           }
         },
