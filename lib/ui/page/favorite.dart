@@ -25,76 +25,64 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            pinned: true,
-            floating: true,
-            title: Text(t.my_favorite),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(60),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: SegmentedButton<bool>(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 8,
+    return Material(
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              pinned: true,
+              floating: true,
+              title: Text(t.my_favorite),
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(60),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: SegmentedButton<bool>(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 8,
+                      ),
                     ),
+                    segments: [
+                      ButtonSegment(
+                        icon: const Icon(Icons.music_note),
+                        label: Text(t.track),
+                        value: true,
+                      ),
+                      ButtonSegment(
+                        icon: const Icon(Icons.album),
+                        label: Text(t.albums),
+                        value: false,
+                      ),
+                    ],
+                    selected: {showTracks},
+                    showSelectedIcon: false,
+                    onSelectionChanged: (value) {
+                      setState(() {
+                        showTracks = value.first;
+                      });
+                    },
                   ),
-                  segments: [
-                    ButtonSegment(
-                      icon: const Icon(Icons.music_note),
-                      label: Text(t.track),
-                      value: true,
-                    ),
-                    ButtonSegment(
-                      icon: const Icon(Icons.album),
-                      label: Text(t.albums),
-                      value: false,
-                    ),
-                  ],
-                  selected: {showTracks},
-                  showSelectedIcon: false,
-                  onSelectionChanged: (value) {
-                    setState(() {
-                      showTracks = value.first;
-                    });
-                  },
                 ),
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () async {
+                    await context.read<AnnivService>().syncFavorite();
+                  },
+                ),
+              ],
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: () async {
-                  await context.read<AnnivService>().syncFavorite();
-                },
-              ),
-            ],
-          ),
-        ];
-      },
-      body: AnimatedCrossFade(
-        crossFadeState:
-            showTracks ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-        firstChild: _favoriteTracks(),
-        secondChild: _favoriteAlbums(),
-        duration: const Duration(milliseconds: 300),
-        layoutBuilder: (topChild, topChildKey, bottomChild, bottomChildKey) {
-          return Stack(
-            children: [
-              Positioned(
-                key: bottomChildKey,
-                child: bottomChild,
-              ),
-              Positioned(
-                key: topChildKey,
-                child: topChild,
-              ),
-            ],
-          );
+          ];
         },
+        body: AnimatedCrossFade(
+          crossFadeState:
+              showTracks ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          firstChild: _favoriteTracks(),
+          secondChild: _favoriteAlbums(),
+          duration: const Duration(milliseconds: 300),
+        ),
       ),
     );
   }
