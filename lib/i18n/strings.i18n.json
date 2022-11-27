@@ -13,6 +13,7 @@
     "logout": "Logout",
     "not_logged_in": "Not logged in",
     "libraries": "Libraries",
+    "login_to_anniv": "Login to Anniv",
     "anniv_features": "Login to Anniv for playlist, statistics and more features!"
   },
   "settings": {

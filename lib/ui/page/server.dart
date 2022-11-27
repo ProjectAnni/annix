@@ -2,7 +2,6 @@ import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
-import 'package:annix/ui/dialogs/anniv_login.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
@@ -35,11 +34,7 @@ class AnnivCard extends StatelessWidget {
             child: TextButton(
               child: Text(t.server.login),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: true,
-                  builder: (context) => const AnnivLoginDialog(),
-                );
+                AnnixRouterDelegate.of(context).to(name: '/login');
               },
             ),
           ),

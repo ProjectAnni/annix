@@ -29,7 +29,7 @@ For `iOS` users, only [Testflight](https://testflight.apple.com/join/ZWXnvupI) i
 
 ### Release branches
 
-There're two release branches: `canary` and `nightly`.
+There are two release branches: `canary` and `nightly`.
 
 `Canary` builds are binaries built from `master` branch. There might be some some unknown bugs.
 

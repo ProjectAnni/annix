@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 78 (39 per locale)
+/// Strings: 80 (40 per locale)
 ///
-/// Built on 2022-11-06 at 16:39 UTC
+/// Built on 2022-11-27 at 15:51 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -176,8 +176,13 @@ class _StringsServerEn {
 	String get login => 'Login';
 	String get logout => 'Logout';
 	String get not_logged_in => 'Not logged in';
+
 	String get libraries => 'Libraries';
-	String get anniv_features => 'Login to Anniv for playlist, statistics and more features!';
+
+  String get login_to_anniv => 'Login to Anniv';
+
+  String get anniv_features =>
+      'Login to Anniv for playlist, statistics and more features!';
 }
 
 // Path: settings
@@ -284,8 +289,15 @@ class _StringsServerZhCn implements _StringsServerEn {
 	@override String get login => '登录';
 	@override String get logout => '退出登录';
 	@override String get not_logged_in => '未登录';
-	@override String get libraries => '音频仓库';
-	@override String get anniv_features => '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
+
+	@override
+  String get libraries => '音频仓库';
+
+  @override
+  String get login_to_anniv => '登录 Anniv';
+
+  @override
+  String get anniv_features => '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
 }
 
 // Path: settings
@@ -364,13 +376,19 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 
 extension on _StringsEn {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'playing': return 'Playing';
-			case 'progress': return 'Progress';
-			case 'home': return 'Home';
-			case 'category': return 'Categories';
-			case 'albums': return 'Albums';
-			case 'playlists': return 'Playlists';
+    switch (path) {
+      case 'playing':
+        return 'Playing';
+      case 'progress':
+        return 'Progress';
+      case 'home':
+        return 'Home';
+      case 'category':
+        return 'Categories';
+      case 'albums':
+        return 'Albums';
+      case 'playlists':
+        return 'Playlists';
       case 'shuffle_mode':
         return 'Shuffle Mode';
       case 'my_favorite':
@@ -385,6 +403,8 @@ extension on _StringsEn {
         return 'Not logged in';
       case 'server.libraries':
         return 'Libraries';
+      case 'server.login_to_anniv':
+        return 'Login to Anniv';
       case 'server.anniv_features':
         return 'Login to Anniv for playlist, statistics and more features!';
       case 'settings.settings':
@@ -445,13 +465,19 @@ extension on _StringsEn {
 
 extension on _StringsZhCn {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'playing': return '播放';
-			case 'progress': return '进度';
-			case 'home': return '首页';
-			case 'category': return '分类';
-			case 'albums': return '专辑';
-			case 'playlists': return '播放列表';
+    switch (path) {
+      case 'playing':
+        return '播放';
+      case 'progress':
+        return '进度';
+      case 'home':
+        return '首页';
+      case 'category':
+        return '分类';
+      case 'albums':
+        return '专辑';
+      case 'playlists':
+        return '播放列表';
       case 'shuffle_mode':
         return '随机模式';
       case 'my_favorite':
@@ -466,6 +492,8 @@ extension on _StringsZhCn {
         return '未登录';
       case 'server.libraries':
         return '音频仓库';
+      case 'server.login_to_anniv':
+        return '登录 Anniv';
       case 'server.anniv_features':
         return '登录 Anniv 以启用播放列表、播放统计等诸多功能。';
       case 'settings.settings':

@@ -13,6 +13,7 @@
     "logout": "退出登录",
     "not_logged_in": "未登录",
     "libraries": "音频仓库",
+    "login_to_anniv": "登录 Anniv",
     "anniv_features": "登录 Anniv 以启用播放列表、播放统计等诸多功能。"
   },
   "settings": {

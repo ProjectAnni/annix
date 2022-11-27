@@ -1,5 +1,5 @@
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/ui/dialogs/anniv_login.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +19,7 @@ class HomeAppBar extends StatelessWidget {
             child: Text(info.user.nickname.substring(0, 1)),
           ),
           const SizedBox(width: 8),
-          Text('Welcome back, ${info.user.nickname}.'),
+          Text(info.user.nickname),
         ],
       );
     } else {
@@ -29,11 +29,7 @@ class HomeAppBar extends StatelessWidget {
           TextButton(
             child: Text(t.server.login),
             onPressed: () {
-              showDialog(
-                context: context,
-                useRootNavigator: true,
-                builder: (context) => const AnnivLoginDialog(),
-              );
+              AnnixRouterDelegate.of(context).to(name: '/login');
             },
           ),
         ],

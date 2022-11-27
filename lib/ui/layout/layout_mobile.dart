@@ -34,13 +34,15 @@ class AnnixLayoutMobile extends AnnixLayout {
     final root = Scaffold(
       body: Selector2<PlaybackService, AnnixRouterDelegate, List<bool>>(
         selector: (context, player, delegate) {
+          final isQueueEmpty = player.queue.isEmpty;
           final isPlaying = player.playing != null;
           final isMainPage = pages.contains(delegate.currentRoute);
-          return [isPlaying, isMainPage];
+          return [isQueueEmpty, isPlaying, isMainPage];
         },
         builder: (context, result, child) {
-          final isPlaying = result[0];
-          final isMainPage = result[1];
+          final isQueueEmpty = result[0];
+          final isPlaying = result[1];
+          final isMainPage = result[2];
           if (!isMainPage) {
             Global.mobileWeSlideFooterController.hide();
           } else {
@@ -57,7 +59,8 @@ class AnnixLayoutMobile extends AnnixLayout {
             panelBorderRadiusEnd: 0,
             backgroundColor: Colors.transparent,
             body: Material(child: child),
-            panelMinSize: 60 + 80,
+            panelMinSize:
+                (isQueueEmpty ? 0 : 60 /* panel header*/) + 80 /* footer */,
             panelMaxSize: panelMaxSize,
             isUpSlide: isPlaying,
             panelHeader: GestureDetector(

@@ -1,3 +1,4 @@
+import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/playlist/playlist_page_album.dart';
 import 'package:annix/ui/page/playlist/playlist_page_favorite.dart';
@@ -116,6 +117,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     bool disableAppBarDismissal = false;
 
     switch (routeSettings.name) {
+      case '/login':
+        child = const AnnivLoginPage();
+        break;
       case '/playing':
         // /playing route is only available on desktop
         child = const PlayingDesktopScreen();
