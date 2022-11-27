@@ -82,6 +82,21 @@ class _FavoritePageState extends State<FavoritePage> {
           firstChild: _favoriteTracks(),
           secondChild: _favoriteAlbums(),
           duration: const Duration(milliseconds: 300),
+          layoutBuilder: (topChild, topChildKey, bottomChild, bottomChildKey) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  key: bottomChildKey,
+                  child: bottomChild,
+                ),
+                Positioned(
+                  key: topChildKey,
+                  child: topChild,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
