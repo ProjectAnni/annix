@@ -1,7 +1,7 @@
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
+import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/playlist/playlist_page_album.dart';
-import 'package:annix/ui/page/playlist/playlist_page_favorite.dart';
 import 'package:annix/ui/page/playlist/playlist_page_list.dart';
 import 'package:annix/ui/page/server.dart';
 import 'package:annix/ui/page/tag/tag_list.dart';
@@ -152,7 +152,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         disableAppBarDismissal = true;
         break;
       case '/favorite':
-        child = const FavoriteScreen();
+        child = const FavoritePage();
         break;
       case '/playlist':
         child = LazyPlaylistDetailScreen(id: routeSettings.arguments as int);
