@@ -15,10 +15,12 @@ class HomeAppBar extends StatelessWidget {
     if (info != null) {
       return Row(
         children: [
-          CircleAvatar(
-            child: Text(info.user.nickname.substring(0, 1)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              child: Text(info.user.nickname.substring(0, 1)),
+            ),
           ),
-          const SizedBox(width: 8),
           Text(info.user.nickname),
         ],
       );
