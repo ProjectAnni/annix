@@ -21,7 +21,7 @@ class AnnilAudioSource extends Source {
   ExtendedNetworkImageProvider? coverProvider;
 
   final ValueNotifier<DownloadProgress> downloadProgress = ValueNotifier(
-    const DownloadProgress(current: 0, total: 0),
+    const DownloadProgress(current: 0),
   );
 
   bool isCanceled = false;

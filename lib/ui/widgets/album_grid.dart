@@ -34,26 +34,19 @@ class AlbumGrid extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: MusicCover(albumId: albumId, card: false),
-            ),
+            MusicCover(albumId: albumId, card: false),
             FutureBuilder<Album?>(
               future: metadataFuture,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Text(
-                      snapshot.data!.fullTitle,
-                      style: context.textTheme.titleSmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
+                return Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Text(
+                    snapshot.data?.fullTitle ?? '',
+                    style: context.textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                );
               },
             ),
           ],
