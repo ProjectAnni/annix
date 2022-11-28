@@ -7,6 +7,10 @@
   "playlists": "播放列表",
   "shuffle_mode": "随机模式",
   "my_favorite": "我的收藏",
+  "playback": {
+    "play_all": "播放全部",
+    "shuffle": "随机播放"
+  },
   "server": {
     "server": "服务器",
     "login": "登录",
@@ -42,5 +46,6 @@
   "track": "单曲",
   "recent_played": "最近播放",
   "no_lyric_found": "未找到歌词",
+  "download": "下载",
   "download_manager": "下载管理"
 }

@@ -31,20 +31,20 @@ class HomeActionGrid extends StatelessWidget {
         ),
         HomeActionButton(
           icon: const Icon(Icons.download),
-          title: 'Download',
+          title: t.download,
           onPressed: () {
             AnnixRouterDelegate.of(context).to(name: '/downloading');
           },
         ),
-        const HomeActionButton(
-          icon: Icon(Icons.history),
-          title: 'Recent Played',
+        HomeActionButton(
+          icon: const Icon(Icons.history),
+          title: t.recent_played,
           // TODO: implement play record
           onPressed: null,
         ),
         HomeActionButton(
           icon: const Icon(Icons.shuffle),
-          title: 'Shuffle',
+          title: t.playback.shuffle,
           onPressed: () {
             showLoadingDialog(context);
             context.read<PlaybackService>().fullShuffleMode(context).then(

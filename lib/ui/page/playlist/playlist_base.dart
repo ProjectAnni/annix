@@ -3,6 +3,7 @@ import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 typedef PlaybackCallback = void Function(bool shuffle);
 
@@ -96,7 +97,7 @@ class BasePlaylistScreen extends StatelessWidget {
           width: stretch ? MediaQuery.of(context).size.width / 2.2 : null,
           child: OutlinedButton.icon(
             icon: const Icon(Icons.play_arrow),
-            label: const Text('Play'),
+            label: Text(t.playback.play_all),
             onPressed: onPlay == null ? null : () => onPlay!(false),
           ),
         ),
@@ -104,7 +105,7 @@ class BasePlaylistScreen extends StatelessWidget {
           width: stretch ? MediaQuery.of(context).size.width / 2.2 : null,
           child: FilledButton.icon(
             icon: const Icon(Icons.shuffle),
-            label: const Text('Shuffle'),
+            label: Text(t.playback.shuffle),
             onPressed: onPlay == null ? null : () => onPlay!(true),
           ),
         ),

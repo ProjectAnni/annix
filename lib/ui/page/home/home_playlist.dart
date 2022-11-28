@@ -2,6 +2,8 @@ import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
+import 'package:morpheus/page_routes/morpheus_page_transition.dart';
+import 'package:morpheus/page_routes/morpheus_route_arguments.dart';
 import 'package:provider/provider.dart';
 
 class PlaylistView extends StatelessWidget {
@@ -18,7 +20,10 @@ class PlaylistView extends StatelessWidget {
 
               final albumId =
                   playlist.cover == null ? null : playlist.cover!.split('/')[0];
+
+              final parentKey = GlobalKey();
               return ListTile(
+                key: parentKey,
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 leading: AspectRatio(
@@ -34,7 +39,29 @@ class PlaylistView extends StatelessWidget {
                 visualDensity: VisualDensity.standard,
                 onTap: () async {
                   final delegate = AnnixRouterDelegate.of(context);
-                  delegate.to(name: '/playlist', arguments: playlist.id);
+                  delegate.to(
+                    name: '/playlist',
+                    arguments: playlist.id,
+                    pageBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      final renderBox = _findRenderBox(parentKey);
+                      final size = renderBox?.size;
+                      final offset = renderBox?.localToGlobal(Offset.zero);
+                      return MorpheusPageTransition(
+                        renderBox: renderBox,
+                        renderBoxSize: size,
+                        renderBoxOffset: offset,
+                        context: context,
+                        animation: animation,
+                        secondaryAnimation: secondaryAnimation,
+                        settings: MorpheusRouteArguments(
+                          parentKey: parentKey,
+                          scrimColor: Colors.transparent,
+                        ),
+                        child: child,
+                      );
+                    },
+                  );
                 },
               );
             },
@@ -44,4 +71,9 @@ class PlaylistView extends StatelessWidget {
       },
     );
   }
+}
+
+RenderBox? _findRenderBox(GlobalKey key) {
+  // Find the [RenderBox] attached to [key].
+  return key.currentContext?.findRenderObject() as RenderBox?;
 }

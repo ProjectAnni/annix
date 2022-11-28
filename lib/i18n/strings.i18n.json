@@ -7,6 +7,10 @@
   "playlists": "Playlists",
   "shuffle_mode": "Shuffle Mode",
   "my_favorite": "My Favorite",
+  "playback": {
+    "play_all": "Play All",
+    "shuffle": "Shuffle"
+  },
   "server": {
     "server": "Server",
     "login": "Login",
@@ -42,5 +46,6 @@
   "track": "Track",
   "recent_played": "Recently played",
   "no_lyric_found": "No lyric found",
+  "download": "Download",
   "download_manager": "Download manager"
 }

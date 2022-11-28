@@ -61,6 +61,7 @@ dependencies:
 
   we_slide: ^2.4.0
   animations: ^2.0.5
+  morpheus: ^1.2.3 # Material Design navigation transitions
   material_color_utilities: ^0.2.0 # on master
   crypto: ^3.0.2
 

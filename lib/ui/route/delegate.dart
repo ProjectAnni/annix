@@ -86,29 +86,45 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     }
   }
 
-  void to({required String name, arguments}) {
+  void to({
+    required String name,
+    arguments,
+    AnnixRoutePageBuilder? pageBuilder,
+  }) {
     // FIXME: dedup
     // if (currentRoute == name) {
     //   return;
     // }
 
-    _pages.add(_createPage(RouteSettings(name: name, arguments: arguments)));
+    _pages.add(_createPage(
+      RouteSettings(name: name, arguments: arguments),
+      pageBuilder: pageBuilder,
+    ));
     notifyListeners();
   }
 
-  void off({required String name, arguments}) {
+  void off({
+    required String name,
+    arguments,
+    AnnixRoutePageBuilder? pageBuilder,
+  }) {
     _pages.clear();
-    to(name: name, arguments: arguments);
+    to(name: name, arguments: arguments, pageBuilder: pageBuilder);
   }
 
-  void replace({required String name, arguments}) {
+  void replace({
+    required String name,
+    arguments,
+    AnnixRoutePageBuilder? pageBuilder,
+  }) {
     if (_pages.isNotEmpty) {
       _pages.removeLast();
     }
-    to(name: name, arguments: arguments);
+    to(name: name, arguments: arguments, pageBuilder: pageBuilder);
   }
 
-  AnnixPage _createPage(RouteSettings routeSettings) {
+  AnnixPage _createPage(RouteSettings routeSettings,
+      {AnnixRoutePageBuilder? pageBuilder}) {
     if (_reservedPages.containsKey(routeSettings.name)) {
       return _reservedPages[routeSettings.name]!;
     }
@@ -185,6 +201,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       arguments: routeSettings.arguments,
       key: Key(routeSettings.name!) as LocalKey,
       disableAppBarDismissal: disableAppBarDismissal,
+      pageBuilder: pageBuilder,
     );
 
     if (routeSettings.name == '/playing') {

@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 80 (40 per locale)
+/// Strings: 86 (43 per locale)
 ///
-/// Built on 2022-11-27 at 15:51 UTC
+/// Built on 2022-11-28 at 04:51 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -147,37 +147,67 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 
 	late final _StringsEn _root = this; // ignore: unused_field
 
-	// Translations
-	String get playing => 'Playing';
-	String get progress => 'Progress';
-	String get home => 'Home';
-	String get category => 'Categories';
-	String get albums => 'Albums';
-	String get playlists => 'Playlists';
-	String get shuffle_mode => 'Shuffle Mode';
-	String get my_favorite => 'My Favorite';
-	late final _StringsServerEn server = _StringsServerEn._(_root);
-	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
-	String get search => 'Search';
-	String get track => 'Track';
-	String get recent_played => 'Recently played';
-	String get no_lyric_found => 'No lyric found';
-	String get download_manager => 'Download manager';
+  // Translations
+  String get playing => 'Playing';
+
+  String get progress => 'Progress';
+
+  String get home => 'Home';
+
+  String get category => 'Categories';
+
+  String get albums => 'Albums';
+
+  String get playlists => 'Playlists';
+
+  String get shuffle_mode => 'Shuffle Mode';
+
+  String get my_favorite => 'My Favorite';
+  late final _StringsPlaybackEn playback = _StringsPlaybackEn._(_root);
+  late final _StringsServerEn server = _StringsServerEn._(_root);
+  late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
+
+  String get search => 'Search';
+
+  String get track => 'Track';
+
+  String get recent_played => 'Recently played';
+
+  String get no_lyric_found => 'No lyric found';
+
+  String get download => 'Download';
+
+  String get download_manager => 'Download manager';
+}
+
+// Path: playback
+class _StringsPlaybackEn {
+  _StringsPlaybackEn._(this._root);
+
+  final _StringsEn _root; // ignore: unused_field
+
+  // Translations
+  String get play_all => 'Play All';
+
+  String get shuffle => 'Shuffle';
 }
 
 // Path: server
 class _StringsServerEn {
-	_StringsServerEn._(this._root);
+  _StringsServerEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+  final _StringsEn _root; // ignore: unused_field
 
-	// Translations
-	String get server => 'Server';
-	String get login => 'Login';
-	String get logout => 'Logout';
-	String get not_logged_in => 'Not logged in';
+  // Translations
+  String get server => 'Server';
 
-	String get libraries => 'Libraries';
+  String get login => 'Login';
+
+  String get logout => 'Logout';
+
+  String get not_logged_in => 'Not logged in';
+
+  String get libraries => 'Libraries';
 
   String get login_to_anniv => 'Login to Anniv';
 
@@ -260,37 +290,92 @@ class _StringsZhCn implements _StringsEn {
 
 	@override late final _StringsZhCn _root = this; // ignore: unused_field
 
-	// Translations
-	@override String get playing => '播放';
-	@override String get progress => '进度';
-	@override String get home => '首页';
-	@override String get category => '分类';
-	@override String get albums => '专辑';
-	@override String get playlists => '播放列表';
-	@override String get shuffle_mode => '随机模式';
-	@override String get my_favorite => '我的收藏';
-	@override late final _StringsServerZhCn server = _StringsServerZhCn._(_root);
-	@override late final _StringsSettingsZhCn settings = _StringsSettingsZhCn._(_root);
-	@override String get search => '搜索';
-	@override String get track => '单曲';
-	@override String get recent_played => '最近播放';
-	@override String get no_lyric_found => '未找到歌词';
-	@override String get download_manager => '下载管理';
+  // Translations
+  @override
+  String get playing => '播放';
+
+  @override
+  String get progress => '进度';
+
+  @override
+  String get home => '首页';
+
+  @override
+  String get category => '分类';
+
+  @override
+  String get albums => '专辑';
+
+  @override
+  String get playlists => '播放列表';
+
+  @override
+  String get shuffle_mode => '随机模式';
+
+  @override
+  String get my_favorite => '我的收藏';
+  @override
+  late final _StringsPlaybackZhCn playback = _StringsPlaybackZhCn._(_root);
+  @override
+  late final _StringsServerZhCn server = _StringsServerZhCn._(_root);
+  @override
+  late final _StringsSettingsZhCn settings = _StringsSettingsZhCn._(_root);
+
+  @override
+  String get search => '搜索';
+
+  @override
+  String get track => '单曲';
+
+  @override
+  String get recent_played => '最近播放';
+
+  @override
+  String get no_lyric_found => '未找到歌词';
+
+  @override
+  String get download => '下载';
+
+  @override
+  String get download_manager => '下载管理';
+}
+
+// Path: playback
+class _StringsPlaybackZhCn implements _StringsPlaybackEn {
+  _StringsPlaybackZhCn._(this._root);
+
+  @override
+  final _StringsZhCn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get play_all => '播放全部';
+
+  @override
+  String get shuffle => '随机播放';
 }
 
 // Path: server
 class _StringsServerZhCn implements _StringsServerEn {
-	_StringsServerZhCn._(this._root);
+  _StringsServerZhCn._(this._root);
 
-	@override final _StringsZhCn _root; // ignore: unused_field
+  @override
+  final _StringsZhCn _root; // ignore: unused_field
 
-	// Translations
-	@override String get server => '服务器';
-	@override String get login => '登录';
-	@override String get logout => '退出登录';
-	@override String get not_logged_in => '未登录';
+  // Translations
+  @override
+  String get server => '服务器';
 
-	@override
+  @override
+  String get login => '登录';
+
+  @override
+  String get logout => '退出登录';
+
+  @override
+  String get not_logged_in => '未登录';
+
+  @override
   String get libraries => '音频仓库';
 
   @override
@@ -393,6 +478,10 @@ extension on _StringsEn {
         return 'Shuffle Mode';
       case 'my_favorite':
         return 'My Favorite';
+      case 'playback.play_all':
+        return 'Play All';
+      case 'playback.shuffle':
+        return 'Shuffle';
       case 'server.server':
         return 'Server';
       case 'server.login':
@@ -455,6 +544,8 @@ extension on _StringsEn {
         return 'Recently played';
       case 'no_lyric_found':
         return 'No lyric found';
+      case 'download':
+        return 'Download';
       case 'download_manager':
         return 'Download manager';
       default:
@@ -482,6 +573,10 @@ extension on _StringsZhCn {
         return '随机模式';
       case 'my_favorite':
         return '我的收藏';
+      case 'playback.play_all':
+        return '播放全部';
+      case 'playback.shuffle':
+        return '随机播放';
       case 'server.server':
         return '服务器';
       case 'server.login':
@@ -544,6 +639,8 @@ extension on _StringsZhCn {
         return '最近播放';
       case 'no_lyric_found':
         return '未找到歌词';
+      case 'download':
+        return '下载';
       case 'download_manager':
         return '下载管理';
       default:

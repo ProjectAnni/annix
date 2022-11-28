@@ -34,15 +34,12 @@ class HomePage extends StatelessWidget {
             ),
           ];
         },
-        body: CustomScrollView(
-          slivers: content(context)
-              .map((sliver) => SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05,
-                    ),
-                    sliver: sliver,
-                  ))
-              .toList(),
+        body: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05),
+          child: CustomScrollView(
+            slivers: content(context),
+          ),
         ),
       ),
     );
@@ -53,20 +50,19 @@ class HomePage extends StatelessWidget {
       const SliverToBoxAdapter(child: HomeActionGrid()),
 
       ////////////////////////////////////////////////
-      SliverPadding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        sliver: TwoSideSliver(
-          leftPercentage: context.isDesktopOrLandscape ? 0.5 : 1,
-          left: HomeTitle(
-            sliver: true,
-            title: t.playlists,
-            icon: Icons.queue_music_outlined,
-          ),
-          right: HomeTitle(
-            sliver: true,
-            title: t.recent_played,
-            icon: Icons.music_note_outlined,
-          ),
+      TwoSideSliver(
+        leftPercentage: context.isDesktopOrLandscape ? 0.5 : 1,
+        left: HomeTitle(
+          sliver: true,
+          title: t.playlists,
+          icon: Icons.queue_music_outlined,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        right: HomeTitle(
+          sliver: true,
+          title: t.recent_played,
+          icon: Icons.music_note_outlined,
+          padding: const EdgeInsets.symmetric(vertical: 16),
         ),
       ),
       TwoSideSliver(
