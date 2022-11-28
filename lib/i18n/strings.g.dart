@@ -3,7 +3,7 @@
 /// Locales: 2
 /// Strings: 86 (43 per locale)
 ///
-/// Built on 2022-11-28 at 04:51 UTC
+/// Built on 2022-11-28 at 14:22 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -89,9 +89,9 @@ extension BuildContextTranslationsExtension on BuildContext {
 
 /// Manages all translation instances and the current locale
 class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
-	LocaleSettings._() : super(locales: AppLocale.values, baseLocale: _baseLocale, utils: AppLocaleUtils.instance);
+  LocaleSettings._() : super(utils: AppLocaleUtils.instance);
 
-	static final instance = LocaleSettings._();
+  static final instance = LocaleSettings._();
 
 	// static aliases (checkout base methods for documentation)
 	static AppLocale get currentLocale => instance.currentLocale;
@@ -137,15 +137,16 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 		    ordinalResolver: ordinalResolver,
 		  ) {
 		$meta.setFlatMapFunction(_flatMapFunction);
-	}
+  }
 
-	/// Metadata for the translations of <en>.
-	@override final TranslationMetadata<AppLocale, _StringsEn> $meta;
+  /// Metadata for the translations of <en>.
+  @override
+  final TranslationMetadata<AppLocale, _StringsEn> $meta;
 
-	/// Access flat map
-	dynamic operator[](String key) => $meta.getTranslation(key);
+  /// Access flat map
+  dynamic operator [](String key) => $meta.getTranslation(key);
 
-	late final _StringsEn _root = this; // ignore: unused_field
+  late final _StringsEn _root = this; // ignore: unused_field
 
   // Translations
   String get playing => 'Playing';
@@ -217,7 +218,7 @@ class _StringsServerEn {
 
 // Path: settings
 class _StringsSettingsEn {
-	_StringsSettingsEn._(this._root);
+  _StringsSettingsEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -280,15 +281,18 @@ class _StringsZhCn implements _StringsEn {
 		    ordinalResolver: ordinalResolver,
 		  ) {
 		$meta.setFlatMapFunction(_flatMapFunction);
-	}
+  }
 
-	/// Metadata for the translations of <zh-CN>.
-	@override final TranslationMetadata<AppLocale, _StringsEn> $meta;
+  /// Metadata for the translations of <zh-CN>.
+  @override
+  final TranslationMetadata<AppLocale, _StringsEn> $meta;
 
-	/// Access flat map
-	@override dynamic operator[](String key) => $meta.getTranslation(key);
+  /// Access flat map
+  @override
+  dynamic operator [](String key) => $meta.getTranslation(key);
 
-	@override late final _StringsZhCn _root = this; // ignore: unused_field
+  @override
+  late final _StringsZhCn _root = this; // ignore: unused_field
 
   // Translations
   @override
@@ -387,7 +391,7 @@ class _StringsServerZhCn implements _StringsServerEn {
 
 // Path: settings
 class _StringsSettingsZhCn implements _StringsSettingsEn {
-	_StringsSettingsZhCn._(this._root);
+  _StringsSettingsZhCn._(this._root);
 
   @override
   final _StringsZhCn _root; // ignore: unused_field
