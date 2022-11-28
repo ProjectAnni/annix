@@ -9,6 +9,8 @@ import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 
 class PlayingTrack extends ChangeNotifier {
+  bool _disposed = false;
+
   final AnnilAudioSource source;
 
   PlayingTrack(this.source) {
@@ -27,21 +29,22 @@ class PlayingTrack extends ChangeNotifier {
 
   void updatePosition(Duration position) {
     this.position = position;
-    notifyListeners();
+    if (!_disposed) notifyListeners();
   }
 
   void updateDuration(Duration duration) {
     this.duration = duration;
-    notifyListeners();
+    if (!_disposed) notifyListeners();
   }
 
   void updateLyric(TrackLyric? lyric) {
     this.lyric = lyric ?? TrackLyric.empty();
-    notifyListeners();
+    if (!_disposed) notifyListeners();
   }
 
   @override
   void dispose() {
+    _disposed = true;
     source.cancel();
     super.dispose();
   }
@@ -61,7 +64,7 @@ class PlayingTrack extends ChangeNotifier {
       if (lyric == null) {
         final anniv = LyricProviderAnniv();
         final result =
-            await anniv.search(track: identifier, title: track.title);
+        await anniv.search(track: identifier, title: track.title);
         if (result.isNotEmpty) {
           lyric = await result[0].lyric;
         }

@@ -1,4 +1,4 @@
-import 'package:annix/services/download/download_task.dart';
+import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/buttons/animated_button.dart';
 import 'package:flutter/material.dart';
@@ -60,23 +60,24 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
       child: Consumer<PlaybackService>(
         builder: (context, player, child) {
           final isBuffering = player.playerStatus == PlayerStatus.buffering;
-          final downloadTask = player.playing?.source.downloadTask;
+          final downloadProgress = player.playing?.source.downloadProgress;
 
-          if (isBuffering && downloadTask != null) {
+          if (isBuffering) {
+            // TODO: refactor
             return ChangeNotifierProvider.value(
-              value: downloadTask,
+              value: downloadProgress,
               builder: (context, child) {
-                return Consumer<DownloadTask>(
-                  builder: (context, downloadTask, child) {
+                return Consumer<ValueNotifier<DownloadProgress>>(
+                  builder: (context, progress, child) {
                     // TODO: add transition animation when progress bar becomes play/pause button
-                    final total = downloadTask.progress.total;
+                    final total = progress.value.total;
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         value: total == null
                             ? null
-                            : downloadTask.progress.current / total,
+                            : progress.value.current / total,
                       ),
                     );
                   },

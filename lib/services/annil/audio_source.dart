@@ -20,9 +20,13 @@ class AnnilAudioSource extends Source {
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
 
+  final ValueNotifier<DownloadProgress> downloadProgress = ValueNotifier(
+    const DownloadProgress(current: 0, total: 0),
+  );
+
   bool isCanceled = false;
   Future<void>? _preloadFuture;
-  DownloadTask? downloadTask;
+  DownloadTask? _downloadTask;
 
   TrackIdentifier get identifier => track.id;
 
@@ -70,7 +74,7 @@ class AnnilAudioSource extends Source {
       } catch (e) {
         // set _preloadFuture to null, allowing retry
         _preloadFuture = null;
-        downloadTask = null;
+        _downloadTask = null;
 
         if (e is DownloadCancelledError) {
           throw AudioCancelledError();
@@ -132,7 +136,8 @@ class AnnilAudioSource extends Source {
       if (task != null) {
         await file.parent.create(recursive: true);
         Global.downloadManager.add(task);
-        downloadTask = task;
+        _downloadTask = task;
+        _downloadTask?.addListener(_onDownloadProgress);
         final response = await task.start();
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
@@ -158,7 +163,9 @@ class AnnilAudioSource extends Source {
   }
 
   void cancel() {
-    downloadTask?.cancel();
+    _downloadTask?.cancel();
+    _downloadTask?.removeListener(_onDownloadProgress);
+    downloadProgress.dispose();
     isCanceled = true;
   }
 
@@ -175,5 +182,12 @@ class AnnilAudioSource extends Source {
       'track': track.toJson(),
       'quality': quality.toString(),
     };
+  }
+
+  void _onDownloadProgress() {
+    final progress = _downloadTask?.progress;
+    if (progress != null) {
+      downloadProgress.value = progress;
+    }
   }
 }

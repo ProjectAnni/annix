@@ -81,6 +81,10 @@ class MobileBottomPlayer extends StatelessWidget {
                   value: playing,
                   child: Selector<PlayingTrack, double>(
                     selector: (context, playing) {
+                      if (playing.duration == Duration.zero) {
+                        return 0;
+                      }
+
                       return playing.position.inMicroseconds /
                           playing.duration.inMicroseconds;
                     },
