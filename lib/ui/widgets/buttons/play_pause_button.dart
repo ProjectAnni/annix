@@ -1,3 +1,4 @@
+import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/buttons/animated_button.dart';
 import 'package:flutter/material.dart';
@@ -53,18 +54,34 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
 
   @override
   Widget build(BuildContext context) {
-    final player = context.read<PlaybackService>();
     return SizedBox(
       height: widget.size,
       width: widget.size,
-      child: Selector<PlaybackService, bool>(
-        selector: (context, player) =>
-            player.playerStatus == PlayerStatus.buffering,
-        builder: (context, isBuffering, child) {
-          if (isBuffering) {
-            return const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(strokeWidth: 2),
+      child: Consumer<PlaybackService>(
+        builder: (context, player, child) {
+          final isBuffering = player.playerStatus == PlayerStatus.buffering;
+          final downloadTask = player.playing?.source.downloadTask;
+
+          if (isBuffering && downloadTask != null) {
+            return ChangeNotifierProvider.value(
+              value: downloadTask,
+              builder: (context, child) {
+                return Consumer<DownloadTask>(
+                  builder: (context, downloadTask, child) {
+                    // TODO: add transition animation when progress bar becomes play/pause button
+                    final total = downloadTask.progress.total;
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        value: total == null
+                            ? null
+                            : downloadTask.progress.current / total,
+                      ),
+                    );
+                  },
+                );
+              },
             );
           } else {
             if (widget.type == PlayPauseButtonType.floating) {
