@@ -49,7 +49,7 @@ class PlayingMusicCover extends StatelessWidget {
 
         if (animated) {
           child = AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
             transitionBuilder: (Widget child, Animation<double> animation) {
               return FadeTransition(opacity: animation, child: child);
             },

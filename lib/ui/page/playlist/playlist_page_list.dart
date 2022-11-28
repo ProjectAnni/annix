@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -7,7 +8,6 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playlist/playlist_base.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
-import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,31 +19,18 @@ class Playlist {
   const Playlist({required this.intro, required this.items});
 }
 
-class LazyPlaylistDetailScreen extends StatelessWidget {
-  final int id;
+Future<Playlist> loadPlaylist(int id) async {
+  final db = Global.context.read<LocalDatabase>();
+  final anniv = Global.context.read<AnnivService>();
 
-  const LazyPlaylistDetailScreen({required this.id, super.key});
+  final intro = await (db.playlist.select()..where((tbl) => tbl.id.equals(id)))
+      .getSingle();
 
-  @override
-  Widget build(BuildContext context) {
-    return DisplayOrLazyLoadScreen(
-      future: (() async {
-        final db = context.read<LocalDatabase>();
-        final anniv = context.read<AnnivService>();
-
-        final intro = await (db.playlist.select()
-              ..where((tbl) => tbl.id.equals(id)))
-            .getSingle();
-
-        final items = await anniv.getPlaylistItems(intro);
-        if (items == null) {
-          throw Exception('Failed to load playlist items');
-        }
-        return Playlist(intro: intro, items: items);
-      })(),
-      builder: (Playlist playlist) => PlaylistDetailScreen(playlist: playlist),
-    );
+  final items = await anniv.getPlaylistItems(intro);
+  if (items == null) {
+    throw Exception('Failed to load playlist items');
   }
+  return Playlist(intro: intro, items: items);
 }
 
 class PlaylistDetailScreen extends StatelessWidget {
@@ -63,11 +50,11 @@ class PlaylistDetailScreen extends StatelessWidget {
       title: playlist.intro.name,
       intro: playlist.intro.description != null
           ? [
-              Text(
-                playlist.intro.description!,
-                maxLines: 2,
-              )
-            ]
+        Text(
+          playlist.intro.description!,
+          maxLines: 2,
+        )
+      ]
           : [],
       cover: _cover(context),
       onPlay: (shuffle) {
@@ -161,13 +148,13 @@ class PlaylistDetailScreen extends StatelessWidget {
     return playlist.items
         .map<TrackInfoWithAlbum?>(
           (item) {
-            if (item is AnnivPlaylistItemTrack) {
-              return item.info;
-            } else {
-              return null;
-            }
-          },
-        )
+        if (item is AnnivPlaylistItemTrack) {
+          return item.info;
+        } else {
+          return null;
+        }
+      },
+    )
         .whereType<TrackInfoWithAlbum>()
         .map((track) => AnnilAudioSource(track: track))
         .toList();

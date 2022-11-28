@@ -206,7 +206,7 @@ class _MusicCoverOrLyricState extends State<MusicCoverOrLyric> {
   @override
   Widget build(BuildContext context) {
     return PageTransitionSwitcher(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 300),
       transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
         return FadeThroughTransition(
           animation: primaryAnimation,

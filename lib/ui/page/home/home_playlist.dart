@@ -1,4 +1,6 @@
+import 'package:animations/animations.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/ui/page/playlist/playlist_page_list.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +15,15 @@ class PlaylistView extends StatelessWidget {
       builder: (context, playlists, child) {
         return SliverList(
           delegate: SliverChildBuilderDelegate(
-            (context, index) {
+                (context, index) {
               final playlist = playlists[index];
 
               final albumId =
-                  playlist.cover == null ? null : playlist.cover!.split('/')[0];
+              playlist.cover == null ? null : playlist.cover!.split('/')[0];
 
               return ListTile(
                 contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 leading: AspectRatio(
                   aspectRatio: 1,
                   child: albumId == null
@@ -37,7 +39,13 @@ class PlaylistView extends StatelessWidget {
                   final delegate = AnnixRouterDelegate.of(context);
                   delegate.to(
                     name: '/playlist',
-                    arguments: playlist.id,
+                    arguments: await loadPlaylist(playlist.id),
+                    pageBuilder:
+                        (context, animation, secondaryAnimation, child) =>
+                            FadeScaleTransition(
+                      animation: animation,
+                      child: child,
+                    ),
                   );
                 },
               );

@@ -171,7 +171,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const FavoritePage();
         break;
       case '/playlist':
-        child = LazyPlaylistDetailScreen(id: routeSettings.arguments as int);
+        child =
+            PlaylistDetailScreen(playlist: routeSettings.arguments as Playlist);
         break;
       case '/search':
         child = const SearchPage();
