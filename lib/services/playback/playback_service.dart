@@ -99,7 +99,9 @@ class PlaybackService extends ChangeNotifier {
     final queue = Global.preferences.getStringList('player.queue') ?? [];
 
     final playingIndex = Global.preferences.getInt('player.playingIndex');
-    if (playingIndex != null) {
+    if (playingIndex != null &&
+        playingIndex >= 0 &&
+        playingIndex < queue.length) {
       this.queue =
           queue.map((e) => AnnilAudioSource.fromJson(jsonDecode(e))).toList();
       setPlayingIndex(playingIndex);
