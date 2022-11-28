@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 
 class SettingsLogView extends StatelessWidget {
-  const SettingsLogView({Key? key}) : super(key: key);
+  const SettingsLogView({super.key});
 
   Icon getLogLevelIcon(LogLevel level) {
     switch (level) {

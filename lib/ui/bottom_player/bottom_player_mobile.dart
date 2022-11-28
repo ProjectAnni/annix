@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class MobileBottomPlayer extends StatelessWidget {
   final double height;
 
-  const MobileBottomPlayer({Key? key, this.height = 60}) : super(key: key);
+  const MobileBottomPlayer({super.key, this.height = 60});
 
   @override
   Widget build(BuildContext context) {

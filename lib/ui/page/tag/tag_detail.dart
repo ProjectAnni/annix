@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 class TagDetailScreen extends StatelessWidget {
   final String name;
 
-  const TagDetailScreen({Key? key, required this.name}) : super(key: key);
+  const TagDetailScreen({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {

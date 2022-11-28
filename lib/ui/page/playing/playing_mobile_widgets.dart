@@ -19,8 +19,7 @@ import 'package:provider/provider.dart';
 class PlayingScreenMobileBottomBar extends StatelessWidget {
   final ValueNotifier<bool> showLyrics;
 
-  const PlayingScreenMobileBottomBar({Key? key, required this.showLyrics})
-      : super(key: key);
+  const PlayingScreenMobileBottomBar({super.key, required this.showLyrics});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +88,7 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
 }
 
 class PlayingScreenMobileTrackInfo extends StatelessWidget {
-  const PlayingScreenMobileTrackInfo({Key? key}) : super(key: key);
+  const PlayingScreenMobileTrackInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +117,7 @@ class PlayingScreenMobileTrackInfo extends StatelessWidget {
 }
 
 class PlayingScreenMobileControl extends StatelessWidget {
-  const PlayingScreenMobileControl({Key? key}) : super(key: key);
+  const PlayingScreenMobileControl({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -173,8 +172,9 @@ class MusicCoverOrLyric extends StatefulWidget {
   final Color fillColor;
 
   const MusicCoverOrLyric(
-      {Key? key, required this.showLyric, this.fillColor = Colors.transparent})
-      : super(key: key);
+      {super.key,
+      required this.showLyric,
+      this.fillColor = Colors.transparent});
 
   @override
   State<MusicCoverOrLyric> createState() => _MusicCoverOrLyricState();

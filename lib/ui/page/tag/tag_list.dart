@@ -70,7 +70,7 @@ class TagList extends StatelessWidget {
 }
 
 class TagListView extends StatelessWidget {
-  const TagListView({Key? key}) : super(key: key);
+  const TagListView({super.key});
 
   @override
   Widget build(BuildContext context) {

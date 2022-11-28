@@ -131,10 +131,10 @@ class _LyricView extends StatelessWidget {
   final TrackLyric? lyric;
 
   const _LyricView({
-    Key? key,
+    super.key,
     this.lyric,
     this.lyricAlign = LyricAlign.CENTER,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

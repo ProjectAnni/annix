@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoopModeButton extends StatelessWidget {
-  const LoopModeButton({Key? key}) : super(key: key);
+  const LoopModeButton({super.key});
 
   Icon getIcon(LoopMode loopMode, {Color? inactiveColor}) {
     switch (loopMode) {

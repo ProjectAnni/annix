@@ -12,7 +12,7 @@ import 'package:annix/i18n/strings.g.dart';
 ///////////////////////////////////////////////////////////////////////////////
 /// Anniv
 class AnnivCard extends StatelessWidget {
-  const AnnivCard({Key? key}) : super(key: key);
+  const AnnivCard({super.key});
 
   // Card content before login
   Widget beforeLogin(BuildContext context) {
@@ -139,8 +139,7 @@ class AnnilListTile extends StatelessWidget {
   final LocalAnnilServer annil;
   final bool enabled;
 
-  const AnnilListTile({Key? key, required this.annil, required this.enabled})
-      : super(key: key);
+  const AnnilListTile({super.key, required this.annil, required this.enabled});
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +163,7 @@ class AnnilListTile extends StatelessWidget {
 ///////////////////////////////////////////////////////////////////////////////
 /// Page
 class ServerView extends StatelessWidget {
-  const ServerView({Key? key}) : super(key: key);
+  const ServerView({super.key});
 
   @override
   Widget build(BuildContext context) {

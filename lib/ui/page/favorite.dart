@@ -14,7 +14,7 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
 
 class FavoritePage extends StatefulWidget {
-  const FavoritePage({Key? key}) : super(key: key);
+  const FavoritePage({super.key});
 
   @override
   State<FavoritePage> createState() => _FavoritePageState();

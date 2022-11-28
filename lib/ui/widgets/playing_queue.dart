@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PlayingQueue extends StatelessWidget {
-  const PlayingQueue({Key? key}) : super(key: key);
+  const PlayingQueue({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -15,7 +15,7 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:provider/provider.dart';
 
 class AnnixApp extends StatelessWidget {
-  const AnnixApp({Key? key}) : super(key: key);
+  const AnnixApp({super.key});
 
   @override
   Widget build(BuildContext context) {

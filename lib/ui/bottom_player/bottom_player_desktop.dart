@@ -12,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DesktopBottomPlayer extends StatelessWidget {
-  const DesktopBottomPlayer({Key? key}) : super(key: key);
+  const DesktopBottomPlayer({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
