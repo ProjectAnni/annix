@@ -57,7 +57,8 @@ class AnnilAudioSource extends Source {
     isCanceled = false;
 
     final offlinePath = getAudioCachePath(track.id);
-    if (await File(offlinePath).exists()) {
+    final file = File(offlinePath);
+    if (file.existsSync() && file.lengthSync() > 0) {
       await player.setSourceDeviceFile(offlinePath);
     } else {
       // download full audio first
