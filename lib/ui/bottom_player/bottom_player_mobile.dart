@@ -68,7 +68,37 @@ class MobileBottomPlayer extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: PlayPauseButton.small(),
+            child: Selector<PlaybackService, PlayingTrack?>(
+              selector: (context, player) {
+                return player.playing;
+              },
+              builder: (context, playing, child) {
+                if (playing == null) {
+                  return child!;
+                }
+
+                return ChangeNotifierProvider.value(
+                  value: playing,
+                  child: Selector<PlayingTrack, double>(
+                    selector: (context, playing) {
+                      return playing.position.inMicroseconds /
+                          playing.duration.inMicroseconds;
+                    },
+                    builder: (context, progress, child) {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CircularProgressIndicator(value: progress),
+                          child!,
+                        ],
+                      );
+                    },
+                    child: child,
+                  ),
+                );
+              },
+              child: PlayPauseButton.small(),
+            ),
           ),
         ],
       ),
