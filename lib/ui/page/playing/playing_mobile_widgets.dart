@@ -99,7 +99,7 @@ class PlayingScreenMobileTrackInfo extends StatelessWidget {
           builder: (context, player, child) => Center(
             child: Text(
               player.playing?.track.title ?? '',
-              style: context.textTheme.titleLarge,
+              style: context.textTheme.titleLarge?.copyWith(height: 1.5),
               overflow: TextOverflow.ellipsis,
             ),
           ),
