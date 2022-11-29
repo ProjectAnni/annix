@@ -1,6 +1,6 @@
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/ui/widgets/album_wall.dart';
+import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

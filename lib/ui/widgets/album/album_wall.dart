@@ -1,4 +1,4 @@
-import 'package:annix/ui/widgets/album_grid.dart';
+import 'package:annix/ui/widgets/album/album_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -20,7 +20,10 @@ class _AlbumWallState extends State<AlbumWall> {
       crossAxisSpacing: 8,
       itemBuilder: (BuildContext context, int index) {
         final albumId = widget.albumIds[index];
-        return AlbumGrid(albumId: albumId);
+        return AlbumGrid(
+          albumId: albumId,
+          style: AlbumGridStyle.card,
+        );
       },
       itemCount: widget.albumIds.length,
     );
