@@ -22,10 +22,23 @@ Widget fadeThroughTransitionBuilder(
   );
 }
 
+Widget fadeTransitionBuilder(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  return FadeTransition(
+    opacity: animation,
+    child: child,
+  );
+}
+
 class AnnixPage extends Page {
   final bool disableAppBarDismissal;
   final Widget child;
   final AnnixRoutePageBuilder? pageBuilder;
+  final Duration? transitionDuration;
 
   const AnnixPage({
     this.disableAppBarDismissal = false,
@@ -34,6 +47,7 @@ class AnnixPage extends Page {
     super.name,
     super.arguments,
     this.pageBuilder,
+    this.transitionDuration,
   });
 
   @override
@@ -41,7 +55,8 @@ class AnnixPage extends Page {
     return AnnixRoute(
       disableAppBarDismissal: disableAppBarDismissal,
       settings: this,
-      transitionDuration: const Duration(milliseconds: 300),
+      transitionDuration:
+          transitionDuration ?? const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
         return (pageBuilder ?? fadeThroughTransitionBuilder)(
           context,

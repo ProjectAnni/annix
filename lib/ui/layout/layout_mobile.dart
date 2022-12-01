@@ -4,6 +4,7 @@ import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
+import 'package:annix/ui/route/page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_slide/we_slide.dart';
@@ -94,7 +95,11 @@ class AnnixLayoutMobile extends AnnixLayout {
                 child: NavigationBar(
                   selectedIndex: selectedIndex,
                   onDestinationSelected: (index) {
-                    router.off(name: pages[index]);
+                    router.off(
+                      name: pages[index],
+                      pageBuilder: fadeTransitionBuilder,
+                      transitionDuration: const Duration(milliseconds: 250),
+                    );
                   },
                   destinations: [
                     NavigationDestination(

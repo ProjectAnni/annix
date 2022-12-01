@@ -90,6 +90,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     required String name,
     arguments,
     AnnixRoutePageBuilder? pageBuilder,
+    Duration? transitionDuration,
   }) {
     // FIXME: dedup
     // if (currentRoute == name) {
@@ -99,6 +100,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     _pages.add(_createPage(
       RouteSettings(name: name, arguments: arguments),
       pageBuilder: pageBuilder,
+      transitionDuration: transitionDuration,
     ));
     notifyListeners();
   }
@@ -107,24 +109,39 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     required String name,
     arguments,
     AnnixRoutePageBuilder? pageBuilder,
+    Duration? transitionDuration,
   }) {
     _pages.clear();
-    to(name: name, arguments: arguments, pageBuilder: pageBuilder);
+    to(
+      name: name,
+      arguments: arguments,
+      pageBuilder: pageBuilder,
+      transitionDuration: transitionDuration,
+    );
   }
 
   void replace({
     required String name,
     arguments,
     AnnixRoutePageBuilder? pageBuilder,
+    Duration? transitionDuration,
   }) {
     if (_pages.isNotEmpty) {
       _pages.removeLast();
     }
-    to(name: name, arguments: arguments, pageBuilder: pageBuilder);
+    to(
+      name: name,
+      arguments: arguments,
+      pageBuilder: pageBuilder,
+      transitionDuration: transitionDuration,
+    );
   }
 
-  AnnixPage _createPage(RouteSettings routeSettings,
-      {AnnixRoutePageBuilder? pageBuilder}) {
+  AnnixPage _createPage(
+    RouteSettings routeSettings, {
+    AnnixRoutePageBuilder? pageBuilder,
+    Duration? transitionDuration,
+  }) {
     if (_reservedPages.containsKey(routeSettings.name)) {
       return _reservedPages[routeSettings.name]!;
     }
@@ -203,6 +220,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       key: Key(routeSettings.name!) as LocalKey,
       disableAppBarDismissal: disableAppBarDismissal,
       pageBuilder: pageBuilder,
+      transitionDuration: transitionDuration,
     );
 
     if (routeSettings.name == '/playing') {
