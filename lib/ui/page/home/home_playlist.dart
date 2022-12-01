@@ -1,8 +1,8 @@
 import 'package:animations/animations.dart';
-import 'package:annix/services/local/database.dart';
+import 'package:annix/services/local/database.dart' hide Playlist;
 import 'package:annix/ui/page/playlist/playlist_page_list.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,32 +19,38 @@ class PlaylistView extends StatelessWidget {
               final playlist = playlists[index];
 
               final albumId =
-              playlist.cover == null ? null : playlist.cover!.split('/')[0];
+                  playlist.cover == null ? null : playlist.cover!.split('/')[0];
 
-              return ListTile(
-                contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                leading: AspectRatio(
-                  aspectRatio: 1,
-                  child: albumId == null
-                      ? const DummyMusicCover()
-                      : MusicCover(albumId: albumId),
-                ),
-                title: Text(
-                  playlist.name,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                visualDensity: VisualDensity.standard,
-                onTap: () async {
-                  final delegate = AnnixRouterDelegate.of(context);
-                  delegate.to(
-                    name: '/playlist',
-                    arguments: await loadPlaylist(playlist.id),
-                    pageBuilder:
-                        (context, animation, secondaryAnimation, child) =>
-                            FadeScaleTransition(
-                      animation: animation,
-                      child: child,
+              return OpenContainer(
+                openElevation: 0,
+                openColor: Colors.transparent,
+                closedElevation: 0,
+                closedColor: Colors.transparent,
+                closedShape: const RoundedRectangleBorder(),
+                transitionType: ContainerTransitionType.fade,
+                openBuilder: (context, _) {
+                  return DisplayOrLazyLoadScreen<Playlist>(
+                    future: loadPlaylist(playlist.id),
+                    builder: (playlist) {
+                      return PlaylistDetailScreen(playlist: playlist);
+                    },
+                  );
+                },
+                closedBuilder: (context, open) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    leading: AspectRatio(
+                      aspectRatio: 1,
+                      child: albumId == null
+                          ? const DummyMusicCover()
+                          : MusicCover(albumId: albumId),
+                    ),
+                    title: Text(
+                      playlist.name,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   );
                 },
