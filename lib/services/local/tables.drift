@@ -1,6 +1,14 @@
 ----------------------------------------------------------------------
 -- tables
 
+---> Anniv users
+CREATE TABLE anniv_user (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "user_id"         TEXT NOT NULL,
+    "nickname"        TEXT NOT NULL,
+    "avatar"          TEXT NOT NULL
+);
+
 ---> playlist
 CREATE TABLE playlist (
     -- local properties
@@ -33,7 +41,7 @@ CREATE TABLE playlist_item (
 );
 
 ---> favorites
-CREATE TABLE local_favorites (
+CREATE TABLE local_favorite_tracks (
     "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     "album_id"        TEXT NOT NULL,
     "disc_id"         INT NOT NULL,
@@ -46,10 +54,15 @@ CREATE TABLE local_favorites (
     "type"            TEXT NOT NULL DEFAULT 'normal' CHECK ("type" IN ('normal', 'instrumental', 'absolute', 'drama', 'radio', 'vocal'))
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS "local_favorites_index" ON local_favorites (
+CREATE UNIQUE INDEX IF NOT EXISTS "local_favorite_tracks_index" ON local_favorite_tracks (
   "album_id",
   "disc_id",
   "track_id"
+);
+
+CREATE TABLE local_favorite_albums (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "album_id"        TEXT NOT NULL
 );
 
 ---> annil
@@ -81,7 +94,8 @@ CREATE TABLE local_annil_albums (
 -- queries:
 playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";
 
-isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorites WHERE album_id = ? AND disc_id = ? AND track_id = ?);
+isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorite_tracks WHERE album_id = ? AND disc_id = ? AND track_id = ?);
+isAlbumFavorite: SELECT EXISTS (SELECT 1 FROM local_favorite_albums WHERE album_id = ?);
 
 sortedAnnilServers: SELECT * FROM local_annil_servers ORDER BY priority DESC;
 annilToUse: SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?) ORDER BY priority DESC;

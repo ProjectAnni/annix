@@ -86,9 +86,9 @@ class AnnivService extends ChangeNotifier {
           await annil.sync(annilTokens);
         })(),
         // reload favorite list
-        syncFavorite(),
+        syncFavoriteTrack(),
         // reload playlist list
-        client.getOwnedPlaylists().then(syncPlaylist),
+        client.getPlaylistByUserId().then(syncPlaylist),
       ]);
     }
   }
@@ -117,7 +117,7 @@ class AnnivService extends ChangeNotifier {
     await annil.reload();
 
     // 5. clear favorites and remote playlists
-    await _syncFavorite([]);
+    await _syncFavoriteTrack([]);
     await syncPlaylist([]);
   }
 
@@ -146,7 +146,7 @@ class AnnivService extends ChangeNotifier {
   }
 
   //////////////////////////////// Favorite ///////////////////////////////
-  Future<void> addFavorite(TrackIdentifier track) async {
+  Future<void> addFavoriteTrack(TrackIdentifier track) async {
     if (client != null) {
       final db = Global.context.read<LocalDatabase>();
       final MetadataService metadata =
@@ -154,8 +154,8 @@ class AnnivService extends ChangeNotifier {
       final trackMetadata = await metadata.getTrack(track);
 
       await client?.addFavorite(track);
-      await db.localFavorites.insert().insert(
-            LocalFavoritesCompanion.insert(
+      await db.localFavoriteTracks.insert().insert(
+            LocalFavoriteTracksCompanion.insert(
               albumId: track.albumId,
               discId: track.discId,
               trackId: track.trackId,
@@ -168,11 +168,11 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFavorite(TrackIdentifier id) async {
+  Future<void> removeFavoriteTrack(TrackIdentifier id) async {
     if (client != null) {
       final db = Provider.of<LocalDatabase>(Global.context, listen: false);
       await client?.removeFavorite(id);
-      await (db.localFavorites.delete()
+      await (db.localFavoriteTracks.delete()
             ..where((f) =>
                 f.albumId.equals(id.albumId) &
                 f.discId.equals(id.discId) &
@@ -181,38 +181,38 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<bool> toggleFavorite(TrackInfoWithAlbum track) async {
+  Future<bool> toggleFavoriteTrack(TrackInfoWithAlbum track) async {
     final db = Provider.of<LocalDatabase>(Global.context, listen: false);
 
     if (await db
         .isTrackFavorite(track.id.albumId, track.id.discId, track.id.trackId)
         .getSingle()) {
-      await removeFavorite(track.id);
+      await removeFavoriteTrack(track.id);
       return false;
     } else {
-      await addFavorite(track.id);
+      await addFavoriteTrack(track.id);
       return true;
     }
   }
 
-  Future<void> syncFavorite() async {
-    await client?.getFavoriteList().then(_syncFavorite);
+  Future<void> syncFavoriteTrack() async {
+    await client?.getFavoriteList().then(_syncFavoriteTrack);
   }
 
-  Future<void> _syncFavorite(List<TrackInfoWithAlbum> list) async {
+  Future<void> _syncFavoriteTrack(List<TrackInfoWithAlbum> list) async {
     final db = Provider.of<LocalDatabase>(Global.context, listen: false);
 
     await db.transaction(() async {
       // clear favorite list
-      await db.localFavorites.delete().go();
+      await db.localFavoriteTracks.delete().go();
       // write new favorite list in
       await db.batch(
         (batch) => batch.insertAll(
-          db.localFavorites,
+          db.localFavoriteTracks,
           // reverse the list so that the latest favorite is at the end of the list
           list.reversed
               .map(
-                (e) => LocalFavoritesCompanion.insert(
+                (e) => LocalFavoriteTracksCompanion.insert(
                   albumId: e.id.albumId,
                   discId: e.id.discId,
                   trackId: e.id.trackId,

@@ -3,7 +3,7 @@
 /// Locales: 2
 /// Strings: 86 (43 per locale)
 ///
-/// Built on 2022-11-28 at 14:22 UTC
+/// Built on 2022-12-01 at 10:39 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -89,20 +89,33 @@ extension BuildContextTranslationsExtension on BuildContext {
 
 /// Manages all translation instances and the current locale
 class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
-  LocaleSettings._() : super(utils: AppLocaleUtils.instance);
+	LocaleSettings._() : super(utils: AppLocaleUtils.instance);
 
   static final instance = LocaleSettings._();
 
-	// static aliases (checkout base methods for documentation)
-	static AppLocale get currentLocale => instance.currentLocale;
-	static Stream<AppLocale> getLocaleStream() => instance.getLocaleStream();
-	static AppLocale setLocale(AppLocale locale) => instance.setLocale(locale);
-	static AppLocale setLocaleRaw(String rawLocale) => instance.setLocaleRaw(rawLocale);
-	static AppLocale useDeviceLocale() => instance.useDeviceLocale();
-	static List<Locale> get supportedLocales => instance.supportedLocales;
-	static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
-	static void setPluralResolver({String? language, AppLocale? locale, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.setPluralResolver(
-		language: language,
+  // static aliases (checkout base methods for documentation)
+  static AppLocale get currentLocale => instance.currentLocale;
+
+  static Stream<AppLocale> getLocaleStream() => instance.getLocaleStream();
+
+  static AppLocale setLocale(AppLocale locale) => instance.setLocale(locale);
+
+  static AppLocale setLocaleRaw(String rawLocale) =>
+      instance.setLocaleRaw(rawLocale);
+
+  static AppLocale useDeviceLocale() => instance.useDeviceLocale();
+
+  static List<Locale> get supportedLocales => instance.supportedLocales;
+
+  static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
+
+  static void setPluralResolver(
+          {String? language,
+          AppLocale? locale,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.setPluralResolver(
+        language: language,
 		locale: locale,
 		cardinalResolver: cardinalResolver,
 		ordinalResolver: ordinalResolver,
@@ -129,14 +142,15 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	_StringsEn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
-		  $meta = TranslationMetadata(
-		    locale: AppLocale.en,
-		    overrides: overrides ?? {},
-		    cardinalResolver: cardinalResolver,
-		    ordinalResolver: ordinalResolver,
-		  ) {
-		$meta.setFlatMapFunction(_flatMapFunction);
+      : assert(overrides == null,
+            'Set "translation_overrides: true" in order to enable this feature.'),
+        $meta = TranslationMetadata(
+          locale: AppLocale.en,
+          overrides: overrides ?? {},
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver,
+        ) {
+    $meta.setFlatMapFunction(_flatMapFunction);
   }
 
   /// Metadata for the translations of <en>.
@@ -183,7 +197,7 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 
 // Path: playback
 class _StringsPlaybackEn {
-  _StringsPlaybackEn._(this._root);
+	_StringsPlaybackEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -195,7 +209,7 @@ class _StringsPlaybackEn {
 
 // Path: server
 class _StringsServerEn {
-  _StringsServerEn._(this._root);
+	_StringsServerEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -218,7 +232,7 @@ class _StringsServerEn {
 
 // Path: settings
 class _StringsSettingsEn {
-  _StringsSettingsEn._(this._root);
+	_StringsSettingsEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -273,14 +287,15 @@ class _StringsZhCn implements _StringsEn {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	_StringsZhCn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
-		  $meta = TranslationMetadata(
-		    locale: AppLocale.zhCn,
-		    overrides: overrides ?? {},
-		    cardinalResolver: cardinalResolver,
-		    ordinalResolver: ordinalResolver,
-		  ) {
-		$meta.setFlatMapFunction(_flatMapFunction);
+      : assert(overrides == null,
+            'Set "translation_overrides: true" in order to enable this feature.'),
+        $meta = TranslationMetadata(
+          locale: AppLocale.zhCn,
+          overrides: overrides ?? {},
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver,
+        ) {
+    $meta.setFlatMapFunction(_flatMapFunction);
   }
 
   /// Metadata for the translations of <zh-CN>.
@@ -346,7 +361,7 @@ class _StringsZhCn implements _StringsEn {
 
 // Path: playback
 class _StringsPlaybackZhCn implements _StringsPlaybackEn {
-  _StringsPlaybackZhCn._(this._root);
+	_StringsPlaybackZhCn._(this._root);
 
   @override
   final _StringsZhCn _root; // ignore: unused_field
@@ -361,7 +376,7 @@ class _StringsPlaybackZhCn implements _StringsPlaybackEn {
 
 // Path: server
 class _StringsServerZhCn implements _StringsServerEn {
-  _StringsServerZhCn._(this._root);
+	_StringsServerZhCn._(this._root);
 
   @override
   final _StringsZhCn _root; // ignore: unused_field
@@ -391,7 +406,7 @@ class _StringsServerZhCn implements _StringsServerEn {
 
 // Path: settings
 class _StringsSettingsZhCn implements _StringsSettingsEn {
-  _StringsSettingsZhCn._(this._root);
+	_StringsSettingsZhCn._(this._root);
 
   @override
   final _StringsZhCn _root; // ignore: unused_field

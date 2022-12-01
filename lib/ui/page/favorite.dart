@@ -69,7 +69,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: () async {
-                    await context.read<AnnivService>().syncFavorite();
+                    await context.read<AnnivService>().syncFavoriteTrack();
                   },
                 ),
               ],
@@ -105,7 +105,7 @@ class _FavoritePageState extends State<FavoritePage> {
   Widget _favoriteTracks() {
     final AnnilService annil = context.read();
     final PlaybackService player = context.read();
-    final List<LocalFavorite> favorites = context.watch();
+    final List<LocalFavoriteTrack> favorites = context.watch();
     final reversedFavorite = favorites.reversed;
 
     return ListView.builder(
@@ -148,7 +148,7 @@ class _FavoritePageState extends State<FavoritePage> {
     return const Center(child: Text('Favorite Albums'));
   }
 
-  List<AnnilAudioSource> getTracks(List<LocalFavorite> favorites) {
+  List<AnnilAudioSource> getTracks(List<LocalFavoriteTrack> favorites) {
     final annil = Global.context.read<AnnilService>();
 
     return favorites.reversed

@@ -2,8 +2,8 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/favorite.dart';
+import 'package:annix/ui/page/playlist.dart';
 import 'package:annix/ui/page/playlist/playlist_page_album.dart';
-import 'package:annix/ui/page/playlist/playlist_page_list.dart';
 import 'package:annix/ui/page/server.dart';
 import 'package:annix/ui/page/tag/tag_list.dart';
 import 'package:annix/ui/page/settings/settings.dart';
@@ -138,7 +138,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     );
   }
 
-  AnnixPage _createPage(RouteSettings routeSettings, {
+  AnnixPage _createPage(
+    RouteSettings routeSettings, {
     AnnixRoutePageBuilder? pageBuilder,
     Duration? transitionDuration,
   }) {
@@ -188,8 +189,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const FavoritePage();
         break;
       case '/playlist':
-        child =
-            PlaylistDetailScreen(playlist: routeSettings.arguments as Playlist);
+        child = PlaylistPage(playlist: routeSettings.arguments as Playlist);
         break;
       case '/search':
         child = const SearchPage();

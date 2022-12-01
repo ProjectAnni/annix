@@ -7,7 +7,8 @@ part of 'database.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
-class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
+class LocalFavoriteTrack extends DataClass
+    implements Insertable<LocalFavoriteTrack> {
   final int id;
   final String albumId;
   final int discId;
@@ -16,7 +17,8 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
   final String? artist;
   final String? albumTitle;
   final String type;
-  const LocalFavorite(
+
+  const LocalFavoriteTrack(
       {required this.id,
       required this.albumId,
       required this.discId,
@@ -25,6 +27,7 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
       this.artist,
       this.albumTitle,
       required this.type});
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -45,8 +48,8 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
     return map;
   }
 
-  LocalFavoritesCompanion toCompanion(bool nullToAbsent) {
-    return LocalFavoritesCompanion(
+  LocalFavoriteTracksCompanion toCompanion(bool nullToAbsent) {
+    return LocalFavoriteTracksCompanion(
       id: Value(id),
       albumId: Value(albumId),
       discId: Value(discId),
@@ -62,10 +65,10 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
     );
   }
 
-  factory LocalFavorite.fromJson(Map<String, dynamic> json,
+  factory LocalFavoriteTrack.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return LocalFavorite(
+    return LocalFavoriteTrack(
       id: serializer.fromJson<int>(json['id']),
       albumId: serializer.fromJson<String>(json['album_id']),
       discId: serializer.fromJson<int>(json['disc_id']),
@@ -91,7 +94,7 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
     };
   }
 
-  LocalFavorite copyWith(
+  LocalFavoriteTrack copyWith(
           {int? id,
           String? albumId,
           int? discId,
@@ -100,7 +103,7 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
           Value<String?> artist = const Value.absent(),
           Value<String?> albumTitle = const Value.absent(),
           String? type}) =>
-      LocalFavorite(
+      LocalFavoriteTrack(
         id: id ?? this.id,
         albumId: albumId ?? this.albumId,
         discId: discId ?? this.discId,
@@ -112,7 +115,7 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
       );
   @override
   String toString() {
-    return (StringBuffer('LocalFavorite(')
+    return (StringBuffer('LocalFavoriteTrack(')
           ..write('id: $id, ')
           ..write('albumId: $albumId, ')
           ..write('discId: $discId, ')
@@ -131,7 +134,7 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is LocalFavorite &&
+          (other is LocalFavoriteTrack &&
           other.id == this.id &&
           other.albumId == this.albumId &&
           other.discId == this.discId &&
@@ -142,7 +145,7 @@ class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
           other.type == this.type);
 }
 
-class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
+class LocalFavoriteTracksCompanion extends UpdateCompanion<LocalFavoriteTrack> {
   final Value<int> id;
   final Value<String> albumId;
   final Value<int> discId;
@@ -151,7 +154,8 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
   final Value<String?> artist;
   final Value<String?> albumTitle;
   final Value<String> type;
-  const LocalFavoritesCompanion({
+
+  const LocalFavoriteTracksCompanion({
     this.id = const Value.absent(),
     this.albumId = const Value.absent(),
     this.discId = const Value.absent(),
@@ -161,7 +165,8 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
     this.albumTitle = const Value.absent(),
     this.type = const Value.absent(),
   });
-  LocalFavoritesCompanion.insert({
+
+  LocalFavoriteTracksCompanion.insert({
     this.id = const Value.absent(),
     required String albumId,
     required int discId,
@@ -173,7 +178,8 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
   })  : albumId = Value(albumId),
         discId = Value(discId),
         trackId = Value(trackId);
-  static Insertable<LocalFavorite> custom({
+
+  static Insertable<LocalFavoriteTrack> custom({
     Expression<int>? id,
     Expression<String>? albumId,
     Expression<int>? discId,
@@ -195,7 +201,7 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
     });
   }
 
-  LocalFavoritesCompanion copyWith(
+  LocalFavoriteTracksCompanion copyWith(
       {Value<int>? id,
       Value<String>? albumId,
       Value<int>? discId,
@@ -204,7 +210,7 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
       Value<String?>? artist,
       Value<String?>? albumTitle,
       Value<String>? type}) {
-    return LocalFavoritesCompanion(
+    return LocalFavoriteTracksCompanion(
       id: id ?? this.id,
       albumId: albumId ?? this.albumId,
       discId: discId ?? this.discId,
@@ -248,7 +254,7 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
 
   @override
   String toString() {
-    return (StringBuffer('LocalFavoritesCompanion(')
+    return (StringBuffer('LocalFavoriteTracksCompanion(')
           ..write('id: $id, ')
           ..write('albumId: $albumId, ')
           ..write('discId: $discId, ')
@@ -262,12 +268,14 @@ class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
   }
 }
 
-class LocalFavorites extends Table
-    with TableInfo<LocalFavorites, LocalFavorite> {
+class LocalFavoriteTracks extends Table
+    with TableInfo<LocalFavoriteTracks, LocalFavoriteTrack> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  LocalFavorites(this.attachedDatabase, [this._alias]);
+
+  LocalFavoriteTracks(this.attachedDatabase, [this._alias]);
+
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -318,15 +326,19 @@ class LocalFavorites extends Table
       $customConstraints:
           'NOT NULL DEFAULT \'normal\' CHECK ("type" IN (\'normal\', \'instrumental\', \'absolute\', \'drama\', \'radio\', \'vocal\'))',
       defaultValue: const CustomExpression<String>('\'normal\''));
+
   @override
   List<GeneratedColumn> get $columns =>
       [id, albumId, discId, trackId, title, artist, albumTitle, type];
+
   @override
-  String get aliasedName => _alias ?? 'local_favorites';
+  String get aliasedName => _alias ?? 'local_favorite_tracks';
+
   @override
-  String get actualTableName => 'local_favorites';
+  String get actualTableName => 'local_favorite_tracks';
+
   @override
-  VerificationContext validateIntegrity(Insertable<LocalFavorite> instance,
+  VerificationContext validateIntegrity(Insertable<LocalFavoriteTrack> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -374,10 +386,11 @@ class LocalFavorites extends Table
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
+
   @override
-  LocalFavorite map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalFavoriteTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalFavorite(
+    return LocalFavoriteTrack(
       id: attachedDatabase.options.types
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       albumId: attachedDatabase.options.types
@@ -398,8 +411,270 @@ class LocalFavorites extends Table
   }
 
   @override
-  LocalFavorites createAlias(String alias) {
-    return LocalFavorites(attachedDatabase, alias);
+  LocalFavoriteTracks createAlias(String alias) {
+    return LocalFavoriteTracks(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class AnnivUserData extends DataClass implements Insertable<AnnivUserData> {
+  final int id;
+  final String userId;
+  final String nickname;
+  final String avatar;
+
+  const AnnivUserData(
+      {required this.id,
+      required this.userId,
+      required this.nickname,
+      required this.avatar});
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['user_id'] = Variable<String>(userId);
+    map['nickname'] = Variable<String>(nickname);
+    map['avatar'] = Variable<String>(avatar);
+    return map;
+  }
+
+  AnnivUserCompanion toCompanion(bool nullToAbsent) {
+    return AnnivUserCompanion(
+      id: Value(id),
+      userId: Value(userId),
+      nickname: Value(nickname),
+      avatar: Value(avatar),
+    );
+  }
+
+  factory AnnivUserData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AnnivUserData(
+      id: serializer.fromJson<int>(json['id']),
+      userId: serializer.fromJson<String>(json['user_id']),
+      nickname: serializer.fromJson<String>(json['nickname']),
+      avatar: serializer.fromJson<String>(json['avatar']),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'user_id': serializer.toJson<String>(userId),
+      'nickname': serializer.toJson<String>(nickname),
+      'avatar': serializer.toJson<String>(avatar),
+    };
+  }
+
+  AnnivUserData copyWith(
+          {int? id, String? userId, String? nickname, String? avatar}) =>
+      AnnivUserData(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        nickname: nickname ?? this.nickname,
+        avatar: avatar ?? this.avatar,
+      );
+
+  @override
+  String toString() {
+    return (StringBuffer('AnnivUserData(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('nickname: $nickname, ')
+          ..write('avatar: $avatar')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, userId, nickname, avatar);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AnnivUserData &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.nickname == this.nickname &&
+          other.avatar == this.avatar);
+}
+
+class AnnivUserCompanion extends UpdateCompanion<AnnivUserData> {
+  final Value<int> id;
+  final Value<String> userId;
+  final Value<String> nickname;
+  final Value<String> avatar;
+
+  const AnnivUserCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.nickname = const Value.absent(),
+    this.avatar = const Value.absent(),
+  });
+
+  AnnivUserCompanion.insert({
+    this.id = const Value.absent(),
+    required String userId,
+    required String nickname,
+    required String avatar,
+  })  : userId = Value(userId),
+        nickname = Value(nickname),
+        avatar = Value(avatar);
+
+  static Insertable<AnnivUserData> custom({
+    Expression<int>? id,
+    Expression<String>? userId,
+    Expression<String>? nickname,
+    Expression<String>? avatar,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (nickname != null) 'nickname': nickname,
+      if (avatar != null) 'avatar': avatar,
+    });
+  }
+
+  AnnivUserCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? userId,
+      Value<String>? nickname,
+      Value<String>? avatar}) {
+    return AnnivUserCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      nickname: nickname ?? this.nickname,
+      avatar: avatar ?? this.avatar,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (nickname.present) {
+      map['nickname'] = Variable<String>(nickname.value);
+    }
+    if (avatar.present) {
+      map['avatar'] = Variable<String>(avatar.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnnivUserCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('nickname: $nickname, ')
+          ..write('avatar: $avatar')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+
+  AnnivUser(this.attachedDatabase, [this._alias]);
+
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _nicknameMeta = const VerificationMeta('nickname');
+  late final GeneratedColumn<String> nickname = GeneratedColumn<String>(
+      'nickname', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
+      'avatar', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+
+  @override
+  List<GeneratedColumn> get $columns => [id, userId, nickname, avatar];
+
+  @override
+  String get aliasedName => _alias ?? 'anniv_user';
+
+  @override
+  String get actualTableName => 'anniv_user';
+
+  @override
+  VerificationContext validateIntegrity(Insertable<AnnivUserData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('nickname')) {
+      context.handle(_nicknameMeta,
+          nickname.isAcceptableOrUnknown(data['nickname']!, _nicknameMeta));
+    } else if (isInserting) {
+      context.missing(_nicknameMeta);
+    }
+    if (data.containsKey('avatar')) {
+      context.handle(_avatarMeta,
+          avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta));
+    } else if (isInserting) {
+      context.missing(_avatarMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+
+  @override
+  AnnivUserData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AnnivUserData(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      userId: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
+      nickname: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}nickname'])!,
+      avatar: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}avatar'])!,
+    );
+  }
+
+  @override
+  AnnivUser createAlias(String alias) {
+    return AnnivUser(attachedDatabase, alias);
   }
 
   @override
@@ -1224,6 +1499,196 @@ class PlaylistItem extends Table
   @override
   List<String> get customConstraints =>
       const ['FOREIGN KEY("playlist_id") REFERENCES "playlist"("id")'];
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class LocalFavoriteAlbum extends DataClass
+    implements Insertable<LocalFavoriteAlbum> {
+  final int id;
+  final String albumId;
+
+  const LocalFavoriteAlbum({required this.id, required this.albumId});
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['album_id'] = Variable<String>(albumId);
+    return map;
+  }
+
+  LocalFavoriteAlbumsCompanion toCompanion(bool nullToAbsent) {
+    return LocalFavoriteAlbumsCompanion(
+      id: Value(id),
+      albumId: Value(albumId),
+    );
+  }
+
+  factory LocalFavoriteAlbum.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalFavoriteAlbum(
+      id: serializer.fromJson<int>(json['id']),
+      albumId: serializer.fromJson<String>(json['album_id']),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'album_id': serializer.toJson<String>(albumId),
+    };
+  }
+
+  LocalFavoriteAlbum copyWith({int? id, String? albumId}) => LocalFavoriteAlbum(
+        id: id ?? this.id,
+        albumId: albumId ?? this.albumId,
+      );
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFavoriteAlbum(')
+          ..write('id: $id, ')
+          ..write('albumId: $albumId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, albumId);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalFavoriteAlbum &&
+          other.id == this.id &&
+          other.albumId == this.albumId);
+}
+
+class LocalFavoriteAlbumsCompanion extends UpdateCompanion<LocalFavoriteAlbum> {
+  final Value<int> id;
+  final Value<String> albumId;
+
+  const LocalFavoriteAlbumsCompanion({
+    this.id = const Value.absent(),
+    this.albumId = const Value.absent(),
+  });
+
+  LocalFavoriteAlbumsCompanion.insert({
+    this.id = const Value.absent(),
+    required String albumId,
+  }) : albumId = Value(albumId);
+
+  static Insertable<LocalFavoriteAlbum> custom({
+    Expression<int>? id,
+    Expression<String>? albumId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (albumId != null) 'album_id': albumId,
+    });
+  }
+
+  LocalFavoriteAlbumsCompanion copyWith(
+      {Value<int>? id, Value<String>? albumId}) {
+    return LocalFavoriteAlbumsCompanion(
+      id: id ?? this.id,
+      albumId: albumId ?? this.albumId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (albumId.present) {
+      map['album_id'] = Variable<String>(albumId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFavoriteAlbumsCompanion(')
+          ..write('id: $id, ')
+          ..write('albumId: $albumId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class LocalFavoriteAlbums extends Table
+    with TableInfo<LocalFavoriteAlbums, LocalFavoriteAlbum> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+
+  LocalFavoriteAlbums(this.attachedDatabase, [this._alias]);
+
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
+  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
+      'album_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+
+  @override
+  List<GeneratedColumn> get $columns => [id, albumId];
+
+  @override
+  String get aliasedName => _alias ?? 'local_favorite_albums';
+
+  @override
+  String get actualTableName => 'local_favorite_albums';
+
+  @override
+  VerificationContext validateIntegrity(Insertable<LocalFavoriteAlbum> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('album_id')) {
+      context.handle(_albumIdMeta,
+          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    } else if (isInserting) {
+      context.missing(_albumIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+
+  @override
+  LocalFavoriteAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalFavoriteAlbum(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      albumId: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+    );
+  }
+
+  @override
+  LocalFavoriteAlbums createAlias(String alias) {
+    return LocalFavoriteAlbums(attachedDatabase, alias);
+  }
+
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1236,6 +1701,7 @@ class LocalAnnilServer extends DataClass
   final String url;
   final String token;
   final int priority;
+
   const LocalAnnilServer(
       {required this.id,
       this.remoteId,
@@ -1946,14 +2412,20 @@ class LocalAnnilAlbums extends Table
 
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
-  late final LocalFavorites localFavorites = LocalFavorites(this);
-  late final Index localFavoritesIndex = Index('local_favorites_index',
-      'CREATE UNIQUE INDEX IF NOT EXISTS local_favorites_index ON local_favorites (album_id, disc_id, track_id)');
+  late final LocalFavoriteTracks localFavoriteTracks =
+      LocalFavoriteTracks(this);
+  late final Index localFavoriteTracksIndex = Index(
+      'local_favorite_tracks_index',
+      'CREATE UNIQUE INDEX IF NOT EXISTS local_favorite_tracks_index ON local_favorite_tracks (album_id, disc_id, track_id)');
+  late final AnnivUser annivUser = AnnivUser(this);
   late final Playlist playlist = Playlist(this);
   late final PlaylistItem playlistItem = PlaylistItem(this);
+  late final LocalFavoriteAlbums localFavoriteAlbums =
+      LocalFavoriteAlbums(this);
   late final LocalAnnilServers localAnnilServers = LocalAnnilServers(this);
   late final LocalAnnilCaches localAnnilCaches = LocalAnnilCaches(this);
   late final LocalAnnilAlbums localAnnilAlbums = LocalAnnilAlbums(this);
+
   Selectable<PlaylistItemData> playlistItems(int var1) {
     return customSelect(
         'SELECT * FROM playlist_item WHERE playlist_id = ?1 ORDER BY "order"',
@@ -1967,14 +2439,25 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
 
   Selectable<bool> isTrackFavorite(String var1, int var2, int var3) {
     return customSelect(
-        'SELECT EXISTS (SELECT 1 AS _c1 FROM local_favorites WHERE album_id = ?1 AND disc_id = ?2 AND track_id = ?3) AS _c0',
+        'SELECT EXISTS (SELECT 1 AS _c1 FROM local_favorite_tracks WHERE album_id = ?1 AND disc_id = ?2 AND track_id = ?3) AS _c0',
         variables: [
           Variable<String>(var1),
           Variable<int>(var2),
           Variable<int>(var3)
         ],
         readsFrom: {
-          localFavorites,
+          localFavoriteTracks,
+        }).map((QueryRow row) => row.read<bool>('_c0'));
+  }
+
+  Selectable<bool> isAlbumFavorite(String var1) {
+    return customSelect(
+        'SELECT EXISTS (SELECT 1 AS _c1 FROM local_favorite_albums WHERE album_id = ?1) AS _c0',
+        variables: [
+          Variable<String>(var1)
+        ],
+        readsFrom: {
+          localFavoriteAlbums,
         }).map((QueryRow row) => row.read<bool>('_c0'));
   }
 
@@ -2019,11 +2502,14 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [
-        localFavorites,
-        localFavoritesIndex,
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [
+        localFavoriteTracks,
+        localFavoriteTracksIndex,
+        annivUser,
         playlist,
         playlistItem,
+        localFavoriteAlbums,
         localAnnilServers,
         localAnnilCaches,
         localAnnilAlbums
