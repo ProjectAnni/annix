@@ -1,3 +1,4 @@
+import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/favorite.dart';
@@ -137,8 +138,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     );
   }
 
-  AnnixPage _createPage(
-    RouteSettings routeSettings, {
+  AnnixPage _createPage(RouteSettings routeSettings, {
     AnnixRoutePageBuilder? pageBuilder,
     Duration? transitionDuration,
   }) {
@@ -154,7 +154,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const AnnivLoginPage();
         break;
       case '/playing':
-        // /playing route is only available on desktop
+      // /playing route is only available on desktop
         child = const PlayingDesktopScreen();
         disableAppBarDismissal = true;
         break;

@@ -26,12 +26,12 @@ class PlayingMusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlaybackService, PlayingTrack?>(
+    final child = Selector<PlaybackService, PlayingTrack?>(
       selector: (context, player) => player.playing,
       builder: (context, playing, child) {
         if (playing == null) {
           // not playing
-          return DummyMusicCover(card: card);
+          return const DummyMusicCover();
         }
 
         // is playing
@@ -39,7 +39,6 @@ class PlayingMusicCover extends StatelessWidget {
           key: ValueKey(playing.identifier.albumId),
           albumId: playing.identifier.albumId,
           image: playing.source.coverProvider,
-          card: card,
           fit: fit,
           filterQuality: filterQuality,
           onColor: (color) {
@@ -59,6 +58,14 @@ class PlayingMusicCover extends StatelessWidget {
         return child;
       },
     );
+
+    if (card) {
+      return CoverCard(
+        child: child,
+      );
+    } else {
+      return child;
+    }
   }
 }
 
@@ -69,10 +76,12 @@ class MusicCover extends StatelessWidget {
   final String albumId;
   final int? discId;
 
-  final bool card;
   final BoxFit? fit;
   final FilterQuality filterQuality;
   final String? tag;
+
+  final double? width;
+  final double? height;
 
   final void Function(Color)? onColor;
 
@@ -80,12 +89,13 @@ class MusicCover extends StatelessWidget {
     super.key,
     required this.albumId,
     this.discId,
-    this.card = true,
     this.fit,
     this.filterQuality = FilterQuality.low,
     this.tag,
     this.onColor,
     this.image,
+    this.width,
+    this.height,
   });
 
   Widget? _loadStateChanged(ExtendedImageState state) {
@@ -116,9 +126,11 @@ class MusicCover extends StatelessWidget {
           image: image,
           fit: fit,
           filterQuality: filterQuality,
+          width: width,
+          height: height,
         );
       default:
-        return DummyMusicCover(card: card);
+        return const DummyMusicCover();
     }
   }
 
@@ -139,25 +151,20 @@ class MusicCover extends StatelessWidget {
         loadStateChanged: _loadStateChanged,
       );
     }
-
-    if (!card) {
-      return image;
-    } else {
-      return _CoverCard(child: image);
-    }
+    return image;
   }
 }
 
-class _CoverCard extends StatelessWidget {
+class CoverCard extends StatelessWidget {
   final Widget child;
 
-  const _CoverCard({required this.child});
+  const CoverCard({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.hardEdge,
-      elevation: 0,
+      elevation: 1,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -171,9 +178,7 @@ class _CoverCard extends StatelessWidget {
 }
 
 class DummyMusicCover extends StatelessWidget {
-  final bool card;
-
-  const DummyMusicCover({super.key, this.card = true});
+  const DummyMusicCover({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -187,11 +192,7 @@ class DummyMusicCover extends StatelessWidget {
       ),
     );
 
-    if (!card) {
-      return cover;
-    } else {
-      return _CoverCard(child: cover);
-    }
+    return cover;
   }
 }
 

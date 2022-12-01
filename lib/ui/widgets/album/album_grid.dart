@@ -42,7 +42,6 @@ class AlbumGrid extends StatelessWidget {
           aspectRatio: 1,
           child: MusicCover(
             albumId: albumId,
-            card: false,
             fit: BoxFit.fitHeight,
           ),
         ),

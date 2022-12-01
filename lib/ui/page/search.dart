@@ -167,7 +167,8 @@ class _SearchResult extends StatelessWidget {
                       builder: (context, type, _) {
                         return ListTile(
                           isThreeLine: type.isThreeLine,
-                          leading: MusicCover(albumId: e.id.albumId),
+                          leading: CoverCard(
+                              child: MusicCover(albumId: e.id.albumId)),
                           title: Text(
                             e.title,
                             maxLines: 1,
@@ -207,7 +208,8 @@ class _SearchResult extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final album = result.albums![index];
                     return ListTile(
-                      leading: MusicCover(albumId: album.albumId),
+                      leading:
+                          CoverCard(child: MusicCover(albumId: album.albumId)),
                       title: Text(
                         album.title,
                         maxLines: 1,

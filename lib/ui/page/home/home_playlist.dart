@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
+import 'package:annix/global.dart';
 import 'package:annix/services/local/database.dart' hide Playlist;
-import 'package:annix/ui/page/playlist/playlist_page_list.dart';
+import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/page/playlist.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,18 +23,24 @@ class PlaylistView extends StatelessWidget {
               final albumId =
                   playlist.cover == null ? null : playlist.cover!.split('/')[0];
 
+              // FIXME: animation size is not correct
               return OpenContainer(
+                tappable: false,
                 openElevation: 0,
-                openColor: Colors.transparent,
                 closedElevation: 0,
+                openColor: Colors.transparent,
                 closedColor: Colors.transparent,
+                middleColor: Colors.transparent,
                 closedShape: const RoundedRectangleBorder(),
                 transitionType: ContainerTransitionType.fade,
+                onClosed: (result) {
+                  Global.mobileWeSlideFooterController.show();
+                },
                 openBuilder: (context, _) {
                   return DisplayOrLazyLoadScreen<Playlist>(
-                    future: loadPlaylist(playlist.id),
+                    future: Playlist.load(playlist.id),
                     builder: (playlist) {
-                      return PlaylistDetailScreen(playlist: playlist);
+                      return PlaylistPage(playlist: playlist);
                     },
                   );
                 },
@@ -52,6 +60,10 @@ class PlaylistView extends StatelessWidget {
                       playlist.name,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    onTap: () {
+                      Global.mobileWeSlideFooterController.hide();
+                      open();
+                    },
                   );
                 },
               );

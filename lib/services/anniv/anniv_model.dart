@@ -392,6 +392,7 @@ enum PlaylistItemType {
   }
 }
 
+// TODO: remove `Anniv` prefix
 abstract class AnnivPlaylistItem {
   String? description;
 
