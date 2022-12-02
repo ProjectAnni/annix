@@ -23,12 +23,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
         ),
         const PlayingScreenMobileTrackInfo(),
         const PlayingScreenMobileControl(),
-        Material(
-          color: context.colorScheme.secondaryContainer,
-          type: MaterialType.canvas,
-          elevation: 5,
-          child: PlayingScreenMobileBottomBar(showLyrics: showLyric),
-        ),
+        PlayingScreenMobileBottomBar(showLyrics: showLyric),
       ],
     );
   }

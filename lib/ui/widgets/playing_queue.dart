@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PlayingQueue extends StatelessWidget {
-  const PlayingQueue({super.key});
+  final ScrollController controller;
+
+  const PlayingQueue({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<PlaybackService>(
       builder: (context, player, child) => ListView.builder(
-        controller: ScrollController(
-            initialScrollOffset: 32.0 * (player.playingIndex ?? 0)),
+        shrinkWrap: true,
+        controller: controller,
         itemCount: player.queue.length,
         itemBuilder: (context, index) {
           final song = player.queue[index];

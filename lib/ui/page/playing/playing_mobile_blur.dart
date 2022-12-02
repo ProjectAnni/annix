@@ -24,10 +24,7 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
         MusicCoverOrLyric(showLyric: showLyric),
         const PlayingScreenMobileTrackInfo(),
         const PlayingScreenMobileControl(),
-        Material(
-          color: Colors.transparent,
-          child: PlayingScreenMobileBottomBar(showLyrics: showLyric),
-        ),
+        PlayingScreenMobileBottomBar(showLyrics: showLyric),
       ],
     );
   }

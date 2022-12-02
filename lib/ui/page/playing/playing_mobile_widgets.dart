@@ -7,6 +7,7 @@ import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/drag_handle.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -51,15 +52,24 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
           icon: const Icon(Icons.queue_music_rounded),
           onPressed: () {
             showModalBottomSheet(
-              useSafeArea: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
               useRootNavigator: true,
-              backgroundColor: context.colorScheme.surface,
               context: context,
+              isScrollControlled: true,
+              clipBehavior: Clip.antiAlias,
               builder: (context) {
-                return const PlayingQueue();
+                return DraggableScrollableSheet(
+                  expand: false,
+                  builder: (context, scrollController) {
+                    return Column(
+                      children: [
+                        const DragHandle(),
+                        Expanded(
+                          child: PlayingQueue(controller: scrollController),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             );
           },
@@ -68,13 +78,9 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
           icon: const Icon(Icons.more_horiz_rounded),
           onPressed: () {
             showModalBottomSheet(
-              useSafeArea: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
               useRootNavigator: true,
-              backgroundColor: context.colorScheme.surface,
               context: context,
+              isScrollControlled: true,
               builder: (context) {
                 final player = context.read<PlaybackService>();
                 return PlayingMoreMenu(track: player.playing!.track);

@@ -36,7 +36,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                   flex: 10,
                   child: Center(
                     child: showPlaylist
-                        ? const PlayingQueue()
+                        ? PlayingQueue(controller: ScrollController())
                         : const PlayingMusicCover(card: true),
                   ),
                 ),
