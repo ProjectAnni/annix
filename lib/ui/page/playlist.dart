@@ -13,24 +13,40 @@ import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class PlaylistPage extends StatelessWidget {
+enum _PlaylistAction {
+  edit,
+  delete,
+}
+
+class PlaylistPage extends StatefulWidget {
   final Playlist playlist;
 
   const PlaylistPage({super.key, required this.playlist});
 
-  Widget? _cover(BuildContext context, {bool card = true}) {
-    String? coverIdentifier = playlist.intro.cover;
+  @override
+  State<PlaylistPage> createState() => _PlaylistPageState();
+}
+
+class _PlaylistPageState extends State<PlaylistPage> {
+  /// Flag to control whether playlist is in edit mode
+  bool _editMode = false;
+
+  /// Reorder map, generated
+  List<int>? _reorder;
+
+  Widget? _cover({bool card = true}) {
+    String? coverIdentifier = widget.playlist.intro.cover;
     if (coverIdentifier == null ||
         coverIdentifier == '' ||
         coverIdentifier.startsWith('/')) {
-      coverIdentifier = playlist.firstAvailableCover();
+      coverIdentifier = widget.playlist.firstAvailableCover();
 
       final AnnivService anniv = context.read();
       if (coverIdentifier != null &&
-          playlist.intro.remoteId != null &&
+          widget.playlist.intro.remoteId != null &&
           anniv.client != null) {
         anniv.client?.updatePlaylistInfo(
-          playlistId: playlist.intro.remoteId!,
+          playlistId: widget.playlist.intro.remoteId!,
           info: PatchedPlaylistInfo(
             // FIXME: do not use disc id
             cover: DiscIdentifier(albumId: coverIdentifier, discId: 1),
@@ -60,11 +76,11 @@ class PlaylistPage extends StatelessWidget {
     }
   }
 
-  void _onPlay(BuildContext context, {int index = 0, bool shuffle = false}) {
+  void _onPlay({int index = 0, bool shuffle = false}) {
     final player = context.read<PlaybackService>();
     playFullList(
       player: player,
-      tracks: playlist.getTracks(),
+      tracks: widget.playlist.getTracks(reorder: _reorder),
       initialIndex: index,
       shuffle: shuffle,
     );
@@ -86,7 +102,7 @@ class PlaylistPage extends StatelessWidget {
             child: OutlinedButton.icon(
               icon: const Icon(Icons.play_arrow),
               label: Text(t.playback.play_all),
-              onPressed: () => _onPlay(context),
+              onPressed: () => _onPlay(),
             ),
           ),
           SizedBox(
@@ -94,7 +110,7 @@ class PlaylistPage extends StatelessWidget {
             child: FilledButton.icon(
               icon: const Icon(Icons.shuffle),
               label: Text(t.playback.shuffle),
-              onPressed: () => _onPlay(context, shuffle: true),
+              onPressed: () => _onPlay(shuffle: true),
             ),
           ),
         ],
@@ -102,14 +118,24 @@ class PlaylistPage extends StatelessWidget {
     });
   }
 
-  Widget _buildTrackList(BuildContext context) {
+  Widget _buildTrackList() {
     final annil = context.read<AnnilService>();
 
     return SliverReorderableList(
-      onReorder: (int oldIndex, int newIndex) {},
-      itemCount: playlist.items.length,
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final tmp = _reorder![oldIndex];
+          _reorder![oldIndex] = _reorder![newIndex];
+          _reorder![newIndex] = tmp;
+        });
+      },
+      itemCount: widget.playlist.items.length,
       itemBuilder: (context, index) {
-        final item = playlist.items[index];
+        final item =
+            widget.playlist.items[_reorder != null ? _reorder![index] : index];
         if (item is! AnnivPlaylistItemTrack) {
           return ListTile(
             title: const Text('TODO'),
@@ -126,11 +152,19 @@ class PlaylistPage extends StatelessWidget {
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ReorderableDragStartListener(
-                index: index,
-                enabled: false,
-                child: const Icon(Icons.drag_handle),
-              ),
+              _editMode
+                  ? ReorderableDragStartListener(
+                      index: index,
+                      child: const Icon(Icons.drag_handle),
+                    )
+                  : Container(
+                      width: 24,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${index + 1}',
+                        style: context.textTheme.labelLarge,
+                      ),
+                    ),
               const SizedBox(width: 8),
               CoverCard(
                 child: MusicCover(
@@ -160,7 +194,7 @@ class PlaylistPage extends StatelessWidget {
           ),
           trailing: const Icon(Icons.more_vert),
           enabled: annil.isAvailable(item.info.id),
-          onTap: () => _onPlay(context, index: index),
+          onTap: () => _onPlay(index: index),
         );
       },
     );
@@ -168,16 +202,55 @@ class PlaylistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cover = _cover(context);
-    final description = playlist.getDescription();
+    final cover = _cover();
+    final description = widget.playlist.getDescription();
 
     return Scaffold(
-      appBar: AppBar(actions: const [
-        IconButton(
-          icon: Icon(Icons.search),
-          onPressed: null,
-        ),
-      ]),
+      appBar: AppBar(
+        actions: [
+          if (!_editMode)
+            PopupMenuButton<_PlaylistAction>(
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: _PlaylistAction.edit,
+                  child: Text('Edit'),
+                ),
+                PopupMenuItem(
+                  value: _PlaylistAction.delete,
+                  child: Text('Delete'),
+                ),
+              ],
+              onSelected: (value) {
+                switch (value) {
+                  case _PlaylistAction.edit:
+                    // generate reorder list on entering edit mode
+                    _reorder ??= List.generate(
+                      widget.playlist.items.length,
+                      (index) => index,
+                    );
+
+                    setState(() {
+                      _editMode = true;
+                    });
+                    break;
+                  case _PlaylistAction.delete:
+                    // TODO: show dialog
+                    break;
+                }
+              },
+            ),
+          if (_editMode)
+            IconButton(
+              icon: const Icon(Icons.check),
+              onPressed: () {
+                // TODO: save edited result to server, keep _reorder on success, or set it to null
+                setState(() {
+                  _editMode = false;
+                });
+              },
+            ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
@@ -203,7 +276,7 @@ class PlaylistPage extends StatelessWidget {
                     if (!Global.isDesktop)
                       CircleAvatar(
                         // FIXME: use user avatar
-                        child: _cover(context, card: true),
+                        child: _cover(card: true),
                       ),
                     if (Global.isDesktop)
                       SizedBox(
@@ -216,7 +289,7 @@ class PlaylistPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            playlist.intro.name,
+                            widget.playlist.intro.name,
                             style: context.textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
@@ -239,7 +312,7 @@ class PlaylistPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: _playButtons(context, stretch: !Global.isDesktop),
             ),
-            _buildTrackList(context),
+            _buildTrackList(),
           ],
         ),
       ),

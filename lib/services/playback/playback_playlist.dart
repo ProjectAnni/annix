@@ -3,6 +3,7 @@ import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +49,7 @@ class Playlist {
     return null;
   }
 
-  List<AnnilAudioSource> getTracks() {
+  List<AnnilAudioSource> getTracks({List<int>? reorder}) {
     return items
         .map<TrackInfoWithAlbum?>(
           (item) {
@@ -60,7 +61,21 @@ class Playlist {
           },
         )
         .whereType<TrackInfoWithAlbum>()
-        .map((track) => AnnilAudioSource(track: track))
+        .mapIndexed(
+          (index, track) => _IndexedAudioSource(
+            reorder != null ? reorder[index] : index,
+            AnnilAudioSource(track: track),
+          ),
+        )
+        .sortedBy<num>((e) => e.index)
+        .map((e) => e.source)
         .toList();
   }
+}
+
+class _IndexedAudioSource {
+  int index;
+  AnnilAudioSource source;
+
+  _IndexedAudioSource(this.index, this.source);
 }
