@@ -30,19 +30,6 @@ class HomeActionGrid extends StatelessWidget {
           },
         ),
         HomeActionButton(
-          icon: const Icon(Icons.download),
-          title: t.download,
-          onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/downloading');
-          },
-        ),
-        HomeActionButton(
-          icon: const Icon(Icons.history),
-          title: t.recent_played,
-          // TODO: implement play record
-          onPressed: null,
-        ),
-        HomeActionButton(
           icon: const Icon(Icons.shuffle),
           title: t.playback.shuffle,
           onPressed: () {
@@ -52,6 +39,19 @@ class HomeActionGrid extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).pop();
               },
             );
+          },
+        ),
+        HomeActionButton(
+          icon: const Icon(Icons.history),
+          title: t.recent_played,
+          // TODO: implement play record
+          onPressed: null,
+        ),
+        HomeActionButton(
+          icon: const Icon(Icons.download),
+          title: t.download,
+          onPressed: () {
+            AnnixRouterDelegate.of(context).to(name: '/downloading');
           },
         ),
       ],
