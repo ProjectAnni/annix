@@ -30,11 +30,20 @@ class LocalDatabase extends _$LocalDatabase {
     initialData: const [],
   );
 
-  static StreamProvider<List<LocalFavoriteTrack>> favoritesProvider =
+  static StreamProvider<List<LocalFavoriteTrack>> favoriteTracksProvider =
       StreamProvider(
     create: (context) {
       final database = context.read<LocalDatabase>();
       return database.localFavoriteTracks.select().watch();
+    },
+    initialData: const [],
+  );
+
+  static StreamProvider<List<LocalFavoriteAlbum>> favoriteAlbumsProvider =
+      StreamProvider(
+    create: (context) {
+      final database = context.read<LocalDatabase>();
+      return database.localFavoriteAlbums.select().watch();
     },
     initialData: const [],
   );

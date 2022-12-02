@@ -82,7 +82,7 @@ class AlbumDetailScreen extends StatelessWidget {
       for (final track in disc.tracks) {
         // check if available
         final trackId = track.id;
-        if (annil.isAvailable(trackId)) {
+        if (annil.isTrackAvailable(trackId)) {
           songs.add(
             AnnilAudioSource(track: TrackInfoWithAlbum.fromTrack(track)),
           );
@@ -150,7 +150,7 @@ class AlbumDetailScreen extends StatelessWidget {
               // dense: true,
               title: Text(track.title, overflow: TextOverflow.ellipsis),
               subtitle: ArtistText(track.artist),
-              enabled: annil.isAvailable(
+              enabled: annil.isTrackAvailable(
                 TrackIdentifier(
                   albumId: album.albumId,
                   discId: discId,

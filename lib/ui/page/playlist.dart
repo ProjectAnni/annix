@@ -193,7 +193,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
             ],
           ),
           trailing: const Icon(Icons.more_vert),
-          enabled: annil.isAvailable(item.info.id),
+          enabled: annil.isTrackAvailable(item.info.id),
           onTap: () => _onPlay(index: index),
         );
       },

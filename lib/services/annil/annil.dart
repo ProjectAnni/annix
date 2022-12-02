@@ -234,7 +234,11 @@ class AnnilService extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isAvailable(TrackIdentifier id) {
+  bool isAlbumAvailable(String albumId) {
+    return albums.contains(albumId);
+  }
+
+  bool isTrackAvailable(TrackIdentifier id) {
     return isCacheAvailable(id) ||
         (NetworkService.isOnline && albums.contains(id.albumId));
   }

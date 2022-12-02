@@ -87,6 +87,7 @@ class AnnivService extends ChangeNotifier {
         })(),
         // reload favorite list
         syncFavoriteTrack(),
+        syncFavoriteAlbum(),
         // reload playlist list
         client.getPlaylistByUserId().then(syncPlaylist),
       ]);
@@ -153,7 +154,7 @@ class AnnivService extends ChangeNotifier {
           Provider.of<MetadataService>(Global.context, listen: false);
       final trackMetadata = await metadata.getTrack(track);
 
-      await client?.addFavorite(track);
+      await client?.addFavoriteTrack(track);
       await db.localFavoriteTracks.insert().insert(
             LocalFavoriteTracksCompanion.insert(
               albumId: track.albumId,
@@ -171,7 +172,7 @@ class AnnivService extends ChangeNotifier {
   Future<void> removeFavoriteTrack(TrackIdentifier id) async {
     if (client != null) {
       final db = Provider.of<LocalDatabase>(Global.context, listen: false);
-      await client?.removeFavorite(id);
+      await client?.removeFavoriteTrack(id);
       await (db.localFavoriteTracks.delete()
             ..where((f) =>
                 f.albumId.equals(id.albumId) &
@@ -196,11 +197,11 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> syncFavoriteTrack() async {
-    await client?.getFavoriteList().then(_syncFavoriteTrack);
+    await client?.getFavoriteTracks().then(_syncFavoriteTrack);
   }
 
   Future<void> _syncFavoriteTrack(List<TrackInfoWithAlbum> list) async {
-    final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+    final db = context.read<LocalDatabase>();
 
     await db.transaction(() async {
       // clear favorite list
@@ -220,6 +221,33 @@ class AnnivService extends ChangeNotifier {
                   artist: Value(e.artist),
                   albumTitle: Value(e.albumTitle),
                   type: Value(e.type.toString()),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    });
+  }
+
+  Future<void> syncFavoriteAlbum() async {
+    await client?.getFavoriteAlbums().then(_syncFavoriteAlbum);
+  }
+
+  Future<void> _syncFavoriteAlbum(List<String> list) async {
+    final db = context.read<LocalDatabase>();
+
+    await db.transaction(() async {
+      // clear favorite album list
+      await db.localFavoriteAlbums.delete().go();
+      // write new favorite albums
+      await db.batch(
+        (batch) => batch.insertAll(
+          db.localFavoriteAlbums,
+          // reverse the list so that the latest favorite is at the end of the list
+          list.reversed
+              .map(
+                (e) => LocalFavoriteAlbumsCompanion.insert(
+                  albumId: e,
                 ),
               )
               .toList(),

@@ -216,7 +216,7 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E8%8E%B7%E5%8F%96%E5%96%9C%E6%AC%A2%E5%88%97%E8%A1%A8
-  Future<List<TrackInfoWithAlbum>> getFavoriteList() async {
+  Future<List<TrackInfoWithAlbum>> getFavoriteTracks() async {
     final response = await _client.get('/api/favorite/music');
     return (response.data as List<dynamic>)
         .map((e) => TrackInfoWithAlbum.fromJson(e))
@@ -224,7 +224,7 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E6%B7%BB%E5%8A%A0%E5%8D%95%E6%9B%B2
-  Future<void> addFavorite(TrackIdentifier track) async {
+  Future<void> addFavoriteTrack(TrackIdentifier track) async {
     await _client.put('/api/favorite/music', data: {
       'album_id': track.albumId,
       'disc_id': track.discId,
@@ -232,11 +232,32 @@ class AnnivClient {
     });
   }
 
-  Future<void> removeFavorite(TrackIdentifier track) async {
+  // https://book.anni.rs/06.anniv/10.favorite.html#%E5%88%A0%E9%99%A4%E5%8D%95%E6%9B%B2
+  Future<void> removeFavoriteTrack(TrackIdentifier track) async {
     await _client.delete('/api/favorite/music', data: {
       'album_id': track.albumId,
       'disc_id': track.discId,
       'track_id': track.trackId,
+    });
+  }
+
+  // https://book.anni.rs/06.anniv/10.favorite.html#%E8%8E%B7%E5%8F%96%E6%94%B6%E8%97%8F%E4%B8%93%E8%BE%91%E5%88%97%E8%A1%A8
+  Future<List<String>> getFavoriteAlbums() async {
+    final response = await _client.get('/api/favorite/album');
+    return (response.data as List<dynamic>).cast<String>();
+  }
+
+  // https://book.anni.rs/06.anniv/10.favorite.html#%E6%B7%BB%E5%8A%A0%E6%94%B6%E8%97%8F%E4%B8%93%E8%BE%91
+  Future<void> addFavoriteAlbum(String albumId) async {
+    await _client.put('/api/favorite/album', data: {
+      'album_id': albumId,
+    });
+  }
+
+  // https://book.anni.rs/06.anniv/10.favorite.html#%E5%88%A0%E9%99%A4%E6%94%B6%E8%97%8F%E4%B8%93%E8%BE%91
+  Future<void> removeFavoriteAlbum(String albumId) async {
+    await _client.delete('/api/favorite/album', data: {
+      'album_id': albumId,
     });
   }
 

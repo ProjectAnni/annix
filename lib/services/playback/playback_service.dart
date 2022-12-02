@@ -401,7 +401,7 @@ class PlaybackService extends ChangeNotifier {
           trackId: trackIndex + 1,
         );
 
-        if (annil.isAvailable(id)) {
+        if (annil.isTrackAvailable(id)) {
           if (track.type == TrackType.normal) {
             tracks.add(id);
           }

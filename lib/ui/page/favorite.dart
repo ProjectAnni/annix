@@ -7,6 +7,7 @@ import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/page/playlist/playlist_base.dart';
+import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
@@ -68,8 +69,13 @@ class _FavoritePageState extends State<FavoritePage> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.refresh),
-                  onPressed: () async {
-                    await context.read<AnnivService>().syncFavoriteTrack();
+                  onPressed: () {
+                    final anniv = context.read<AnnivService>();
+                    if (showTracks) {
+                      anniv.syncFavoriteTrack();
+                    } else {
+                      anniv.syncFavoriteAlbum();
+                    }
                   },
                 ),
               ],
@@ -114,7 +120,12 @@ class _FavoritePageState extends State<FavoritePage> {
       itemBuilder: (context, index) {
         final favorite = reversedFavorite.elementAt(index);
         return ListTile(
-          leading: MusicCover(albumId: favorite.albumId),
+          leading: CoverCard(
+            child: MusicCover(
+              albumId: favorite.albumId,
+              fit: BoxFit.cover,
+            ),
+          ),
           title: Text(
             favorite.title ?? '--',
             overflow: TextOverflow.ellipsis,
@@ -124,7 +135,7 @@ class _FavoritePageState extends State<FavoritePage> {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: Text('${index + 1}'),
-          enabled: annil.isAvailable(
+          enabled: annil.isTrackAvailable(
             TrackIdentifier(
               albumId: favorite.albumId,
               discId: favorite.discId,
@@ -145,7 +156,10 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   Widget _favoriteAlbums() {
-    return const Center(child: Text('Favorite Albums'));
+    final List<LocalFavoriteAlbum> favorites = context.watch();
+    final reversedFavorite = favorites.reversed.map((e) => e.albumId).toList();
+
+    return AlbumWall(albumIds: reversedFavorite);
   }
 
   List<AnnilAudioSource> getTracks(List<LocalFavoriteTrack> favorites) {
@@ -160,7 +174,7 @@ class _FavoritePageState extends State<FavoritePage> {
               trackId: fav.trackId,
             );
 
-            if (annil.isAvailable(id)) {
+            if (annil.isTrackAvailable(id)) {
               return TrackInfoWithAlbum(
                 id: id,
                 title: fav.title!,
