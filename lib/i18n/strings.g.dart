@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 86 (43 per locale)
+/// Strings: 90 (45 per locale)
 ///
-/// Built on 2022-12-01 at 10:39 UTC
+/// Built on 2022-12-02 at 07:48 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -116,10 +116,10 @@ class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
           PluralResolver? ordinalResolver}) =>
       instance.setPluralResolver(
         language: language,
-		locale: locale,
-		cardinalResolver: cardinalResolver,
-		ordinalResolver: ordinalResolver,
-	);
+        locale: locale,
+        cardinalResolver: cardinalResolver,
+        ordinalResolver: ordinalResolver,
+      );
 }
 
 /// Provides utility functions without any side effects.
@@ -141,7 +141,10 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
-	_StringsEn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
+	_StringsEn.build(
+      {Map<String, Node>? overrides,
+      PluralResolver? cardinalResolver,
+      PluralResolver? ordinalResolver})
       : assert(overrides == null,
             'Set "translation_overrides: true" in order to enable this feature.'),
         $meta = TranslationMetadata(
@@ -163,8 +166,6 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
   late final _StringsEn _root = this; // ignore: unused_field
 
   // Translations
-  String get playing => 'Playing';
-
   String get progress => 'Progress';
 
   String get home => 'Home';
@@ -178,6 +179,7 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
   String get shuffle_mode => 'Shuffle Mode';
 
   String get my_favorite => 'My Favorite';
+  late final _StringsPlayingEn playing = _StringsPlayingEn._(_root);
   late final _StringsPlaybackEn playback = _StringsPlaybackEn._(_root);
   late final _StringsServerEn server = _StringsServerEn._(_root);
   late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
@@ -195,9 +197,23 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
   String get download_manager => 'Download manager';
 }
 
+// Path: playing
+class _StringsPlayingEn {
+  _StringsPlayingEn._(this._root);
+
+  final _StringsEn _root; // ignore: unused_field
+
+  // Translations
+  String get is_playing => 'Playing';
+
+  String get view_albums => 'View Albums';
+
+  String get share => 'Share';
+}
+
 // Path: playback
 class _StringsPlaybackEn {
-	_StringsPlaybackEn._(this._root);
+  _StringsPlaybackEn._(this._root);
 
   final _StringsEn _root; // ignore: unused_field
 
@@ -286,7 +302,10 @@ class _StringsZhCn implements _StringsEn {
 
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
-	_StringsZhCn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
+	_StringsZhCn.build(
+      {Map<String, Node>? overrides,
+      PluralResolver? cardinalResolver,
+      PluralResolver? ordinalResolver})
       : assert(overrides == null,
             'Set "translation_overrides: true" in order to enable this feature.'),
         $meta = TranslationMetadata(
@@ -311,9 +330,6 @@ class _StringsZhCn implements _StringsEn {
 
   // Translations
   @override
-  String get playing => '播放';
-
-  @override
   String get progress => '进度';
 
   @override
@@ -333,6 +349,8 @@ class _StringsZhCn implements _StringsEn {
 
   @override
   String get my_favorite => '我的收藏';
+  @override
+  late final _StringsPlayingZhCn playing = _StringsPlayingZhCn._(_root);
   @override
   late final _StringsPlaybackZhCn playback = _StringsPlaybackZhCn._(_root);
   @override
@@ -357,6 +375,24 @@ class _StringsZhCn implements _StringsEn {
 
   @override
   String get download_manager => '下载管理';
+}
+
+// Path: playing
+class _StringsPlayingZhCn implements _StringsPlayingEn {
+  _StringsPlayingZhCn._(this._root);
+
+  @override
+  final _StringsZhCn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get is_playing => '正在播放';
+
+  @override
+  String get view_albums => '查看专辑';
+
+  @override
+  String get share => '分享';
 }
 
 // Path: playback
@@ -481,8 +517,6 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 extension on _StringsEn {
 	dynamic _flatMapFunction(String path) {
     switch (path) {
-      case 'playing':
-        return 'Playing';
       case 'progress':
         return 'Progress';
       case 'home':
@@ -497,6 +531,12 @@ extension on _StringsEn {
         return 'Shuffle Mode';
       case 'my_favorite':
         return 'My Favorite';
+      case 'playing.is_playing':
+        return 'Playing';
+      case 'playing.view_albums':
+        return 'View Albums';
+      case 'playing.share':
+        return 'Share';
       case 'playback.play_all':
         return 'Play All';
       case 'playback.shuffle':
@@ -576,8 +616,6 @@ extension on _StringsEn {
 extension on _StringsZhCn {
 	dynamic _flatMapFunction(String path) {
     switch (path) {
-      case 'playing':
-        return '播放';
       case 'progress':
         return '进度';
       case 'home':
@@ -592,6 +630,12 @@ extension on _StringsZhCn {
         return '随机模式';
       case 'my_favorite':
         return '我的收藏';
+      case 'playing.is_playing':
+        return '正在播放';
+      case 'playing.view_albums':
+        return '查看专辑';
+      case 'playing.share':
+        return '分享';
       case 'playback.play_all':
         return '播放全部';
       case 'playback.shuffle':

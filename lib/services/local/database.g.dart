@@ -17,7 +17,6 @@ class LocalFavoriteTrack extends DataClass
   final String? artist;
   final String? albumTitle;
   final String type;
-
   const LocalFavoriteTrack(
       {required this.id,
       required this.albumId,
@@ -27,7 +26,6 @@ class LocalFavoriteTrack extends DataClass
       this.artist,
       this.albumTitle,
       required this.type});
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -134,7 +132,7 @@ class LocalFavoriteTrack extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          (other is LocalFavoriteTrack &&
+      (other is LocalFavoriteTrack &&
           other.id == this.id &&
           other.albumId == this.albumId &&
           other.discId == this.discId &&
@@ -154,7 +152,6 @@ class LocalFavoriteTracksCompanion extends UpdateCompanion<LocalFavoriteTrack> {
   final Value<String?> artist;
   final Value<String?> albumTitle;
   final Value<String> type;
-
   const LocalFavoriteTracksCompanion({
     this.id = const Value.absent(),
     this.albumId = const Value.absent(),
@@ -165,7 +162,6 @@ class LocalFavoriteTracksCompanion extends UpdateCompanion<LocalFavoriteTrack> {
     this.albumTitle = const Value.absent(),
     this.type = const Value.absent(),
   });
-
   LocalFavoriteTracksCompanion.insert({
     this.id = const Value.absent(),
     required String albumId,
@@ -178,7 +174,6 @@ class LocalFavoriteTracksCompanion extends UpdateCompanion<LocalFavoriteTrack> {
   })  : albumId = Value(albumId),
         discId = Value(discId),
         trackId = Value(trackId);
-
   static Insertable<LocalFavoriteTrack> custom({
     Expression<int>? id,
     Expression<String>? albumId,
@@ -273,9 +268,7 @@ class LocalFavoriteTracks extends Table
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   LocalFavoriteTracks(this.attachedDatabase, [this._alias]);
-
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -326,17 +319,13 @@ class LocalFavoriteTracks extends Table
       $customConstraints:
           'NOT NULL DEFAULT \'normal\' CHECK ("type" IN (\'normal\', \'instrumental\', \'absolute\', \'drama\', \'radio\', \'vocal\'))',
       defaultValue: const CustomExpression<String>('\'normal\''));
-
   @override
   List<GeneratedColumn> get $columns =>
       [id, albumId, discId, trackId, title, artist, albumTitle, type];
-
   @override
   String get aliasedName => _alias ?? 'local_favorite_tracks';
-
   @override
   String get actualTableName => 'local_favorite_tracks';
-
   @override
   VerificationContext validateIntegrity(Insertable<LocalFavoriteTrack> instance,
       {bool isInserting = false}) {
@@ -386,7 +375,6 @@ class LocalFavoriteTracks extends Table
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   LocalFavoriteTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -424,13 +412,11 @@ class AnnivUserData extends DataClass implements Insertable<AnnivUserData> {
   final String userId;
   final String nickname;
   final String avatar;
-
   const AnnivUserData(
       {required this.id,
       required this.userId,
       required this.nickname,
       required this.avatar});
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -460,7 +446,6 @@ class AnnivUserData extends DataClass implements Insertable<AnnivUserData> {
       avatar: serializer.fromJson<String>(json['avatar']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -480,7 +465,6 @@ class AnnivUserData extends DataClass implements Insertable<AnnivUserData> {
         nickname: nickname ?? this.nickname,
         avatar: avatar ?? this.avatar,
       );
-
   @override
   String toString() {
     return (StringBuffer('AnnivUserData(')
@@ -494,7 +478,6 @@ class AnnivUserData extends DataClass implements Insertable<AnnivUserData> {
 
   @override
   int get hashCode => Object.hash(id, userId, nickname, avatar);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -510,14 +493,12 @@ class AnnivUserCompanion extends UpdateCompanion<AnnivUserData> {
   final Value<String> userId;
   final Value<String> nickname;
   final Value<String> avatar;
-
   const AnnivUserCompanion({
     this.id = const Value.absent(),
     this.userId = const Value.absent(),
     this.nickname = const Value.absent(),
     this.avatar = const Value.absent(),
   });
-
   AnnivUserCompanion.insert({
     this.id = const Value.absent(),
     required String userId,
@@ -526,7 +507,6 @@ class AnnivUserCompanion extends UpdateCompanion<AnnivUserData> {
   })  : userId = Value(userId),
         nickname = Value(nickname),
         avatar = Value(avatar);
-
   static Insertable<AnnivUserData> custom({
     Expression<int>? id,
     Expression<String>? userId,
@@ -588,9 +568,7 @@ class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   AnnivUser(this.attachedDatabase, [this._alias]);
-
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -615,16 +593,12 @@ class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-
   @override
   List<GeneratedColumn> get $columns => [id, userId, nickname, avatar];
-
   @override
   String get aliasedName => _alias ?? 'anniv_user';
-
   @override
   String get actualTableName => 'anniv_user';
-
   @override
   VerificationContext validateIntegrity(Insertable<AnnivUserData> instance,
       {bool isInserting = false}) {
@@ -656,7 +630,6 @@ class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   AnnivUserData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1499,7 +1472,6 @@ class PlaylistItem extends Table
   @override
   List<String> get customConstraints =>
       const ['FOREIGN KEY("playlist_id") REFERENCES "playlist"("id")'];
-
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1508,9 +1480,7 @@ class LocalFavoriteAlbum extends DataClass
     implements Insertable<LocalFavoriteAlbum> {
   final int id;
   final String albumId;
-
   const LocalFavoriteAlbum({required this.id, required this.albumId});
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1534,7 +1504,6 @@ class LocalFavoriteAlbum extends DataClass
       albumId: serializer.fromJson<String>(json['album_id']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -1548,7 +1517,6 @@ class LocalFavoriteAlbum extends DataClass
         id: id ?? this.id,
         albumId: albumId ?? this.albumId,
       );
-
   @override
   String toString() {
     return (StringBuffer('LocalFavoriteAlbum(')
@@ -1560,7 +1528,6 @@ class LocalFavoriteAlbum extends DataClass
 
   @override
   int get hashCode => Object.hash(id, albumId);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1572,17 +1539,14 @@ class LocalFavoriteAlbum extends DataClass
 class LocalFavoriteAlbumsCompanion extends UpdateCompanion<LocalFavoriteAlbum> {
   final Value<int> id;
   final Value<String> albumId;
-
   const LocalFavoriteAlbumsCompanion({
     this.id = const Value.absent(),
     this.albumId = const Value.absent(),
   });
-
   LocalFavoriteAlbumsCompanion.insert({
     this.id = const Value.absent(),
     required String albumId,
   }) : albumId = Value(albumId);
-
   static Insertable<LocalFavoriteAlbum> custom({
     Expression<int>? id,
     Expression<String>? albumId,
@@ -1628,9 +1592,7 @@ class LocalFavoriteAlbums extends Table
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   LocalFavoriteAlbums(this.attachedDatabase, [this._alias]);
-
   final VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
@@ -1643,16 +1605,12 @@ class LocalFavoriteAlbums extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-
   @override
   List<GeneratedColumn> get $columns => [id, albumId];
-
   @override
   String get aliasedName => _alias ?? 'local_favorite_albums';
-
   @override
   String get actualTableName => 'local_favorite_albums';
-
   @override
   VerificationContext validateIntegrity(Insertable<LocalFavoriteAlbum> instance,
       {bool isInserting = false}) {
@@ -1672,7 +1630,6 @@ class LocalFavoriteAlbums extends Table
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   LocalFavoriteAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1701,7 +1658,6 @@ class LocalAnnilServer extends DataClass
   final String url;
   final String token;
   final int priority;
-
   const LocalAnnilServer(
       {required this.id,
       this.remoteId,
@@ -2425,7 +2381,6 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   late final LocalAnnilServers localAnnilServers = LocalAnnilServers(this);
   late final LocalAnnilCaches localAnnilCaches = LocalAnnilCaches(this);
   late final LocalAnnilAlbums localAnnilAlbums = LocalAnnilAlbums(this);
-
   Selectable<PlaylistItemData> playlistItems(int var1) {
     return customSelect(
         'SELECT * FROM playlist_item WHERE playlist_id = ?1 ORDER BY "order"',
@@ -2501,9 +2456,9 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
         localFavoriteTracks,
         localFavoriteTracksIndex,
         annivUser,

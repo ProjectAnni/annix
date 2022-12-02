@@ -1,5 +1,4 @@
 {
-  "playing": "Playing",
   "progress": "Progress",
   "home": "Home",
   "category": "Categories",
@@ -7,6 +6,11 @@
   "playlists": "Playlists",
   "shuffle_mode": "Shuffle Mode",
   "my_favorite": "My Favorite",
+  "playing": {
+    "is_playing": "Playing",
+    "view_albums": "View Albums",
+    "share": "Share"
+  },
   "playback": {
     "play_all": "Play All",
     "shuffle": "Shuffle"

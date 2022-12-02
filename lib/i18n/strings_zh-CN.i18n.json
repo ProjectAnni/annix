@@ -1,5 +1,4 @@
 {
-  "playing": "播放",
   "progress": "进度",
   "home": "首页",
   "category": "分类",
@@ -7,6 +6,11 @@
   "playlists": "播放列表",
   "shuffle_mode": "随机模式",
   "my_favorite": "我的收藏",
+  "playing": {
+    "is_playing": "正在播放",
+    "view_albums": "查看专辑",
+    "share": "分享"
+  },
   "playback": {
     "play_all": "播放全部",
     "shuffle": "随机播放"

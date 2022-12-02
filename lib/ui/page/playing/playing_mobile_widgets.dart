@@ -1,7 +1,9 @@
 import 'package:animations/animations.dart';
+import 'package:annix/global.dart';
+import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/ui/dialogs/playing_more_menu.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
@@ -16,6 +18,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:annix/i18n/strings.g.dart';
 
 class PlayingScreenMobileBottomBar extends StatelessWidget {
   final ValueNotifier<bool> showLyrics;
@@ -24,6 +28,9 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final delegate = AnnixRouterDelegate.of(context);
+    final player = context.read<PlaybackService>();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -74,19 +81,58 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
             );
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.more_horiz_rounded),
-          onPressed: () {
-            showModalBottomSheet(
-              useRootNavigator: true,
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                final player = context.read<PlaybackService>();
-                return PlayingMoreMenu(track: player.playing!.track);
+        MenuAnchor(
+          // alignmentOffset: const Offset(-64, 0),
+          // style: MenuStyle(
+          //   padding:
+          //       MaterialStateProperty.resolveWith((states) => EdgeInsets.zero),
+          //   shape: MaterialStateProperty.resolveWith(
+          //     (states) => RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(20)),
+          //   ),
+          // ),
+          builder: (context, controller, child) {
+            return IconButton(
+              icon: child!,
+              onPressed: () {
+                if (controller.isOpen) {
+                  controller.close();
+                } else {
+                  controller.open();
+                }
               },
             );
           },
+          menuChildren: [
+            MenuItemButton(
+              leadingIcon: const Icon(Icons.album_outlined),
+              child: Text(t.playing.view_albums),
+              onPressed: () {
+                // hide playing page
+                Global.mobileWeSlideController.hide();
+                // jump to album page
+                delegate.to(
+                  name: '/album',
+                  arguments: player.playing!.track.id.albumId,
+                );
+              },
+            ),
+            // const Divider(height: 1),
+            MenuItemButton(
+              leadingIcon: const Icon(Icons.share_outlined),
+              child: Text(t.playing.share),
+              onPressed: () {
+                final track = player.playing!.track;
+                final id = track.id;
+                Share.shareXFiles(
+                  [XFile(getCoverCachePath(id.albumId))],
+                  text: '#NowPlaying ${track.title} - ${track.artist}',
+                  subject: 'Now Playing',
+                );
+              },
+            ),
+          ],
+          child: const Icon(Icons.more_vert_rounded),
         ),
       ],
     );

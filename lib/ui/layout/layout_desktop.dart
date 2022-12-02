@@ -68,7 +68,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
                       NavigationRailDestination(
                         icon: const Icon(Icons.music_note_outlined),
                         selectedIcon: const Icon(Icons.music_note_sharp),
-                        label: Text(t.playing),
+                        label: Text(t.playing.is_playing),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.local_offer_outlined),
