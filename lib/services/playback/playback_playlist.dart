@@ -50,7 +50,7 @@ class Playlist {
   }
 
   List<AnnilAudioSource> getTracks({List<int>? reorder}) {
-    return items
+    final tracks = items
         .map<TrackInfoWithAlbum?>(
           (item) {
             if (item is AnnivPlaylistItemTrack) {
@@ -61,21 +61,11 @@ class Playlist {
           },
         )
         .whereType<TrackInfoWithAlbum>()
-        .mapIndexed(
-          (index, track) => _IndexedAudioSource(
-            reorder != null ? reorder[index] : index,
-            AnnilAudioSource(track: track),
-          ),
-        )
-        .sortedBy<num>((e) => e.index)
-        .map((e) => e.source)
         .toList();
+
+    return tracks.mapIndexed((i, element) {
+      final index = reorder != null ? reorder[i] : i;
+      return AnnilAudioSource(track: tracks[index]);
+    }).toList();
   }
-}
-
-class _IndexedAudioSource {
-  int index;
-  AnnilAudioSource source;
-
-  _IndexedAudioSource(this.index, this.source);
 }

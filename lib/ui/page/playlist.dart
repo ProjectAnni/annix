@@ -126,8 +126,20 @@ class _PlaylistPageState extends State<PlaylistPage> {
           if (oldIndex < newIndex) {
             newIndex -= 1;
           }
+
           final tmp = _reorder![oldIndex];
-          _reorder![oldIndex] = _reorder![newIndex];
+          if (oldIndex < newIndex) {
+            // moving down
+            for (int i = oldIndex; i < newIndex; i++) {
+              _reorder![i] = _reorder![i + 1];
+            }
+            _reorder![newIndex] = tmp;
+          } else if (oldIndex > newIndex) {
+            // moving up
+            for (int i = oldIndex; i > newIndex; i--) {
+              _reorder![i] = _reorder![i - 1];
+            }
+          }
           _reorder![newIndex] = tmp;
         });
       },
