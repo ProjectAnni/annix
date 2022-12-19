@@ -1,7 +1,7 @@
-import 'package:annix/global.dart';
 import 'package:annix/services/playback/playback_service.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -13,11 +13,11 @@ class HomeActionGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       padding: EdgeInsets.zero,
-      crossAxisCount: Global.isDesktop
+      crossAxisCount: context.isDesktopOrLandscape
           ? 4 /* display all buttons in one line on desktop */
           : 2 /* on mobile */,
       semanticChildCount: 4,
-      childAspectRatio: Global.isDesktop ? 1 : 3.6,
+      childAspectRatio: context.isDesktopOrLandscape ? 1 : 3.6,
       shrinkWrap: true,
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,

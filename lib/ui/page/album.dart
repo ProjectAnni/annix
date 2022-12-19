@@ -9,8 +9,6 @@ import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'package:annix/global.dart';
 import 'package:annix/i18n/strings.g.dart';
 
 class LazyAlbumPage extends StatelessWidget {
@@ -115,7 +113,7 @@ class AlbumPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
           slivers: [
-            if (!Global.isDesktop)
+            if (!context.isDesktopOrLandscape)
               SliverToBoxAdapter(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -133,7 +131,7 @@ class AlbumPage extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!Global.isDesktop)
+                    if (!context.isDesktopOrLandscape)
                       CircleAvatar(
                         child: Card(
                           elevation: 0,
@@ -148,7 +146,7 @@ class AlbumPage extends StatelessWidget {
                           child: MusicCover(albumId: album.albumId),
                         ),
                       ),
-                    if (Global.isDesktop)
+                    if (context.isDesktopOrLandscape)
                       SizedBox(
                         height: 240,
                         child: MusicCover(albumId: album.albumId),
@@ -175,7 +173,8 @@ class AlbumPage extends StatelessWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: _playButtons(context, stretch: !Global.isDesktop),
+              child:
+                  _playButtons(context, stretch: !context.isDesktopOrLandscape),
             ),
             _buildTrackList(context),
           ],

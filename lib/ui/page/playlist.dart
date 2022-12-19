@@ -1,4 +1,3 @@
-import 'package:annix/global.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
@@ -266,7 +265,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
           slivers: [
-            if (!Global.isDesktop && cover != null)
+            if (!context.isDesktopOrLandscape && cover != null)
               SliverToBoxAdapter(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -284,12 +283,12 @@ class _PlaylistPageState extends State<PlaylistPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!Global.isDesktop)
+                    if (!context.isDesktopOrLandscape)
                       CircleAvatar(
                         // FIXME: use user avatar
                         child: _cover(card: true),
                       ),
-                    if (Global.isDesktop)
+                    if (context.isDesktopOrLandscape)
                       SizedBox(
                         height: 240,
                         child: cover!,
@@ -321,7 +320,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
               ),
             ),
             SliverToBoxAdapter(
-              child: _playButtons(context, stretch: !Global.isDesktop),
+              child:
+                  _playButtons(context, stretch: !context.isDesktopOrLandscape),
             ),
             _buildTrackList(),
           ],
