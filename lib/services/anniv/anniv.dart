@@ -229,6 +229,41 @@ class AnnivService extends ChangeNotifier {
     });
   }
 
+  Future<void> addFavoriteAlbum(String albumId) async {
+    if (client != null) {
+      final db = Global.context.read<LocalDatabase>();
+
+      await client?.addFavoriteAlbum(albumId);
+      await db.localFavoriteAlbums.insert().insert(
+            LocalFavoriteAlbumsCompanion.insert(
+              albumId: albumId,
+            ),
+          );
+    }
+  }
+
+  Future<void> removeFavoriteAlbum(String albumId) async {
+    if (client != null) {
+      final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+      await client?.removeFavoriteAlbum(albumId);
+      await (db.localFavoriteAlbums.delete()
+            ..where((f) => f.albumId.equals(albumId)))
+          .go();
+    }
+  }
+
+  Future<bool> toggleFavoriteAlbum(String albumId) async {
+    final db = Provider.of<LocalDatabase>(Global.context, listen: false);
+
+    if (await db.isAlbumFavorite(albumId).getSingle()) {
+      await removeFavoriteAlbum(albumId);
+      return false;
+    } else {
+      await addFavoriteAlbum(albumId);
+      return true;
+    }
+  }
+
   Future<void> syncFavoriteAlbum() async {
     await client?.getFavoriteAlbums().then(_syncFavoriteAlbum);
   }

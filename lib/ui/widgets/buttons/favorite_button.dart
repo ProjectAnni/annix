@@ -33,3 +33,25 @@ class FavoriteButton extends StatelessWidget {
     );
   }
 }
+
+class FavoriteAlbumButton extends StatelessWidget {
+  final String albumId;
+
+  const FavoriteAlbumButton({super.key, required this.albumId});
+
+  @override
+  Widget build(BuildContext context) {
+    final AnnivService anniv = context.read();
+
+    return Consumer<List<LocalFavoriteAlbum>>(
+      builder: (context, favorites, child) => IconButton(
+        isSelected: favorites.any((album) => album.albumId == albumId),
+        icon: const Icon(Icons.star_border_outlined),
+        selectedIcon: const Icon(Icons.star_outlined),
+        onPressed: () async {
+          anniv.toggleFavoriteAlbum(albumId);
+        },
+      ),
+    );
+  }
+}

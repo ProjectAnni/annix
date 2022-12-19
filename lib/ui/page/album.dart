@@ -3,6 +3,7 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -105,7 +106,11 @@ class AlbumPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          FavoriteAlbumButton(albumId: album.albumId),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
