@@ -51,8 +51,9 @@ jobs:
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libjsoncpp-dev
+          sudo apt update -y
+          sudo apt install -y libunwind-dev
+          sudo apt install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libjsoncpp-dev
           flutter config --enable-linux-desktop
           flutter pub get
       - name: Build | Linux
@@ -138,7 +139,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y gettext-base
+        run: sudo apt update && sudo apt install -y gettext-base
 
       - run: |
           (echo 'SUBJECT=Annix development (canary) build') >> $GITHUB_ENV
