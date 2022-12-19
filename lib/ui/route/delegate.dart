@@ -1,9 +1,9 @@
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/playlist.dart';
-import 'package:annix/ui/page/playlist/playlist_page_album.dart';
 import 'package:annix/ui/page/server.dart';
 import 'package:annix/ui/page/tag/tag_list.dart';
 import 'package:annix/ui/page/settings/settings.dart';
@@ -166,10 +166,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/album':
         if (routeSettings.arguments is String) {
           // albumId
-          child =
-              LazyAlbumDetailScreen(albumId: routeSettings.arguments as String);
+          child = LazyAlbumPage(albumId: routeSettings.arguments as String);
         } else {
-          child = AlbumDetailScreen(album: routeSettings.arguments as Album);
+          child = AlbumPage(album: routeSettings.arguments as Album);
         }
         break;
       case '/tag':

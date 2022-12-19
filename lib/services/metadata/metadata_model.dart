@@ -1,3 +1,4 @@
+import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:toml/toml.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -145,6 +146,17 @@ class Album {
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
 
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
+
+  List<AnnilAudioSource> getTracks() {
+    final List<AnnilAudioSource> sources = [];
+    for (final disc in discs) {
+      for (final track in disc.tracks) {
+        sources
+            .add(AnnilAudioSource(track: TrackInfoWithAlbum.fromTrack(track)));
+      }
+    }
+    return sources;
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -229,10 +241,10 @@ class Track {
   TrackType get type => _type ?? disc.type;
 
   TrackIdentifier get id => TrackIdentifier(
-        albumId: disc.album.albumId,
-        discId: disc.album.discs.indexOf(disc) + 1,
-        trackId: disc.tracks.indexOf(this) + 1,
-      );
+    albumId: disc.album.albumId,
+    discId: disc.album.discs.indexOf(disc) + 1,
+    trackId: disc.tracks.indexOf(this) + 1,
+  );
 
   // static Track fromMap(Map<String, dynamic> map) {
   //   final String title = map['title'];

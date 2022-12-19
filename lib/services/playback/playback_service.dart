@@ -15,6 +15,30 @@ import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+void playFullList({
+  required PlaybackService player,
+  required List<AnnilAudioSource> tracks,
+  bool shuffle = false,
+  int initialIndex = 0,
+}) async {
+  assert(
+    // when shuffle is on, initialIndex can only be zero
+    (shuffle && initialIndex == 0) ||
+        // or disable shuffle
+        !shuffle,
+  );
+
+  final trackList = tracks;
+  if (shuffle) {
+    trackList.shuffle();
+  }
+
+  await player.setPlayingQueue(
+    trackList,
+    initialIndex: initialIndex,
+  );
+}
+
 // https://github.com/bluefireteam/audioplayers/issues/788#issuecomment-1268882883
 class PlaybackServiceHackForIOS {
   static PlaybackServiceHackForIOS? _instance;

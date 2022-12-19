@@ -3,7 +3,6 @@ import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/ui/page/playlist/playlist_base.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
