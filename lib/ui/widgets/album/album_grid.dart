@@ -24,7 +24,7 @@ class AlbumGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MetadataService metadata = context.read();
+    final metadata = context.read<MetadataService>();
     final metadataFuture = metadata.getAlbum(albumId: albumId);
 
     void toAlbum(BuildContext context) {

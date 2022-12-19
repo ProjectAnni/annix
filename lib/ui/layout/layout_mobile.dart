@@ -122,6 +122,7 @@ class AnnixLayoutMobile extends AnnixLayout {
         },
         child: child,
       ),
+      resizeToAvoidBottomInset: false,
     );
 
     return Navigator(
