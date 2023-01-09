@@ -1,4 +1,5 @@
 import 'package:annix/ui/widgets/album/album_grid.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -15,7 +16,7 @@ class _AlbumWallState extends State<AlbumWall> {
   @override
   Widget build(BuildContext context) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
       itemBuilder: (BuildContext context, int index) {
