@@ -148,8 +148,8 @@ class PlaybackService extends ChangeNotifier {
     volume = Global.preferences.getDouble('player.volume') ?? 1.0;
     PlaybackService.player.setVolume(volume);
 
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => play(reload: true, setSourceOnly: true, trackPlayback: false));
   }
 
   Future<void> play({
