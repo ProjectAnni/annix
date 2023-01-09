@@ -557,10 +557,11 @@ enum TagType {
   Group,
   Animation,
   Series,
+  Radio,
   Project,
   Game,
   Organization,
-  Default,
+  Unknown,
   Category;
 
   factory TagType.fromString(String type) {
@@ -573,6 +574,8 @@ enum TagType {
         return TagType.Animation;
       case 'series':
         return TagType.Series;
+      case 'radio':
+        return TagType.Radio;
       case 'project':
         return TagType.Project;
       case 'game':
@@ -581,9 +584,9 @@ enum TagType {
         return TagType.Organization;
       case 'category':
         return TagType.Category;
-      case 'default':
+      case 'unknown':
       default:
-        return TagType.Default;
+        return TagType.Unknown;
     }
   }
 }

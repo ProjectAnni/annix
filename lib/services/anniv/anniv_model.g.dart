@@ -214,10 +214,11 @@ const _$TagTypeEnumMap = {
   TagType.Group: 'group',
   TagType.Animation: 'animation',
   TagType.Series: 'series',
+  TagType.Radio: 'radio',
   TagType.Project: 'project',
   TagType.Game: 'game',
   TagType.Organization: 'organization',
-  TagType.Default: 'default',
+  TagType.Unknown: 'unknown',
   TagType.Category: 'category',
 };
 
