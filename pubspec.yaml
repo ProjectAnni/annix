@@ -20,7 +20,7 @@ dependencies:
   f_logs:
     git:
       url: https://github.com/ProjectAnni/Flogs
-  provider: ^6.0.4
+  provider: ^6.0.5
   shared_preferences: ^2.0.15
   connectivity_plus: ^3.0.2
 
@@ -34,12 +34,12 @@ dependencies:
   netease_music_api:
     git:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
-  xml: ^6.2.0
+  xml: ^6.2.2
 
-  audioplayers: ^1.1.1
-  audio_service: ^0.18.6
+  audioplayers: ^1.2.0
+  audio_service: ^0.18.9
   audio_service_platform_interface: ^0.1.0
-  audio_session: ^0.1.11
+  audio_session: ^0.1.13
   anni_mpris_service: ^0.1.0
 
   slang: ^3.5.0
@@ -52,7 +52,7 @@ dependencies:
     git:
       url: https://github.com/suragch/audio_video_progress_bar
       ref: 3ea22dd354d67b8d685680195e585d3174f216fa
-  extended_image: ^6.3.1
+  extended_image: ^6.3.4
   flutter_lyric: ^2.0.4+6
   settings_ui: ^2.0.2
   cupertino_icons: ^1.0.5
@@ -76,11 +76,11 @@ dependencies:
   sqflite: ^2.2.0+2
   sqflite_common_ffi: ^2.2.0+1
 
-  uuid: ^3.0.5
+  uuid: ^3.0.7
 
   responsive_framework: ^0.2.0
   bitsdojo_window: ^0.1.5
-  file_picker: ^5.2.2
+  file_picker: ^5.2.5
   url_launcher: ^6.1.7
 
   # reverse proxy
