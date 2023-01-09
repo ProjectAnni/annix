@@ -90,6 +90,22 @@ CREATE TABLE local_annil_albums (
     FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")
 );
 
+---> statistics
+CREATE TABLE playback_records (
+    "id"              INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+
+    -- Played track
+    "album_id"        TEXT NOT NULL,
+    "disc_id"         INT NOT NULL,
+    "track_id"        INT NOT NULL,
+
+    -- Playback time
+    "at"              INT NOT NULL,
+
+    -- Whether this record is uploading to anniv server
+    "locked"          BOOL NOT NULL
+);
+
 ----------------------------------------------------------------------
 -- queries:
 playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";
@@ -101,3 +117,7 @@ sortedAnnilServers: SELECT * FROM local_annil_servers ORDER BY priority DESC;
 annilToUse: SELECT * FROM local_annil_servers WHERE id IN (SELECT annil_id FROM local_annil_albums WHERE album_id = ?) ORDER BY priority DESC;
 updateAnnilETag: INSERT OR REPLACE INTO local_annil_caches(annil_id, etag) VALUES (?, ?);
 availableAlbums: SELECT DISTINCT album_id FROM local_annil_albums;
+
+playbackRecordsToSubmit: SELECT id, album_id, disc_id, track_id, at FROM playback_records WHERE locked = FALSE;
+lockPlaybackRecords: UPDATE playback_records SET locked = TRUE WHERE id IN ?;
+unlockPlaybackRecords: UPDATE playback_records SET locked = FALSE WHERE id IN ?;

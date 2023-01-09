@@ -379,4 +379,14 @@ class AnnivClient {
         .map((e) => Album.fromJson(e))
         .toList();
   }
+
+  // https://book.anni.rs/06.anniv/06.statistics.html#%E6%92%AD%E6%94%BE%E8%AE%B0%E5%BD%95
+  Future<void> trackPlayback(List<SongPlayRecord> records) async {
+    if (records.isNotEmpty) {
+      await _client.post(
+        '/api/stat',
+        data: records.map((e) => e.toJson()).toList(),
+      );
+    }
+  }
 }

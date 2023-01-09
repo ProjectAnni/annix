@@ -6,7 +6,7 @@ import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:provider/provider.dart';
 
 class LyricProviderAnniv extends LyricProvider {
-  final _anniv = Provider.of<AnnivService>(Global.context, listen: false);
+  final _anniv = Global.context.read<AnnivService>();
 
   @override
   Future<List<LyricSearchResponse>> search({

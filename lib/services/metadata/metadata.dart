@@ -1,13 +1,9 @@
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
-import 'package:annix/services/metadata/metadata_source_anniv.dart';
 
 class MetadataService {
-  final List<MetadataSource> sources = [
-    // default
-    AnnivMetadataSource(),
-  ];
+  final List<MetadataSource> sources = [];
 
   /// Update metadata source by calling [doUpdate]
   ///

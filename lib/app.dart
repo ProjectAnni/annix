@@ -23,18 +23,18 @@ class AnnixApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
         ChangeNotifierProvider(create: (_) => NetworkService(), lazy: false),
-        ChangeNotifierProvider(create: (_) => PlaybackService(), lazy: false),
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,
         LocalDatabase.favoriteTracksProvider,
         LocalDatabase.favoriteAlbumsProvider,
-        ChangeNotifierProvider(create: (context) => AnnilService(context)),
         ChangeNotifierProvider(
           create: (_) => AnnixRouterDelegate(),
           lazy: false,
         ),
-        Provider(create: (c) => MetadataService()),
+        Provider(create: (_) => MetadataService()),
+        ChangeNotifierProvider(create: (context) => AnnilService(context)),
         ChangeNotifierProvider(create: (c) => AnnivService(c), lazy: false),
+        ChangeNotifierProvider(create: (c) => PlaybackService(c), lazy: false),
         Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
       ],
       builder: (context, child) {

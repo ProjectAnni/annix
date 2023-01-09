@@ -1,20 +1,19 @@
-import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:annix/services/network/network.dart';
-import 'package:provider/provider.dart';
 
 class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
-  AnnivMetadataSource();
+  final AnnivService anniv;
+
+  AnnivMetadataSource(this.anniv);
 
   @override
   Future<void> prepare() async {}
 
   @override
   Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
     final client = anniv.client;
 
     if (NetworkService.isOnline && client != null) {
@@ -26,7 +25,6 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
 
   @override
   Future<Set<String>> getAlbumsByTag(String tag) async {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
     final client = anniv.client;
 
     if (NetworkService.isOnline && client != null) {
@@ -42,7 +40,6 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
 
   @override
   Future<Map<String, TagEntry>> getTags() async {
-    final anniv = Provider.of<AnnivService>(Global.context, listen: false);
     final client = anniv.client;
 
     if (NetworkService.isOnline && client != null) {

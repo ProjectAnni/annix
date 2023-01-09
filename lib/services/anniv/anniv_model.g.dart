@@ -220,3 +220,9 @@ const _$TagTypeEnumMap = {
   TagType.Default: 'default',
   TagType.Category: 'category',
 };
+
+Map<String, dynamic> _$SongPlayRecordToJson(SongPlayRecord instance) =>
+    <String, dynamic>{
+      'track': instance.track,
+      'at': instance.at,
+    };

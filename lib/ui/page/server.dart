@@ -88,8 +88,7 @@ class AnnivCard extends StatelessWidget {
                 ],
                 onSelected: (value) {
                   if (value == 'Logout') {
-                    final anniv =
-                        Provider.of<AnnivService>(context, listen: false);
+                    final anniv = context.read<AnnivService>();
                     anniv.logout();
                   }
                 },

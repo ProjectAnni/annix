@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/annil.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -81,7 +82,17 @@ class PlaybackService extends ChangeNotifier {
 
   final rng = Random();
 
-  PlaybackService() {
+  final AnnivService anniv;
+
+  // We've loaded the latest playlist from database, and the player is in paused state,
+  // then user may 'resume' playback. Here we should track the 'resume' action as playing once.
+  //
+  // This boolean is used to track this situation. After setting source in `play`,
+  // this field would be set to `true`. It would be set back to false once current playing index
+  // is switched, or at the time when the first 'resume' action was produced.
+  bool loadedAndPaused = false;
+
+  PlaybackService(BuildContext context) : anniv = context.read() {
     _load();
 
     PlaybackService.player.onPlayerStateChanged.listen((s) {
@@ -141,7 +152,11 @@ class PlaybackService extends ChangeNotifier {
         .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
   }
 
-  Future<void> play({bool reload = false, setSourceOnly = false}) async {
+  Future<void> play({
+    bool reload = false,
+    bool setSourceOnly = false,
+    bool trackPlayback = true,
+  }) async {
     if (Global.isApple) {
       PlaybackServiceHackForIOS();
     }
@@ -157,6 +172,18 @@ class PlaybackService extends ChangeNotifier {
     if (!reload && PlaybackService.player.state == PlayerState.paused) {
       FLog.trace(text: 'Resume playing');
       await PlaybackService.player.resume();
+
+      if (loadedAndPaused) {
+        loadedAndPaused = false;
+
+        final source = this.playing?.source;
+        if (source != null) {
+          anniv.trackPlayback(
+            source.identifier,
+            DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          );
+        }
+      }
       return;
     }
 
@@ -172,6 +199,15 @@ class PlaybackService extends ChangeNotifier {
     await stop(false);
 
     final source = playing.source;
+    if (trackPlayback) {
+      // FIXME: track playback after 1/3 of the song is played
+      // Notice: we should not await statistics
+      anniv.trackPlayback(
+        source.identifier,
+        DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      );
+    }
+
     final toPlayId = source.id;
     if (!source.preloaded) {
       // current track is not preloaded, buffering
@@ -188,6 +224,7 @@ class PlaybackService extends ChangeNotifier {
       // wait for audio file to download and play it
       if (setSourceOnly) {
         await PlaybackService.player.setSource(source);
+        loadedAndPaused = true;
       } else {
         await PlaybackService.player.play(source);
       }
@@ -226,7 +263,7 @@ class PlaybackService extends ChangeNotifier {
     if (playerStatus == PlayerStatus.playing) {
       await pause();
     } else {
-      await play();
+      await play(trackPlayback: false);
     }
   }
 
@@ -350,6 +387,8 @@ class PlaybackService extends ChangeNotifier {
 
   Future<void> setPlayingIndex(int index,
       {bool reload = false, bool notify = true}) async {
+    loadedAndPaused = false;
+
     final playing = this.playing;
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index || reload) {

@@ -2366,6 +2366,329 @@ class LocalAnnilAlbums extends Table
   bool get dontWriteConstraints => true;
 }
 
+class PlaybackRecord extends DataClass implements Insertable<PlaybackRecord> {
+  final int id;
+  final String albumId;
+  final int discId;
+  final int trackId;
+  final int at;
+  final bool locked;
+  const PlaybackRecord(
+      {required this.id,
+      required this.albumId,
+      required this.discId,
+      required this.trackId,
+      required this.at,
+      required this.locked});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['album_id'] = Variable<String>(albumId);
+    map['disc_id'] = Variable<int>(discId);
+    map['track_id'] = Variable<int>(trackId);
+    map['at'] = Variable<int>(at);
+    map['locked'] = Variable<bool>(locked);
+    return map;
+  }
+
+  PlaybackRecordsCompanion toCompanion(bool nullToAbsent) {
+    return PlaybackRecordsCompanion(
+      id: Value(id),
+      albumId: Value(albumId),
+      discId: Value(discId),
+      trackId: Value(trackId),
+      at: Value(at),
+      locked: Value(locked),
+    );
+  }
+
+  factory PlaybackRecord.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlaybackRecord(
+      id: serializer.fromJson<int>(json['id']),
+      albumId: serializer.fromJson<String>(json['album_id']),
+      discId: serializer.fromJson<int>(json['disc_id']),
+      trackId: serializer.fromJson<int>(json['track_id']),
+      at: serializer.fromJson<int>(json['at']),
+      locked: serializer.fromJson<bool>(json['locked']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'album_id': serializer.toJson<String>(albumId),
+      'disc_id': serializer.toJson<int>(discId),
+      'track_id': serializer.toJson<int>(trackId),
+      'at': serializer.toJson<int>(at),
+      'locked': serializer.toJson<bool>(locked),
+    };
+  }
+
+  PlaybackRecord copyWith(
+          {int? id,
+          String? albumId,
+          int? discId,
+          int? trackId,
+          int? at,
+          bool? locked}) =>
+      PlaybackRecord(
+        id: id ?? this.id,
+        albumId: albumId ?? this.albumId,
+        discId: discId ?? this.discId,
+        trackId: trackId ?? this.trackId,
+        at: at ?? this.at,
+        locked: locked ?? this.locked,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('PlaybackRecord(')
+          ..write('id: $id, ')
+          ..write('albumId: $albumId, ')
+          ..write('discId: $discId, ')
+          ..write('trackId: $trackId, ')
+          ..write('at: $at, ')
+          ..write('locked: $locked')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, albumId, discId, trackId, at, locked);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlaybackRecord &&
+          other.id == this.id &&
+          other.albumId == this.albumId &&
+          other.discId == this.discId &&
+          other.trackId == this.trackId &&
+          other.at == this.at &&
+          other.locked == this.locked);
+}
+
+class PlaybackRecordsCompanion extends UpdateCompanion<PlaybackRecord> {
+  final Value<int> id;
+  final Value<String> albumId;
+  final Value<int> discId;
+  final Value<int> trackId;
+  final Value<int> at;
+  final Value<bool> locked;
+  const PlaybackRecordsCompanion({
+    this.id = const Value.absent(),
+    this.albumId = const Value.absent(),
+    this.discId = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.at = const Value.absent(),
+    this.locked = const Value.absent(),
+  });
+  PlaybackRecordsCompanion.insert({
+    this.id = const Value.absent(),
+    required String albumId,
+    required int discId,
+    required int trackId,
+    required int at,
+    required bool locked,
+  })  : albumId = Value(albumId),
+        discId = Value(discId),
+        trackId = Value(trackId),
+        at = Value(at),
+        locked = Value(locked);
+  static Insertable<PlaybackRecord> custom({
+    Expression<int>? id,
+    Expression<String>? albumId,
+    Expression<int>? discId,
+    Expression<int>? trackId,
+    Expression<int>? at,
+    Expression<bool>? locked,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (albumId != null) 'album_id': albumId,
+      if (discId != null) 'disc_id': discId,
+      if (trackId != null) 'track_id': trackId,
+      if (at != null) 'at': at,
+      if (locked != null) 'locked': locked,
+    });
+  }
+
+  PlaybackRecordsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? albumId,
+      Value<int>? discId,
+      Value<int>? trackId,
+      Value<int>? at,
+      Value<bool>? locked}) {
+    return PlaybackRecordsCompanion(
+      id: id ?? this.id,
+      albumId: albumId ?? this.albumId,
+      discId: discId ?? this.discId,
+      trackId: trackId ?? this.trackId,
+      at: at ?? this.at,
+      locked: locked ?? this.locked,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (albumId.present) {
+      map['album_id'] = Variable<String>(albumId.value);
+    }
+    if (discId.present) {
+      map['disc_id'] = Variable<int>(discId.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (at.present) {
+      map['at'] = Variable<int>(at.value);
+    }
+    if (locked.present) {
+      map['locked'] = Variable<bool>(locked.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaybackRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('albumId: $albumId, ')
+          ..write('discId: $discId, ')
+          ..write('trackId: $trackId, ')
+          ..write('at: $at, ')
+          ..write('locked: $locked')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class PlaybackRecords extends Table
+    with TableInfo<PlaybackRecords, PlaybackRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  PlaybackRecords(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
+  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
+      'album_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _discIdMeta = const VerificationMeta('discId');
+  late final GeneratedColumn<int> discId = GeneratedColumn<int>(
+      'disc_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _trackIdMeta = const VerificationMeta('trackId');
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+      'track_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _atMeta = const VerificationMeta('at');
+  late final GeneratedColumn<int> at = GeneratedColumn<int>(
+      'at', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  final VerificationMeta _lockedMeta = const VerificationMeta('locked');
+  late final GeneratedColumn<bool> locked = GeneratedColumn<bool>(
+      'locked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, albumId, discId, trackId, at, locked];
+  @override
+  String get aliasedName => _alias ?? 'playback_records';
+  @override
+  String get actualTableName => 'playback_records';
+  @override
+  VerificationContext validateIntegrity(Insertable<PlaybackRecord> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('album_id')) {
+      context.handle(_albumIdMeta,
+          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    } else if (isInserting) {
+      context.missing(_albumIdMeta);
+    }
+    if (data.containsKey('disc_id')) {
+      context.handle(_discIdMeta,
+          discId.isAcceptableOrUnknown(data['disc_id']!, _discIdMeta));
+    } else if (isInserting) {
+      context.missing(_discIdMeta);
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('at')) {
+      context.handle(_atMeta, at.isAcceptableOrUnknown(data['at']!, _atMeta));
+    } else if (isInserting) {
+      context.missing(_atMeta);
+    }
+    if (data.containsKey('locked')) {
+      context.handle(_lockedMeta,
+          locked.isAcceptableOrUnknown(data['locked']!, _lockedMeta));
+    } else if (isInserting) {
+      context.missing(_lockedMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlaybackRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlaybackRecord(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      albumId: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+      discId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}disc_id'])!,
+      trackId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}track_id'])!,
+      at: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}at'])!,
+      locked: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}locked'])!,
+    );
+  }
+
+  @override
+  PlaybackRecords createAlias(String alias) {
+    return PlaybackRecords(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
   late final LocalFavoriteTracks localFavoriteTracks =
@@ -2381,6 +2704,7 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   late final LocalAnnilServers localAnnilServers = LocalAnnilServers(this);
   late final LocalAnnilCaches localAnnilCaches = LocalAnnilCaches(this);
   late final LocalAnnilAlbums localAnnilAlbums = LocalAnnilAlbums(this);
+  late final PlaybackRecords playbackRecords = PlaybackRecords(this);
   Selectable<PlaylistItemData> playlistItems(int var1) {
     return customSelect(
         'SELECT * FROM playlist_item WHERE playlist_id = ?1 ORDER BY "order"',
@@ -2453,10 +2777,50 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         }).map((QueryRow row) => row.read<String>('album_id'));
   }
 
+  Selectable<PlaybackRecordsToSubmitResult> playbackRecordsToSubmit() {
+    return customSelect(
+        'SELECT id, album_id, disc_id, track_id, at FROM playback_records WHERE locked = FALSE',
+        variables: [],
+        readsFrom: {
+          playbackRecords,
+        }).map((QueryRow row) {
+      return PlaybackRecordsToSubmitResult(
+        id: row.read<int>('id'),
+        albumId: row.read<String>('album_id'),
+        discId: row.read<int>('disc_id'),
+        trackId: row.read<int>('track_id'),
+        at: row.read<int>('at'),
+      );
+    });
+  }
+
+  Future<int> lockPlaybackRecords(List<int> var1) {
+    var $arrayStartIndex = 1;
+    final expandedvar1 = $expandVar($arrayStartIndex, var1.length);
+    $arrayStartIndex += var1.length;
+    return customUpdate(
+      'UPDATE playback_records SET locked = TRUE WHERE id IN ($expandedvar1)',
+      variables: [for (var $ in var1) Variable<int>($)],
+      updates: {playbackRecords},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> unlockPlaybackRecords(List<int> var1) {
+    var $arrayStartIndex = 1;
+    final expandedvar1 = $expandVar($arrayStartIndex, var1.length);
+    $arrayStartIndex += var1.length;
+    return customUpdate(
+      'UPDATE playback_records SET locked = FALSE WHERE id IN ($expandedvar1)',
+      variables: [for (var $ in var1) Variable<int>($)],
+      updates: {playbackRecords},
+      updateKind: UpdateKind.update,
+    );
+  }
+
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         localFavoriteTracks,
@@ -2467,6 +2831,22 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         localFavoriteAlbums,
         localAnnilServers,
         localAnnilCaches,
-        localAnnilAlbums
+        localAnnilAlbums,
+        playbackRecords
       ];
+}
+
+class PlaybackRecordsToSubmitResult {
+  final int id;
+  final String albumId;
+  final int discId;
+  final int trackId;
+  final int at;
+  PlaybackRecordsToSubmitResult({
+    required this.id,
+    required this.albumId,
+    required this.discId,
+    required this.trackId,
+    required this.at,
+  });
 }

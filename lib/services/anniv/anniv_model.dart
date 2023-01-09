@@ -598,3 +598,13 @@ class TagInfo {
   factory TagInfo.fromJson(Map<String, dynamic> json) =>
       _$TagInfoFromJson(json);
 }
+
+@JsonSerializable(fieldRename: FieldRename.snake, createFactory: false)
+class SongPlayRecord {
+  final TrackIdentifier track;
+  final List<int> at;
+
+  SongPlayRecord({required this.track, required this.at});
+
+  Map<String, dynamic> toJson() => _$SongPlayRecordToJson(this);
+}
