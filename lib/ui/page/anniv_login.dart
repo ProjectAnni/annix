@@ -63,7 +63,7 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
               ),
               controller: _passwordController,
               obscureText: true,
-              autofillHints: const [AutofillHints.email],
+              autofillHints: const [AutofillHints.password],
             ),
           ),
         ],
