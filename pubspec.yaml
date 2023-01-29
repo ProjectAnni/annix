@@ -52,7 +52,10 @@ dependencies:
     git:
       url: https://github.com/suragch/audio_video_progress_bar
       ref: 3ea22dd354d67b8d685680195e585d3174f216fa
-  extended_image: ^6.3.4
+  extended_image:
+    git:
+      url: https://github.com/chaudharydeepanshu/extended_image
+      ref: 4b2370fbad2d6a06067449c559a88e316aab4036
   flutter_lyric: ^2.0.4+6
   settings_ui: ^2.0.2
   cupertino_icons: ^1.0.5

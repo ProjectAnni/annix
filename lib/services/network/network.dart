@@ -31,21 +31,23 @@ class NetworkService extends ChangeNotifier {
         isMobile = true;
         break;
       default:
-        // no network
-        isConnected = false;
-        isMobile = false;
-
-        if (Global.isApple) {
+        // no network or vpn
+        if (Global.isApple || result == ConnectivityResult.vpn) {
           // on apple devices, VPN connection may result in ConnectivityResult.none
           // so add an polyfill to check internet accessibility
           // https://github.com/fluttercommunity/plus_plugins/issues/857
           _canVisitInternet().then((value) {
-            if (value) {
-              isConnected = value;
-              notifyListeners();
-            }
+            // keep `isMobile` property and set isConnected
+            isConnected = value;
+            notifyListeners();
           });
+          // early return, do not notify listeners here
+          return;
         }
+
+        // not vpn, ConnectivityResult.none
+        isConnected = false;
+        isMobile = false;
         break;
     }
     notifyListeners();
