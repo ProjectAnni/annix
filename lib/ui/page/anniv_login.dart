@@ -28,45 +28,51 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
       appBar: AppBar(
         title: Text(t.server.login_to_anniv),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            child: TextField(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.cloud_outlined),
-                border: OutlineInputBorder(),
-                labelText: 'Server',
+      body: AutofillGroup(
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: TextField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.cloud_outlined),
+                  border: OutlineInputBorder(),
+                  labelText: 'Server',
+                ),
+                controller: _serverUrlController,
+                autofillHints: const [AutofillHints.url],
               ),
-              controller: _serverUrlController,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            child: TextField(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.email_outlined),
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: TextField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.email_outlined),
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                controller: _emailController,
+                autofillHints: const [AutofillHints.email],
               ),
-              controller: _emailController,
-              autofillHints: const [AutofillHints.email],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            child: TextField(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.password),
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: TextField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.password),
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                controller: _passwordController,
+                obscureText: true,
+                autofillHints: const [AutofillHints.password],
               ),
-              controller: _passwordController,
-              obscureText: true,
-              autofillHints: const [AutofillHints.password],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
@@ -93,12 +99,13 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
             try {
               showLoadingDialog(context);
               await anniv.login(url, email, password);
-              delegate.popRoute();
+              // pop login page
+              await delegate.popRoute();
             } catch (e) {
               _showSnackBar(context, e.toString());
             } finally {
               // hide loading dialog
-              Navigator.of(context, rootNavigator: true).pop();
+              await delegate.popRoute();
             }
           }
         },
