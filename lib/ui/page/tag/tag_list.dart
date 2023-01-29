@@ -37,7 +37,7 @@ class TagList extends StatelessWidget {
 
                   return Expanded(
                     child: TabBarView(
-                      children: List.generate(9, (index) {
+                      children: List.generate(TagType.values.length, (index) {
                         final type = TagType.values[index];
                         return ListView(
                           children: sorted.values
