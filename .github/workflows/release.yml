@@ -53,6 +53,16 @@ jobs:
           mkdir ~/.gradle
           echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
           cat ~/.gradle/gradle.properties
+          
+          # Install rust targets
+          rustup target add \
+              aarch64-linux-android \
+              armv7-linux-androideabi \
+              x86_64-linux-android \
+              i686-linux-android
+          
+          # Install cargo-ndk
+          cargo install cargo-ndk --version 2.6.0
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
