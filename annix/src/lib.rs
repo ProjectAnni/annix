@@ -1,2 +1,2 @@
-mod api;
-mod generated;
+pub mod api;
+pub mod bridge_generated;

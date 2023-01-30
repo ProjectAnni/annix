@@ -11,7 +11,7 @@ export 'package:annix/bridge/definitions.dart';
 export 'generated.dart';
 import 'dart:io' as io;
 
-const _base = 'annix';
+const _base = 'annix_native';
 
 // On MacOS, the dynamic library is not bundled with the binary,
 // but rather directly **linked** against the binary.

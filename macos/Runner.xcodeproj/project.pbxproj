@@ -27,6 +27,7 @@
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		6A55AD03CF05AE9DAEA01A2F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B70645B30ED9D08AE6AC747 /* Pods_Runner.framework */; };
+		F0FE9B4F2987E60C006DEF0A /* annix-native.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FE9B4C2987E5FB006DEF0A /* annix-native.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 33CC111A2044C6BA0003C045;
 			remoteInfo = FLX;
+		};
+		F0FE9B492987E5FB006DEF0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F0FE9B442987E5FB006DEF0A /* annix-native.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA6018290BF0C23223ACCBC7;
+			remoteInfo = "annix-native-staticlib";
+		};
+		F0FE9B4B2987E5FB006DEF0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F0FE9B442987E5FB006DEF0A /* annix-native.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA602D7A814EDCBC4C003A35;
+			remoteInfo = "annix-native-cdylib";
+		};
+		F0FE9B4D2987E605006DEF0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F0FE9B442987E5FB006DEF0A /* annix-native.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CA602D7A814EBF74755E4299;
+			remoteInfo = "annix-native-cdylib";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -56,7 +78,7 @@
 		2C14F4D27ED96FB175B9046B /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
 		335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedPluginRegistrant.swift; sourceTree = "<group>"; };
-		33CC10ED2044A3C60003C045 /* annix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = annix.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		33CC10ED2044A3C60003C045 /* Annix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Annix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		33CC10F02044A3C60003C045 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		33CC10F22044A3C60003C045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Runner/Assets.xcassets; sourceTree = "<group>"; };
 		33CC10F52044A3C60003C045 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -74,6 +96,7 @@
 		7B70645B30ED9D08AE6AC747 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		F06F68312765FD4F00494820 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		F0FE9B442987E5FB006DEF0A /* annix-native.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "annix-native.xcodeproj"; path = "../../annix/annix-native.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0FE9B4F2987E60C006DEF0A /* annix-native.dylib in Frameworks */,
 				6A55AD03CF05AE9DAEA01A2F /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -113,7 +137,7 @@
 		33CC10EE2044A3C60003C045 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				33CC10ED2044A3C60003C045 /* annix.app */,
+				33CC10ED2044A3C60003C045 /* Annix.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -143,6 +167,7 @@
 		33FAB671232836740065AC1E /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				F0FE9B442987E5FB006DEF0A /* annix-native.xcodeproj */,
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
@@ -172,6 +197,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F0FE9B452987E5FB006DEF0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F0FE9B4A2987E5FB006DEF0A /* libannix-native_static.a */,
+				F0FE9B4C2987E5FB006DEF0A /* annix-native.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -190,11 +224,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				F0FE9B4E2987E605006DEF0A /* PBXTargetDependency */,
 				33CC11202044C79F0003C045 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
-			productReference = 33CC10ED2044A3C60003C045 /* annix.app */;
+			productReference = 33CC10ED2044A3C60003C045 /* Annix.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -234,6 +269,12 @@
 			mainGroup = 33CC10E42044A3C60003C045;
 			productRefGroup = 33CC10EE2044A3C60003C045 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F0FE9B452987E5FB006DEF0A /* Products */;
+					ProjectRef = F0FE9B442987E5FB006DEF0A /* annix-native.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				33CC10EC2044A3C60003C045 /* Runner */,
@@ -241,6 +282,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		F0FE9B4A2987E5FB006DEF0A /* libannix-native_static.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libannix-native_static.a";
+			remoteRef = F0FE9B492987E5FB006DEF0A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F0FE9B4C2987E5FB006DEF0A /* annix-native.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = "annix-native.dylib";
+			remoteRef = F0FE9B4B2987E5FB006DEF0A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		33CC10EB2044A3C60003C045 /* Resources */ = {
@@ -353,6 +411,11 @@
 			target = 33CC111A2044C6BA0003C045 /* Flutter Assemble */;
 			targetProxy = 33CC111F2044C79F0003C045 /* PBXContainerItemProxy */;
 		};
+		F0FE9B4E2987E605006DEF0A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "annix-native-cdylib";
+			targetProxy = F0FE9B4D2987E605006DEF0A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -410,6 +473,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = Runner/bridge_generated.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Profile;
@@ -491,6 +555,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = Runner/bridge_generated.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -538,6 +603,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = Runner/bridge_generated.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;

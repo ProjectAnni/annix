@@ -14,7 +14,32 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		DDF2F9DCBC938069101C6BAD /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56321345F875A946175CCBC /* Pods_Runner.framework */; };
+		F0FE9B432987E5E8006DEF0A /* libannix-native_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FE9B3E2987E540006DEF0A /* libannix-native_static.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F0FE9B3D2987E540006DEF0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA6018290BF0C23223ACCBC7;
+			remoteInfo = "annix-native-staticlib";
+		};
+		F0FE9B3F2987E540006DEF0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA602D7A814EDCBC4C003A35;
+			remoteInfo = "annix-native-cdylib";
+		};
+		F0FE9B412987E5AD006DEF0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CA6018290BF017539D7B083D;
+			remoteInfo = "annix-native-staticlib";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
@@ -48,6 +73,7 @@
 		C39A741CB394EE0A876AE4E1 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		D56321345F875A946175CCBC /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F027121827659079008E18C6 /* Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Release.plist"; sourceTree = "<group>"; };
+		F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "annix-native.xcodeproj"; path = "../../annix/annix-native.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0FE9B432987E5E8006DEF0A /* libannix-native_static.a in Frameworks */,
 				DDF2F9DCBC938069101C6BAD /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,6 +133,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -127,6 +155,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F0FE9B392987E540006DEF0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F0FE9B3E2987E540006DEF0A /* libannix-native_static.a */,
+				F0FE9B402987E540006DEF0A /* annix-native.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -146,6 +183,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F0FE9B422987E5AD006DEF0A /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -178,12 +216,35 @@
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F0FE9B392987E540006DEF0A /* Products */;
+					ProjectRef = F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		F0FE9B3E2987E540006DEF0A /* libannix-native_static.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libannix-native_static.a";
+			remoteRef = F0FE9B3D2987E540006DEF0A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F0FE9B402987E540006DEF0A /* annix-native.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = "annix-native.dylib";
+			remoteRef = F0FE9B3F2987E540006DEF0A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		97C146EC1CF9000F007C117D /* Resources */ = {
@@ -224,6 +285,7 @@
 			files = (
 			);
 			inputPaths = (
+				"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}",
 			);
 			name = "Thin Binary";
 			outputPaths = (
@@ -282,6 +344,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F0FE9B422987E5AD006DEF0A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "annix-native-staticlib";
+			targetProxy = F0FE9B412987E5AD006DEF0A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -350,6 +420,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				STRIP_STYLE = "non-global";
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -440,6 +511,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -491,6 +563,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				STRIP_STYLE = "non-global";
 				SUPPORTED_PLATFORMS = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

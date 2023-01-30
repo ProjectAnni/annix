@@ -8,6 +8,8 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
+  - file_picker (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
@@ -45,6 +47,7 @@ DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -68,6 +71,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audioplayers_darwin/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
+  file_picker:
+    :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
   path_provider_ios:
@@ -88,6 +93,7 @@ SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  file_picker: 1d63c4949e05e386da864365f8c13e1e64787675
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
@@ -99,6 +105,6 @@ SPEC CHECKSUMS:
   sqlite3_flutter_libs: c6ab7f23670a98fef45a137159452004bc552168
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
-PODFILE CHECKSUM: 94b700da46e2c82b6cf27a42198057964de975ce
+PODFILE CHECKSUM: 6171a515a08b5b286b8c8cf5e161c33e43535381
 
 COCOAPODS: 1.11.2

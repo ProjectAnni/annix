@@ -1,6 +1,6 @@
 // !$*UTF8*$!
 {
-    /* generated with cargo-xcode 1.5.0 */
+    /* generated with cargo-xcode 1.4.3 */
     archiveVersion = 1;
     classes = {
     };
@@ -39,7 +39,7 @@
             outputFiles = (
                 "$(OBJECT_FILE_DIR)/$(CARGO_XCODE_TARGET_ARCH)-$(EXECUTABLE_NAME)",
             );
-            script = "# generated with cargo-xcode 1.5.0\n\nset -eu; export PATH=\"$PATH:$HOME/.cargo/bin:/usr/local/bin\";\nif [ \"${IS_MACCATALYST-NO}\" = YES ]; then\n    CARGO_XCODE_TARGET_TRIPLE=\"${CARGO_XCODE_TARGET_ARCH}-apple-ios-macabi\"\nelse\n    CARGO_XCODE_TARGET_TRIPLE=\"${CARGO_XCODE_TARGET_ARCH}-apple-${CARGO_XCODE_TARGET_OS}\"\nfi\nif [ \"$CARGO_XCODE_TARGET_OS\" != \"darwin\" ]; then\n    PATH=\"${PATH/\\/Contents\\/Developer\\/Toolchains\\/XcodeDefault.xctoolchain\\/usr\\/bin:/xcode-provided-ld-cant-link-lSystem-for-the-host-build-script:}\"\nfi\nPATH=\"$PATH:/opt/homebrew/bin\" # Rust projects often depend on extra tools like nasm, which Xcode lacks\nif [ \"$CARGO_XCODE_BUILD_MODE\" == release ]; then\n    OTHER_INPUT_FILE_FLAGS=\"${OTHER_INPUT_FILE_FLAGS} --release\"\nfi\nif command -v rustup &> /dev/null; then\n    if ! rustup target list --installed | egrep -q \"${CARGO_XCODE_TARGET_TRIPLE}\"; then\n        echo \"warning: this build requires rustup toolchain for $CARGO_XCODE_TARGET_TRIPLE, but it isn\'t installed\"\n        rustup target add \"${CARGO_XCODE_TARGET_TRIPLE}\" || echo >&2 \"warning: can\'t install $CARGO_XCODE_TARGET_TRIPLE\"\n    fi\nfi\nif [ \"$ACTION\" = clean ]; then\n ( set -x; cargo clean --manifest-path=\"$SCRIPT_INPUT_FILE\" ${OTHER_INPUT_FILE_FLAGS} --target=\"${CARGO_XCODE_TARGET_TRIPLE}\"; );\nelse\n ( set -x; cargo build --manifest-path=\"$SCRIPT_INPUT_FILE\" --features=\"${CARGO_XCODE_FEATURES:-}\" ${OTHER_INPUT_FILE_FLAGS} --target=\"${CARGO_XCODE_TARGET_TRIPLE}\"; );\nfi\n# it\'s too hard to explain Cargo\'s actual exe path to Xcode build graph, so hardlink to a known-good path instead\nBUILT_SRC=\"${CARGO_TARGET_DIR}/${CARGO_XCODE_TARGET_TRIPLE}/${CARGO_XCODE_BUILD_MODE}/${CARGO_XCODE_CARGO_FILE_NAME}\"\nln -f -- \"$BUILT_SRC\" \"$SCRIPT_OUTPUT_FILE_0\"\n\n# xcode generates dep file, but for its own path, so append our rename to it\nDEP_FILE_SRC=\"${CARGO_TARGET_DIR}/${CARGO_XCODE_TARGET_TRIPLE}/${CARGO_XCODE_BUILD_MODE}/${CARGO_XCODE_CARGO_DEP_FILE_NAME}\"\nif [ -f \"$DEP_FILE_SRC\" ]; then\n    DEP_FILE_DST=\"${DERIVED_FILE_DIR}/${CARGO_XCODE_TARGET_ARCH}-${EXECUTABLE_NAME}.d\"\n    cp -f \"$DEP_FILE_SRC\" \"$DEP_FILE_DST\"\n    echo >> \"$DEP_FILE_DST\" \"$SCRIPT_OUTPUT_FILE_0: $BUILT_SRC\"\nfi\n\n# lipo script needs to know all the platform-specific files that have been built\n# archs is in the file name, so that paths don\'t stay around after archs change\n# must match input for LipoScript\nFILE_LIST=\"${DERIVED_FILE_DIR}/${ARCHS}-${EXECUTABLE_NAME}.xcfilelist\"\ntouch \"$FILE_LIST\"\nif ! egrep -q \"$SCRIPT_OUTPUT_FILE_0\" \"$FILE_LIST\" ; then\n    echo >> \"$FILE_LIST\" \"$SCRIPT_OUTPUT_FILE_0\"\nfi\n";
+            script = "# generated with cargo-xcode 1.4.3\n\nset -eu; export PATH=$PATH:~/.cargo/bin:/usr/local/bin;\nif [ \"${IS_MACCATALYST-NO}\" = YES ]; then\n    CARGO_XCODE_TARGET_TRIPLE=\"${CARGO_XCODE_TARGET_ARCH}-apple-ios-macabi\"\nelse\n    CARGO_XCODE_TARGET_TRIPLE=\"${CARGO_XCODE_TARGET_ARCH}-apple-${CARGO_XCODE_TARGET_OS}\"\nfi\nif [ \"$CARGO_XCODE_TARGET_OS\" != \"darwin\" ]; then\n    PATH=\"${PATH/\\/Contents\\/Developer\\/Toolchains\\/XcodeDefault.xctoolchain\\/usr\\/bin:/xcode-provided-ld-cant-link-lSystem-for-the-host-build-script:}\"\nfi\nPATH=\"$PATH:/opt/homebrew/bin\" # Rust projects often depend on extra tools like nasm, which Xcode lacks\nif [ \"$CARGO_XCODE_BUILD_MODE\" == release ]; then\n    OTHER_INPUT_FILE_FLAGS=\"${OTHER_INPUT_FILE_FLAGS} --release\"\nfi\nif command -v rustup &> /dev/null; then\n    if ! rustup target list --installed | egrep -q \"${CARGO_XCODE_TARGET_TRIPLE}\"; then\n        echo \"warning: this build requires rustup toolchain for $CARGO_XCODE_TARGET_TRIPLE, but it isn\'t installed\"\n        rustup target add \"${CARGO_XCODE_TARGET_TRIPLE}\" || echo >&2 \"warning: can\'t install $CARGO_XCODE_TARGET_TRIPLE\"\n    fi\nfi\nif [ \"$ACTION\" = clean ]; then\n ( set -x; cargo clean --manifest-path=\"$SCRIPT_INPUT_FILE\" ${OTHER_INPUT_FILE_FLAGS} --target=\"${CARGO_XCODE_TARGET_TRIPLE}\"; );\nelse\n ( set -x; cargo build --manifest-path=\"$SCRIPT_INPUT_FILE\" --features=\"${CARGO_XCODE_FEATURES:-}\" ${OTHER_INPUT_FILE_FLAGS} --target=\"${CARGO_XCODE_TARGET_TRIPLE}\"; );\nfi\n# it\'s too hard to explain Cargo\'s actual exe path to Xcode build graph, so hardlink to a known-good path instead\nBUILT_SRC=\"${CARGO_TARGET_DIR}/${CARGO_XCODE_TARGET_TRIPLE}/${CARGO_XCODE_BUILD_MODE}/${CARGO_XCODE_CARGO_FILE_NAME}\"\nln -f -- \"$BUILT_SRC\" \"$SCRIPT_OUTPUT_FILE_0\"\n\n# xcode generates dep file, but for its own path, so append our rename to it\nDEP_FILE_SRC=\"${CARGO_TARGET_DIR}/${CARGO_XCODE_TARGET_TRIPLE}/${CARGO_XCODE_BUILD_MODE}/${CARGO_XCODE_CARGO_DEP_FILE_NAME}\"\nif [ -f \"$DEP_FILE_SRC\" ]; then\n    DEP_FILE_DST=\"${DERIVED_FILE_DIR}/${CARGO_XCODE_TARGET_ARCH}-${EXECUTABLE_NAME}.d\"\n    cp -f \"$DEP_FILE_SRC\" \"$DEP_FILE_DST\"\n    echo >> \"$DEP_FILE_DST\" \"$SCRIPT_OUTPUT_FILE_0: $BUILT_SRC\"\nfi\n\n# lipo script needs to know all the platform-specific files that have been built\n# archs is in the file name, so that paths don\'t stay around after archs change\n# must match input for LipoScript\nFILE_LIST=\"${DERIVED_FILE_DIR}/${ARCHS}-${EXECUTABLE_NAME}.xcfilelist\"\ntouch \"$FILE_LIST\"\nif ! egrep -q \"$SCRIPT_OUTPUT_FILE_0\" \"$FILE_LIST\" ; then\n    echo >> \"$FILE_LIST\" \"$SCRIPT_OUTPUT_FILE_0\"\nfi\n";
         };
 /* End PBXBuildRule section */
 
@@ -187,7 +187,6 @@ CA60642C40C098AF0B5890DB,
                 INSTALL_GROUP = "";
                 INSTALL_MODE_FLAG = "";
                 INSTALL_OWNER = "";
-                    
                 };
                 name = Release;
             };
@@ -202,7 +201,6 @@ CA60642C40C098AF0B5890DB,
                 INSTALL_GROUP = "";
                 INSTALL_MODE_FLAG = "";
                 INSTALL_OWNER = "";
-                    
                 };
                 name = Debug;
             };CA60B5797E3BBF74755E4299 = {
@@ -231,7 +229,6 @@ CA60642C40C098AF0B5890DB,
                     "CARGO_XCODE_CARGO_DEP_FILE_NAME" = "libannix_native.d";
                     SUPPORTED_PLATFORMS = "macosx";
                     
-                    DYLIB_COMPATIBILITY_VERSION = "0";
                 };
                 name = Release;
             };
@@ -243,7 +240,6 @@ CA60642C40C098AF0B5890DB,
                     "CARGO_XCODE_CARGO_DEP_FILE_NAME" = "libannix_native.d";
                     SUPPORTED_PLATFORMS = "macosx";
                     
-                    DYLIB_COMPATIBILITY_VERSION = "0";
                 };
                 name = Debug;
             };
@@ -263,7 +259,7 @@ CA60642C40C098AF0B5890DB,
             );
             runOnlyForDeploymentPostprocessing = 0;
             shellPath = /bin/sh;
-            shellScript = "# generated with cargo-xcode 1.5.0\n\n            set -eux; cat \"$DERIVED_FILE_DIR/$ARCHS-$EXECUTABLE_NAME.xcfilelist\" | tr \'\\n\' \'\\0\' | xargs -0 lipo -create -output \"$TARGET_BUILD_DIR/$EXECUTABLE_PATH\"\n            if [ ${LD_DYLIB_INSTALL_NAME:+1} ]; then\n                install_name_tool -id \"$LD_DYLIB_INSTALL_NAME\" \"$TARGET_BUILD_DIR/$EXECUTABLE_PATH\"\n            fi\n        ";
+            shellScript = "# generated with cargo-xcode 1.4.3\nset -eux; cat \"$DERIVED_FILE_DIR/$ARCHS-$EXECUTABLE_NAME.xcfilelist\" | tr '\\n' '\\0' | xargs -0 lipo -create -output \"$TARGET_BUILD_DIR/$EXECUTABLE_PATH\"";
         };
 
         CA60642C40C080E02D6C7F57 = {
@@ -294,8 +290,6 @@ CA60642C40C098AF0B5890DB,
             "CARGO_XCODE_TARGET_OS[sdk=appletvsimulator*]" = "tvos";
             "CARGO_XCODE_TARGET_OS[sdk=appletvos*]" = "tvos";
             PRODUCT_NAME = "annix-native";
-            MARKETING_VERSION = "0.1.0";
-            CURRENT_PROJECT_VERSION = "0.1";
             SDKROOT = macosx;
         
                 "CARGO_XCODE_BUILD_MODE" = "release"; /* for xcode scripts */
@@ -321,8 +315,6 @@ CA60642C40C098AF0B5890DB,
             "CARGO_XCODE_TARGET_OS[sdk=appletvsimulator*]" = "tvos";
             "CARGO_XCODE_TARGET_OS[sdk=appletvos*]" = "tvos";
             PRODUCT_NAME = "annix-native";
-            MARKETING_VERSION = "0.1.0";
-            CURRENT_PROJECT_VERSION = "0.1";
             SDKROOT = macosx;
         
                 "CARGO_XCODE_BUILD_MODE" = "debug"; /* for xcode scripts */

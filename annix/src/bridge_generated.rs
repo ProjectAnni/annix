@@ -75,7 +75,7 @@ support::lazy_static! {
 }
 
 #[cfg(not(target_family = "wasm"))]
-#[path = "bridge.io.rs"]
+#[path = "bridge_generated.io.rs"]
 mod io;
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;

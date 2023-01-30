@@ -17,9 +17,9 @@ flutter_rust_bridge_codegen \
     --rust-input annix/src/api.rs \
     --dart-output lib/bridge/generated.dart \
     --dart-decl-output lib/bridge/definitions.dart \
-    --c-output ios/Runner/bridge.h \
+    --c-output ios/Runner/bridge_generated.h \
     --extra-c-output-path macos/Runner/ \
-    --rust-output annix/src/generated/bridge.rs
+    --rust-output annix/src/bridge_generated.rs
 
 # [Optional] Build models
 flutter pub run build_runner build --delete-conflicting-outputs
