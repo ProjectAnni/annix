@@ -52,8 +52,8 @@ jobs:
           cargo install cargo-ndk --version 2.6.0
 
           # Add missing 'bits/wordsize.h'
-          mkdir -p /usr/include/bits
-          echo "${{ secrets.BITS_WORDSIZE_H }}" > /usr/include/bits/wordsize.h
+          sudo mkdir -p /usr/include/bits
+          echo "${{ secrets.BITS_WORDSIZE_H }}" | sudo tee -a /usr/include/bits/wordsize.h
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
