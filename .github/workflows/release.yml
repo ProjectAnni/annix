@@ -35,6 +35,7 @@ jobs:
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Android NDK
         run: |
+          mkdir ~/.gradle
           echo "ANDROID_NDK=$ANDROID_NDK" >> ~/.gradle/gradle.properties
       - name: Setup | Keystore
         run: |
