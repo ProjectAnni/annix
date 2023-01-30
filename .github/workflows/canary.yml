@@ -47,12 +47,11 @@ jobs:
               armv7-linux-androideabi \
               x86_64-linux-android \
               i686-linux-android
-          
           # Install cargo-ndk
           cargo install cargo-ndk --version 2.6.0
 
-          # Symlink for /usr/include/bits
-          sudo ln -s /usr/include/x86_64-linux-gnu/bits /usr/include/bits
+          # /usr/include/bits
+          sudo apt install libc6-dev-i386
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
