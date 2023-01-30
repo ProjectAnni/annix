@@ -12,6 +12,15 @@ Desktop / Mobile client for Project Anni.
 ## Build
 
 ```bash
+export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
+flutter_rust_bridge_codegen \
+    --rust-input annix/src/api.rs \
+    --dart-output lib/bridge/generated.dart \
+    --dart-decl-output lib/bridge/definitions.dart \
+    --c-output ios/Runner/bridge.h \
+    --extra-c-output-path macos/Runner/ \
+    --rust-output annix/src/generated/bridge.rs
+
 # [Optional] Build models
 flutter pub run build_runner build --delete-conflicting-outputs
 

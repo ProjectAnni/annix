@@ -95,14 +95,19 @@ dependencies:
 
   # file 6.12 -> 6.14 is breaking, specify version manually
   file: ^6.1.4
+  ffi: ^2.0.1
+  flutter_rust_bridge: ^1.62.0
+  freezed_annotation: ^2.2.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
   drift_dev: ^2.1.0
-  build_runner: ^2.2.1
+  build_runner: ^2.4.0
   slang_build_runner: ^3.5.0
+  ffigen: ^7.2.4
+  freezed: ^2.3.2
 
 flutter:
   uses-material-design: true
