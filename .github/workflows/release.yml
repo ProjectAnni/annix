@@ -64,13 +64,8 @@ jobs:
           # Install cargo-ndk
           cargo install cargo-ndk --version 2.6.0
           
-          # Add missing 'bits/wordsize.h'
-          sudo mkdir -p /usr/include/bits
-          echo "${{ secrets.BITS_WORDSIZE_H }}" | sudo tee -a /usr/include/bits/wordsize.h
-          
-          # Install 32-bit toolchain
-          sudo apt update -y
-          sudo apt install gcc-multilib g++-multilib -y
+          # Symlink for /usr/include/bits
+          sudo ln -s /usr/include/x86_64-linux-gnu/bits /usr/include/bits
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
