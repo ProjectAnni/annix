@@ -37,7 +37,7 @@ jobs:
           ln -sfn $ANDROID_SDK_ROOT/ndk/21.4.7075529 $ANDROID_NDK_ROOT
 
           # Apply to gradle
-          mkdir ~/.gradle
+          mkdir -p ~/.gradle
           echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
           cat ~/.gradle/gradle.properties
           
@@ -50,6 +50,10 @@ jobs:
           
           # Install cargo-ndk
           cargo install cargo-ndk --version 2.6.0
+
+          # Add missing 'bits/wordsize.h'
+          mkdir -p /usr/include/bits
+          echo "${{ secrets.BITS_WORDSIZE_H }}" > /usr/include/bits/wordsize.h
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
