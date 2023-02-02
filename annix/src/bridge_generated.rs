@@ -39,6 +39,19 @@ fn wire_add_impl(
         },
     )
 }
+fn wire_get_color_from_image_impl(port_: MessagePort, path: impl Wire2Api<String> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "get_color_from_image",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_path = path.wire2api();
+            move |task_callback| Ok(get_color_from_image(api_path))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -61,6 +74,13 @@ where
         (!self.is_null()).then(|| self.wire2api())
     }
 }
+
+impl Wire2Api<u8> for u8 {
+    fn wire2api(self) -> u8 {
+        self
+    }
+}
+
 impl Wire2Api<usize> for usize {
     fn wire2api(self) -> usize {
         self

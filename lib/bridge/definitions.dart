@@ -11,4 +11,8 @@ abstract class AnnixNative {
   Future<int> add({required int left, required int right, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kAddConstMeta;
+
+  Future<Uint32List> getColorFromImage({required String path, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kGetColorFromImageConstMeta;
 }

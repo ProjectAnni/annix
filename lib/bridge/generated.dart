@@ -42,10 +42,36 @@ class AnnixNativeImpl implements AnnixNative {
         argNames: ["left", "right"],
       );
 
+  Future<Uint32List> getColorFromImage({required String path, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(path);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_get_color_from_image(port_, arg0),
+      parseSuccessData: _wire2api_uint_32_list,
+      constMeta: kGetColorFromImageConstMeta,
+      argValues: [path],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kGetColorFromImageConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "get_color_from_image",
+        argNames: ["path"],
+      );
+
   void dispose() {
     _platform.dispose();
   }
 // Section: wire2api
+
+  int _wire2api_u32(dynamic raw) {
+    return raw as int;
+  }
+
+  Uint32List _wire2api_uint_32_list(dynamic raw) {
+    return raw as Uint32List;
+  }
 
   int _wire2api_usize(dynamic raw) {
     return castInt(raw);
@@ -53,6 +79,11 @@ class AnnixNativeImpl implements AnnixNative {
 }
 
 // Section: api2wire
+
+@protected
+int api2wire_u8(int raw) {
+  return raw;
+}
 
 @protected
 int api2wire_usize(int raw) {
@@ -64,6 +95,18 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
   AnnixNativePlatform(ffi.DynamicLibrary dylib) : super(AnnixNativeWire(dylib));
 
 // Section: api2wire
+
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_String(String raw) {
+    return api2wire_uint_8_list(utf8.encoder.convert(raw));
+  }
+
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_uint_8_list(Uint8List raw) {
+    final ans = inner.new_uint_8_list_0(raw.length);
+    ans.ref.ptr.asTypedList(raw.length).setAll(0, raw);
+    return ans;
+  }
 
 // Section: finalizer
 
@@ -183,6 +226,38 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _wire_add =
       _wire_addPtr.asFunction<void Function(int, int, int)>();
 
+  void wire_get_color_from_image(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> path,
+  ) {
+    return _wire_get_color_from_image(
+      port_,
+      path,
+    );
+  }
+
+  late final _wire_get_color_from_imagePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_get_color_from_image');
+  late final _wire_get_color_from_image = _wire_get_color_from_imagePtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
+  ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
+    int len,
+  ) {
+    return _new_uint_8_list_0(
+      len,
+    );
+  }
+
+  late final _new_uint_8_list_0Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<wire_uint_8_list> Function(
+              ffi.Int32)>>('new_uint_8_list_0');
+  late final _new_uint_8_list_0 = _new_uint_8_list_0Ptr
+      .asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
+
   void free_WireSyncReturn(
     WireSyncReturn ptr,
   ) {
@@ -199,6 +274,13 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
 }
 
 class _Dart_Handle extends ffi.Opaque {}
+
+class wire_uint_8_list extends ffi.Struct {
+  external ffi.Pointer<ffi.Uint8> ptr;
+
+  @ffi.Int32()
+  external int len;
+}
 
 typedef DartPostCObjectFnType = ffi.Pointer<
     ffi.NativeFunction<ffi.Bool Function(DartPort, ffi.Pointer<ffi.Void>)>>;
