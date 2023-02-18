@@ -33,7 +33,11 @@ class AnnivClient {
 
   AnnivClient({required String url, required CookieJar cookieJar})
       : _client = Dio(
-          BaseOptions(baseUrl: url, responseType: ResponseType.json),
+          BaseOptions(
+            baseUrl: url,
+            responseType: ResponseType.json,
+            contentType: Headers.jsonContentType,
+          ),
         ),
         _cookieJar = cookieJar {
     _client.interceptors.add(CookieManager(_cookieJar));

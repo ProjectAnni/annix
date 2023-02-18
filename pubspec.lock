@@ -108,12 +108,11 @@ packages:
   audio_video_progress_bar:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "3ea22dd354d67b8d685680195e585d3174f216fa"
-      resolved-ref: "3ea22dd354d67b8d685680195e585d3174f216fa"
-      url: "https://github.com/suragch/audio_video_progress_bar"
-    source: git
-    version: "0.10.0"
+      name: audio_video_progress_bar
+      sha256: "38d8efe20cd0ff2bfad648396ae3d4ba6f8058b7d8b6ee6cb26e3245eda58ddd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   audioplayers:
     dependency: "direct main"
     description:

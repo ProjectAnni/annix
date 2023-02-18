@@ -44,13 +44,7 @@ dependencies:
   slang: ^3.5.0
   slang_flutter: ^3.5.0
 
-  ########################## Widgets ##########################
-  # It was merged but not released as a new version
-  # https://github.com/suragch/audio_video_progress_bar/releases/tag/vOnTap-SensibleDev
-  audio_video_progress_bar:
-    git:
-      url: https://github.com/suragch/audio_video_progress_bar
-      ref: 3ea22dd354d67b8d685680195e585d3174f216fa
+  audio_video_progress_bar: ^1.0.0
   extended_image:
     git:
       url: https://github.com/chaudharydeepanshu/extended_image
