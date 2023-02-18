@@ -11,5 +11,4 @@ flutter_rust_bridge = "1"
 
 # Color
 image = "0.24.5"
-# material-color-utilities-rs = "0.2.0"
-material-color-utilities-rs = { git = "https://github.com/ProjectAnni/material-color-utilities-rs" }
+material-color-utilities-rs = "0.2.1"

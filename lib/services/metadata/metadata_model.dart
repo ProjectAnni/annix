@@ -161,7 +161,7 @@ class Album {
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class Disc {
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late final Album album;
 
   final String? _title;
@@ -220,7 +220,7 @@ class Disc {
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class Track {
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late final Disc disc;
 
   final String title;
@@ -241,10 +241,10 @@ class Track {
   TrackType get type => _type ?? disc.type;
 
   TrackIdentifier get id => TrackIdentifier(
-    albumId: disc.album.albumId,
-    discId: disc.album.discs.indexOf(disc) + 1,
-    trackId: disc.tracks.indexOf(this) + 1,
-  );
+        albumId: disc.album.albumId,
+        discId: disc.album.discs.indexOf(disc) + 1,
+        trackId: disc.tracks.indexOf(this) + 1,
+      );
 
   // static Track fromMap(Map<String, dynamic> map) {
   //   final String title = map['title'];

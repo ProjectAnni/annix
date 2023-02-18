@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 90 (45 per locale)
+/// Strings: 86 (43 per locale)
 ///
-/// Built on 2023-01-09 at 14:52 UTC
+/// Built on 2023-02-18 at 17:03 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -99,8 +99,8 @@ class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
 	static AppLocale setLocale(AppLocale locale) => instance.setLocale(locale);
 	static AppLocale setLocaleRaw(String rawLocale) => instance.setLocaleRaw(rawLocale);
 	static AppLocale useDeviceLocale() => instance.useDeviceLocale();
-	static List<Locale> get supportedLocales => instance.supportedLocales;
-	static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
+	@Deprecated('Use [AppLocaleUtils.supportedLocales]') static List<Locale> get supportedLocales => instance.supportedLocales;
+	@Deprecated('Use [AppLocaleUtils.supportedLocalesRaw]') static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
 	static void setPluralResolver({String? language, AppLocale? locale, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.setPluralResolver(
 		language: language,
 		locale: locale,
@@ -119,6 +119,8 @@ class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, _StringsEn> {
 	static AppLocale parse(String rawLocale) => instance.parse(rawLocale);
 	static AppLocale parseLocaleParts({required String languageCode, String? scriptCode, String? countryCode}) => instance.parseLocaleParts(languageCode: languageCode, scriptCode: scriptCode, countryCode: countryCode);
 	static AppLocale findDeviceLocale() => instance.findDeviceLocale();
+	static List<Locale> get supportedLocales => instance.supportedLocales;
+	static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
 }
 
 // translations
@@ -229,8 +231,6 @@ class _StringsSettingsEn {
 	String get clear_database_desc => 'Delete main database. You need to restart the app.';
 	String get show_artist_in_bottom_player => 'Show artist in bottom player';
 	String get show_artist_in_bottom_player_desc => 'Mobile only';
-	String get enable_http2_for_annil => 'Enable HTTP/2 for Annil';
-	String get enable_http2_for_annil_desc => 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
 	String get custom_font_path => 'Custom Font Path';
 	String get custom_font_not_specified => 'Not specified';
 }
@@ -341,8 +341,6 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 	@override String get clear_database_desc => '删除主数据库。你需要重新启动应用以重新创建数据库。';
 	@override String get show_artist_in_bottom_player => '在播放条中显示艺术家';
 	@override String get show_artist_in_bottom_player_desc => '移动端设置，桌面端无效。';
-	@override String get enable_http2_for_annil => '为 Annil 启用 HTTP/2';
-	@override String get enable_http2_for_annil_desc => 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
 	@override String get custom_font_path => '自定义字体路径';
 	@override String get custom_font_not_specified => '默认字体';
 }
@@ -388,8 +386,6 @@ extension on _StringsEn {
 			case 'settings.clear_database_desc': return 'Delete main database. You need to restart the app.';
 			case 'settings.show_artist_in_bottom_player': return 'Show artist in bottom player';
 			case 'settings.show_artist_in_bottom_player_desc': return 'Mobile only';
-			case 'settings.enable_http2_for_annil': return 'Enable HTTP/2 for Annil';
-			case 'settings.enable_http2_for_annil_desc': return 'HTTP/2 implemented by flutter/dart is problematic which may lead to slow download speed. Use it at your own risk.';
 			case 'settings.custom_font_path': return 'Custom Font Path';
 			case 'settings.custom_font_not_specified': return 'Not specified';
 			case 'search': return 'Search';
@@ -441,8 +437,6 @@ extension on _StringsZhCn {
 			case 'settings.clear_database_desc': return '删除主数据库。你需要重新启动应用以重新创建数据库。';
 			case 'settings.show_artist_in_bottom_player': return '在播放条中显示艺术家';
 			case 'settings.show_artist_in_bottom_player_desc': return '移动端设置，桌面端无效。';
-			case 'settings.enable_http2_for_annil': return '为 Annil 启用 HTTP/2';
-			case 'settings.enable_http2_for_annil_desc': return 'Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。';
 			case 'settings.custom_font_path': return '自定义字体路径';
 			case 'settings.custom_font_not_specified': return '默认字体';
 			case 'search': return '搜索';

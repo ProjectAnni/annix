@@ -1,7 +1,7 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/annil.dart';
-import 'package:http_plus/http_plus.dart';
+import 'package:dio/dio.dart';
 import 'dart:io' show File;
 
 import 'package:provider/provider.dart';
@@ -19,7 +19,7 @@ class CoverItem {
 }
 
 class CoverReverseProxy {
-  static final client = HttpPlusClient(enableHttp2: false);
+  static final client = Dio();
   static CoverReverseProxy? _instance;
 
   final downloadingMap = {};
@@ -49,7 +49,10 @@ class CoverReverseProxy {
 
       // fetch remote cover
       // TODO: retry
-      final getRequest = client.get(uri);
+      final getRequest = client.getUri<List<int>>(
+        uri,
+        options: Options(responseType: ResponseType.bytes),
+      );
       downloadingMap[cover.key] = getRequest;
       final response = await getRequest;
       if (response.statusCode == 200) {
@@ -57,9 +60,11 @@ class CoverReverseProxy {
         await file.parent.create(recursive: true);
 
         // response stream to UInt8List
-        final data = response.bodyBytes;
-        await file.writeAsBytes(data);
-        downloadingMap.remove(cover.key);
+        final data = response.data;
+        if (data != null) {
+          await file.writeAsBytes(data);
+          downloadingMap.remove(cover.key);
+        }
       }
     }
     return file;

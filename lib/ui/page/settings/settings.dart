@@ -73,18 +73,6 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(t.settings.skip_cert),
                 ),
               ),
-              SettingsTileBuilder<bool>(
-                value: settings.enableHttp2ForAnnil,
-                builder: (context, p, child) => SettingsTile.switchTile(
-                  onToggle: (value) {
-                    settings.enableHttp2ForAnnil.value = value;
-                  },
-                  initialValue: p,
-                  leading: const Icon(Icons.http),
-                  title: Text(t.settings.enable_http2_for_annil),
-                  description: Text(t.settings.enable_http2_for_annil_desc),
-                ),
-              ),
               SettingsTileBuilder<PreferQuality>(
                 value: settings.defaultAudioQuality,
                 builder: (context, p, child) => SettingsTile.navigation(

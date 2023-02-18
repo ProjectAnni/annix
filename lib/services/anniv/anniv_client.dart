@@ -5,7 +5,6 @@ import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/utils/hash.dart';
 import 'package:annix/utils/cookie_storage.dart';
 
@@ -35,7 +34,7 @@ class AnnivClient {
   AnnivClient({required String url, required CookieJar cookieJar})
       : _client = Dio(
           BaseOptions(baseUrl: url, responseType: ResponseType.json),
-        )..httpClientAdapter = createHttpPlusAdapter(),
+        ),
         _cookieJar = cookieJar {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(
@@ -49,7 +48,7 @@ class AnnivClient {
           return handler.reject(DioError(
             requestOptions: response.requestOptions,
             response: response,
-            type: DioErrorType.response,
+            type: DioErrorType.unknown,
           ));
         } else if (response.requestOptions.responseType == ResponseType.json) {
           final resp = response.data as Map<String, dynamic>;
@@ -68,7 +67,7 @@ class AnnivClient {
             handler.reject(DioError(
               requestOptions: response.requestOptions,
               response: response,
-              type: DioErrorType.response,
+              type: DioErrorType.unknown,
               error: error,
             ));
           } else {

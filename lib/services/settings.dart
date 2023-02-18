@@ -43,12 +43,6 @@ class SettingsController {
   /// Default value: false
   late ValueNotifier<bool> mobileShowArtistInBottomPlayer;
 
-  /// Whether to enable http2 for annil clients
-  /// HTTP2 implemented in dart is problematic, which may make progress of downloading files too slow
-  ///
-  /// Default value: false
-  late ValueNotifier<bool> enableHttp2ForAnnil;
-
   /// Default audio quality
   ///
   /// Default value: Medium
@@ -92,11 +86,6 @@ class SettingsController {
     mobileShowArtistInBottomPlayer.addListener(saveChangedVariable(
         'annix_mobile_show_artist_in_bottom_player',
         mobileShowArtistInBottomPlayer));
-
-    enableHttp2ForAnnil = ValueNotifier(
-        Global.preferences.getBool('annix_enable_http2_for_annil') ?? false);
-    enableHttp2ForAnnil.addListener(saveChangedVariable(
-        'annix_enable_http2_for_annil', enableHttp2ForAnnil));
 
     defaultAudioQuality = ValueNotifier(PreferQuality.values[
         Global.preferences.getInt('annix_default_audio_quality') ??

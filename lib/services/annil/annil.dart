@@ -4,7 +4,6 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/services/network/http_plus_adapter.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
@@ -18,9 +17,7 @@ import 'package:collection/collection.dart';
 
 class AnnilService extends ChangeNotifier {
   final BuildContext context;
-  final Dio _client = Dio()
-    ..httpClientAdapter =
-        createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
+  final Dio _client = Dio();
 
   List<LocalAnnilServer> servers = [];
   Map<int, String?> etags = {};
@@ -53,11 +50,6 @@ class AnnilService extends ChangeNotifier {
 
     final network = context.read<NetworkService>();
     network.addListener(() => reload());
-
-    Global.settings.enableHttp2ForAnnil.addListener(() {
-      _client.httpClientAdapter =
-          createHttpPlusAdapter(Global.settings.enableHttp2ForAnnil.value);
-    });
   }
 
   Future<void> addRemoteServer({

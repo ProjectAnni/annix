@@ -41,8 +41,6 @@
     "clear_database_desc": "删除主数据库。你需要重新启动应用以重新创建数据库。",
     "show_artist_in_bottom_player": "在播放条中显示艺术家",
     "show_artist_in_bottom_player_desc": "移动端设置，桌面端无效。",
-    "enable_http2_for_annil": "为 Annil 启用 HTTP/2",
-    "enable_http2_for_annil_desc": "Flutter/Dart 的 HTTP2 实现存在一些问题，会显著降低下载速度。",
     "custom_font_path": "自定义字体路径",
     "custom_font_not_specified": "默认字体"
   },

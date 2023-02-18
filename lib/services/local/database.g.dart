@@ -2,373 +2,69 @@
 
 part of 'database.dart';
 
-// **************************************************************************
-// DriftDatabaseGenerator
-// **************************************************************************
-
 // ignore_for_file: type=lint
-class LocalFavoriteTrack extends DataClass
-    implements Insertable<LocalFavoriteTrack> {
-  final int id;
-  final String albumId;
-  final int discId;
-  final int trackId;
-  final String? title;
-  final String? artist;
-  final String? albumTitle;
-  final String type;
-  const LocalFavoriteTrack(
-      {required this.id,
-      required this.albumId,
-      required this.discId,
-      required this.trackId,
-      this.title,
-      this.artist,
-      this.albumTitle,
-      required this.type});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['album_id'] = Variable<String>(albumId);
-    map['disc_id'] = Variable<int>(discId);
-    map['track_id'] = Variable<int>(trackId);
-    if (!nullToAbsent || title != null) {
-      map['title'] = Variable<String>(title);
-    }
-    if (!nullToAbsent || artist != null) {
-      map['artist'] = Variable<String>(artist);
-    }
-    if (!nullToAbsent || albumTitle != null) {
-      map['album_title'] = Variable<String>(albumTitle);
-    }
-    map['type'] = Variable<String>(type);
-    return map;
-  }
-
-  LocalFavoriteTracksCompanion toCompanion(bool nullToAbsent) {
-    return LocalFavoriteTracksCompanion(
-      id: Value(id),
-      albumId: Value(albumId),
-      discId: Value(discId),
-      trackId: Value(trackId),
-      title:
-          title == null && nullToAbsent ? const Value.absent() : Value(title),
-      artist:
-          artist == null && nullToAbsent ? const Value.absent() : Value(artist),
-      albumTitle: albumTitle == null && nullToAbsent
-          ? const Value.absent()
-          : Value(albumTitle),
-      type: Value(type),
-    );
-  }
-
-  factory LocalFavoriteTrack.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return LocalFavoriteTrack(
-      id: serializer.fromJson<int>(json['id']),
-      albumId: serializer.fromJson<String>(json['album_id']),
-      discId: serializer.fromJson<int>(json['disc_id']),
-      trackId: serializer.fromJson<int>(json['track_id']),
-      title: serializer.fromJson<String?>(json['title']),
-      artist: serializer.fromJson<String?>(json['artist']),
-      albumTitle: serializer.fromJson<String?>(json['album_title']),
-      type: serializer.fromJson<String>(json['type']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'album_id': serializer.toJson<String>(albumId),
-      'disc_id': serializer.toJson<int>(discId),
-      'track_id': serializer.toJson<int>(trackId),
-      'title': serializer.toJson<String?>(title),
-      'artist': serializer.toJson<String?>(artist),
-      'album_title': serializer.toJson<String?>(albumTitle),
-      'type': serializer.toJson<String>(type),
-    };
-  }
-
-  LocalFavoriteTrack copyWith(
-          {int? id,
-          String? albumId,
-          int? discId,
-          int? trackId,
-          Value<String?> title = const Value.absent(),
-          Value<String?> artist = const Value.absent(),
-          Value<String?> albumTitle = const Value.absent(),
-          String? type}) =>
-      LocalFavoriteTrack(
-        id: id ?? this.id,
-        albumId: albumId ?? this.albumId,
-        discId: discId ?? this.discId,
-        trackId: trackId ?? this.trackId,
-        title: title.present ? title.value : this.title,
-        artist: artist.present ? artist.value : this.artist,
-        albumTitle: albumTitle.present ? albumTitle.value : this.albumTitle,
-        type: type ?? this.type,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('LocalFavoriteTrack(')
-          ..write('id: $id, ')
-          ..write('albumId: $albumId, ')
-          ..write('discId: $discId, ')
-          ..write('trackId: $trackId, ')
-          ..write('title: $title, ')
-          ..write('artist: $artist, ')
-          ..write('albumTitle: $albumTitle, ')
-          ..write('type: $type')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id, albumId, discId, trackId, title, artist, albumTitle, type);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is LocalFavoriteTrack &&
-          other.id == this.id &&
-          other.albumId == this.albumId &&
-          other.discId == this.discId &&
-          other.trackId == this.trackId &&
-          other.title == this.title &&
-          other.artist == this.artist &&
-          other.albumTitle == this.albumTitle &&
-          other.type == this.type);
-}
-
-class LocalFavoriteTracksCompanion extends UpdateCompanion<LocalFavoriteTrack> {
-  final Value<int> id;
-  final Value<String> albumId;
-  final Value<int> discId;
-  final Value<int> trackId;
-  final Value<String?> title;
-  final Value<String?> artist;
-  final Value<String?> albumTitle;
-  final Value<String> type;
-  const LocalFavoriteTracksCompanion({
-    this.id = const Value.absent(),
-    this.albumId = const Value.absent(),
-    this.discId = const Value.absent(),
-    this.trackId = const Value.absent(),
-    this.title = const Value.absent(),
-    this.artist = const Value.absent(),
-    this.albumTitle = const Value.absent(),
-    this.type = const Value.absent(),
-  });
-  LocalFavoriteTracksCompanion.insert({
-    this.id = const Value.absent(),
-    required String albumId,
-    required int discId,
-    required int trackId,
-    this.title = const Value.absent(),
-    this.artist = const Value.absent(),
-    this.albumTitle = const Value.absent(),
-    this.type = const Value.absent(),
-  })  : albumId = Value(albumId),
-        discId = Value(discId),
-        trackId = Value(trackId);
-  static Insertable<LocalFavoriteTrack> custom({
-    Expression<int>? id,
-    Expression<String>? albumId,
-    Expression<int>? discId,
-    Expression<int>? trackId,
-    Expression<String>? title,
-    Expression<String>? artist,
-    Expression<String>? albumTitle,
-    Expression<String>? type,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (albumId != null) 'album_id': albumId,
-      if (discId != null) 'disc_id': discId,
-      if (trackId != null) 'track_id': trackId,
-      if (title != null) 'title': title,
-      if (artist != null) 'artist': artist,
-      if (albumTitle != null) 'album_title': albumTitle,
-      if (type != null) 'type': type,
-    });
-  }
-
-  LocalFavoriteTracksCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? albumId,
-      Value<int>? discId,
-      Value<int>? trackId,
-      Value<String?>? title,
-      Value<String?>? artist,
-      Value<String?>? albumTitle,
-      Value<String>? type}) {
-    return LocalFavoriteTracksCompanion(
-      id: id ?? this.id,
-      albumId: albumId ?? this.albumId,
-      discId: discId ?? this.discId,
-      trackId: trackId ?? this.trackId,
-      title: title ?? this.title,
-      artist: artist ?? this.artist,
-      albumTitle: albumTitle ?? this.albumTitle,
-      type: type ?? this.type,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (albumId.present) {
-      map['album_id'] = Variable<String>(albumId.value);
-    }
-    if (discId.present) {
-      map['disc_id'] = Variable<int>(discId.value);
-    }
-    if (trackId.present) {
-      map['track_id'] = Variable<int>(trackId.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (artist.present) {
-      map['artist'] = Variable<String>(artist.value);
-    }
-    if (albumTitle.present) {
-      map['album_title'] = Variable<String>(albumTitle.value);
-    }
-    if (type.present) {
-      map['type'] = Variable<String>(type.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('LocalFavoriteTracksCompanion(')
-          ..write('id: $id, ')
-          ..write('albumId: $albumId, ')
-          ..write('discId: $discId, ')
-          ..write('trackId: $trackId, ')
-          ..write('title: $title, ')
-          ..write('artist: $artist, ')
-          ..write('albumTitle: $albumTitle, ')
-          ..write('type: $type')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class LocalFavoriteTracks extends Table
-    with TableInfo<LocalFavoriteTracks, LocalFavoriteTrack> {
+class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  LocalFavoriteTracks(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  AnnivUser(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
-  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
-      'album_id', aliasedName, false,
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _discIdMeta = const VerificationMeta('discId');
-  late final GeneratedColumn<int> discId = GeneratedColumn<int>(
-      'disc_id', aliasedName, false,
-      type: DriftSqlType.int,
+  static const VerificationMeta _nicknameMeta =
+      const VerificationMeta('nickname');
+  late final GeneratedColumn<String> nickname = GeneratedColumn<String>(
+      'nickname', aliasedName, false,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _trackIdMeta = const VerificationMeta('trackId');
-  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
-      'track_id', aliasedName, false,
-      type: DriftSqlType.int,
+  static const VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
+      'avatar', aliasedName, false,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _titleMeta = const VerificationMeta('title');
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _artistMeta = const VerificationMeta('artist');
-  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
-      'artist', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _albumTitleMeta = const VerificationMeta('albumTitle');
-  late final GeneratedColumn<String> albumTitle = GeneratedColumn<String>(
-      'album_title', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _typeMeta = const VerificationMeta('type');
-  late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints:
-          'NOT NULL DEFAULT \'normal\' CHECK ("type" IN (\'normal\', \'instrumental\', \'absolute\', \'drama\', \'radio\', \'vocal\'))',
-      defaultValue: const CustomExpression<String>('\'normal\''));
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, albumId, discId, trackId, title, artist, albumTitle, type];
+  List<GeneratedColumn> get $columns => [id, userId, nickname, avatar];
   @override
-  String get aliasedName => _alias ?? 'local_favorite_tracks';
+  String get aliasedName => _alias ?? 'anniv_user';
   @override
-  String get actualTableName => 'local_favorite_tracks';
+  String get actualTableName => 'anniv_user';
   @override
-  VerificationContext validateIntegrity(Insertable<LocalFavoriteTrack> instance,
+  VerificationContext validateIntegrity(Insertable<AnnivUserData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('album_id')) {
-      context.handle(_albumIdMeta,
-          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
     } else if (isInserting) {
-      context.missing(_albumIdMeta);
+      context.missing(_userIdMeta);
     }
-    if (data.containsKey('disc_id')) {
-      context.handle(_discIdMeta,
-          discId.isAcceptableOrUnknown(data['disc_id']!, _discIdMeta));
+    if (data.containsKey('nickname')) {
+      context.handle(_nicknameMeta,
+          nickname.isAcceptableOrUnknown(data['nickname']!, _nicknameMeta));
     } else if (isInserting) {
-      context.missing(_discIdMeta);
+      context.missing(_nicknameMeta);
     }
-    if (data.containsKey('track_id')) {
-      context.handle(_trackIdMeta,
-          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    if (data.containsKey('avatar')) {
+      context.handle(_avatarMeta,
+          avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta));
     } else if (isInserting) {
-      context.missing(_trackIdMeta);
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
-    }
-    if (data.containsKey('artist')) {
-      context.handle(_artistMeta,
-          artist.isAcceptableOrUnknown(data['artist']!, _artistMeta));
-    }
-    if (data.containsKey('album_title')) {
-      context.handle(
-          _albumTitleMeta,
-          albumTitle.isAcceptableOrUnknown(
-              data['album_title']!, _albumTitleMeta));
-    }
-    if (data.containsKey('type')) {
-      context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+      context.missing(_avatarMeta);
     }
     return context;
   }
@@ -376,31 +72,23 @@ class LocalFavoriteTracks extends Table
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  LocalFavoriteTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AnnivUserData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalFavoriteTrack(
-      id: attachedDatabase.options.types
+    return AnnivUserData(
+      id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      albumId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
-      discId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}disc_id'])!,
-      trackId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}track_id'])!,
-      title: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}title']),
-      artist: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}artist']),
-      albumTitle: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}album_title']),
-      type: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
+      nickname: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}nickname'])!,
+      avatar: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}avatar'])!,
     );
   }
 
   @override
-  LocalFavoriteTracks createAlias(String alias) {
-    return LocalFavoriteTracks(attachedDatabase, alias);
+  AnnivUser createAlias(String alias) {
+    return AnnivUser(attachedDatabase, alias);
   }
 
   @override
@@ -564,66 +252,133 @@ class AnnivUserCompanion extends UpdateCompanion<AnnivUserData> {
   }
 }
 
-class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
+class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  AnnivUser(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  Playlist(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
-  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
-      'user_id', aliasedName, false,
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _nicknameMeta = const VerificationMeta('nickname');
-  late final GeneratedColumn<String> nickname = GeneratedColumn<String>(
-      'nickname', aliasedName, false,
+  static const VerificationMeta _coverMeta = const VerificationMeta('cover');
+  late final GeneratedColumn<String> cover = GeneratedColumn<String>(
+      'cover', aliasedName, true,
       type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _remoteIdMeta =
+      const VerificationMeta('remoteId');
+  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
+      'remote_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _ownerMeta = const VerificationMeta('owner');
+  late final GeneratedColumn<String> owner = GeneratedColumn<String>(
+      'owner', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _publicMeta = const VerificationMeta('public');
+  late final GeneratedColumn<bool> public = GeneratedColumn<bool>(
+      'public', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _lastModifiedMeta =
+      const VerificationMeta('lastModified');
+  late final GeneratedColumn<int> lastModified = GeneratedColumn<int>(
+      'last_modified', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _hasItemsMeta =
+      const VerificationMeta('hasItems');
+  late final GeneratedColumn<bool> hasItems = GeneratedColumn<bool>(
+      'has_items', aliasedName, false,
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _avatarMeta = const VerificationMeta('avatar');
-  late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
-      'avatar', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [id, userId, nickname, avatar];
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        cover,
+        description,
+        remoteId,
+        owner,
+        public,
+        lastModified,
+        hasItems
+      ];
   @override
-  String get aliasedName => _alias ?? 'anniv_user';
+  String get aliasedName => _alias ?? 'playlist';
   @override
-  String get actualTableName => 'anniv_user';
+  String get actualTableName => 'playlist';
   @override
-  VerificationContext validateIntegrity(Insertable<AnnivUserData> instance,
+  VerificationContext validateIntegrity(Insertable<PlaylistData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('user_id')) {
-      context.handle(_userIdMeta,
-          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_userIdMeta);
+      context.missing(_nameMeta);
     }
-    if (data.containsKey('nickname')) {
-      context.handle(_nicknameMeta,
-          nickname.isAcceptableOrUnknown(data['nickname']!, _nicknameMeta));
-    } else if (isInserting) {
-      context.missing(_nicknameMeta);
+    if (data.containsKey('cover')) {
+      context.handle(
+          _coverMeta, cover.isAcceptableOrUnknown(data['cover']!, _coverMeta));
     }
-    if (data.containsKey('avatar')) {
-      context.handle(_avatarMeta,
-          avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta));
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('remote_id')) {
+      context.handle(_remoteIdMeta,
+          remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta));
+    }
+    if (data.containsKey('owner')) {
+      context.handle(
+          _ownerMeta, owner.isAcceptableOrUnknown(data['owner']!, _ownerMeta));
+    }
+    if (data.containsKey('public')) {
+      context.handle(_publicMeta,
+          public.isAcceptableOrUnknown(data['public']!, _publicMeta));
+    }
+    if (data.containsKey('last_modified')) {
+      context.handle(
+          _lastModifiedMeta,
+          lastModified.isAcceptableOrUnknown(
+              data['last_modified']!, _lastModifiedMeta));
+    }
+    if (data.containsKey('has_items')) {
+      context.handle(_hasItemsMeta,
+          hasItems.isAcceptableOrUnknown(data['has_items']!, _hasItemsMeta));
     } else if (isInserting) {
-      context.missing(_avatarMeta);
+      context.missing(_hasItemsMeta);
     }
     return context;
   }
@@ -631,23 +386,33 @@ class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AnnivUserData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  PlaylistData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AnnivUserData(
-      id: attachedDatabase.options.types
+    return PlaylistData(
+      id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      userId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
-      nickname: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}nickname'])!,
-      avatar: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}avatar'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      cover: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}cover']),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      remoteId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}remote_id']),
+      owner: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}owner']),
+      public: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}public']),
+      lastModified: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}last_modified']),
+      hasItems: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}has_items'])!,
     );
   }
 
   @override
-  AnnivUser createAlias(String alias) {
-    return AnnivUser(attachedDatabase, alias);
+  Playlist createAlias(String alias) {
+    return Playlist(attachedDatabase, alias);
   }
 
   @override
@@ -941,100 +706,86 @@ class PlaylistCompanion extends UpdateCompanion<PlaylistData> {
   }
 }
 
-class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
+class PlaylistItem extends Table
+    with TableInfo<PlaylistItem, PlaylistItemData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Playlist(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  PlaylistItem(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string,
+  static const VerificationMeta _playlistIdMeta =
+      const VerificationMeta('playlistId');
+  late final GeneratedColumn<int> playlistId = GeneratedColumn<int>(
+      'playlist_id', aliasedName, false,
+      type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _coverMeta = const VerificationMeta('cover');
-  late final GeneratedColumn<String> cover = GeneratedColumn<String>(
-      'cover', aliasedName, true,
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _descriptionMeta =
+      $customConstraints:
+          'NOT NULL DEFAULT \'normal\' CHECK (type IN (\'normal\', \'dummy\', \'album\'))',
+      defaultValue: const CustomExpression('\'normal\''));
+  static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       $customConstraints: '');
-  final VerificationMeta _remoteIdMeta = const VerificationMeta('remoteId');
+  static const VerificationMeta _infoMeta = const VerificationMeta('info');
+  late final GeneratedColumn<String> info = GeneratedColumn<String>(
+      'info', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _remoteIdMeta =
+      const VerificationMeta('remoteId');
   late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
       'remote_id', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       $customConstraints: '');
-  final VerificationMeta _ownerMeta = const VerificationMeta('owner');
-  late final GeneratedColumn<String> owner = GeneratedColumn<String>(
-      'owner', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _publicMeta = const VerificationMeta('public');
-  late final GeneratedColumn<bool> public = GeneratedColumn<bool>(
-      'public', aliasedName, true,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _lastModifiedMeta =
-      const VerificationMeta('lastModified');
-  late final GeneratedColumn<int> lastModified = GeneratedColumn<int>(
-      'last_modified', aliasedName, true,
+  static const VerificationMeta _orderMeta = const VerificationMeta('order');
+  late final GeneratedColumn<int> order = GeneratedColumn<int>(
+      'order', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _hasItemsMeta = const VerificationMeta('hasItems');
-  late final GeneratedColumn<bool> hasItems = GeneratedColumn<bool>(
-      'has_items', aliasedName, false,
-      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        name,
-        cover,
-        description,
-        remoteId,
-        owner,
-        public,
-        lastModified,
-        hasItems
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, playlistId, type, description, info, remoteId, order];
   @override
-  String get aliasedName => _alias ?? 'playlist';
+  String get aliasedName => _alias ?? 'playlist_item';
   @override
-  String get actualTableName => 'playlist';
+  String get actualTableName => 'playlist_item';
   @override
-  VerificationContext validateIntegrity(Insertable<PlaylistData> instance,
+  VerificationContext validateIntegrity(Insertable<PlaylistItemData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('playlist_id')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+          _playlistIdMeta,
+          playlistId.isAcceptableOrUnknown(
+              data['playlist_id']!, _playlistIdMeta));
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_playlistIdMeta);
     }
-    if (data.containsKey('cover')) {
+    if (data.containsKey('type')) {
       context.handle(
-          _coverMeta, cover.isAcceptableOrUnknown(data['cover']!, _coverMeta));
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -1042,29 +793,21 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
     }
+    if (data.containsKey('info')) {
+      context.handle(
+          _infoMeta, info.isAcceptableOrUnknown(data['info']!, _infoMeta));
+    } else if (isInserting) {
+      context.missing(_infoMeta);
+    }
     if (data.containsKey('remote_id')) {
       context.handle(_remoteIdMeta,
           remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta));
     }
-    if (data.containsKey('owner')) {
+    if (data.containsKey('order')) {
       context.handle(
-          _ownerMeta, owner.isAcceptableOrUnknown(data['owner']!, _ownerMeta));
-    }
-    if (data.containsKey('public')) {
-      context.handle(_publicMeta,
-          public.isAcceptableOrUnknown(data['public']!, _publicMeta));
-    }
-    if (data.containsKey('last_modified')) {
-      context.handle(
-          _lastModifiedMeta,
-          lastModified.isAcceptableOrUnknown(
-              data['last_modified']!, _lastModifiedMeta));
-    }
-    if (data.containsKey('has_items')) {
-      context.handle(_hasItemsMeta,
-          hasItems.isAcceptableOrUnknown(data['has_items']!, _hasItemsMeta));
+          _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
     } else if (isInserting) {
-      context.missing(_hasItemsMeta);
+      context.missing(_orderMeta);
     }
     return context;
   }
@@ -1072,35 +815,34 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  PlaylistData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  PlaylistItemData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaylistData(
-      id: attachedDatabase.options.types
+    return PlaylistItemData(
+      id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      cover: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}cover']),
-      description: attachedDatabase.options.types
+      playlistId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}playlist_id'])!,
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      remoteId: attachedDatabase.options.types
+      info: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}info'])!,
+      remoteId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}remote_id']),
-      owner: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}owner']),
-      public: attachedDatabase.options.types
-          .read(DriftSqlType.bool, data['${effectivePrefix}public']),
-      lastModified: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}last_modified']),
-      hasItems: attachedDatabase.options.types
-          .read(DriftSqlType.bool, data['${effectivePrefix}has_items'])!,
+      order: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
     );
   }
 
   @override
-  Playlist createAlias(String alias) {
-    return Playlist(attachedDatabase, alias);
+  PlaylistItem createAlias(String alias) {
+    return PlaylistItem(attachedDatabase, alias);
   }
 
+  @override
+  List<String> get customConstraints =>
+      const ['FOREIGN KEY(playlist_id)REFERENCES playlist(id)'];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1338,105 +1080,116 @@ class PlaylistItemCompanion extends UpdateCompanion<PlaylistItemData> {
   }
 }
 
-class PlaylistItem extends Table
-    with TableInfo<PlaylistItem, PlaylistItemData> {
+class LocalFavoriteTracks extends Table
+    with TableInfo<LocalFavoriteTracks, LocalFavoriteTrack> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  PlaylistItem(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  LocalFavoriteTracks(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _playlistIdMeta = const VerificationMeta('playlistId');
-  late final GeneratedColumn<int> playlistId = GeneratedColumn<int>(
-      'playlist_id', aliasedName, false,
+  static const VerificationMeta _albumIdMeta =
+      const VerificationMeta('albumId');
+  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
+      'album_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _discIdMeta = const VerificationMeta('discId');
+  late final GeneratedColumn<int> discId = GeneratedColumn<int>(
+      'disc_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
-  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  static const VerificationMeta _trackIdMeta =
+      const VerificationMeta('trackId');
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+      'track_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _artistMeta = const VerificationMeta('artist');
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+      'artist', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _albumTitleMeta =
+      const VerificationMeta('albumTitle');
+  late final GeneratedColumn<String> albumTitle = GeneratedColumn<String>(
+      'album_title', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
       'type', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       $customConstraints:
-          'NOT NULL DEFAULT \'normal\' CHECK ("type" IN (\'normal\', \'dummy\', \'album\'))',
-      defaultValue: const CustomExpression<String>('\'normal\''));
-  final VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _infoMeta = const VerificationMeta('info');
-  late final GeneratedColumn<String> info = GeneratedColumn<String>(
-      'info', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _remoteIdMeta = const VerificationMeta('remoteId');
-  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
-      'remote_id', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
-  final VerificationMeta _orderMeta = const VerificationMeta('order');
-  late final GeneratedColumn<int> order = GeneratedColumn<int>(
-      'order', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
+          'NOT NULL DEFAULT \'normal\' CHECK (type IN (\'normal\', \'instrumental\', \'absolute\', \'drama\', \'radio\', \'vocal\'))',
+      defaultValue: const CustomExpression('\'normal\''));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, playlistId, type, description, info, remoteId, order];
+      [id, albumId, discId, trackId, title, artist, albumTitle, type];
   @override
-  String get aliasedName => _alias ?? 'playlist_item';
+  String get aliasedName => _alias ?? 'local_favorite_tracks';
   @override
-  String get actualTableName => 'playlist_item';
+  String get actualTableName => 'local_favorite_tracks';
   @override
-  VerificationContext validateIntegrity(Insertable<PlaylistItemData> instance,
+  VerificationContext validateIntegrity(Insertable<LocalFavoriteTrack> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('playlist_id')) {
-      context.handle(
-          _playlistIdMeta,
-          playlistId.isAcceptableOrUnknown(
-              data['playlist_id']!, _playlistIdMeta));
+    if (data.containsKey('album_id')) {
+      context.handle(_albumIdMeta,
+          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
     } else if (isInserting) {
-      context.missing(_playlistIdMeta);
+      context.missing(_albumIdMeta);
+    }
+    if (data.containsKey('disc_id')) {
+      context.handle(_discIdMeta,
+          discId.isAcceptableOrUnknown(data['disc_id']!, _discIdMeta));
+    } else if (isInserting) {
+      context.missing(_discIdMeta);
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    }
+    if (data.containsKey('artist')) {
+      context.handle(_artistMeta,
+          artist.isAcceptableOrUnknown(data['artist']!, _artistMeta));
+    }
+    if (data.containsKey('album_title')) {
+      context.handle(
+          _albumTitleMeta,
+          albumTitle.isAcceptableOrUnknown(
+              data['album_title']!, _albumTitleMeta));
     }
     if (data.containsKey('type')) {
       context.handle(
           _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    }
-    if (data.containsKey('info')) {
-      context.handle(
-          _infoMeta, info.isAcceptableOrUnknown(data['info']!, _infoMeta));
-    } else if (isInserting) {
-      context.missing(_infoMeta);
-    }
-    if (data.containsKey('remote_id')) {
-      context.handle(_remoteIdMeta,
-          remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta));
-    }
-    if (data.containsKey('order')) {
-      context.handle(
-          _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
-    } else if (isInserting) {
-      context.missing(_orderMeta);
     }
     return context;
   }
@@ -1444,34 +1197,354 @@ class PlaylistItem extends Table
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  PlaylistItemData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalFavoriteTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaylistItemData(
-      id: attachedDatabase.options.types
+    return LocalFavoriteTrack(
+      id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      playlistId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}playlist_id'])!,
-      type: attachedDatabase.options.types
+      albumId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+      discId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}disc_id'])!,
+      trackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}track_id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title']),
+      artist: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}artist']),
+      albumTitle: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}album_title']),
+      type: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      description: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      info: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}info'])!,
-      remoteId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}remote_id']),
-      order: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
     );
   }
 
   @override
-  PlaylistItem createAlias(String alias) {
-    return PlaylistItem(attachedDatabase, alias);
+  LocalFavoriteTracks createAlias(String alias) {
+    return LocalFavoriteTracks(attachedDatabase, alias);
   }
 
   @override
-  List<String> get customConstraints =>
-      const ['FOREIGN KEY("playlist_id") REFERENCES "playlist"("id")'];
+  bool get dontWriteConstraints => true;
+}
+
+class LocalFavoriteTrack extends DataClass
+    implements Insertable<LocalFavoriteTrack> {
+  final int id;
+  final String albumId;
+  final int discId;
+  final int trackId;
+  final String? title;
+  final String? artist;
+  final String? albumTitle;
+  final String type;
+  const LocalFavoriteTrack(
+      {required this.id,
+      required this.albumId,
+      required this.discId,
+      required this.trackId,
+      this.title,
+      this.artist,
+      this.albumTitle,
+      required this.type});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['album_id'] = Variable<String>(albumId);
+    map['disc_id'] = Variable<int>(discId);
+    map['track_id'] = Variable<int>(trackId);
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
+    if (!nullToAbsent || albumTitle != null) {
+      map['album_title'] = Variable<String>(albumTitle);
+    }
+    map['type'] = Variable<String>(type);
+    return map;
+  }
+
+  LocalFavoriteTracksCompanion toCompanion(bool nullToAbsent) {
+    return LocalFavoriteTracksCompanion(
+      id: Value(id),
+      albumId: Value(albumId),
+      discId: Value(discId),
+      trackId: Value(trackId),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      artist:
+          artist == null && nullToAbsent ? const Value.absent() : Value(artist),
+      albumTitle: albumTitle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(albumTitle),
+      type: Value(type),
+    );
+  }
+
+  factory LocalFavoriteTrack.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalFavoriteTrack(
+      id: serializer.fromJson<int>(json['id']),
+      albumId: serializer.fromJson<String>(json['album_id']),
+      discId: serializer.fromJson<int>(json['disc_id']),
+      trackId: serializer.fromJson<int>(json['track_id']),
+      title: serializer.fromJson<String?>(json['title']),
+      artist: serializer.fromJson<String?>(json['artist']),
+      albumTitle: serializer.fromJson<String?>(json['album_title']),
+      type: serializer.fromJson<String>(json['type']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'album_id': serializer.toJson<String>(albumId),
+      'disc_id': serializer.toJson<int>(discId),
+      'track_id': serializer.toJson<int>(trackId),
+      'title': serializer.toJson<String?>(title),
+      'artist': serializer.toJson<String?>(artist),
+      'album_title': serializer.toJson<String?>(albumTitle),
+      'type': serializer.toJson<String>(type),
+    };
+  }
+
+  LocalFavoriteTrack copyWith(
+          {int? id,
+          String? albumId,
+          int? discId,
+          int? trackId,
+          Value<String?> title = const Value.absent(),
+          Value<String?> artist = const Value.absent(),
+          Value<String?> albumTitle = const Value.absent(),
+          String? type}) =>
+      LocalFavoriteTrack(
+        id: id ?? this.id,
+        albumId: albumId ?? this.albumId,
+        discId: discId ?? this.discId,
+        trackId: trackId ?? this.trackId,
+        title: title.present ? title.value : this.title,
+        artist: artist.present ? artist.value : this.artist,
+        albumTitle: albumTitle.present ? albumTitle.value : this.albumTitle,
+        type: type ?? this.type,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LocalFavoriteTrack(')
+          ..write('id: $id, ')
+          ..write('albumId: $albumId, ')
+          ..write('discId: $discId, ')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('albumTitle: $albumTitle, ')
+          ..write('type: $type')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, albumId, discId, trackId, title, artist, albumTitle, type);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalFavoriteTrack &&
+          other.id == this.id &&
+          other.albumId == this.albumId &&
+          other.discId == this.discId &&
+          other.trackId == this.trackId &&
+          other.title == this.title &&
+          other.artist == this.artist &&
+          other.albumTitle == this.albumTitle &&
+          other.type == this.type);
+}
+
+class LocalFavoriteTracksCompanion extends UpdateCompanion<LocalFavoriteTrack> {
+  final Value<int> id;
+  final Value<String> albumId;
+  final Value<int> discId;
+  final Value<int> trackId;
+  final Value<String?> title;
+  final Value<String?> artist;
+  final Value<String?> albumTitle;
+  final Value<String> type;
+  const LocalFavoriteTracksCompanion({
+    this.id = const Value.absent(),
+    this.albumId = const Value.absent(),
+    this.discId = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.albumTitle = const Value.absent(),
+    this.type = const Value.absent(),
+  });
+  LocalFavoriteTracksCompanion.insert({
+    this.id = const Value.absent(),
+    required String albumId,
+    required int discId,
+    required int trackId,
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.albumTitle = const Value.absent(),
+    this.type = const Value.absent(),
+  })  : albumId = Value(albumId),
+        discId = Value(discId),
+        trackId = Value(trackId);
+  static Insertable<LocalFavoriteTrack> custom({
+    Expression<int>? id,
+    Expression<String>? albumId,
+    Expression<int>? discId,
+    Expression<int>? trackId,
+    Expression<String>? title,
+    Expression<String>? artist,
+    Expression<String>? albumTitle,
+    Expression<String>? type,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (albumId != null) 'album_id': albumId,
+      if (discId != null) 'disc_id': discId,
+      if (trackId != null) 'track_id': trackId,
+      if (title != null) 'title': title,
+      if (artist != null) 'artist': artist,
+      if (albumTitle != null) 'album_title': albumTitle,
+      if (type != null) 'type': type,
+    });
+  }
+
+  LocalFavoriteTracksCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? albumId,
+      Value<int>? discId,
+      Value<int>? trackId,
+      Value<String?>? title,
+      Value<String?>? artist,
+      Value<String?>? albumTitle,
+      Value<String>? type}) {
+    return LocalFavoriteTracksCompanion(
+      id: id ?? this.id,
+      albumId: albumId ?? this.albumId,
+      discId: discId ?? this.discId,
+      trackId: trackId ?? this.trackId,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      albumTitle: albumTitle ?? this.albumTitle,
+      type: type ?? this.type,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (albumId.present) {
+      map['album_id'] = Variable<String>(albumId.value);
+    }
+    if (discId.present) {
+      map['disc_id'] = Variable<int>(discId.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
+    if (albumTitle.present) {
+      map['album_title'] = Variable<String>(albumTitle.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFavoriteTracksCompanion(')
+          ..write('id: $id, ')
+          ..write('albumId: $albumId, ')
+          ..write('discId: $discId, ')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('albumTitle: $albumTitle, ')
+          ..write('type: $type')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class LocalFavoriteAlbums extends Table
+    with TableInfo<LocalFavoriteAlbums, LocalFavoriteAlbum> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  LocalFavoriteAlbums(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  static const VerificationMeta _albumIdMeta =
+      const VerificationMeta('albumId');
+  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
+      'album_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  @override
+  List<GeneratedColumn> get $columns => [id, albumId];
+  @override
+  String get aliasedName => _alias ?? 'local_favorite_albums';
+  @override
+  String get actualTableName => 'local_favorite_albums';
+  @override
+  VerificationContext validateIntegrity(Insertable<LocalFavoriteAlbum> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('album_id')) {
+      context.handle(_albumIdMeta,
+          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    } else if (isInserting) {
+      context.missing(_albumIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocalFavoriteAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalFavoriteAlbum(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      albumId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+    );
+  }
+
+  @override
+  LocalFavoriteAlbums createAlias(String alias) {
+    return LocalFavoriteAlbums(attachedDatabase, alias);
+  }
+
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1587,43 +1660,93 @@ class LocalFavoriteAlbumsCompanion extends UpdateCompanion<LocalFavoriteAlbum> {
   }
 }
 
-class LocalFavoriteAlbums extends Table
-    with TableInfo<LocalFavoriteAlbums, LocalFavoriteAlbum> {
+class LocalAnnilServers extends Table
+    with TableInfo<LocalAnnilServers, LocalAnnilServer> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  LocalFavoriteAlbums(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  LocalAnnilServers(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
-  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
-      'album_id', aliasedName, false,
+  static const VerificationMeta _remoteIdMeta =
+      const VerificationMeta('remoteId');
+  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
+      'remote_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+      'url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _tokenMeta = const VerificationMeta('token');
+  late final GeneratedColumn<String> token = GeneratedColumn<String>(
+      'token', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _priorityMeta =
+      const VerificationMeta('priority');
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+      'priority', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [id, albumId];
+  List<GeneratedColumn> get $columns =>
+      [id, remoteId, name, url, token, priority];
   @override
-  String get aliasedName => _alias ?? 'local_favorite_albums';
+  String get aliasedName => _alias ?? 'local_annil_servers';
   @override
-  String get actualTableName => 'local_favorite_albums';
+  String get actualTableName => 'local_annil_servers';
   @override
-  VerificationContext validateIntegrity(Insertable<LocalFavoriteAlbum> instance,
+  VerificationContext validateIntegrity(Insertable<LocalAnnilServer> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('album_id')) {
-      context.handle(_albumIdMeta,
-          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    if (data.containsKey('remote_id')) {
+      context.handle(_remoteIdMeta,
+          remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_albumIdMeta);
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('url')) {
+      context.handle(
+          _urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    if (data.containsKey('token')) {
+      context.handle(
+          _tokenMeta, token.isAcceptableOrUnknown(data['token']!, _tokenMeta));
+    } else if (isInserting) {
+      context.missing(_tokenMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    } else if (isInserting) {
+      context.missing(_priorityMeta);
     }
     return context;
   }
@@ -1631,19 +1754,27 @@ class LocalFavoriteAlbums extends Table
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  LocalFavoriteAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalAnnilServer map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalFavoriteAlbum(
-      id: attachedDatabase.options.types
+    return LocalAnnilServer(
+      id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      albumId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+      remoteId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}remote_id']),
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      url: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}url'])!,
+      token: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}token'])!,
+      priority: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
     );
   }
 
   @override
-  LocalFavoriteAlbums createAlias(String alias) {
-    return LocalFavoriteAlbums(attachedDatabase, alias);
+  LocalAnnilServers createAlias(String alias) {
+    return LocalAnnilServers(attachedDatabase, alias);
   }
 
   @override
@@ -1858,120 +1989,68 @@ class LocalAnnilServersCompanion extends UpdateCompanion<LocalAnnilServer> {
   }
 }
 
-class LocalAnnilServers extends Table
-    with TableInfo<LocalAnnilServers, LocalAnnilServer> {
+class LocalAnnilCaches extends Table
+    with TableInfo<LocalAnnilCaches, LocalAnnilCache> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  LocalAnnilServers(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+  LocalAnnilCaches(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _annilIdMeta =
+      const VerificationMeta('annilId');
+  late final GeneratedColumn<int> annilId = GeneratedColumn<int>(
+      'annil_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _remoteIdMeta = const VerificationMeta('remoteId');
-  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
-      'remote_id', aliasedName, true,
+      $customConstraints: 'NOT NULL PRIMARY KEY');
+  static const VerificationMeta _etagMeta = const VerificationMeta('etag');
+  late final GeneratedColumn<String> etag = GeneratedColumn<String>(
+      'etag', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       $customConstraints: '');
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _urlMeta = const VerificationMeta('url');
-  late final GeneratedColumn<String> url = GeneratedColumn<String>(
-      'url', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _tokenMeta = const VerificationMeta('token');
-  late final GeneratedColumn<String> token = GeneratedColumn<String>(
-      'token', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _priorityMeta = const VerificationMeta('priority');
-  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
-      'priority', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, remoteId, name, url, token, priority];
+  List<GeneratedColumn> get $columns => [annilId, etag];
   @override
-  String get aliasedName => _alias ?? 'local_annil_servers';
+  String get aliasedName => _alias ?? 'local_annil_caches';
   @override
-  String get actualTableName => 'local_annil_servers';
+  String get actualTableName => 'local_annil_caches';
   @override
-  VerificationContext validateIntegrity(Insertable<LocalAnnilServer> instance,
+  VerificationContext validateIntegrity(Insertable<LocalAnnilCache> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    if (data.containsKey('annil_id')) {
+      context.handle(_annilIdMeta,
+          annilId.isAcceptableOrUnknown(data['annil_id']!, _annilIdMeta));
     }
-    if (data.containsKey('remote_id')) {
-      context.handle(_remoteIdMeta,
-          remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta));
-    }
-    if (data.containsKey('name')) {
+    if (data.containsKey('etag')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('url')) {
-      context.handle(
-          _urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
-    } else if (isInserting) {
-      context.missing(_urlMeta);
-    }
-    if (data.containsKey('token')) {
-      context.handle(
-          _tokenMeta, token.isAcceptableOrUnknown(data['token']!, _tokenMeta));
-    } else if (isInserting) {
-      context.missing(_tokenMeta);
-    }
-    if (data.containsKey('priority')) {
-      context.handle(_priorityMeta,
-          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
-    } else if (isInserting) {
-      context.missing(_priorityMeta);
+          _etagMeta, etag.isAcceptableOrUnknown(data['etag']!, _etagMeta));
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {annilId};
   @override
-  LocalAnnilServer map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalAnnilCache map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalAnnilServer(
-      id: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      remoteId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}remote_id']),
-      name: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      url: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}url'])!,
-      token: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}token'])!,
-      priority: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
+    return LocalAnnilCache(
+      annilId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}annil_id'])!,
+      etag: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}etag']),
     );
   }
 
   @override
-  LocalAnnilServers createAlias(String alias) {
-    return LocalAnnilServers(attachedDatabase, alias);
+  LocalAnnilCaches createAlias(String alias) {
+    return LocalAnnilCaches(attachedDatabase, alias);
   }
 
+  @override
+  List<String> get customConstraints =>
+      const ['FOREIGN KEY(annil_id)REFERENCES local_annil_servers(id)'];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -2090,67 +2169,85 @@ class LocalAnnilCachesCompanion extends UpdateCompanion<LocalAnnilCache> {
   }
 }
 
-class LocalAnnilCaches extends Table
-    with TableInfo<LocalAnnilCaches, LocalAnnilCache> {
+class LocalAnnilAlbums extends Table
+    with TableInfo<LocalAnnilAlbums, LocalAnnilAlbum> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  LocalAnnilCaches(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _annilIdMeta = const VerificationMeta('annilId');
+  LocalAnnilAlbums(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  static const VerificationMeta _annilIdMeta =
+      const VerificationMeta('annilId');
   late final GeneratedColumn<int> annilId = GeneratedColumn<int>(
       'annil_id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints: 'NOT NULL PRIMARY KEY');
-  final VerificationMeta _etagMeta = const VerificationMeta('etag');
-  late final GeneratedColumn<String> etag = GeneratedColumn<String>(
-      'etag', aliasedName, true,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _albumIdMeta =
+      const VerificationMeta('albumId');
+  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
+      'album_id', aliasedName, false,
       type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      $customConstraints: '');
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [annilId, etag];
+  List<GeneratedColumn> get $columns => [id, annilId, albumId];
   @override
-  String get aliasedName => _alias ?? 'local_annil_caches';
+  String get aliasedName => _alias ?? 'local_annil_albums';
   @override
-  String get actualTableName => 'local_annil_caches';
+  String get actualTableName => 'local_annil_albums';
   @override
-  VerificationContext validateIntegrity(Insertable<LocalAnnilCache> instance,
+  VerificationContext validateIntegrity(Insertable<LocalAnnilAlbum> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
     if (data.containsKey('annil_id')) {
       context.handle(_annilIdMeta,
           annilId.isAcceptableOrUnknown(data['annil_id']!, _annilIdMeta));
+    } else if (isInserting) {
+      context.missing(_annilIdMeta);
     }
-    if (data.containsKey('etag')) {
-      context.handle(
-          _etagMeta, etag.isAcceptableOrUnknown(data['etag']!, _etagMeta));
+    if (data.containsKey('album_id')) {
+      context.handle(_albumIdMeta,
+          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
+    } else if (isInserting) {
+      context.missing(_albumIdMeta);
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {annilId};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  LocalAnnilCache map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalAnnilAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalAnnilCache(
-      annilId: attachedDatabase.options.types
+    return LocalAnnilAlbum(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      annilId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}annil_id'])!,
-      etag: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}etag']),
+      albumId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
     );
   }
 
   @override
-  LocalAnnilCaches createAlias(String alias) {
-    return LocalAnnilCaches(attachedDatabase, alias);
+  LocalAnnilAlbums createAlias(String alias) {
+    return LocalAnnilAlbums(attachedDatabase, alias);
   }
 
   @override
   List<String> get customConstraints =>
-      const ['FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")'];
+      const ['FOREIGN KEY(annil_id)REFERENCES local_annil_servers(id)'];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -2286,49 +2383,65 @@ class LocalAnnilAlbumsCompanion extends UpdateCompanion<LocalAnnilAlbum> {
   }
 }
 
-class LocalAnnilAlbums extends Table
-    with TableInfo<LocalAnnilAlbums, LocalAnnilAlbum> {
+class PlaybackRecords extends Table
+    with TableInfo<PlaybackRecords, PlaybackRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  LocalAnnilAlbums(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  PlaybackRecords(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _annilIdMeta = const VerificationMeta('annilId');
-  late final GeneratedColumn<int> annilId = GeneratedColumn<int>(
-      'annil_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
+  static const VerificationMeta _albumIdMeta =
+      const VerificationMeta('albumId');
   late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
       'album_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       $customConstraints: 'NOT NULL');
+  static const VerificationMeta _discIdMeta = const VerificationMeta('discId');
+  late final GeneratedColumn<int> discId = GeneratedColumn<int>(
+      'disc_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _trackIdMeta =
+      const VerificationMeta('trackId');
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+      'track_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _atMeta = const VerificationMeta('at');
+  late final GeneratedColumn<int> at = GeneratedColumn<int>(
+      'at', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _lockedMeta = const VerificationMeta('locked');
+  late final GeneratedColumn<bool> locked = GeneratedColumn<bool>(
+      'locked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   @override
-  List<GeneratedColumn> get $columns => [id, annilId, albumId];
+  List<GeneratedColumn> get $columns =>
+      [id, albumId, discId, trackId, at, locked];
   @override
-  String get aliasedName => _alias ?? 'local_annil_albums';
+  String get aliasedName => _alias ?? 'playback_records';
   @override
-  String get actualTableName => 'local_annil_albums';
+  String get actualTableName => 'playback_records';
   @override
-  VerificationContext validateIntegrity(Insertable<LocalAnnilAlbum> instance,
+  VerificationContext validateIntegrity(Insertable<PlaybackRecord> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('annil_id')) {
-      context.handle(_annilIdMeta,
-          annilId.isAcceptableOrUnknown(data['annil_id']!, _annilIdMeta));
-    } else if (isInserting) {
-      context.missing(_annilIdMeta);
     }
     if (data.containsKey('album_id')) {
       context.handle(_albumIdMeta,
@@ -2336,32 +2449,58 @@ class LocalAnnilAlbums extends Table
     } else if (isInserting) {
       context.missing(_albumIdMeta);
     }
+    if (data.containsKey('disc_id')) {
+      context.handle(_discIdMeta,
+          discId.isAcceptableOrUnknown(data['disc_id']!, _discIdMeta));
+    } else if (isInserting) {
+      context.missing(_discIdMeta);
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('at')) {
+      context.handle(_atMeta, at.isAcceptableOrUnknown(data['at']!, _atMeta));
+    } else if (isInserting) {
+      context.missing(_atMeta);
+    }
+    if (data.containsKey('locked')) {
+      context.handle(_lockedMeta,
+          locked.isAcceptableOrUnknown(data['locked']!, _lockedMeta));
+    } else if (isInserting) {
+      context.missing(_lockedMeta);
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  LocalAnnilAlbum map(Map<String, dynamic> data, {String? tablePrefix}) {
+  PlaybackRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalAnnilAlbum(
-      id: attachedDatabase.options.types
+    return PlaybackRecord(
+      id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      annilId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}annil_id'])!,
-      albumId: attachedDatabase.options.types
+      albumId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
+      discId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}disc_id'])!,
+      trackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}track_id'])!,
+      at: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}at'])!,
+      locked: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}locked'])!,
     );
   }
 
   @override
-  LocalAnnilAlbums createAlias(String alias) {
-    return LocalAnnilAlbums(attachedDatabase, alias);
+  PlaybackRecords createAlias(String alias) {
+    return PlaybackRecords(attachedDatabase, alias);
   }
 
-  @override
-  List<String> get customConstraints =>
-      const ['FOREIGN KEY("annil_id") REFERENCES "local_annil_servers"("id")'];
   @override
   bool get dontWriteConstraints => true;
 }
@@ -2570,135 +2709,16 @@ class PlaybackRecordsCompanion extends UpdateCompanion<PlaybackRecord> {
   }
 }
 
-class PlaybackRecords extends Table
-    with TableInfo<PlaybackRecords, PlaybackRecord> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  PlaybackRecords(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _albumIdMeta = const VerificationMeta('albumId');
-  late final GeneratedColumn<String> albumId = GeneratedColumn<String>(
-      'album_id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _discIdMeta = const VerificationMeta('discId');
-  late final GeneratedColumn<int> discId = GeneratedColumn<int>(
-      'disc_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _trackIdMeta = const VerificationMeta('trackId');
-  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
-      'track_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _atMeta = const VerificationMeta('at');
-  late final GeneratedColumn<int> at = GeneratedColumn<int>(
-      'at', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  final VerificationMeta _lockedMeta = const VerificationMeta('locked');
-  late final GeneratedColumn<bool> locked = GeneratedColumn<bool>(
-      'locked', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL');
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, albumId, discId, trackId, at, locked];
-  @override
-  String get aliasedName => _alias ?? 'playback_records';
-  @override
-  String get actualTableName => 'playback_records';
-  @override
-  VerificationContext validateIntegrity(Insertable<PlaybackRecord> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('album_id')) {
-      context.handle(_albumIdMeta,
-          albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta));
-    } else if (isInserting) {
-      context.missing(_albumIdMeta);
-    }
-    if (data.containsKey('disc_id')) {
-      context.handle(_discIdMeta,
-          discId.isAcceptableOrUnknown(data['disc_id']!, _discIdMeta));
-    } else if (isInserting) {
-      context.missing(_discIdMeta);
-    }
-    if (data.containsKey('track_id')) {
-      context.handle(_trackIdMeta,
-          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
-    } else if (isInserting) {
-      context.missing(_trackIdMeta);
-    }
-    if (data.containsKey('at')) {
-      context.handle(_atMeta, at.isAcceptableOrUnknown(data['at']!, _atMeta));
-    } else if (isInserting) {
-      context.missing(_atMeta);
-    }
-    if (data.containsKey('locked')) {
-      context.handle(_lockedMeta,
-          locked.isAcceptableOrUnknown(data['locked']!, _lockedMeta));
-    } else if (isInserting) {
-      context.missing(_lockedMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PlaybackRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaybackRecord(
-      id: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      albumId: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}album_id'])!,
-      discId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}disc_id'])!,
-      trackId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}track_id'])!,
-      at: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}at'])!,
-      locked: attachedDatabase.options.types
-          .read(DriftSqlType.bool, data['${effectivePrefix}locked'])!,
-    );
-  }
-
-  @override
-  PlaybackRecords createAlias(String alias) {
-    return PlaybackRecords(attachedDatabase, alias);
-  }
-
-  @override
-  bool get dontWriteConstraints => true;
-}
-
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
+  late final AnnivUser annivUser = AnnivUser(this);
+  late final Playlist playlist = Playlist(this);
+  late final PlaylistItem playlistItem = PlaylistItem(this);
   late final LocalFavoriteTracks localFavoriteTracks =
       LocalFavoriteTracks(this);
   late final Index localFavoriteTracksIndex = Index(
       'local_favorite_tracks_index',
       'CREATE UNIQUE INDEX IF NOT EXISTS local_favorite_tracks_index ON local_favorite_tracks (album_id, disc_id, track_id)');
-  late final AnnivUser annivUser = AnnivUser(this);
-  late final Playlist playlist = Playlist(this);
-  late final PlaylistItem playlistItem = PlaylistItem(this);
   late final LocalFavoriteAlbums localFavoriteAlbums =
       LocalFavoriteAlbums(this);
   late final LocalAnnilServers localAnnilServers = LocalAnnilServers(this);
@@ -2819,15 +2839,15 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   }
 
   @override
-  Iterable<TableInfo<Table, dynamic>> get allTables =>
+  Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        localFavoriteTracks,
-        localFavoriteTracksIndex,
         annivUser,
         playlist,
         playlistItem,
+        localFavoriteTracks,
+        localFavoriteTracksIndex,
         localFavoriteAlbums,
         localAnnilServers,
         localAnnilCaches,
