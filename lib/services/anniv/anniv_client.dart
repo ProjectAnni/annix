@@ -392,4 +392,14 @@ class AnnivClient {
       );
     }
   }
+
+  // https://book.anni.rs/06.anniv/06.statistics.html#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E6%92%AD%E6%94%BE%E8%AE%B0%E5%BD%95
+  Future<List<SongPlayRecordResult>> getUserPlaybackStats() async {
+    final response = await _client.get('/api/stat/self', queryParameters: {
+      'from': 0,
+    });
+    return (response.data as List<dynamic>)
+        .map((e) => SongPlayRecordResult.fromJson(e))
+        .toList();
+  }
 }

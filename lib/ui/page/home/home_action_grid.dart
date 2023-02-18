@@ -44,8 +44,9 @@ class HomeActionGrid extends StatelessWidget {
         HomeActionButton(
           icon: const Icon(Icons.history),
           title: t.recent_played,
-          // TODO: implement play record
-          onPressed: null,
+          onPressed: () {
+            AnnixRouterDelegate.of(context).to(name: '/history');
+          },
         ),
         HomeActionButton(
           icon: const Icon(Icons.download),

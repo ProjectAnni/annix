@@ -227,3 +227,10 @@ Map<String, dynamic> _$SongPlayRecordToJson(SongPlayRecord instance) =>
       'track': instance.track,
       'at': instance.at,
     };
+
+SongPlayRecordResult _$SongPlayRecordResultFromJson(
+        Map<String, dynamic> json) =>
+    SongPlayRecordResult(
+      track: TrackIdentifier.fromJson(json['track'] as Map<String, dynamic>),
+      count: json['count'] as int,
+    );

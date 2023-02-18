@@ -611,3 +611,14 @@ class SongPlayRecord {
 
   Map<String, dynamic> toJson() => _$SongPlayRecordToJson(this);
 }
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class SongPlayRecordResult {
+  final TrackIdentifier track;
+  final int count;
+
+  SongPlayRecordResult({required this.track, required this.count});
+
+  factory SongPlayRecordResult.fromJson(Map<String, dynamic> json) =>
+      _$SongPlayRecordResultFromJson(json);
+}

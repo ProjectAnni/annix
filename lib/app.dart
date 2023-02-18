@@ -55,7 +55,7 @@ class AnnixApp extends StatelessWidget {
           // i18n
           locale: TranslationProvider.of(context).flutterLocale,
           // use provider
-          supportedLocales: LocaleSettings.supportedLocales,
+          supportedLocales: AppLocaleUtils.supportedLocales,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
 
           // routes
