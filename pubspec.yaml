@@ -55,7 +55,7 @@ dependencies:
   extended_image:
     git:
       url: https://github.com/chaudharydeepanshu/extended_image
-      ref: 4b2370fbad2d6a06067449c559a88e316aab4036
+      ref: 6c0fcecaad16a921bf9d822ac169fd1bad45d1bb
   flutter_lyric: ^2.0.4+6
   settings_ui: ^2.0.2
   cupertino_icons: ^1.0.5

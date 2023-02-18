@@ -6,13 +6,13 @@ void showLoadingDialog(BuildContext context) {
     useRootNavigator: true,
     barrierDismissible: false,
     builder: (context) {
-      return Center(
+      return const Center(
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 CircularProgressIndicator(
                   strokeWidth: 2,
                 ),
