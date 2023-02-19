@@ -17,7 +17,7 @@ class AnnixLayoutMobile extends StatelessWidget {
   static const pages = <String>[
     '/home',
     '/tags',
-    '/server',
+    '/settings',
   ];
 
   const AnnixLayoutMobile({
@@ -109,8 +109,8 @@ class AnnixLayoutMobile extends StatelessWidget {
                       label: t.category,
                     ),
                     NavigationDestination(
-                      icon: const Icon(Icons.dns_outlined),
-                      label: t.server.server,
+                      icon: const Icon(Icons.settings_outlined),
+                      label: t.settings.settings,
                     ),
                   ],
                 ),

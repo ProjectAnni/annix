@@ -168,19 +168,9 @@ class ServerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: maybeAppBar(
-        AppBar(
-          title: Text(t.server.server),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                AnnixRouterDelegate.of(context).to(name: '/settings');
-              },
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text(t.server.server),
+        centerTitle: true,
       ),
       body: Column(
         children: [

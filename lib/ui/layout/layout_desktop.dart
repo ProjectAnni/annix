@@ -33,7 +33,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
   static const pages = <String>[
     '/home',
     '/tags',
-    '/server',
+    '/settings',
   ];
 
   bool showIsPlaying = false;
@@ -80,9 +80,9 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
                             label: Text(t.category),
                           ),
                           NavigationRailDestination(
-                            icon: const Icon(Icons.dns_outlined),
-                            selectedIcon: const Icon(Icons.dns),
-                            label: Text(t.server.server),
+                            icon: const Icon(Icons.settings_outlined),
+                            selectedIcon: const Icon(Icons.settings),
+                            label: Text(t.settings.settings),
                           ),
                         ],
                       );

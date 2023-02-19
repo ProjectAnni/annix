@@ -178,7 +178,6 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case '/server':
         child = const ServerView();
-        disableAppBarDismissal = true;
         break;
       case '/favorite':
         child = const FavoritePage();
@@ -191,6 +190,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case '/settings':
         child = const SettingsScreen();
+        disableAppBarDismissal = true;
         break;
       case '/settings/log':
         child = const SettingsLogView();

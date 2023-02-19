@@ -7,6 +7,7 @@ import 'package:annix/ui/dialogs/enum_select.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/store.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +48,11 @@ class SettingsScreen extends StatelessWidget {
     final settings = Global.settings;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.settings.settings),
-        centerTitle: true,
+      appBar: maybeAppBar(
+        AppBar(
+          title: Text(t.settings.settings),
+          centerTitle: true,
+        ),
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(

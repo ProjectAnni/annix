@@ -10,12 +10,12 @@ class FloatingSearchBar extends StatelessWidget {
   const FloatingSearchBar({
     Key? key,
     this.height = 56,
-    required this.leadingIcon,
+    required this.trailingIcon,
     required this.supportingText,
   }) : super(key: key);
 
   final double height;
-  final Widget leadingIcon;
+  final Widget trailingIcon;
 
   final String supportingText;
 
@@ -46,7 +46,6 @@ class FloatingSearchBar extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(children: [
-                leadingIcon,
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8),
@@ -70,6 +69,7 @@ class FloatingSearchBar extends StatelessWidget {
                     ),
                   ),
                 ),
+                trailingIcon,
               ]),
             ),
           ),
@@ -90,13 +90,15 @@ class HomeAppBar extends StatelessWidget {
     if (info != null) {
       return SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            // horizontal: 16,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: FloatingSearchBar(
-            leadingIcon: CircleAvatar(
-              child: Text(info.user.nickname.substring(0, 1)),
+            trailingIcon: IconButton(
+              icon: CircleAvatar(
+                child: Text(info.user.nickname.substring(0, 1)),
+              ),
+              onPressed: () {
+                AnnixRouterDelegate.of(context).to(name: '/server');
+              },
             ),
             supportingText: 'Search...',
           ),
