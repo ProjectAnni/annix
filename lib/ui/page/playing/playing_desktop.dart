@@ -60,18 +60,15 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                     children: [
                       Consumer<PlaybackService>(
                         builder: (context, player, child) {
-                          return TextButton(
-                            child: Text(
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SelectableText(
                               player.playing?.track.title ?? '',
                               style: context.textTheme.titleLarge!.copyWith(
                                 color: context.colorScheme.onPrimaryContainer,
                               ),
                               maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
-                            onPressed: () {
-                              // TODO: copy track title
-                            },
                           );
                         },
                       ),
