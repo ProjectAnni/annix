@@ -77,6 +77,7 @@ class TagListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: maybeAppBar(
+        context,
         AppBar(
           title: Text(t.category),
           centerTitle: true,

@@ -49,6 +49,7 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: maybeAppBar(
+        context,
         AppBar(
           title: Text(t.settings.settings),
           centerTitle: true,
