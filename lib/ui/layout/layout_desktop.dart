@@ -63,6 +63,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
                           pages.contains(route) ? pages.indexOf(route) : null;
 
                       return NavigationRail(
+                        minExtendedWidth: 192,
                         selectedIndex: selectedIndex,
                         onDestinationSelected: (index) {
                           widget.router.off(name: pages[index]);
@@ -87,6 +88,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
                         ],
                       );
                     })(),
+                    const VerticalDivider(),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
