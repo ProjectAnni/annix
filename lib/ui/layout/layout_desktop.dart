@@ -55,20 +55,23 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     extended: true,
                     destinations: <NavigationRailDestination>[
                       NavigationRailDestination(
-                        icon: const Icon(Icons.casino_outlined),
+                        icon: const Icon(Icons.home_outlined),
+                        selectedIcon: const Icon(Icons.home),
                         label: Text(t.home),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.music_note_outlined),
-                        selectedIcon: const Icon(Icons.music_note_sharp),
+                        selectedIcon: const Icon(Icons.music_note),
                         label: Text(t.playing.is_playing),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.local_offer_outlined),
+                        selectedIcon: const Icon(Icons.local_offer),
                         label: Text(t.category),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.dns_outlined),
+                        selectedIcon: const Icon(Icons.dns),
                         label: Text(t.server.server),
                       ),
                     ],
