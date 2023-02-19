@@ -1,22 +1,21 @@
+import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-import 'package:annix/ui/layout/layout.dart';
-
-/// F |
-///   |
-///   |
 /// n |
-/// a |       body page
+/// a |
 /// v |
+///   |
+///   |       body page
+///   |
 ///   |
 ///   |
 /// __|______________________
 ///            player
 ///
-class AnnixLayoutDesktop extends AnnixLayout {
+class AnnixLayoutDesktop extends StatefulWidget {
   final AnnixRouterDelegate router;
   final Widget child;
 
@@ -26,12 +25,18 @@ class AnnixLayoutDesktop extends AnnixLayout {
     required this.router,
   });
 
+  @override
+  State<AnnixLayoutDesktop> createState() => _AnnixLayoutDesktopState();
+}
+
+class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
   static const pages = <String>[
     '/home',
-    '/playing',
     '/tags',
     '/server',
   ];
+
+  bool showIsPlaying = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,56 +45,69 @@ class AnnixLayoutDesktop extends AnnixLayout {
         mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
-            child: Row(
-              children: <Widget>[
-                (() {
-                  final route = router.currentRoute;
-                  final selectedIndex =
-                      pages.contains(route) ? pages.indexOf(route) : null;
+            child: IndexedStack(
+              index: showIsPlaying ? 0 : 1,
+              children: [
+                PlayingDesktopScreen(
+                  onBack: () {
+                    setState(() {
+                      showIsPlaying = false;
+                    });
+                  },
+                ),
+                Row(
+                  children: <Widget>[
+                    (() {
+                      final route = widget.router.currentRoute;
+                      final selectedIndex =
+                          pages.contains(route) ? pages.indexOf(route) : null;
 
-                  return NavigationRail(
-                    selectedIndex: selectedIndex,
-                    onDestinationSelected: (index) {
-                      router.off(name: pages[index]);
-                    },
-                    extended: true,
-                    destinations: <NavigationRailDestination>[
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.home_outlined),
-                        selectedIcon: const Icon(Icons.home),
-                        label: Text(t.home),
+                      return NavigationRail(
+                        selectedIndex: selectedIndex,
+                        onDestinationSelected: (index) {
+                          widget.router.off(name: pages[index]);
+                        },
+                        extended: true,
+                        destinations: <NavigationRailDestination>[
+                          NavigationRailDestination(
+                            icon: const Icon(Icons.home_outlined),
+                            selectedIcon: const Icon(Icons.home),
+                            label: Text(t.home),
+                          ),
+                          NavigationRailDestination(
+                            icon: const Icon(Icons.local_offer_outlined),
+                            selectedIcon: const Icon(Icons.local_offer),
+                            label: Text(t.category),
+                          ),
+                          NavigationRailDestination(
+                            icon: const Icon(Icons.dns_outlined),
+                            selectedIcon: const Icon(Icons.dns),
+                            label: Text(t.server.server),
+                          ),
+                        ],
+                      );
+                    })(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(child: widget.child),
+                        ],
                       ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.music_note_outlined),
-                        selectedIcon: const Icon(Icons.music_note),
-                        label: Text(t.playing.is_playing),
-                      ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.local_offer_outlined),
-                        selectedIcon: const Icon(Icons.local_offer),
-                        label: Text(t.category),
-                      ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.dns_outlined),
-                        selectedIcon: const Icon(Icons.dns),
-                        label: Text(t.server.server),
-                      ),
-                    ],
-                  );
-                })(),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(child: child),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const DesktopBottomPlayer(),
+          DesktopBottomPlayer(
+            onClick: () {
+              setState(() {
+                showIsPlaying = true;
+              });
+            },
+          ),
         ],
       ),
     );

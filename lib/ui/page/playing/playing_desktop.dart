@@ -11,7 +11,9 @@ import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:provider/provider.dart';
 
 class PlayingDesktopScreen extends StatefulWidget {
-  const PlayingDesktopScreen({super.key});
+  const PlayingDesktopScreen({super.key, required this.onBack});
+
+  final VoidCallback onBack;
 
   @override
   State<PlayingDesktopScreen> createState() => _PlayingDesktopScreenState();
@@ -24,14 +26,22 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: widget.onBack,
+            ),
+          ),
           Expanded(
-            flex: 6,
+            flex: 20,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Spacer(flex: 1),
                 Expanded(
                   flex: 10,
                   child: Center(

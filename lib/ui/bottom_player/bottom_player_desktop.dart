@@ -1,5 +1,4 @@
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -12,9 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DesktopBottomPlayer extends StatelessWidget {
-  const DesktopBottomPlayer({
-    super.key,
-  });
+  const DesktopBottomPlayer({super.key, required this.onClick});
+
+  final VoidCallback onClick;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,7 @@ class DesktopBottomPlayer extends StatelessWidget {
       onTap: () {
         final player = context.read<PlaybackService>();
         if (player.playing != null) {
-          AnnixRouterDelegate.of(context).off(name: '/playing');
+          onClick();
         }
       },
       child: Container(

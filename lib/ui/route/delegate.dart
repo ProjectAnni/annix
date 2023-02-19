@@ -1,4 +1,6 @@
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/layout/layout_desktop.dart';
+import 'package:annix/ui/layout/layout_mobile.dart';
 import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
@@ -12,17 +14,15 @@ import 'package:annix/ui/page/settings/settings_log.dart';
 import 'package:annix/ui/page/tag/tag_detail.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/home/home.dart';
-import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
   final List<AnnixPage> _pages = [];
-  final Map<String, AnnixPage> _reservedPages = {};
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
@@ -33,19 +33,23 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
   @override
   Widget build(BuildContext context) {
-    final reserved = _reservedPages.values
-        .where((element) => !_pages.contains(element))
-        .toList();
-
-    return AnnixLayout.build(
-      context,
-      router: this,
-      child: Navigator(
-        key: navigatorKey,
-        pages: reserved + _pages,
-        onPopPage: _onPopPage,
-      ),
+    final child = Navigator(
+      key: navigatorKey,
+      // copy once, or it will not be rebuilt
+      pages: [..._pages],
+      onPopPage: _onPopPage,
     );
+    if (context.isDesktopOrLandscape) {
+      return AnnixLayoutDesktop(
+        router: this,
+        child: child,
+      );
+    } else {
+      return AnnixLayoutMobile(
+        router: this,
+        child: child,
+      );
+    }
   }
 
   @override
@@ -144,21 +148,12 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     AnnixRoutePageBuilder? pageBuilder,
     Duration? transitionDuration,
   }) {
-    if (_reservedPages.containsKey(routeSettings.name)) {
-      return _reservedPages[routeSettings.name]!;
-    }
-
     Widget child;
     bool disableAppBarDismissal = false;
 
     switch (routeSettings.name) {
       case '/login':
         child = const AnnivLoginPage();
-        break;
-      case '/playing':
-        // /playing route is only available on desktop
-        child = const PlayingDesktopScreen();
-        disableAppBarDismissal = true;
         break;
       case '/home':
         child = const HomePage();
@@ -211,11 +206,6 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
             "You've entered an unknown area! This should not happen.");
     }
 
-    final reserved = _reservedPages[routeSettings.name!];
-    if (reserved != null) {
-      return reserved;
-    }
-
     final page = AnnixPage(
       child: child,
       name: routeSettings.name,
@@ -226,9 +216,6 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       transitionDuration: transitionDuration,
     );
 
-    if (routeSettings.name == '/playing') {
-      _reservedPages[routeSettings.name!] = page;
-    }
     return page;
   }
 
