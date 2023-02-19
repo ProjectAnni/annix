@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:annix/global.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,10 @@ class AnnixPage extends Page {
       transitionDuration:
           transitionDuration ?? const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
-        return (pageBuilder ?? fadeThroughTransitionBuilder)(
+        return (pageBuilder ??
+            (Global.isDesktop
+                ? fadeTransitionBuilder
+                : fadeThroughTransitionBuilder))(
           context,
           animation,
           secondaryAnimation,

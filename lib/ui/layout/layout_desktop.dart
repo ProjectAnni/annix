@@ -52,14 +52,7 @@ class AnnixLayoutDesktop extends AnnixLayout {
                     onDestinationSelected: (index) {
                       router.off(name: pages[index]);
                     },
-                    labelType: NavigationRailLabelType.all,
-                    leading: FloatingActionButton(
-                      child: const Icon(Icons.search_outlined),
-                      onPressed: () {
-                        router.to(name: '/search');
-                      },
-                    ),
-                    groupAlignment: -0.7,
+                    extended: true,
                     destinations: <NavigationRailDestination>[
                       NavigationRailDestination(
                         icon: const Icon(Icons.casino_outlined),

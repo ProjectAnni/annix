@@ -3,6 +3,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
@@ -167,17 +168,19 @@ class ServerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.server.server),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              AnnixRouterDelegate.of(context).to(name: '/settings');
-            },
-          ),
-        ],
+      appBar: maybeAppBar(
+        AppBar(
+          title: Text(t.server.server),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                AnnixRouterDelegate.of(context).to(name: '/settings');
+              },
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [

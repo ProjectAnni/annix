@@ -2,6 +2,7 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:provider/provider.dart';
@@ -75,9 +76,11 @@ class TagListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.category),
-        centerTitle: true,
+      appBar: maybeAppBar(
+        AppBar(
+          title: Text(t.category),
+          centerTitle: true,
+        ),
       ),
       body: TagList(
         onSelected: (tag) {
