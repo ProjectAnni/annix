@@ -88,7 +88,6 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
                         ],
                       );
                     })(),
-                    const VerticalDivider(width: 1.0),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

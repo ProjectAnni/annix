@@ -68,7 +68,7 @@ dependencies:
   json_annotation: ^4.8.0
 
   drift: ^2.5.0
-  sqlite3_flutter_libs: ^0.5.12
+  sqlite3_flutter_libs: 0.5.10
   sqflite: ^2.2.4+1
   sqflite_common_ffi: ^2.2.1+1
 
