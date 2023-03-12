@@ -41,6 +41,7 @@ jobs:
           cat ~/.gradle/gradle.properties
           
           # Install rust targets
+          rustup update
           rustup target add \
               aarch64-linux-android \
               armv7-linux-androideabi \
