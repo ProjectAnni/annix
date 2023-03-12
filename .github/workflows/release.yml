@@ -40,6 +40,9 @@ jobs:
           echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
           cat ~/.gradle/gradle.properties
           
+          # /usr/include/bits
+          sudo apt install libc6-dev-i386
+          
           # Install rust targets
           rustup update
           rustup target add \
@@ -52,9 +55,6 @@ jobs:
           cd annix
           cargo ndk -o ../android/app/src/main/jniLibs build
           cd ..
-
-          # /usr/include/bits
-          sudo apt install libc6-dev-i386
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
