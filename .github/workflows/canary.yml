@@ -22,20 +22,6 @@ jobs:
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Android NDK
         run: |
-          # https://github.com/actions/runner-images/issues/5595
-          # TODO: remove the following patch after rust 1.68
-          # Install ndk
-          ANDROID_ROOT=/usr/local/lib/android
-          ANDROID_SDK_ROOT=${ANDROID_ROOT}/sdk
-          SDKMANAGER=${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager
-          echo "y" | $SDKMANAGER "ndk;21.4.7075529"
-
-          # Change default ndk version
-          ANDROID_ROOT=/usr/local/lib/android
-          ANDROID_SDK_ROOT=${ANDROID_ROOT}/sdk
-          ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle
-          ln -sfn $ANDROID_SDK_ROOT/ndk/21.4.7075529 $ANDROID_NDK_ROOT
-
           # Apply to gradle
           mkdir -p ~/.gradle
           echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
@@ -48,7 +34,10 @@ jobs:
               x86_64-linux-android \
               i686-linux-android
           # Install cargo-ndk
-          cargo install cargo-ndk --version 2.6.0
+          cargo install cargo-ndk
+          cd annix
+          cargo ndk -o ../android/app/src/main/jniLibs build
+          cd ..
 
           # /usr/include/bits
           sudo apt install libc6-dev-i386

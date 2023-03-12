@@ -293,10 +293,10 @@ packages:
     dependency: transitive
     description:
       name: characters
-      sha256: e6a326c8af69605aec75ed6c187d06b349707a27fbff8222ca9cc2cff167975c
+      sha256: "04a925763edad70e8443c99234dc3328f442e811f1d8fd1a72f1c8ad0f69a605"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.3.0"
   charcode:
     dependency: transitive
     description:
@@ -625,10 +625,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_rust_bridge
-      sha256: bcd4ca6bd1a02430462cac2f6bd4e5b5b4665665a679e1cf817031d2e8cedd5c
+      sha256: e0ec75581c739e9ce706f6d8f2a15566b070125586fb571ac398098a8a610eb5
       url: "https://pub.dev"
     source: hosted
-    version: "1.64.0"
+    version: "1.69.0"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
