@@ -89,18 +89,21 @@ class HomeAppBar extends StatelessWidget {
 
     if (info != null) {
       return SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: FloatingSearchBar(
-            trailingIcon: IconButton(
-              icon: CircleAvatar(
-                child: Text(info.user.nickname.substring(0, 1)),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: FloatingSearchBar(
+              trailingIcon: IconButton(
+                icon: CircleAvatar(
+                  child: Text(info.user.nickname.substring(0, 1)),
+                ),
+                onPressed: () {
+                  AnnixRouterDelegate.of(context).to(name: '/server');
+                },
               ),
-              onPressed: () {
-                AnnixRouterDelegate.of(context).to(name: '/server');
-              },
+              supportingText: 'Search...',
             ),
-            supportingText: 'Search...',
           ),
         ),
       );
