@@ -10,8 +10,8 @@ Future<TagEntry?> showTagListDialog(BuildContext context) async {
 
   await showDialog(
     context: context,
-    // if it's not desktop, we expect to show the dialog with the actual full screen
-    useRootNavigator: !context.isDesktopOrLandscape,
+    // if it's mobile, we expect to show the dialog with the actual full screen
+    useRootNavigator: context.isMobileOrPortrait,
     builder: (context) {
       return Dialog.fullscreen(
         child: Scaffold(

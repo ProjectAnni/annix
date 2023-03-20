@@ -129,8 +129,7 @@ class _AlbumPageState extends State<AlbumPage> {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
           slivers: [
-            // <MOBILE>
-            if (!context.isDesktopOrLandscape)
+            if (context.isMobileOrPortrait)
               SliverToBoxAdapter(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -151,7 +150,7 @@ class _AlbumPageState extends State<AlbumPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!context.isDesktopOrLandscape)
+                    if (context.isMobileOrPortrait)
                       CircleAvatar(
                         child: Card(
                           elevation: 0,
@@ -197,8 +196,7 @@ class _AlbumPageState extends State<AlbumPage> {
               ),
             ),
             SliverToBoxAdapter(
-              child:
-                  _playButtons(context, stretch: !context.isDesktopOrLandscape),
+              child: _playButtons(context, stretch: context.isMobileOrPortrait),
             ),
             _buildTrackList(context),
           ],

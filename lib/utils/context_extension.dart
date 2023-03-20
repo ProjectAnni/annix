@@ -13,4 +13,6 @@ extension AnnixContextExtension on BuildContext {
   bool get isDesktopOrLandscape =>
       Global.isDesktop ||
       MediaQuery.of(this).orientation == Orientation.landscape;
+
+  bool get isMobileOrPortrait => !isDesktopOrLandscape;
 }

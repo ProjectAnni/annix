@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class NetworkService extends ChangeNotifier {
-  static bool isMobile = false;
+  static bool isMobileNetwork = false;
   static bool isConnected = true;
 
   final Connectivity _connectivity = Connectivity();
@@ -22,13 +22,13 @@ class NetworkService extends ChangeNotifier {
       case ConnectivityResult.wifi:
       case ConnectivityResult.ethernet:
         isConnected = true;
-        isMobile = false;
+        isMobileNetwork = false;
         break;
       // mobile network, need to save traffic
       case ConnectivityResult.mobile:
       case ConnectivityResult.bluetooth:
         isConnected = true;
-        isMobile = true;
+        isMobileNetwork = true;
         break;
       default:
         // no network or vpn
@@ -37,7 +37,7 @@ class NetworkService extends ChangeNotifier {
           // so add an polyfill to check internet accessibility
           // https://github.com/fluttercommunity/plus_plugins/issues/857
           _canVisitInternet().then((value) {
-            // keep `isMobile` property and set isConnected
+            // keep `isMobileNetwork` property and set isConnected
             isConnected = value;
             notifyListeners();
           });
@@ -47,7 +47,7 @@ class NetworkService extends ChangeNotifier {
 
         // not vpn, ConnectivityResult.none
         isConnected = false;
-        isMobile = false;
+        isMobileNetwork = false;
         break;
     }
     notifyListeners();
@@ -67,6 +67,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   static bool get isOnline {
-    return isConnected && (!isMobile || Global.settings.useMobileNetwork.value);
+    return isConnected &&
+        (!isMobileNetwork || Global.settings.useMobileNetwork.value);
   }
 }

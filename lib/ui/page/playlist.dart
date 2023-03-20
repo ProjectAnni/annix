@@ -279,7 +279,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
           slivers: [
-            if (!context.isDesktopOrLandscape && cover != null)
+            if (context.isMobileOrPortrait && cover != null)
               SliverToBoxAdapter(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -297,9 +297,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!context.isDesktopOrLandscape)
+                    if (context.isMobileOrPortrait)
                       CircleAvatar(
-                        // FIXME: use user avatar
+                        // FIXME: use avatar of playlist creator
                         child: _cover(card: true),
                       ),
                     if (context.isDesktopOrLandscape)
@@ -334,8 +334,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               ),
             ),
             SliverToBoxAdapter(
-              child:
-                  _playButtons(context, stretch: !context.isDesktopOrLandscape),
+              child: _playButtons(context, stretch: context.isMobileOrPortrait),
             ),
             _buildTrackList(),
           ],

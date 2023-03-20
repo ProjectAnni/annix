@@ -106,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(t.settings.auto_scale_ui),
                 ),
               ),
-              if (Global.isMobile)
+              if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.blurPlayingPage,
                   builder: (context, p, _) => SettingsTile.switchTile(
@@ -159,7 +159,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
               ),
-              if (!context.isDesktopOrLandscape)
+              if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.mobileShowArtistInBottomPlayer,
                   builder: (context, p, _) => SettingsTile.switchTile(
