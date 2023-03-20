@@ -1,4 +1,5 @@
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/services/theme.dart';
 import 'package:annix/ui/layout/layout_desktop.dart';
 import 'package:annix/ui/layout/layout_mobile.dart';
 import 'package:annix/ui/page/album.dart';
@@ -37,6 +38,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       key: navigatorKey,
       // copy once, or it will not be rebuilt
       pages: [..._pages],
+      observers: [ThemePopObserver()],
       onPopPage: _onPopPage,
     );
     if (context.isDesktopOrLandscape) {

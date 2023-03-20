@@ -14,7 +14,7 @@ class PlaylistView extends StatelessWidget {
       builder: (context, playlists, child) {
         return SliverList(
           delegate: SliverChildBuilderDelegate(
-                (context, index) {
+            (context, index) {
               final playlist = playlists[index];
 
               final albumId =
@@ -29,7 +29,7 @@ class PlaylistView extends StatelessWidget {
                   aspectRatio: 1,
                   child: albumId == null
                       ? const DummyMusicCover()
-                      : MusicCover(albumId: albumId),
+                      : MusicCover.fromAlbum(albumId: albumId),
                 ),
                 title: Text(
                   playlist.name,

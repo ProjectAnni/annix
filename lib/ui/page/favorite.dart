@@ -120,7 +120,7 @@ class _FavoritePageState extends State<FavoritePage> {
         final favorite = reversedFavorite.elementAt(index);
         return ListTile(
           leading: CoverCard(
-            child: MusicCover(
+            child: MusicCover.fromAlbum(
               albumId: favorite.albumId,
               fit: BoxFit.cover,
             ),

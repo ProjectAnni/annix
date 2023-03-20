@@ -57,7 +57,7 @@ class PlaybackHistoryPage extends StatelessWidget {
                 for (final record in data)
                   ListTile(
                     leading: CoverCard(
-                      child: MusicCover(
+                      child: MusicCover.fromAlbum(
                         albumId: record.track.albumId,
                         fit: BoxFit.cover,
                       ),

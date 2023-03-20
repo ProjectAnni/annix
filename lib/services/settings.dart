@@ -1,9 +1,7 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/font.dart';
-import 'package:annix/services/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 enum SearchTrackDisplayType {
   /// Display track artist.
@@ -97,8 +95,7 @@ class SettingsController {
     fontPath.addListener(() async {
       await saveChangedVariable('annix_font_path', fontPath)();
       await FontService.load(fontPath.value);
-      // ignore: use_build_context_synchronously
-      Global.context.read<AnnixTheme>().setFontFamily();
+      Global.theme.updateFontFamily();
     });
 
     blurPlayingPage = ValueNotifier(

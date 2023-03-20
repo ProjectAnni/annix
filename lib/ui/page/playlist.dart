@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
@@ -26,6 +27,8 @@ class PlaylistPage extends StatefulWidget {
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
+  bool loading = true;
+
   /// Flag to control whether playlist is in edit mode
   bool _editMode = false;
 
@@ -57,7 +60,18 @@ class _PlaylistPageState extends State<PlaylistPage> {
       return null;
     } else {
       final cover = DiscIdentifier.fromIdentifier(coverIdentifier);
-      final child = MusicCover(albumId: cover.albumId, discId: cover.discId);
+      final child = MusicCover.fromAlbum(
+        albumId: cover.albumId,
+        discId: cover.discId,
+        onImage: (provider) async {
+          if (loading) {
+            loading = false;
+            final scheme =
+                await ColorScheme.fromImageProvider(provider: provider);
+            Global.theme.setTemporaryScheme(scheme);
+          }
+        },
+      );
       if (!card) return child;
 
       return Card(
@@ -177,7 +191,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     ),
               const SizedBox(width: 8),
               CoverCard(
-                child: MusicCover(
+                child: MusicCover.fromAlbum(
                   albumId: item.info.id.albumId,
                   fit: BoxFit.cover,
                 ),

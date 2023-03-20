@@ -1,3 +1,4 @@
+import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
@@ -118,6 +119,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
       onPopPage: (route, result) {
         return false;
       },
+      observers: [ThemePopObserver()],
     );
   }
 }

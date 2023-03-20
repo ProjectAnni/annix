@@ -21,7 +21,7 @@ class AnnixApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AnnixTheme(), lazy: false),
+        ChangeNotifierProvider(create: (_) => Global.theme, lazy: false),
         ChangeNotifierProvider(create: (_) => NetworkService(), lazy: false),
         LocalDatabase.provider,
         LocalDatabase.playlistProvider,

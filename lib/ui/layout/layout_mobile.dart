@@ -1,5 +1,6 @@
 import 'package:annix/global.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -128,6 +129,7 @@ class AnnixLayoutMobile extends StatelessWidget {
       onPopPage: (route, result) {
         return false;
       },
+      observers: [ThemePopObserver()],
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:annix/global.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -31,16 +32,23 @@ class LazyAlbumPage extends StatelessWidget {
   }
 }
 
-class AlbumPage extends StatelessWidget {
+class AlbumPage extends StatefulWidget {
   final Album album;
 
   const AlbumPage({super.key, required this.album});
+
+  @override
+  State<AlbumPage> createState() => _AlbumPageState();
+}
+
+class _AlbumPageState extends State<AlbumPage> {
+  bool loading = true;
 
   void _onPlay(BuildContext context, {int index = 0, bool shuffle = false}) {
     final player = context.read<PlaybackService>();
     playFullList(
       player: player,
-      tracks: album.getTracks(),
+      tracks: widget.album.getTracks(),
       initialIndex: index,
       shuffle: shuffle,
     );
@@ -82,13 +90,13 @@ class AlbumPage extends StatelessWidget {
     final List<Widget> list = [];
 
     bool needDiscId = false;
-    if (album.discs.length > 1) {
+    if (widget.album.discs.length > 1) {
       needDiscId = true;
     }
 
     int trackIndex = 0;
     int discId = 1;
-    for (final disc in album.discs) {
+    for (final disc in widget.album.discs) {
       if (needDiscId) {
         list.add(DiscTitleListTile(title: disc.title, index: discId));
       }
@@ -101,18 +109,27 @@ class AlbumPage extends StatelessWidget {
     return SliverList(delegate: SliverChildListDelegate(list));
   }
 
+  Future<void> _onImage(ImageProvider provider) async {
+    if (loading) {
+      loading = false;
+      final scheme = await ColorScheme.fromImageProvider(provider: provider);
+      Global.theme.setTemporaryScheme(scheme);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          FavoriteAlbumButton(albumId: album.albumId),
+          FavoriteAlbumButton(albumId: widget.album.albumId),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
           slivers: [
+            // <MOBILE>
             if (!context.isDesktopOrLandscape)
               SliverToBoxAdapter(
                 child: LayoutBuilder(
@@ -120,7 +137,10 @@ class AlbumPage extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: constraints.maxWidth / 6),
-                      child: MusicCover(albumId: album.albumId),
+                      child: MusicCover.fromAlbum(
+                        albumId: widget.album.albumId,
+                        onImage: _onImage,
+                      ),
                     );
                   },
                 ),
@@ -143,13 +163,17 @@ class AlbumPage extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(24)),
                           ),
                           clipBehavior: Clip.hardEdge,
-                          child: MusicCover(albumId: album.albumId),
+                          child: MusicCover.fromAlbum(
+                              albumId: widget.album.albumId),
                         ),
                       ),
                     if (context.isDesktopOrLandscape)
                       SizedBox(
                         height: 240,
-                        child: MusicCover(albumId: album.albumId),
+                        child: MusicCover.fromAlbum(
+                          albumId: widget.album.albumId,
+                          onImage: _onImage,
+                        ),
                       ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -157,12 +181,12 @@ class AlbumPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            album.title,
+                            widget.album.title,
                             style: context.textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           ArtistText(
-                            album.artist,
+                            widget.album.artist,
                             style: context.textTheme.bodyLarge,
                           ),
                         ],

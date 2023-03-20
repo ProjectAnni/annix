@@ -1,13 +1,7 @@
-import 'dart:async';
-
 import 'package:annix/global.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/services/theme.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:material_color_utilities/quantize/quantizer_celebi.dart';
-import 'package:material_color_utilities/score/score.dart';
 import 'package:provider/provider.dart';
 
 class PlayingMusicCover extends StatelessWidget {
@@ -35,14 +29,16 @@ class PlayingMusicCover extends StatelessWidget {
         }
 
         // is playing
-        Widget child = MusicCover(
+        Widget child = MusicCover.fromAlbum(
           key: ValueKey(playing.identifier.albumId),
           albumId: playing.identifier.albumId,
-          image: playing.source.coverProvider,
+          provider: playing.source.coverProvider,
           fit: fit,
           filterQuality: filterQuality,
-          onColor: (color) {
-            Global.context.read<AnnixTheme>().setTheme(color);
+          onImage: (provider) async {
+            final scheme =
+                await ColorScheme.fromImageProvider(provider: provider);
+            Global.theme.setScheme(scheme);
           },
         );
 
@@ -70,11 +66,7 @@ class PlayingMusicCover extends StatelessWidget {
 }
 
 class MusicCover extends StatelessWidget {
-  static Map<String, Completer<Color>> colors = {};
-
-  final ImageProvider? image;
-  final String albumId;
-  final int? discId;
+  final ImageProvider image;
 
   final BoxFit? fit;
   final FilterQuality filterQuality;
@@ -83,44 +75,53 @@ class MusicCover extends StatelessWidget {
   final double? width;
   final double? height;
 
-  final void Function(Color)? onColor;
+  final void Function(ImageProvider)? onImage;
 
-  const MusicCover({
+  factory MusicCover.fromAlbum({
+    required String albumId,
+    int? discId,
+    ImageProvider? provider,
+    Key? key,
+    BoxFit? fit,
+    FilterQuality filterQuality = FilterQuality.low,
+    String? tag,
+    void Function(ImageProvider)? onImage,
+    double? width,
+    double? height,
+  }) {
+    final image = provider ??
+        ExtendedNetworkImageProvider(
+          Global.proxy.coverUrl(albumId, discId),
+        );
+    return MusicCover(
+      key: key,
+      image: image,
+      fit: fit,
+      filterQuality: filterQuality,
+      tag: tag,
+      onImage: onImage,
+      width: width,
+      height: height,
+    );
+  }
+
+  MusicCover({
     super.key,
-    required this.albumId,
-    this.discId,
+    required this.image,
     this.fit,
     this.filterQuality = FilterQuality.low,
     this.tag,
-    this.onColor,
-    this.image,
+    this.onImage,
     this.width,
     this.height,
-  });
+  }) {
+    onImage?.call(image);
+  }
 
   Widget? _loadStateChanged(ExtendedImageState state) {
-    final id = '$albumId/$discId';
     switch (state.extendedImageLoadState) {
       case LoadState.completed:
         final image = state.extendedImageInfo!.image;
-        if (onColor != null) {
-          colors
-              .putIfAbsent(
-                id,
-                () {
-                  final completer = Completer<Color>();
-                  image.toByteData().then(
-                    (bytes) async {
-                      final color = await compute(getColorFromImage, bytes!);
-                      completer.complete(color);
-                    },
-                  );
-                  return completer;
-                },
-              )
-              .future
-              .then((color) => onColor!(color));
-        }
 
         return ExtendedRawImage(
           image: image,
@@ -136,22 +137,11 @@ class MusicCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget image;
-    if (this.image != null) {
-      image = ExtendedImage(
-        image: this.image!,
-        fit: fit,
-        loadStateChanged: _loadStateChanged,
-      );
-    } else {
-      image = ExtendedImage.network(
-        Global.proxy.coverUrl(albumId, discId),
-        cacheHeight: 800,
-        fit: fit,
-        loadStateChanged: _loadStateChanged,
-      );
-    }
-    return image;
+    return ExtendedImage(
+      image: image,
+      fit: fit,
+      loadStateChanged: _loadStateChanged,
+    );
   }
 }
 
@@ -194,24 +184,4 @@ class DummyMusicCover extends StatelessWidget {
 
     return cover;
   }
-}
-
-int argbFromRgb(int red, int green, int blue) {
-  return (255 << 24 | red << 16 | green << 8 | blue) >>> 0;
-}
-
-Future<Color> getColorFromImage(ByteData bytes) async {
-  final pixels = Iterable.generate(bytes.lengthInBytes ~/ 4, (offset) {
-    final index = offset * 4;
-    final r = bytes.getUint8(index);
-    final g = bytes.getUint8(index + 1);
-    final b = bytes.getUint8(index + 2);
-    // final a = bytes.getUint8(index + 3);
-    final argb = argbFromRgb(r, g, b);
-    return argb;
-  });
-  final result = await QuantizerCelebi().quantize(pixels, 128);
-  final ranked = Score.score(result.colorToCount);
-  final top = ranked[0];
-  return Color(top);
 }
