@@ -65,6 +65,8 @@ class AnnixTheme extends ChangeNotifier {
 class ThemePopObserver extends NavigatorObserver {
   @override
   didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    Global.theme.revokeTemporaryScheme();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Global.theme.revokeTemporaryScheme();
+    });
   }
 }
