@@ -12,6 +12,9 @@ Desktop / Mobile client for Project Anni.
 ## Build
 
 ```bash
+# https://github.com/dart-lang/ffigen/issues/257#issuecomment-1061788936
+export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
+
 flutter_rust_bridge_codegen \
     --rust-input annix/src/api.rs \
     --dart-output lib/bridge/generated.dart \
