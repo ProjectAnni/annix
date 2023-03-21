@@ -38,7 +38,9 @@ class PlayingMusicCover extends StatelessWidget {
           onImage: (provider) async {
             final scheme =
                 await ColorScheme.fromImageProvider(provider: provider);
-            Global.theme.setScheme(scheme);
+            final darkScheme = await ColorScheme.fromImageProvider(
+                provider: provider, brightness: Brightness.dark);
+            Global.theme.setScheme(scheme, darkScheme);
           },
         );
 

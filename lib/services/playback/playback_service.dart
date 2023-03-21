@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:annix/global.dart';
@@ -157,7 +158,7 @@ class PlaybackService extends ChangeNotifier {
     bool setSourceOnly = false,
     bool trackPlayback = true,
   }) async {
-    if (Global.isApple) {
+    if (Platform.isIOS) {
       PlaybackServiceHackForIOS();
     }
 

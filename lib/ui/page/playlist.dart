@@ -68,7 +68,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
             loading = false;
             final scheme =
                 await ColorScheme.fromImageProvider(provider: provider);
-            Global.theme.setTemporaryScheme(scheme);
+            final darkScheme = await ColorScheme.fromImageProvider(
+                provider: provider, brightness: Brightness.dark);
+            Global.theme.setTemporaryScheme(scheme, darkScheme);
           }
         },
       );
