@@ -1,52 +1,51 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub use anni_repo::{db::RepoDatabaseRead, prelude::JsonAlbum};
+pub use flutter_rust_bridge::RustOpaque;
+pub use std::sync::Mutex;
+pub use uuid::Uuid;
+
+pub struct LocalDb {
+    pub repo: RustOpaque<Mutex<RepoDatabaseRead>>,
 }
 
-pub fn get_color_from_image(path: String) -> Vec<u32> {
-    use image::io::Reader as ImageReader;
-    use material_color_utilities_rs::quantize::quantizer_celebi::QuantizerCelebi;
-    use material_color_utilities_rs::score::score;
-
-    let image = ImageReader::open(path).unwrap().decode().unwrap();
-    let resized_image = image.thumbnail(500, 500);
-    drop(image);
-
-    let image = resized_image.into_rgba8().into_vec();
-    if image.len() % 4 != 0 {
-        panic!("Invalid image buffer");
-    }
-
-    let mut offset = 0;
-    let total = image.len();
-    let mut pixels = Vec::with_capacity(total / 4);
-    // RGBA -> ARGB
-    while offset < total {
-        pixels.push([
-            image[offset + 3],
-            image[offset],
-            image[offset + 1],
-            image[offset + 2],
-        ]);
-        offset += 4;
-    }
-
-    let mut quantizer = QuantizerCelebi;
-    let result = quantizer.quantize(&pixels, 128);
-
-    let result = score(&result);
-    result
-        .into_iter()
-        .map(|[a, r, g, b]| ((a as u32) << 24) | ((r as u32) << 16) | ((g as u32) << 8) | b as u32)
-        .collect()
+pub struct TagItem {
+    pub name: String,
+    pub children: Vec<String>,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::get_color_from_image;
+impl LocalDb {
+    pub fn new(path: String) -> LocalDb {
+        let repo = RepoDatabaseRead::new(path).unwrap();
+        let repo = RustOpaque::new(Mutex::new(repo));
+        Self { repo }
+    }
 
-    #[test]
-    fn test_image_color() {
-        let color = get_color_from_image("/home/yesterday17/cover.jpg".to_string());
-        panic!("{:#?}", color);
+    pub fn get_album(&self, album_id: uuid::Uuid) -> Option<String> {
+        let album = self.repo.lock().unwrap().read_album(album_id).unwrap();
+        album.map(|album| JsonAlbum::from(album).to_string())
+    }
+
+    pub fn get_albums_by_tag(&self, tag: String, recursive: bool) -> Vec<Uuid> {
+        let albums = self
+            .repo
+            .lock()
+            .unwrap()
+            .get_albums_by_tag(&tag, recursive)
+            .unwrap();
+        albums.into_iter().map(|album| album.album_id.0).collect()
+    }
+
+    pub fn get_tags(&self) -> Vec<TagItem> {
+        let albums = self.repo.lock().unwrap().get_tags_relationship().unwrap();
+        albums
+            .into_iter()
+            .map(|(_, tag)| TagItem {
+                name: tag.tag.to_string(),
+                children: tag
+                    .children
+                    .into_iter()
+                    .map(|tag| tag.to_string())
+                    .collect(),
+            })
+            .collect()
     }
 }

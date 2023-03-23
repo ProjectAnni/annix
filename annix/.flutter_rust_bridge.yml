@@ -1,0 +1,12 @@
+rust_input: [src/api.rs]
+rust_output: [src/bridge_generated.rs]
+
+dart_output: [../lib/bridge/generated.dart]
+dart_decl_output: ../lib/bridge/definitions.dart
+dart_format_line_length: 120
+dart_enums_style: true
+c_output: [../ios/Runner/bridge_generated.h]
+extra_c_output_path:
+  - ../macos/Runner/
+# dump: []
+wasm: false
