@@ -12,18 +12,6 @@ class ReleaseDate {
 
   ReleaseDate({required this.year, this.month, this.day});
 
-  static ReleaseDate fromDynamic(String value) {
-    // "yyyy-mm-dd"
-    // "yyyy-mm"
-    // "yyyy"
-    final parts = value.split('-');
-    return ReleaseDate(
-      year: int.parse(parts[0]),
-      month: parts.length > 1 ? int.parse(parts[1]) : null,
-      day: parts.length > 2 ? int.parse(parts[2]) : null,
-    );
-  }
-
   @override
   String toString() {
     String result = year.toString();
@@ -38,9 +26,19 @@ class ReleaseDate {
 
   static readValue(Map map, String key) => map[key] as dynamic;
 
-  factory ReleaseDate.fromJson(json) => fromDynamic(json);
+  factory ReleaseDate.fromJson(String value) {
+    // "yyyy-mm-dd"
+    // "yyyy-mm"
+    // "yyyy"
+    final parts = value.split('-');
+    return ReleaseDate(
+      year: int.parse(parts[0]),
+      month: parts.length > 1 ? int.parse(parts[1]) : null,
+      day: parts.length > 2 ? int.parse(parts[2]) : null,
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$ReleaseDateToJson(this);
+  String toJson() => toString();
 }
 
 @JsonEnum(fieldRename: FieldRename.snake)
