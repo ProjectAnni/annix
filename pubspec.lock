@@ -609,10 +609,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_rust_bridge
-      sha256: "0f506efee81dbbc0c31af7c31dda5339c82a8d5d0c3ec168e68dc54855263e97"
+      sha256: "2d5ac72a14fa84de55a4f3ac5a710f4e39e5aafc6faba01d2179d3c4b4d500f6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.71.1"
+    version: "1.72.0"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
