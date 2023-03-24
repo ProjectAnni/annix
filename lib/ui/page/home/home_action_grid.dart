@@ -21,6 +21,7 @@ class HomeActionGrid extends StatelessWidget {
       shrinkWrap: true,
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         HomeActionButton(
           icon: const Icon(Icons.favorite_outline),
