@@ -33,6 +33,8 @@ jobs:
           channel: master
           cache: true
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+      - name: Setup | Dependencies
+        run: flutter pub get
       - name: Setup | Android NDK
         run: |
           # Apply to gradle
@@ -59,8 +61,6 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
           echo "${{ secrets.ANDROID_KEYSTORE_PROPERTIES }}" | base64 -d > ./android/keystore.properties
-      - name: Setup | Dependencies
-        run: flutter pub get
       - name: Build | Apk
         run: |
           flutter build apk --verbose --build-number ${{ github.run_number }}
