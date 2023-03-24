@@ -12,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class Global {
   static late SharedPreferences preferences;
@@ -72,10 +70,6 @@ class Global {
         }
         storageRoot = p.join(dataRoot, 'cache');
       }
-
-      // sqflite on desktop
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
     } else {
       // save data in getApplicationDocumentsDirectory() on mobile
       dataRoot = (await getApplicationDocumentsDirectory()).path;

@@ -9,7 +9,7 @@ import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
-import 'package:annix/utils/store.dart';
+import 'package:annix/services/local/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';

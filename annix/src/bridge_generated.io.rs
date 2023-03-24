@@ -2,6 +2,41 @@ use super::*;
 // Section: wire functions
 
 #[no_mangle]
+pub extern "C" fn wire_new__static_method__LocalStore(port_: i64, root: *mut wire_uint_8_list) {
+    wire_new__static_method__LocalStore_impl(port_, root)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_insert__method__LocalStore(
+    port_: i64,
+    that: *mut wire_LocalStore,
+    category: *mut wire_uint_8_list,
+    key: *mut wire_uint_8_list,
+    value: *mut wire_uint_8_list,
+) {
+    wire_insert__method__LocalStore_impl(port_, that, category, key, value)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_get__method__LocalStore(
+    port_: i64,
+    that: *mut wire_LocalStore,
+    category: *mut wire_uint_8_list,
+    key: *mut wire_uint_8_list,
+) {
+    wire_get__method__LocalStore_impl(port_, that, category, key)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_clear__method__LocalStore(
+    port_: i64,
+    that: *mut wire_LocalStore,
+    category: *mut wire_uint_8_list,
+) {
+    wire_clear__method__LocalStore_impl(port_, that, category)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_new__static_method__LocalDb(port_: i64, path: *mut wire_uint_8_list) {
     wire_new__static_method__LocalDb_impl(port_, path)
 }
@@ -33,6 +68,11 @@ pub extern "C" fn wire_get_tags__method__LocalDb(port_: i64, that: *mut wire_Loc
 // Section: allocate functions
 
 #[no_mangle]
+pub extern "C" fn new_MutexConnection() -> wire_MutexConnection {
+    wire_MutexConnection::new_with_null_ptr()
+}
+
+#[no_mangle]
 pub extern "C" fn new_MutexRepoDatabaseRead() -> wire_MutexRepoDatabaseRead {
     wire_MutexRepoDatabaseRead::new_with_null_ptr()
 }
@@ -40,6 +80,11 @@ pub extern "C" fn new_MutexRepoDatabaseRead() -> wire_MutexRepoDatabaseRead {
 #[no_mangle]
 pub extern "C" fn new_box_autoadd_local_db_0() -> *mut wire_LocalDb {
     support::new_leak_box_ptr(wire_LocalDb::new_with_null_ptr())
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_local_store_0() -> *mut wire_LocalStore {
+    support::new_leak_box_ptr(wire_LocalStore::new_with_null_ptr())
 }
 
 #[no_mangle]
@@ -52,6 +97,21 @@ pub extern "C" fn new_uint_8_list_0(len: i32) -> *mut wire_uint_8_list {
 }
 
 // Section: related functions
+
+#[no_mangle]
+pub extern "C" fn drop_opaque_MutexConnection(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<Connection>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_MutexConnection(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<Connection>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn drop_opaque_MutexRepoDatabaseRead(ptr: *const c_void) {
@@ -70,6 +130,11 @@ pub extern "C" fn share_opaque_MutexRepoDatabaseRead(ptr: *const c_void) -> *con
 
 // Section: impl Wire2Api
 
+impl Wire2Api<RustOpaque<Mutex<Connection>>> for wire_MutexConnection {
+    fn wire2api(self) -> RustOpaque<Mutex<Connection>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
 impl Wire2Api<RustOpaque<Mutex<RepoDatabaseRead>>> for wire_MutexRepoDatabaseRead {
     fn wire2api(self) -> RustOpaque<Mutex<RepoDatabaseRead>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
@@ -94,10 +159,23 @@ impl Wire2Api<LocalDb> for *mut wire_LocalDb {
         Wire2Api::<LocalDb>::wire2api(*wrap).into()
     }
 }
+impl Wire2Api<LocalStore> for *mut wire_LocalStore {
+    fn wire2api(self) -> LocalStore {
+        let wrap = unsafe { support::box_from_leak_ptr(self) };
+        Wire2Api::<LocalStore>::wire2api(*wrap).into()
+    }
+}
 impl Wire2Api<LocalDb> for wire_LocalDb {
     fn wire2api(self) -> LocalDb {
         LocalDb {
             repo: self.repo.wire2api(),
+        }
+    }
+}
+impl Wire2Api<LocalStore> for wire_LocalStore {
+    fn wire2api(self) -> LocalStore {
+        LocalStore {
+            conn: self.conn.wire2api(),
         }
     }
 }
@@ -114,6 +192,12 @@ impl Wire2Api<Vec<u8>> for *mut wire_uint_8_list {
 
 #[repr(C)]
 #[derive(Clone)]
+pub struct wire_MutexConnection {
+    ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
 pub struct wire_MutexRepoDatabaseRead {
     ptr: *const core::ffi::c_void,
 }
@@ -122,6 +206,12 @@ pub struct wire_MutexRepoDatabaseRead {
 #[derive(Clone)]
 pub struct wire_LocalDb {
     repo: wire_MutexRepoDatabaseRead,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_LocalStore {
+    conn: wire_MutexConnection,
 }
 
 #[repr(C)]
@@ -143,6 +233,13 @@ impl<T> NewWithNullPtr for *mut T {
     }
 }
 
+impl NewWithNullPtr for wire_MutexConnection {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
+        }
+    }
+}
 impl NewWithNullPtr for wire_MutexRepoDatabaseRead {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -160,6 +257,20 @@ impl NewWithNullPtr for wire_LocalDb {
 }
 
 impl Default for wire_LocalDb {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+
+impl NewWithNullPtr for wire_LocalStore {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            conn: wire_MutexConnection::new_with_null_ptr(),
+        }
+    }
+}
+
+impl Default for wire_LocalStore {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }

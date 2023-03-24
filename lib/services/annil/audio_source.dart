@@ -165,7 +165,10 @@ class AnnilAudioSource extends Source {
   void cancel() {
     _downloadTask?.cancel();
     _downloadTask?.removeListener(_onDownloadProgress);
-    downloadProgress.dispose();
+    // FIXME: do not use protected `hasListeners`
+    if (downloadProgress.hasListeners) {
+      downloadProgress.dispose();
+    }
     isCanceled = true;
   }
 

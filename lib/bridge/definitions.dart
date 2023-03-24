@@ -9,6 +9,24 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class AnnixNative {
+  Future<LocalStore> newStaticMethodLocalStore({required String root, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodLocalStoreConstMeta;
+
+  Future<void> insertMethodLocalStore(
+      {required LocalStore that, required String category, required String key, required String value, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kInsertMethodLocalStoreConstMeta;
+
+  Future<String?> getMethodLocalStore(
+      {required LocalStore that, required String category, required String key, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kGetMethodLocalStoreConstMeta;
+
+  Future<void> clearMethodLocalStore({required LocalStore that, String? category, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kClearMethodLocalStoreConstMeta;
+
   Future<LocalDb> newStaticMethodLocalDb({required String path, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodLocalDbConstMeta;
@@ -26,9 +44,27 @@ abstract class AnnixNative {
 
   FlutterRustBridgeTaskConstMeta get kGetTagsMethodLocalDbConstMeta;
 
+  DropFnType get dropOpaqueMutexConnection;
+  ShareFnType get shareOpaqueMutexConnection;
+  OpaqueTypeFinalizer get MutexConnectionFinalizer;
+
   DropFnType get dropOpaqueMutexRepoDatabaseRead;
   ShareFnType get shareOpaqueMutexRepoDatabaseRead;
   OpaqueTypeFinalizer get MutexRepoDatabaseReadFinalizer;
+}
+
+@sealed
+class MutexConnection extends FrbOpaque {
+  final AnnixNative bridge;
+  MutexConnection.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => bridge.dropOpaqueMutexConnection;
+
+  @override
+  ShareFnType get shareFn => bridge.shareOpaqueMutexConnection;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => bridge.MutexConnectionFinalizer;
 }
 
 @sealed
@@ -71,6 +107,38 @@ class LocalDb {
 
   Future<List<TagItem>> getTags({dynamic hint}) => bridge.getTagsMethodLocalDb(
         that: this,
+      );
+}
+
+class LocalStore {
+  final AnnixNative bridge;
+  final MutexConnection conn;
+
+  const LocalStore({
+    required this.bridge,
+    required this.conn,
+  });
+
+  static Future<LocalStore> newLocalStore({required AnnixNative bridge, required String root, dynamic hint}) =>
+      bridge.newStaticMethodLocalStore(root: root, hint: hint);
+
+  Future<void> insert({required String category, required String key, required String value, dynamic hint}) =>
+      bridge.insertMethodLocalStore(
+        that: this,
+        category: category,
+        key: key,
+        value: value,
+      );
+
+  Future<String?> get({required String category, required String key, dynamic hint}) => bridge.getMethodLocalStore(
+        that: this,
+        category: category,
+        key: key,
+      );
+
+  Future<void> clear({String? category, dynamic hint}) => bridge.clearMethodLocalStore(
+        that: this,
+        category: category,
       );
 }
 

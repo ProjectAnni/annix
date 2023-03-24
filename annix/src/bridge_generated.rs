@@ -21,6 +21,89 @@ use std::sync::Arc;
 
 // Section: wire functions
 
+fn wire_new__static_method__LocalStore_impl(
+    port_: MessagePort,
+    root: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "new__static_method__LocalStore",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_root = root.wire2api();
+            move |task_callback| Ok(LocalStore::new(api_root))
+        },
+    )
+}
+fn wire_insert__method__LocalStore_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<LocalStore> + UnwindSafe,
+    category: impl Wire2Api<String> + UnwindSafe,
+    key: impl Wire2Api<String> + UnwindSafe,
+    value: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "insert__method__LocalStore",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_category = category.wire2api();
+            let api_key = key.wire2api();
+            let api_value = value.wire2api();
+            move |task_callback| {
+                Ok(LocalStore::insert(
+                    &api_that,
+                    api_category,
+                    api_key,
+                    api_value,
+                ))
+            }
+        },
+    )
+}
+fn wire_get__method__LocalStore_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<LocalStore> + UnwindSafe,
+    category: impl Wire2Api<String> + UnwindSafe,
+    key: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "get__method__LocalStore",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_category = category.wire2api();
+            let api_key = key.wire2api();
+            move |task_callback| Ok(LocalStore::get(&api_that, api_category, api_key))
+        },
+    )
+}
+fn wire_clear__method__LocalStore_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<LocalStore> + UnwindSafe,
+    category: impl Wire2Api<Option<String>> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "clear__method__LocalStore",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_category = category.wire2api();
+            move |task_callback| Ok(LocalStore::clear(&api_that, api_category))
+        },
+    )
+}
 fn wire_new__static_method__LocalDb_impl(
     port_: MessagePort,
     path: impl Wire2Api<String> + UnwindSafe,
@@ -140,6 +223,13 @@ impl support::IntoDart for LocalDb {
     }
 }
 impl support::IntoDartExceptPrimitive for LocalDb {}
+
+impl support::IntoDart for LocalStore {
+    fn into_dart(self) -> support::DartAbi {
+        vec![self.conn.into_dart()].into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for LocalStore {}
 
 impl support::IntoDart for TagItem {
     fn into_dart(self) -> support::DartAbi {

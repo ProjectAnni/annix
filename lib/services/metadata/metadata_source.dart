@@ -1,5 +1,5 @@
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/utils/store.dart';
+import 'package:annix/services/local/cache.dart';
 
 /// MetadataSource is the source of local metadata need by the whole application.
 ///
@@ -41,6 +41,11 @@ mixin CachedMetadataStore {
 
   Future<void> persist(Album album) async {
     await _albumStore.set(album.albumId, album.toJson());
+  }
+
+  Future<void> clear() async {
+    _albumCache.clear();
+    _albumStore.clear();
   }
 
   Future<Map<String, Album>> getAlbums(List<String> albums) async {

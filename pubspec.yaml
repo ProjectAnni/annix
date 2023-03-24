@@ -64,8 +64,6 @@ dependencies:
 
   drift: ^2.6.0
   sqlite3_flutter_libs: 0.5.10
-  sqflite: ^2.2.6
-  sqflite_common_ffi: ^2.2.2
 
   uuid: ^3.0.7
 
