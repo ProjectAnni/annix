@@ -4,10 +4,28 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_audio/simple_audio.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
+
+  // Initialize with default values.
+  await SimpleAudio.init(
+    useMediaController: true,
+    shouldNormalizeVolume: false,
+    dbusName: 'rs.anni.annix',
+    actions: [
+      MediaControlAction.rewind,
+      MediaControlAction.skipPrev,
+      MediaControlAction.playPause,
+      MediaControlAction.skipNext,
+      MediaControlAction.fastForward
+    ],
+    androidNotificationIconPath: 'mipmap/ic_launcher',
+    androidCompactActions: [1, 2, 3],
+    applePreferSkipButtons: true,
+  );
 
   await Global.init();
   LocaleSettings.useDeviceLocale();

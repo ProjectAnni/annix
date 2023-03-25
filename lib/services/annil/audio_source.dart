@@ -8,14 +8,14 @@ import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_audio/simple_audio.dart';
 
 class AudioCancelledError extends Error {}
 
-class AnnilAudioSource extends Source {
+class AnnilAudioSource {
   final PreferQuality? quality;
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
@@ -53,17 +53,23 @@ class AnnilAudioSource extends Source {
 
   String get id => track.id.toString();
 
-  @override
-  Future<void> setOnPlayer(AudioPlayer player) async {
+  Future<void> setOnPlayer(SimpleAudio player, {required bool autoplay}) async {
     // when setOnPlayer was called, player expects to play current track
     // but user may change track before player is ready
     // so isCanceled is always false here, and may become true later
     isCanceled = false;
 
+    await player.setMetadata(Metadata(
+      title: track.title,
+      artist: track.artist,
+      album: track.albumTitle,
+      artUri: Global.proxy.coverUrl(track.id.albumId),
+    ));
+
     final offlinePath = getAudioCachePath(track.id);
     final file = File(offlinePath);
     if (file.existsSync() && file.lengthSync() > 0) {
-      await player.setSourceDeviceFile(offlinePath);
+      await player.open(offlinePath, autoplay: autoplay);
     } else {
       // download full audio first
       if (_preloadFuture == null) {
@@ -86,7 +92,7 @@ class AnnilAudioSource extends Source {
       if (isCanceled) {
         throw AudioCancelledError();
       }
-      await player.setSourceDeviceFile(offlinePath);
+      await player.open(offlinePath, autoplay: autoplay);
     }
   }
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:annix/global.dart';
@@ -11,11 +10,10 @@ import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
-import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_audio/simple_audio.dart';
 
 void playFullList({
   required PlaybackService player,
@@ -41,30 +39,9 @@ void playFullList({
   );
 }
 
-// https://github.com/bluefireteam/audioplayers/issues/788#issuecomment-1268882883
-class PlaybackServiceHackForIOS {
-  static PlaybackServiceHackForIOS? _instance;
-
-  final AudioPlayer player = AudioPlayer(playerId: 'hack-for-ios');
-
-  PlaybackServiceHackForIOS._() {
-    play();
-  }
-
-  factory PlaybackServiceHackForIOS() {
-    _instance ??= PlaybackServiceHackForIOS._();
-    _instance!.player.resume();
-    return _instance!;
-  }
-
-  Future<void> play() async {
-    await player.setReleaseMode(ReleaseMode.loop);
-    await player.play(AssetSource('silent.wav'));
-  }
-}
-
 class PlaybackService extends ChangeNotifier {
-  static final AudioPlayer player = AudioPlayer();
+  late final SimpleAudio player =
+      SimpleAudio(onSkipPrevious: (_) => previous(), onSkipNext: (_) => next());
 
   // TODO: cache this map
   static final PropertyValueNotifier<Map<String, Duration>> durationMap =
@@ -96,22 +73,16 @@ class PlaybackService extends ChangeNotifier {
   PlaybackService(BuildContext context) : anniv = context.read() {
     _load();
 
-    PlaybackService.player.onPlayerStateChanged.listen((s) {
-      // stop event from player can not interrupt buffering state
-      if (!(playerStatus == PlayerStatus.buffering &&
-          s == PlayerState.stopped)) {
-        playerStatus = PlayerStatus.fromPlayingStatus(s);
-        notifyListeners();
+    player.playbackStateStream.listen((state) {
+      playerStatus = PlayerStatus.fromPlaybackState(state);
+      notifyListeners();
+
+      if (state == PlaybackState.done) {
+        next();
       }
     });
 
-    PlaybackService.player.onPlayerComplete.listen((event) => next());
-
-    // Position
-    PlaybackService.player.onPositionChanged.listen((updatedPosition) {
-      playing?.updatePosition(updatedPosition);
-    });
-    // Duration
+    // Position & Duration
     PlaybackService.durationMap.addListener(() {
       final id = playing?.id;
       if (id != null) {
@@ -121,11 +92,12 @@ class PlaybackService extends ChangeNotifier {
         }
       }
     });
-    PlaybackService.player.onDurationChanged.listen((updatedDuration) {
+    player.progressStateStream.listen((progress) {
       final id = playing?.id;
       if (id != null) {
-        if (updatedDuration > Duration.zero) {
-          playing?.updateDuration(updatedDuration);
+        playing?.updatePosition(Duration(seconds: progress.position));
+        if (progress.duration > 0) {
+          playing?.updateDuration(Duration(seconds: progress.duration));
         }
       }
     });
@@ -147,7 +119,7 @@ class PlaybackService extends ChangeNotifier {
     this.loopMode = LoopMode.values[loopMode ?? 0];
 
     volume = Global.preferences.getDouble('player.volume') ?? 1.0;
-    PlaybackService.player.setVolume(volume);
+    player.setVolume(volume);
 
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => play(reload: true, setSourceOnly: true, trackPlayback: false));
@@ -158,21 +130,11 @@ class PlaybackService extends ChangeNotifier {
     bool setSourceOnly = false,
     bool trackPlayback = true,
   }) async {
-    if (Platform.isIOS) {
-      PlaybackServiceHackForIOS();
-    }
-
     if (queue.isEmpty) return;
 
-    // activate audio session
-    if (!await AudioSession.instance.then((e) => e.setActive(true))) {
-      // request denied
-      return;
-    }
-
-    if (!reload && PlaybackService.player.state == PlayerState.paused) {
+    if (!reload && !await player.isPlaying) {
       FLog.trace(text: 'Resume playing');
-      await PlaybackService.player.resume();
+      await player.play();
 
       if (loadedAndPaused) {
         loadedAndPaused = false;
@@ -223,12 +185,8 @@ class PlaybackService extends ChangeNotifier {
 
     try {
       // wait for audio file to download and play it
-      if (setSourceOnly) {
-        await PlaybackService.player.setSource(source);
-        loadedAndPaused = true;
-      } else {
-        await PlaybackService.player.play(source);
-      }
+      await source.setOnPlayer(player, autoplay: !setSourceOnly);
+      loadedAndPaused = true;
     } catch (e) {
       if (e is AudioCancelledError) {
         return;
@@ -252,12 +210,7 @@ class PlaybackService extends ChangeNotifier {
 
   Future<void> pause() async {
     FLog.trace(text: 'Pause playing');
-    // deactivate audio session
-    if (!await AudioSession.instance.then((e) => e.setActive(false))) {
-      // request denied
-      return;
-    }
-    await PlaybackService.player.pause();
+    await player.pause();
   }
 
   Future<void> playOrPause() async {
@@ -270,11 +223,7 @@ class PlaybackService extends ChangeNotifier {
 
   Future<void> stop([bool setInactive = true]) async {
     playing?.updateDuration(Duration.zero);
-    await Future.wait([
-      if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
-      if (!Global.isApple) PlaybackService.player.release(),
-      if (Global.isApple) PlaybackService.player.stop(),
-    ]);
+    await player.stop();
   }
 
   Future<void> previous() async {
@@ -346,7 +295,7 @@ class PlaybackService extends ChangeNotifier {
     playing?.updatePosition(position);
 
     // then notify player
-    await PlaybackService.player.seek(position);
+    await player.seek(position.inSeconds);
   }
 
   Future<void> remove(int index) async {
@@ -427,7 +376,7 @@ class PlaybackService extends ChangeNotifier {
     this.volume = volume;
     notifyListeners();
 
-    await PlaybackService.player.setVolume(volume);
+    await player.setVolume(volume);
     await Global.preferences.setDouble('player.volume', volume);
   }
 

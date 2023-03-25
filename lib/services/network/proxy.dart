@@ -22,10 +22,14 @@ class AnnixProxy {
         return Response.notFound('Not found');
       }
     });
+    app.get("/audio/<albumId>/<discId>/<trackId>",
+        (Request request, String albumId, String discId, String trackId) async {
+      return Response.notFound('Not found');
+    });
     server = await shelf_io.serve(app, InternetAddress.loopbackIPv4, 0);
   }
 
-  String coverUrl(String albumId, int? discId) {
+  String coverUrl(String albumId, [int? discId]) {
     return coverUri(albumId, discId).toString();
   }
 

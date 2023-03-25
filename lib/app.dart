@@ -4,7 +4,6 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/annil/annil.dart';
-import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/theme.dart';
@@ -35,7 +34,6 @@ class AnnixApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AnnilService(context)),
         ChangeNotifierProvider(create: (c) => AnnivService(c), lazy: false),
         ChangeNotifierProvider(create: (c) => PlaybackService(c), lazy: false),
-        Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
       ],
       builder: (context, child) {
         final AnnixTheme theme = context.watch();
