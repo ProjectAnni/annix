@@ -67,33 +67,28 @@ class AnnilAudioSource {
     ));
 
     final offlinePath = getAudioCachePath(track.id);
-    final file = File(offlinePath);
-    if (file.existsSync() && file.lengthSync() > 0) {
-      await player.open(offlinePath, autoplay: autoplay);
-    } else {
-      // download full audio first
-      if (_preloadFuture == null) {
-        preload();
-      }
-      try {
-        await _preloadFuture;
-      } catch (e) {
-        // set _preloadFuture to null, allowing retry
-        _preloadFuture = null;
-        _downloadTask = null;
-
-        if (e is DownloadCancelledError) {
-          throw AudioCancelledError();
-        } else {
-          rethrow;
-        }
-      }
-      // check whether user has changed track for playback
-      if (isCanceled) {
-        throw AudioCancelledError();
-      }
-      await player.open(offlinePath, autoplay: autoplay);
+    // download full audio first
+    if (_preloadFuture == null) {
+      preload();
     }
+    try {
+      await _preloadFuture;
+    } catch (e) {
+      // set _preloadFuture to null, allowing retry
+      _preloadFuture = null;
+      _downloadTask = null;
+
+      if (e is DownloadCancelledError) {
+        throw AudioCancelledError();
+      } else {
+        rethrow;
+      }
+    }
+    // check whether user has changed track for playback
+    if (isCanceled) {
+      throw AudioCancelledError();
+    }
+    await player.open(offlinePath, autoplay: autoplay);
   }
 
   void preload() {
