@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -14,7 +13,7 @@
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="com.ryanheise.audioservice.AudioServiceActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
@@ -34,31 +33,25 @@
             </intent-filter>
         </activity>
 
-        <!-- ADD THIS "SERVICE" element -->
-        <service
-            android:name="com.ryanheise.audioservice.AudioService"
-            android:exported="true"
-            android:foregroundServiceType="mediaPlayback"
-            tools:ignore="Instantiatable">
-            <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
-
-        <!-- ADD THIS "RECEIVER" element -->
-        <receiver
-            android:name="com.ryanheise.audioservice.MediaButtonReceiver"
-            android:exported="true"
-            tools:ignore="Instantiatable">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
-
         <!-- Don't delete the meta-data below.
                  This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- This is required if you want to be able to see the notification. -->
+        <service
+            android:name="com.erikas.simple_audio.SimpleAudioService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <!-- This is required to interact with the notification buttons. -->
+        <receiver
+            android:name="com.erikas.simple_audio.SimpleAudioReceiver">
+        </receiver>
     </application>
 </manifest>
