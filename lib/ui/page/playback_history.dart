@@ -82,7 +82,7 @@ class PlaybackHistoryPage extends StatelessWidget {
                       final player = context.read<PlaybackService>();
                       final sources = data
                           .map((track) =>
-                              AnnilAudioSource(track: record.metadata))
+                              AnnilAudioSource(track: track.metadata))
                           .toList();
 
                       playFullList(

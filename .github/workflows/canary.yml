@@ -138,7 +138,6 @@ jobs:
       - name: Build | Windows
         run: |
           flutter build windows --verbose
-          curl https://raw.githubusercontent.com/tekartik/sqflite/master/sqflite_common_ffi/lib/src/windows/sqlite3.dll -o ./build/windows/runner/Release/sqlite3.dll
           cp -r build/windows/runner/Release annix-win64
           tar.exe -a -c -f annix-win64.zip annix-win64
       - name: Deploy | Upload artifacts
