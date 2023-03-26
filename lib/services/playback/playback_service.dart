@@ -9,7 +9,6 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,10 +41,6 @@ void playFullList({
 class PlaybackService extends ChangeNotifier {
   late final SimpleAudio player =
       SimpleAudio(onSkipPrevious: (_) => previous(), onSkipNext: (_) => next());
-
-  // TODO: cache this map
-  static final PropertyValueNotifier<Map<String, Duration>> durationMap =
-      PropertyValueNotifier({});
 
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
@@ -82,23 +77,11 @@ class PlaybackService extends ChangeNotifier {
       }
     });
 
-    // Position & Duration
-    PlaybackService.durationMap.addListener(() {
-      final id = playing?.id;
-      if (id != null) {
-        final duration = durationMap.value[id];
-        if (duration != null) {
-          playing?.updateDuration(duration);
-        }
-      }
-    });
+    // Position
     player.progressStateStream.listen((progress) {
       final id = playing?.id;
       if (id != null) {
         playing?.updatePosition(Duration(seconds: progress.position));
-        if (progress.duration > 0) {
-          playing?.updateDuration(Duration(seconds: progress.duration));
-        }
       }
     });
   }
@@ -185,7 +168,7 @@ class PlaybackService extends ChangeNotifier {
 
     try {
       // wait for audio file to download and play it
-      await source.setOnPlayer(player, autoplay: !setSourceOnly);
+      await source.open(player, autoplay: !setSourceOnly);
       loadedAndPaused = true;
     } catch (e) {
       if (e is AudioCancelledError) {
@@ -222,7 +205,7 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> stop([bool setInactive = true]) async {
-    playing?.updateDuration(Duration.zero);
+    // playing?.updateDuration(Duration.zero);
     await player.stop();
   }
 
@@ -339,11 +322,11 @@ class PlaybackService extends ChangeNotifier {
       {bool reload = false, bool notify = true}) async {
     loadedAndPaused = false;
 
-    final playing = this.playing;
+    final originalPlaying = playing;
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index || reload) {
-      playing?.dispose();
-      this.playing = PlayingTrack(queue[index]);
+      originalPlaying?.dispose();
+      playing = PlayingTrack(queue[index]);
     }
 
     if (nowPlayingIndex != null) {

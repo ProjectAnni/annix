@@ -69,9 +69,7 @@ class MobileBottomPlayer extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Selector<PlaybackService, PlayingTrack?>(
-              selector: (context, player) {
-                return player.playing;
-              },
+              selector: (context, player) => player.playing,
               builder: (context, playing, child) {
                 if (playing == null) {
                   return child!;
@@ -81,12 +79,12 @@ class MobileBottomPlayer extends StatelessWidget {
                   value: playing,
                   child: Selector<PlayingTrack, double>(
                     selector: (context, playing) {
-                      if (playing.duration == Duration.zero) {
+                      if (playing.duration == null) {
                         return 0;
                       }
 
                       return playing.position.inMicroseconds /
-                          playing.duration.inMicroseconds;
+                          playing.duration!.inMicroseconds;
                     },
                     builder: (context, progress, child) {
                       return Stack(

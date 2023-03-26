@@ -24,7 +24,7 @@ linter:
   rules:
     always_use_package_imports: true
     prefer_single_quotes: true
-    avoid_annotating_with_dynamic: true
+    avoid_annotating_with_dynamic: false
     use_enums: true
     prefer_final_locals: true
     # prefer_final_parameters: true

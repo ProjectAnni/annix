@@ -203,6 +203,20 @@ class AnnilService extends ChangeNotifier {
     return null;
   }
 
+  Future<String?> getAudioDuration(TrackIdentifier track) async {
+    final audioUrl =
+        await getAudioUrl(track: track, quality: PreferQuality.lossless);
+    if (audioUrl == null) {
+      return null;
+    }
+
+    final response = await _client.headUri(Uri.parse(audioUrl));
+    if (response.statusCode == 200) {
+      return response.headers.value('x-duration-seconds')!;
+    }
+    return null;
+  }
+
   /// Refresh all annil servers
   Future<void> reload() async {
     final db = context.read<LocalDatabase>();

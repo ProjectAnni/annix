@@ -19,7 +19,7 @@ class PlayingTrack extends ChangeNotifier {
 
   TrackLyric? lyric;
   Duration position = Duration.zero;
-  Duration duration = Duration.zero;
+  Duration? get duration => source.duration;
 
   TrackInfoWithAlbum get track => source.track;
 
@@ -29,11 +29,6 @@ class PlayingTrack extends ChangeNotifier {
 
   void updatePosition(Duration position) {
     this.position = position;
-    if (!_disposed) notifyListeners();
-  }
-
-  void updateDuration(Duration duration) {
-    this.duration = duration;
     if (!_disposed) notifyListeners();
   }
 
@@ -64,7 +59,7 @@ class PlayingTrack extends ChangeNotifier {
       if (lyric == null) {
         final anniv = LyricProviderAnniv();
         final result =
-        await anniv.search(track: identifier, title: track.title);
+            await anniv.search(track: identifier, title: track.title);
         if (result.isNotEmpty) {
           lyric = await result[0].lyric;
         }

@@ -7,7 +7,6 @@ import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/playback/playback.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +26,7 @@ class AnnilAudioSource {
   bool isCanceled = false;
   Future<void>? _preloadFuture;
   DownloadTask? _downloadTask;
+  Duration? duration;
 
   TrackIdentifier get identifier => track.id;
 
@@ -53,7 +53,7 @@ class AnnilAudioSource {
 
   String get id => track.id.toString();
 
-  Future<void> setOnPlayer(SimpleAudio player, {required bool autoplay}) async {
+  Future<void> open(SimpleAudio player, {required bool autoplay}) async {
     // when setOnPlayer was called, player expects to play current track
     // but user may change track before player is ready
     // so isCanceled is always false here, and may become true later
@@ -132,29 +132,43 @@ class AnnilAudioSource {
   }
 
   Future<void> _preload() async {
-    final savePath = getAudioCachePath(track.id);
-    final file = File(savePath);
-    if (!file.existsSync() || file.lengthSync() == 0) {
+    final annil = Global.context.read<AnnilService>();
+
+    final audioPath = getAudioCachePath(track.id);
+    final audioFile = File(audioPath);
+    final durationPath = getAudioDurationPath(identifier);
+    final durationFile = File(durationPath);
+
+    await audioFile.parent.create(recursive: true);
+    await durationFile.parent.create(recursive: true);
+
+    if (!audioFile.existsSync() || audioFile.lengthSync() == 0) {
       final task = await spawnDownloadTask(
         track: track,
-        savePath: savePath,
+        savePath: audioPath,
       );
       if (task != null) {
-        await file.parent.create(recursive: true);
         Global.downloadManager.add(task);
         _downloadTask = task;
         _downloadTask?.addListener(_onDownloadProgress);
         final response = await task.start();
 
-        final duration = int.parse(response.headers['x-duration-seconds']![0]);
-        // +1 to avoid duration exceeding
-        PlaybackService.durationMap.update((map) {
-          map[id] = Duration(seconds: duration + 1);
-        });
+        final duration =
+            int.parse(response.headers.value('x-duration-seconds')!);
+        await durationFile.writeAsString(duration.toString());
       } else {
         throw UnsupportedError('No available annil server found');
       }
     }
+
+    if (!durationFile.existsSync()) {
+      final duration = await annil.getAudioDuration(track.id);
+      if (duration != null) {
+        await durationFile.writeAsString(duration);
+      }
+    }
+
+    duration = Duration(seconds: int.parse(await durationFile.readAsString()));
     preloaded = true;
   }
 
