@@ -150,6 +150,7 @@ jobs:
           retention-days: 1
 
   publish:
+    if: ${{ github.ref == 'refs/heads/master' }}
     needs: [ android, linux, macOS, windows ]
     runs-on: ubuntu-20.04
     env:
