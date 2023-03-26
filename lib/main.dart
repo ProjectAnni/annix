@@ -10,23 +10,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
 
-  // Initialize with default values.
-  await SimpleAudio.init(
-    useMediaController: true,
-    shouldNormalizeVolume: false,
-    dbusName: 'rs.anni.annix',
-    actions: [
-      MediaControlAction.rewind,
-      MediaControlAction.skipPrev,
-      MediaControlAction.playPause,
-      MediaControlAction.skipNext,
-      MediaControlAction.fastForward
-    ],
-    androidNotificationIconPath: 'mipmap/ic_launcher',
-    androidCompactActions: [1, 2, 3],
-    applePreferSkipButtons: true,
-  );
-
   await Global.init();
   LocaleSettings.useDeviceLocale();
 
@@ -45,6 +28,11 @@ Future<void> main() async {
     return true;
   };
 
+  await SimpleAudio.init(
+    useMediaController: false,
+    shouldNormalizeVolume: false,
+    dbusName: 'rs.anni.annix',
+  );
   try {
     runApp(TranslationProvider(child: const AnnixApp()));
   } catch (e) {
