@@ -23,6 +23,15 @@ Widget fadeThroughTransitionBuilder(
   );
 }
 
+Widget noneTransitionBuilder(
+  final BuildContext context,
+  final Animation<double> animation,
+  final Animation<double> secondaryAnimation,
+  final Widget child,
+) {
+  return child;
+}
+
 Widget fadeTransitionBuilder(
   final BuildContext context,
   final Animation<double> animation,
@@ -53,11 +62,14 @@ class AnnixPage extends Page {
 
   @override
   Route createRoute(final BuildContext context) {
+    final transitionDuration = context.isDesktop
+        ? const Duration(milliseconds: 150)
+        : this.transitionDuration ?? const Duration(milliseconds: 300);
     return AnnixRoute(
       disableAppBarDismissal: disableAppBarDismissal,
       settings: this,
-      transitionDuration:
-          transitionDuration ?? const Duration(milliseconds: 300),
+      transitionDuration: transitionDuration,
+      reverseTransitionDuration: transitionDuration,
       pageBuilder: (final context, final animation, final secondaryAnimation) {
         return (pageBuilder ??
             (context.isDesktopOrLandscape

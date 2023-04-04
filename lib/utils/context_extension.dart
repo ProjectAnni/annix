@@ -10,6 +10,8 @@ extension AnnixContextExtension on BuildContext {
 
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
 
+  bool get isDesktop => Global.isDesktop;
+
   bool get isDesktopOrLandscape =>
       Global.isDesktop ||
       MediaQuery.of(this).orientation == Orientation.landscape;

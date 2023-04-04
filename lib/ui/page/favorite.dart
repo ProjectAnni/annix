@@ -7,6 +7,8 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/fade_indexed_stack.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,7 +31,10 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
           return [
             SliverAppBar(
               pinned: true,
-              floating: true,
+              // always display appbar title on desktop
+              floating: context.isDesktopOrLandscape ? false : true,
+              // do not show elevation on desktop
+              scrolledUnderElevation: context.isDesktopOrLandscape ? 0 : null,
               title: Text(t.my_favorite),
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(60),
@@ -79,28 +84,15 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
             ),
           ];
         },
-        body: AnimatedCrossFade(
-          crossFadeState:
-              showTracks ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: _favoriteTracks(),
-          secondChild: _favoriteAlbums(),
-          duration: const Duration(milliseconds: 300),
-          layoutBuilder: (final topChild, final topChildKey, final bottomChild,
-              final bottomChildKey) {
-            return Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  key: bottomChildKey,
-                  child: bottomChild,
-                ),
-                Positioned(
-                  key: topChildKey,
-                  child: topChild,
-                ),
-              ],
-            );
-          },
+        body: FadeIndexedStack(
+          index: showTracks ? 0 : 1,
+          duration: context.isDesktop
+              ? const Duration(milliseconds: 150)
+              : const Duration(milliseconds: 300),
+          children: [
+            _favoriteTracks(),
+            _favoriteAlbums(),
+          ],
         ),
       ),
     );

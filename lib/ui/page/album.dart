@@ -8,7 +8,6 @@ import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LazyAlbumPage extends ConsumerWidget {
@@ -30,7 +29,7 @@ class LazyAlbumPage extends ConsumerWidget {
   }
 }
 
-class AlbumPage extends HookConsumerWidget {
+class AlbumPage extends ConsumerWidget {
   final Album album;
   const AlbumPage({super.key, required this.album});
 
@@ -105,16 +104,10 @@ class AlbumPage extends HookConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final loading = useState(true);
-
     onImage(final ImageProvider provider) async {
-      if (loading.value) {
-        loading.value = false;
-        final scheme = await ColorScheme.fromImageProvider(provider: provider);
-        final darkScheme = await ColorScheme.fromImageProvider(
-            provider: provider, brightness: Brightness.dark);
-        ref.read(themeProvider).setTemporaryScheme(scheme, darkScheme);
-      }
+      ref
+          .read(themeProvider)
+          .setTemporaryImageProvider(album.albumId, provider);
     }
 
     return Scaffold(

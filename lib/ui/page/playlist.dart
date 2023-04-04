@@ -64,11 +64,9 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
         onImage: (final provider) async {
           if (loading) {
             loading = false;
-            final scheme =
-                await ColorScheme.fromImageProvider(provider: provider);
-            final darkScheme = await ColorScheme.fromImageProvider(
-                provider: provider, brightness: Brightness.dark);
-            ref.read(themeProvider).setTemporaryScheme(scheme, darkScheme);
+            ref
+                .read(themeProvider)
+                .setTemporaryImageProvider(cover.albumId, provider);
           }
         },
       );

@@ -2,6 +2,8 @@ import 'package:annix/services/font.dart';
 import 'package:flutter/material.dart';
 
 class AnnixTheme extends ChangeNotifier {
+  final _cache = {};
+
   AnnixTheme()
       : _primaryColor = Colors.indigo,
         _primaryScheme = ColorScheme.fromSeed(seedColor: Colors.indigo),
@@ -35,7 +37,25 @@ class AnnixTheme extends ChangeNotifier {
   ThemeMode _themeMode;
   ThemeMode get themeMode => _themeMode;
 
-  void setTemporaryScheme(
+  void setTemporaryImageProvider(
+      final String albumId, final ImageProvider provider) async {
+    if (!_cache.containsKey(albumId)) {
+      _cache[albumId] = {};
+      final scheme = await ColorScheme.fromImageProvider(provider: provider);
+      final darkScheme = await ColorScheme.fromImageProvider(
+          provider: provider, brightness: Brightness.dark);
+      _cache[albumId]!['scheme'] = scheme;
+      _cache[albumId]!['darkScheme'] = darkScheme;
+    }
+
+    if (_temporaryPrimaryScheme != _cache[albumId]['scheme'] ||
+        _temporaryPrimaryDarkScheme != _cache[albumId]['darkScheme']) {
+      _setTemporaryScheme(
+          _cache[albumId]!['scheme'], _cache[albumId]!['darkScheme']);
+    }
+  }
+
+  void _setTemporaryScheme(
       final ColorScheme scheme, final ColorScheme darkScheme) {
     _temporaryPrimaryColor = scheme.primary;
     _temporaryPrimaryScheme = scheme;
