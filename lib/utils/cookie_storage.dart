@@ -3,25 +3,25 @@ import 'package:cookie_jar/cookie_jar.dart';
 
 class CookieStorage implements Storage {
   @override
-  Future<void> init(bool persistSession, bool ignoreExpires) async {}
+  Future<void> init(final bool persistSession, final bool ignoreExpires) async {}
 
   @override
-  Future<String?> read(String key) async {
+  Future<String?> read(final String key) async {
     return Global.preferences.getString(getKey(key));
   }
 
   @override
-  Future<void> write(String key, String value) async {
+  Future<void> write(final String key, final String value) async {
     await Global.preferences.setString(getKey(key), value);
   }
 
   @override
-  Future<void> delete(String key) async {
+  Future<void> delete(final String key) async {
     await Global.preferences.remove(getKey(key));
   }
 
   @override
-  Future<void> deleteAll(List<String> keys) async {
+  Future<void> deleteAll(final List<String> keys) async {
     final keys = Global.preferences.getKeys();
     for (final key in keys) {
       if (key.startsWith('cookie_')) {
@@ -30,5 +30,5 @@ class CookieStorage implements Storage {
     }
   }
 
-  String getKey(String key) => 'cookie_$key';
+  String getKey(final String key) => 'cookie_$key';
 }

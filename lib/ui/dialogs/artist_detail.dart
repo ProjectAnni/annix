@@ -9,7 +9,7 @@ class ArtistDetailDialog extends StatefulWidget {
 
 class _ArtistDetailDialogState extends State<ArtistDetailDialog> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container();
   }
 }

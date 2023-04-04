@@ -33,7 +33,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final child = Navigator(
       key: navigatorKey,
       // copy once, or it will not be rebuilt
@@ -55,7 +55,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   @override
-  Future<void> setNewRoutePath(List<RouteSettings> configuration) async {}
+  Future<void> setNewRoutePath(final List<RouteSettings> configuration) async {}
 
   @override
   Future<bool> popRoute() async {
@@ -82,7 +82,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     return _pages.length > 1;
   }
 
-  bool _onPopPage<T>(Route<T> route, T result) {
+  bool _onPopPage<T>(final Route<T> route, final T result) {
     if (!route.didPop(result)) return false;
 
     if (canPop()) {
@@ -95,10 +95,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   void to({
-    required String name,
-    arguments,
-    AnnixRoutePageBuilder? pageBuilder,
-    Duration? transitionDuration,
+    required final String name,
+    final arguments,
+    final AnnixRoutePageBuilder? pageBuilder,
+    final Duration? transitionDuration,
   }) {
     // FIXME: dedup
     // if (currentRoute == name) {
@@ -114,10 +114,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   void off({
-    required String name,
-    arguments,
-    AnnixRoutePageBuilder? pageBuilder,
-    Duration? transitionDuration,
+    required final String name,
+    final arguments,
+    final AnnixRoutePageBuilder? pageBuilder,
+    final Duration? transitionDuration,
   }) {
     _pages.clear();
     to(
@@ -129,10 +129,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   void replace({
-    required String name,
-    arguments,
-    AnnixRoutePageBuilder? pageBuilder,
-    Duration? transitionDuration,
+    required final String name,
+    final arguments,
+    final AnnixRoutePageBuilder? pageBuilder,
+    final Duration? transitionDuration,
   }) {
     if (_pages.isNotEmpty) {
       _pages.removeLast();
@@ -146,9 +146,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   AnnixPage _createPage(
-    RouteSettings routeSettings, {
-    AnnixRoutePageBuilder? pageBuilder,
-    Duration? transitionDuration,
+    final RouteSettings routeSettings, {
+    final AnnixRoutePageBuilder? pageBuilder,
+    final Duration? transitionDuration,
   }) {
     Widget child;
     bool disableAppBarDismissal = false;
@@ -221,7 +221,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     return page;
   }
 
-  static AnnixRouterDelegate of(BuildContext context) {
+  static AnnixRouterDelegate of(final BuildContext context) {
     final delegate = Router.of(context).routerDelegate;
     assert(delegate is AnnixRouterDelegate, 'Delegate type must match');
     return delegate as AnnixRouterDelegate;

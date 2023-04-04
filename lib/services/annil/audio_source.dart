@@ -11,7 +11,7 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AudioCancelledError extends Error {}
 
@@ -20,9 +20,8 @@ class AnnilAudioSource extends Source {
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
 
-  final ValueNotifier<DownloadProgress> downloadProgress = ValueNotifier(
-    const DownloadProgress(current: 0),
-  );
+  final DownloadState downloadProgress =
+      DownloadState(const DownloadProgress(current: 0));
 
   bool isCanceled = false;
   Future<void>? _preloadFuture;
@@ -36,9 +35,9 @@ class AnnilAudioSource extends Source {
   });
 
   static Future<AnnilAudioSource?> from({
-    required MetadataService metadata,
-    required TrackIdentifier id,
-    PreferQuality? quality,
+    required final MetadataService metadata,
+    required final TrackIdentifier id,
+    final PreferQuality? quality,
   }) async {
     final track = await metadata.getTrack(id);
     if (track != null) {
@@ -54,7 +53,7 @@ class AnnilAudioSource extends Source {
   String get id => track.id.toString();
 
   @override
-  Future<void> setOnPlayer(AudioPlayer player) async {
+  Future<void> setOnPlayer(final AudioPlayer player) async {
     // when setOnPlayer was called, player expects to play current track
     // but user may change track before player is ready
     // so isCanceled is always false here, and may become true later
@@ -103,8 +102,8 @@ class AnnilAudioSource extends Source {
   bool preloaded = false;
 
   static Future<DownloadTask?> spawnDownloadTask({
-    required TrackInfoWithAlbum track,
-    PreferQuality? quality,
+    required final TrackInfoWithAlbum track,
+    final PreferQuality? quality,
     String? savePath,
   }) async {
     final downloadQuality =
@@ -142,7 +141,7 @@ class AnnilAudioSource extends Source {
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // +1 to avoid duration exceeding
-        PlaybackService.durationMap.update((map) {
+        PlaybackService.durationMap.update((final map) {
           map[id] = Duration(seconds: duration + 1);
         });
       } else {
@@ -165,7 +164,6 @@ class AnnilAudioSource extends Source {
   void cancel() {
     _downloadTask?.cancel();
     _downloadTask?.removeListener(_onDownloadProgress);
-    // FIXME: do not use protected `hasListeners`
     if (downloadProgress.hasListeners) {
       downloadProgress.dispose();
     }
@@ -173,7 +171,7 @@ class AnnilAudioSource extends Source {
   }
 
   /////// Serialization ///////
-  static AnnilAudioSource fromJson(Map<String, dynamic> json) {
+  static AnnilAudioSource fromJson(final Map<String, dynamic> json) {
     return AnnilAudioSource(
       track: TrackInfoWithAlbum.fromJson(json['track']),
       quality: PreferQuality.fromString(json['quality']),
@@ -190,7 +188,7 @@ class AnnilAudioSource extends Source {
   void _onDownloadProgress() {
     final progress = _downloadTask?.progress;
     if (progress != null) {
-      downloadProgress.value = progress;
+      downloadProgress.update(progress);
     }
   }
 }

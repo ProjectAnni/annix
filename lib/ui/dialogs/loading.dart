@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-void showLoadingDialog(BuildContext context) {
+void showLoadingDialog(final BuildContext context) {
   showDialog(
     context: context,
     useRootNavigator: true,
     barrierDismissible: false,
-    builder: (context) {
+    builder: (final context) {
       return const Center(
         child: Card(
           child: Padding(

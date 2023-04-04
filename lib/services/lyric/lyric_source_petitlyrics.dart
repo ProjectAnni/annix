@@ -1,4 +1,4 @@
-import 'package:annix/services/lyric/lyric_provider.dart';
+import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -17,8 +17,8 @@ class PetitLyricsClient {
 
   final Dio _client = Dio();
 
-  Future<XmlDocument> getLyric(String title,
-      {String? artist, String? album, int lyricType = 1, int? lyricId}) async {
+  Future<XmlDocument> getLyric(final String title,
+      {final String? artist, final String? album, final int lyricType = 1, final int? lyricId}) async {
     final data = await _client.post(
       'http://p0.petitlyrics.com/api/GetPetitLyricsData.php',
       data: {
@@ -36,7 +36,7 @@ class PetitLyricsClient {
     return XmlDocument.parse(data.data as String);
   }
 
-  Future<XmlDocument> getLyricById(int lyricId, {int lyricType = 1}) async {
+  Future<XmlDocument> getLyricById(final int lyricId, {final int lyricType = 1}) async {
     final data = await _client.post(
       'http://p0.petitlyrics.com/api/GetPetitLyricsData.php',
       data: {
@@ -51,7 +51,7 @@ class PetitLyricsClient {
     return XmlDocument.parse(data.data as String);
   }
 
-  List<String> decrypt(Uint8List encrypted, String text) {
+  List<String> decrypt(final Uint8List encrypted, final String text) {
     final lyric = text.split('\n').toList();
 
     final data = encrypted.buffer.asByteData();
@@ -93,15 +93,15 @@ class PetitLyricsClient {
   }
 }
 
-class LyricProviderPetitLyrics extends LyricProvider {
+class LyricSourcePetitLyrics extends LyricSource {
   final _client = PetitLyricsClient();
 
   @override
   Future<List<LyricSearchResponse>> search({
-    required TrackIdentifier track,
-    required String title,
-    String? artist,
-    String? album,
+    required final TrackIdentifier track,
+    required final String title,
+    final String? artist,
+    final String? album,
   }) async {
     // https://github.com/kokarare1212/MusicBee.PetitLyrics/blob/master/MusicBee.PetitLyrics/Plugin.cs
     final document = await _client.getLyric(
@@ -112,7 +112,7 @@ class LyricProviderPetitLyrics extends LyricProvider {
     );
     final songs = document.findAllElements('song');
     return songs.map(
-      (song) {
+      (final song) {
         final lyricType = int.parse(song.findElements('lyricsType').first.text);
         final lyricData = song.findElements('lyricsData').first.text;
         return LyricSearchResponsePetitLyrics(
@@ -183,12 +183,12 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
       final xml = XmlDocument.parse(lyricText);
       final lines = xml
           .findAllElements('line')
-          .map((line) => WsyLyricLine.fromXml(line))
+          .map((final line) => WsyLyricLine.fromXml(line))
           .toList();
 
-      final linesModel = lines.map((line) {
+      final linesModel = lines.map((final line) {
         final lineModel = LyricsLineModel();
-        lineModel.mainText = line.words.map((e) => e.text).join();
+        lineModel.mainText = line.words.map((final e) => e.text).join();
         lineModel.startTime = line.words.first.startTime;
 
         int index = 0;
@@ -219,7 +219,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
 
       final model =
           (LyricsModelBuilder.create()..mainLines = linesModel).getModel();
-      final lyric = lines.map((e) => e.toString()).join('\n');
+      final lyric = lines.map((final e) => e.toString()).join('\n');
       return LyricResult(
         text: lyric,
         model: model,
@@ -231,7 +231,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
   String get title => trackTitle;
 }
 
-String cs2mmssff(int cs) {
+String cs2mmssff(final int cs) {
   final ff = (cs % 100).toString().padLeft(2, '0');
   final ss = ((cs ~/ 100) % 60).toString().padLeft(2, '0');
   final mm = ((cs ~/ 6000) % 60).toString().padLeft(2, '0');
@@ -243,17 +243,17 @@ class WsyLyricLine {
 
   WsyLyricLine(this.words);
 
-  factory WsyLyricLine.fromXml(XmlElement line) {
+  factory WsyLyricLine.fromXml(final XmlElement line) {
     final words = line
         .findAllElements('word')
-        .map((word) => WsyLyricWord.fromXml(word))
+        .map((final word) => WsyLyricWord.fromXml(word))
         .toList();
     return WsyLyricLine(words);
   }
 
   @override
   String toString() {
-    return "[${words.first.startTime},${words.last.endTime - words.first.startTime}]${words.map((e) => e.toString()).join("")}";
+    return "[${words.first.startTime},${words.last.endTime - words.first.startTime}]${words.map((final e) => e.toString()).join("")}";
   }
 }
 
@@ -268,7 +268,7 @@ class WsyLyricWord {
     required this.endTime,
   });
 
-  factory WsyLyricWord.fromXml(XmlElement word) {
+  factory WsyLyricWord.fromXml(final XmlElement word) {
     return WsyLyricWord(
       text: word.getElement('wordstring')!.text,
       startTime: int.parse(word.getElement('starttime')!.text),

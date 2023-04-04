@@ -7,7 +7,6 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/route/page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:we_slide/we_slide.dart';
 import 'package:annix/i18n/strings.g.dart';
 
@@ -28,18 +27,18 @@ class AnnixLayoutMobile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
 
     final root = Scaffold(
       body: Selector2<PlaybackService, AnnixRouterDelegate, List<bool>>(
-        selector: (context, player, delegate) {
+        selector: (final context, final player, final delegate) {
           final isQueueEmpty = player.queue.isEmpty;
           final isPlaying = player.playing != null;
           final isMainPage = pages.contains(delegate.currentRoute);
           return [isQueueEmpty, isPlaying, isMainPage];
         },
-        builder: (context, result, child) {
+        builder: (final context, final result, final child) {
           final isQueueEmpty = result[0];
           final isPlaying = result[1];
           final isMainPage = result[2];
@@ -73,9 +72,9 @@ class AnnixLayoutMobile extends StatelessWidget {
             ),
             panel: ValueListenableProvider.value(
               value: Global.settings.blurPlayingPage,
-              updateShouldNotify: (old, value) => true,
+              updateShouldNotify: (final old, final value) => true,
               child: Builder(
-                builder: (context) {
+                builder: (final context) {
                   final blur = context.watch<bool>();
                   return blur
                       ? const PlayingScreenMobileBlur()
@@ -93,7 +92,7 @@ class AnnixLayoutMobile extends StatelessWidget {
                 data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
                 child: NavigationBar(
                   selectedIndex: selectedIndex,
-                  onDestinationSelected: (index) {
+                  onDestinationSelected: (final index) {
                     router.off(
                       name: pages[index],
                       pageBuilder: fadeTransitionBuilder,
@@ -126,7 +125,7 @@ class AnnixLayoutMobile extends StatelessWidget {
 
     return Navigator(
       pages: [MaterialPage(child: root)],
-      onPopPage: (route, result) {
+      onPopPage: (final route, final result) {
         return false;
       },
       observers: [ThemePopObserver()],

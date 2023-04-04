@@ -1,6 +1,4 @@
-import 'package:annix/global.dart';
-import 'package:annix/services/annil/annil.dart';
-import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -9,53 +7,49 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LazyAlbumPage extends StatelessWidget {
+class LazyAlbumPage extends ConsumerWidget {
   final String albumId;
 
   const LazyAlbumPage({required this.albumId, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     return DisplayOrLazyLoadScreen<Album>(
-      future: context
-          .read<MetadataService>()
-          .getAlbum(albumId: albumId)
-          .then((album) {
-        if (album == null) throw 'Album not found';
-        return album;
-      }),
-      builder: (album) => AlbumPage(album: album),
+      future: ref.read(metadataProvider).getAlbum(albumId: albumId).then(
+        (final album) {
+          if (album == null) throw 'Album not found';
+          return album;
+        },
+      ),
+      builder: (final album) => AlbumPage(album: album),
     );
   }
 }
 
-class AlbumPage extends StatefulWidget {
+class AlbumPage extends HookConsumerWidget {
   final Album album;
-
   const AlbumPage({super.key, required this.album});
 
-  @override
-  State<AlbumPage> createState() => _AlbumPageState();
-}
-
-class _AlbumPageState extends State<AlbumPage> {
-  bool loading = true;
-
-  void _onPlay(BuildContext context, {int index = 0, bool shuffle = false}) {
-    final player = context.read<PlaybackService>();
+  void _onPlay(
+    final WidgetRef ref, {
+    final int index = 0,
+    final bool shuffle = false,
+  }) {
+    final player = ref.read(playbackProvider);
     playFullList(
       player: player,
-      tracks: widget.album.getTracks(),
+      tracks: album.getTracks(),
       initialIndex: index,
       shuffle: shuffle,
     );
   }
 
-  Widget _playButtons(BuildContext context, {bool stretch = false}) {
-    return LayoutBuilder(builder: (context, constraints) {
+  Widget _playButtons(final WidgetRef ref, {final bool stretch = false}) {
+    return LayoutBuilder(builder: (final context, final constraints) {
       double? maxWidth;
       if (stretch && constraints.maxWidth != double.infinity) {
         maxWidth = constraints.maxWidth / 2.2;
@@ -70,7 +64,7 @@ class _AlbumPageState extends State<AlbumPage> {
             child: OutlinedButton.icon(
               icon: const Icon(Icons.play_arrow),
               label: Text(t.playback.play_all),
-              onPressed: () => _onPlay(context),
+              onPressed: () => _onPlay(ref),
             ),
           ),
           SizedBox(
@@ -78,7 +72,7 @@ class _AlbumPageState extends State<AlbumPage> {
             child: FilledButton.icon(
               icon: const Icon(Icons.shuffle),
               label: Text(t.playback.shuffle),
-              onPressed: () => _onPlay(context, shuffle: true),
+              onPressed: () => _onPlay(ref, shuffle: true),
             ),
           ),
         ],
@@ -86,45 +80,47 @@ class _AlbumPageState extends State<AlbumPage> {
     });
   }
 
-  Widget _buildTrackList(BuildContext context) {
+  Widget _buildTrackList(final BuildContext context) {
     final List<Widget> list = [];
 
     bool needDiscId = false;
-    if (widget.album.discs.length > 1) {
+    if (album.discs.length > 1) {
       needDiscId = true;
     }
 
     int trackIndex = 0;
     int discId = 1;
-    for (final disc in widget.album.discs) {
+    for (final disc in album.discs) {
       if (needDiscId) {
         list.add(DiscTitleListTile(title: disc.title, index: discId));
       }
 
-      list.addAll(disc.tracks
-          .map((track) => TrackListTile(track: track, index: trackIndex++)));
+      list.addAll(disc.tracks.map(
+          (final track) => TrackListTile(track: track, index: trackIndex++)));
       discId++;
     }
 
     return SliverList(delegate: SliverChildListDelegate(list));
   }
 
-  Future<void> _onImage(ImageProvider provider) async {
-    if (loading) {
-      loading = false;
-      final scheme = await ColorScheme.fromImageProvider(provider: provider);
-      final darkScheme = await ColorScheme.fromImageProvider(
-          provider: provider, brightness: Brightness.dark);
-      Global.theme.setTemporaryScheme(scheme, darkScheme);
-    }
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final loading = useState(true);
+
+    onImage(final ImageProvider provider) async {
+      if (loading.value) {
+        loading.value = false;
+        final scheme = await ColorScheme.fromImageProvider(provider: provider);
+        final darkScheme = await ColorScheme.fromImageProvider(
+            provider: provider, brightness: Brightness.dark);
+        ref.read(themeProvider).setTemporaryScheme(scheme, darkScheme);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         actions: [
-          FavoriteAlbumButton(albumId: widget.album.albumId),
+          FavoriteAlbumButton(albumId: album.albumId),
         ],
       ),
       body: Padding(
@@ -134,13 +130,13 @@ class _AlbumPageState extends State<AlbumPage> {
             if (context.isMobileOrPortrait)
               SliverToBoxAdapter(
                 child: LayoutBuilder(
-                  builder: (context, constraints) {
+                  builder: (final context, final constraints) {
                     return Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: constraints.maxWidth / 6),
                       child: MusicCover.fromAlbum(
-                        albumId: widget.album.albumId,
-                        onImage: _onImage,
+                        albumId: album.albumId,
+                        onImage: onImage,
                       ),
                     );
                   },
@@ -164,16 +160,15 @@ class _AlbumPageState extends State<AlbumPage> {
                                 const BorderRadius.all(Radius.circular(24)),
                           ),
                           clipBehavior: Clip.hardEdge,
-                          child: MusicCover.fromAlbum(
-                              albumId: widget.album.albumId),
+                          child: MusicCover.fromAlbum(albumId: album.albumId),
                         ),
                       ),
                     if (context.isDesktopOrLandscape)
                       SizedBox(
                         height: 240,
                         child: MusicCover.fromAlbum(
-                          albumId: widget.album.albumId,
-                          onImage: _onImage,
+                          albumId: album.albumId,
+                          onImage: onImage,
                         ),
                       ),
                     const SizedBox(width: 8),
@@ -182,12 +177,12 @@ class _AlbumPageState extends State<AlbumPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.album.title,
+                            album.title,
                             style: context.textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           ArtistText(
-                            widget.album.artist,
+                            album.artist,
                             style: context.textTheme.bodyLarge,
                           ),
                         ],
@@ -198,7 +193,7 @@ class _AlbumPageState extends State<AlbumPage> {
               ),
             ),
             SliverToBoxAdapter(
-              child: _playButtons(context, stretch: context.isMobileOrPortrait),
+              child: _playButtons(ref, stretch: context.isMobileOrPortrait),
             ),
             _buildTrackList(context),
           ],
@@ -216,7 +211,7 @@ class DiscTitleListTile extends StatelessWidget {
       {super.key, required this.title, required this.index});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ListTile(
       textColor: context.colorScheme.primary,
       iconColor: context.colorScheme.primary,
@@ -230,15 +225,15 @@ class DiscTitleListTile extends StatelessWidget {
   }
 }
 
-class TrackListTile extends StatelessWidget {
+class TrackListTile extends ConsumerWidget {
   final int index;
   final Track track;
 
   const TrackListTile({super.key, required this.track, required this.index});
 
   @override
-  Widget build(BuildContext context) {
-    final annil = context.read<AnnilService>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final annil = ref.read(annilProvider);
 
     return ListTile(
       leading: Text('${track.id.trackId}'),
@@ -252,7 +247,7 @@ class TrackListTile extends StatelessWidget {
       enabled: annil.isTrackAvailable(track.id),
       minLeadingWidth: 12,
       onTap: () async {
-        final player = context.read<PlaybackService>();
+        final player = ref.read(playbackProvider);
         final tracks = track.disc.album.getTracks();
         playFullList(
           player: player,

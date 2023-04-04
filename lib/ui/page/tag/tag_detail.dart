@@ -1,25 +1,25 @@
-import 'package:annix/services/annil/annil.dart';
-import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class TagDetailScreen extends StatelessWidget {
+class TagDetailScreen extends ConsumerWidget {
   final String name;
 
   const TagDetailScreen({super.key, required this.name});
 
   @override
-  Widget build(BuildContext context) {
-    final annil = context.read<AnnilService>();
-    final MetadataService metadata = context.read<MetadataService>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final annil = ref.read(annilProvider);
+    final metadata = ref.read(metadataProvider);
 
+    // TODO: do not use FutureBuilder
     return Scaffold(
       appBar: AppBar(title: Text(name)),
       body: FutureBuilder<List<String>>(
-          future: metadata.getAlbumsByTag(name).then(
-              (albums) => albums.intersection(annil.albums.toSet()).toList()),
-          builder: (context, snapshot) {
+          future: metadata.getAlbumsByTag(name).then((final albums) =>
+              albums.intersection(annil.albums.toSet()).toList()),
+          builder: (final context, final snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
                 return const Center(

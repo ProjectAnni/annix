@@ -1,17 +1,17 @@
-import 'package:annix/services/theme.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ThemeButton extends StatelessWidget {
+class ThemeButton extends ConsumerWidget {
   const ThemeButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     return IconButton(
       icon: Icon(context.isDarkMode ? Icons.light_mode : Icons.dark_mode),
       onPressed: () {
-        context.read<AnnixTheme>().setThemeMode(
+        ref.read(themeProvider).setThemeMode(
             context.isDarkMode ? ThemeMode.light : ThemeMode.dark);
       },
     );

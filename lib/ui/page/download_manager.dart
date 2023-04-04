@@ -5,7 +5,6 @@ import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/utils/bytes.dart';
-import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -14,13 +13,13 @@ class DownloadManagerPage extends StatelessWidget {
   const DownloadManagerPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(t.download_manager)),
       body: ChangeNotifierProvider.value(
         value: Global.downloadManager,
         child: Consumer<DownloadManager>(
-          builder: (context, manager, child) {
+          builder: (final context, final manager, final child) {
             final audios = <DownloadTask>[];
             final others = <DownloadTask>[];
             for (final task in manager.tasks) {
@@ -54,14 +53,14 @@ class DownloadManagerPage extends StatelessWidget {
                     child: TabBarView(
                       children: [
                         ListView.builder(
-                          itemBuilder: (context, index) {
+                          itemBuilder: (final context, final index) {
                             final task = audios[index];
                             return DownloadTaskListTile(task: task);
                           },
                           itemCount: audios.length,
                         ),
                         ListView.builder(
-                          itemBuilder: (context, index) {
+                          itemBuilder: (final context, final index) {
                             final task = others[index];
                             return DownloadTaskListTile(task: task);
                           },
@@ -86,11 +85,11 @@ class DownloadTaskListTile extends StatelessWidget {
   const DownloadTaskListTile({required this.task, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ChangeNotifierProvider.value(
       value: task,
       child: Consumer<DownloadTask>(
-        builder: (context, task, child) {
+        builder: (final context, final task, final child) {
           final totalBytes = task.progress.total ??
               (task.status == DownloadTaskStatus.completed
                   ? task.progress.current
@@ -149,7 +148,7 @@ class DownloadCategoryIcon extends StatelessWidget {
   const DownloadCategoryIcon({required this.category, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     switch (category) {
       case DownloadCategory.audio:
         return const Icon(Icons.audio_file);

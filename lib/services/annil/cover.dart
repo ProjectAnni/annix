@@ -1,10 +1,9 @@
-import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/services/annil/annil.dart';
 import 'package:dio/dio.dart';
 import 'dart:io' show File;
 
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class CoverItem {
   final String albumId;
@@ -18,21 +17,15 @@ class CoverItem {
   String get key => discId == null ? albumId : '$albumId/$discId';
 }
 
-class CoverReverseProxy {
-  static final client = Dio();
-  static CoverReverseProxy? _instance;
+class _CoverReverseProxy {
+  _CoverReverseProxy(this.ref);
 
-  final downloadingMap = {};
+  final client = Dio();
+  final Ref<Object?> ref;
+  final downloadingMap = const {};
 
-  CoverReverseProxy._();
-
-  factory CoverReverseProxy() {
-    _instance ??= CoverReverseProxy._();
-    return _instance!;
-  }
-
-  Future<File?> getCoverImage(CoverItem cover) async {
-    final AnnilService annil = Global.context.read();
+  Future<File?> getCoverImage(final CoverItem cover) async {
+    final annil = ref.read(annilProvider);
 
     if (downloadingMap.containsKey(cover.key)) {
       await downloadingMap[cover.key];
@@ -70,3 +63,5 @@ class CoverReverseProxy {
     return file;
   }
 }
+
+final coverProxyProvider = Provider((final ref) => _CoverReverseProxy(ref));

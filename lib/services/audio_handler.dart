@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -10,9 +11,8 @@ import 'package:audio_service_platform_interface/audio_service_platform_interfac
 import 'package:audio_session/audio_session.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:flutter/material.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
   final PlaybackService player;
@@ -23,13 +23,13 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   List<LocalFavoriteTrack> _favorites = [];
 
-  static Future<void> init(BuildContext context) async {
+  static Future<void> init(final Ref<Object?> ref) async {
     if (Platform.isLinux) {
-      AudioServicePlatform.instance = LinuxAudioService(context);
+      AudioServicePlatform.instance = LinuxAudioService(ref);
     }
 
     final service = await AudioService.init(
-      builder: () => AnnixAudioHandler._(context),
+      builder: () => AnnixAudioHandler._(ref),
       config: const AudioServiceConfig(
         androidNotificationChannelId: 'rs.anni.annix.audio',
         androidNotificationChannelName: 'Annix Audio playback',
@@ -42,15 +42,15 @@ class AnnixAudioHandler extends BaseAudioHandler {
       ),
     );
 
-    AudioSession.instance.then((session) async {
+    AudioSession.instance.then((final session) async {
       session.configure(const AudioSessionConfiguration.music());
 
       // unplugged
-      session.becomingNoisyEventStream.listen((_) => service.pause());
+      session.becomingNoisyEventStream.listen((final _) => service.pause());
 
       bool pausedByInterrupt = false;
       // interruption
-      session.interruptionEventStream.listen((event) {
+      session.interruptionEventStream.listen((final event) {
         if (event.begin) {
           switch (event.type) {
             case AudioInterruptionType.duck:
@@ -80,22 +80,22 @@ class AnnixAudioHandler extends BaseAudioHandler {
       });
     });
 
-    AudioService.notificationClicked.listen((clicked) {
+    AudioService.notificationClicked.listen((final clicked) {
       if (clicked) {
         Global.mobileWeSlideController.show();
       }
     });
   }
 
-  AnnixAudioHandler._(BuildContext context)
-      : player = context.read(),
-        anniv = context.read(),
-        database = context.read() {
+  AnnixAudioHandler._(final Ref<Object?> ref)
+      : player = ref.read(playbackProvider),
+        anniv = ref.read(annivProvider),
+        database = ref.read(localDatabaseProvider) {
     player.addListener(() => _updatePlaybackState());
     database.localFavoriteTracks
         .select()
         .watch()
-        .listen((favorites) => _updatePlaybackState(favorites));
+        .listen((final favorites) => _updatePlaybackState(favorites));
   }
 
   @override
@@ -114,7 +114,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
   }
 
   @override
-  Future<void> seek(Duration position) {
+  Future<void> seek(final Duration position) {
     return player.seek(position);
   }
 
@@ -136,7 +136,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
     }
   }
 
-  void _updatePlaybackState([List<LocalFavoriteTrack>? favorites]) {
+  void _updatePlaybackState([final List<LocalFavoriteTrack>? favorites]) {
     if (favorites != null) {
       _favorites = favorites;
     }
@@ -149,7 +149,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
     final isPlaying = player.playerStatus == PlayerStatus.playing;
     final isFavorite = player.playing != null &&
         _favorites.any(
-          (f) =>
+          (final f) =>
               player.playing!.track.id ==
               TrackIdentifier(
                 albumId: f.albumId,
@@ -184,13 +184,14 @@ class AnnixAudioHandler extends BaseAudioHandler {
         MediaAction.seekForward,
         MediaAction.seekBackward,
       },
-      androidCompactActionIndices: List.generate(controls.length, (i) => i)
-          .where((i) =>
-              controls[i].action == MediaAction.fastForward ||
-              controls[i].action == MediaAction.pause ||
-              controls[i].action == MediaAction.play ||
-              controls[i].action == MediaAction.skipToNext)
-          .toList(),
+      androidCompactActionIndices:
+          List.generate(controls.length, (final i) => i)
+              .where((final i) =>
+                  controls[i].action == MediaAction.fastForward ||
+                  controls[i].action == MediaAction.pause ||
+                  controls[i].action == MediaAction.play ||
+                  controls[i].action == MediaAction.skipToNext)
+              .toList(),
       processingState: {
         PlayerStatus.playing: AudioProcessingState.ready,
         PlayerStatus.stopped: AudioProcessingState.ready,
@@ -236,13 +237,13 @@ class LinuxAudioService extends AudioServicePlatform {
   final AnnixMPRISService mpris;
   bool seekOnNextUpdate = false;
 
-  LinuxAudioService(BuildContext context) : mpris = AnnixMPRISService(context);
+  LinuxAudioService(final Ref<Object?> ref) : mpris = AnnixMPRISService(ref);
 
   @override
-  Future<void> configure(ConfigureRequest request) async {}
+  Future<void> configure(final ConfigureRequest request) async {}
 
   @override
-  Future<void> setState(SetStateRequest request) async {
+  Future<void> setState(final SetStateRequest request) async {
     mpris.playbackStatus =
         request.state.playing ? PlaybackStatus.playing : PlaybackStatus.stopped;
     mpris.updatePosition(request.state.updatePosition,
@@ -251,7 +252,7 @@ class LinuxAudioService extends AudioServicePlatform {
   }
 
   @override
-  Future<void> setMediaItem(SetMediaItemRequest request) async {
+  Future<void> setMediaItem(final SetMediaItemRequest request) async {
     final duration = request.mediaItem.duration;
     if (duration != null && duration > Duration.zero) {
       final trackId = "/${request.mediaItem.id.replaceAll('-', '')}";
@@ -272,20 +273,20 @@ class LinuxAudioService extends AudioServicePlatform {
   }
 
   @override
-  Future<void> stopService(StopServiceRequest request) async {}
+  Future<void> stopService(final StopServiceRequest request) async {}
 
   @override
-  void setHandlerCallbacks(AudioHandlerCallbacks callbacks) {}
+  void setHandlerCallbacks(final AudioHandlerCallbacks callbacks) {}
 
   @override
-  Future<void> setQueue(SetQueueRequest request) async {}
+  Future<void> setQueue(final SetQueueRequest request) async {}
 }
 
 class AnnixMPRISService extends MPRISService {
   final PlaybackService player;
 
-  AnnixMPRISService(BuildContext context)
-      : player = context.read<PlaybackService>(),
+  AnnixMPRISService(final Ref<Object?> ref)
+      : player = ref.read(playbackProvider),
         super(
           'annix',
           identity: 'Annix',
@@ -346,7 +347,7 @@ class AnnixMPRISService extends MPRISService {
   }
 
   @override
-  Future<void> onSeek(int offset) async {
+  Future<void> onSeek(final int offset) async {
     if (player.playing != null) {
       await player
           .seek(player.playing!.position + Duration(milliseconds: offset));
@@ -354,12 +355,12 @@ class AnnixMPRISService extends MPRISService {
   }
 
   @override
-  Future<void> onSetPosition(String trackId, int position) async {
+  Future<void> onSetPosition(final String trackId, final int position) async {
     await player.seek(Duration(microseconds: position));
   }
 
   @override
-  Future<void> onLoopStatus(LoopStatus loopStatus) async {
+  Future<void> onLoopStatus(final LoopStatus loopStatus) async {
     switch (loopStatus) {
       case LoopStatus.none:
         await player.setLoopMode(LoopMode.off);
@@ -375,7 +376,7 @@ class AnnixMPRISService extends MPRISService {
   }
 
   @override
-  Future<void> onShuffle(bool shuffle) async {
+  Future<void> onShuffle(final bool shuffle) async {
     if (shuffle) {
       await player.setLoopMode(LoopMode.random);
     } else {

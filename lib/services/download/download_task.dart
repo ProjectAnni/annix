@@ -58,7 +58,7 @@ class DownloadTask extends ChangeNotifier {
         url,
         '$savePath.tmp',
         options: Options(headers: headers),
-        onReceiveProgress: (count, total) {
+        onReceiveProgress: (final count, final total) {
           status = DownloadTaskStatus.downloading;
           progress =
               DownloadProgress(current: count, total: total > 0 ? total : null);

@@ -1,4 +1,4 @@
-String bytesToString(int bytes) {
+String bytesToString(final int bytes) {
   if (bytes < 0) {
     return '-';
   }

@@ -1,14 +1,16 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnivSqliteMetadataSource extends SqliteMetadataSource {
-  AnnivSqliteMetadataSource() : super(Global.dataRoot);
+  final Ref<Object?> ref;
+
+  AnnivSqliteMetadataSource(this.ref) : super(Global.dataRoot);
 
   @override
   Future<bool> canUpdate() async {
-    final anniv = Global.context.read<AnnivService>();
+    final anniv = ref.read(annivProvider);
     final client = anniv.client;
     if (client == null) {
       return false;
@@ -27,7 +29,7 @@ class AnnivSqliteMetadataSource extends SqliteMetadataSource {
 
   @override
   Future<bool> doUpdate() async {
-    final anniv = Global.context.read<AnnivService>();
+    final anniv = ref.read(annivProvider);
     if (anniv.client == null) {
       return false;
     }

@@ -20,7 +20,7 @@ Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
       catalog: json['catalog'] as String,
       artist: json['artist'] as String,
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
-      date: ReleaseDate.fromJson(ReleaseDate.readValue(json, 'date')),
+      date: ReleaseDate.fromJson(ReleaseDate.readValue(json, 'date') as String),
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       discs: (json['discs'] as List<dynamic>)
           .map((e) => Disc.fromJson(e as Map<String, dynamic>))

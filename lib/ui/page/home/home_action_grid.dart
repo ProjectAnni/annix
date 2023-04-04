@@ -10,7 +10,7 @@ class HomeActionGrid extends StatelessWidget {
   const HomeActionGrid({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return GridView.count(
       padding: EdgeInsets.zero,
       crossAxisCount: context.isDesktopOrLandscape
@@ -36,7 +36,7 @@ class HomeActionGrid extends StatelessWidget {
           onPressed: () {
             showLoadingDialog(context);
             context.read<PlaybackService>().fullShuffleMode(context).then(
-              (value) {
+              (final value) {
                 Navigator.of(context, rootNavigator: true).pop();
               },
             );
@@ -74,7 +74,7 @@ class HomeActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ElevatedButton.icon(
       icon: icon,
       label: Text(title),

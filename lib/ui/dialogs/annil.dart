@@ -45,7 +45,7 @@ class _BaseAnnilDialogState extends State<BaseAnnilDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
       title: Center(
         child: Column(
@@ -123,7 +123,7 @@ class AnnilAddDialog extends StatelessWidget {
   const AnnilAddDialog({super.key, required this.onSubmit});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return BaseAnnilDialog(
       mode: AnnilDialogMode.add,
       onSubmit: onSubmit,

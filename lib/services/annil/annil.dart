@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/global.dart';
@@ -9,24 +10,23 @@ import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:collection/collection.dart';
 
 class AnnilService extends ChangeNotifier {
-  final BuildContext context;
+  final Ref<Object?> ref;
   final Dio _client = Dio();
 
   List<LocalAnnilServer> servers = [];
   Map<int, String?> etags = {};
   List<String> albums = [];
 
-  AnnilService(this.context) {
+  AnnilService(this.ref) {
     _client.interceptors.add(RetryInterceptor(
       dio: _client,
-      logPrint: (text) => FLog.error(text: text),
+      logPrint: (final text) => FLog.error(text: text),
       retries: 3,
       retryDelays: const [
         Duration(seconds: 1),
@@ -35,35 +35,35 @@ class AnnilService extends ChangeNotifier {
       ],
     ));
 
-    final db = context.read<LocalDatabase>();
-    db.localAnnilCaches.select().get().then((value) {
+    final db = ref.read(localDatabaseProvider);
+    db.localAnnilCaches.select().get().then((final value) {
       etags.addAll(
-          Map.fromEntries(value.map((e) => MapEntry(e.annilId, e.etag))));
+          Map.fromEntries(value.map((final e) => MapEntry(e.annilId, e.etag))));
     });
     final annilServersStream = db.sortedAnnilServers().watch();
-    annilServersStream.listen((event) {
+    annilServersStream.listen((final event) {
       if (!listEquals(event, servers)) {
         servers = event;
         reload();
       }
     });
 
-    final network = context.read<NetworkService>();
+    final network = ref.read(networkProvider);
     network.addListener(() => reload());
   }
 
   Future<void> addRemoteServer({
-    required String name,
+    required final String name,
     required String url,
-    required String token,
-    required int priority,
-    required String remoteId,
+    required final String token,
+    required final int priority,
+    required final String remoteId,
   }) async {
     if (url.endsWith('/')) {
       url = url.substring(0, url.length - 1);
     }
 
-    final db = context.read<LocalDatabase>();
+    final db = ref.read(localDatabaseProvider);
     await db.localAnnilServers.insertOne(
       LocalAnnilServersCompanion.insert(
         name: name,
@@ -76,16 +76,16 @@ class AnnilService extends ChangeNotifier {
   }
 
   Future<void> addLocalServer({
-    required String name,
+    required final String name,
     required String url,
-    required String token,
-    required int priority,
+    required final String token,
+    required final int priority,
   }) async {
     if (url.endsWith('/')) {
       url = url.substring(0, url.length - 1);
     }
 
-    final db = context.read<LocalDatabase>();
+    final db = ref.read(localDatabaseProvider);
     await db.localAnnilServers.insertOne(
       LocalAnnilServersCompanion.insert(
         name: name,
@@ -97,40 +97,40 @@ class AnnilService extends ChangeNotifier {
   }
 
   /// Keep sync with new credential list
-  Future<void> sync(List<AnnilToken> remoteList) async {
-    final db = context.read<LocalDatabase>();
+  Future<void> sync(final List<AnnilToken> remoteList) async {
+    final db = ref.read(localDatabaseProvider);
     final toUpdate = servers
-        .map((server) {
+        .map((final server) {
           // local annil
           if (server.remoteId == null) {
             return null;
           }
 
           return remoteList
-              .firstWhereOrNull((remote) => remote.id == server.remoteId);
+              .firstWhereOrNull((final remote) => remote.id == server.remoteId);
         })
         .whereType<AnnilToken>()
         .toList();
-    final toUpdateIds = toUpdate.map((e) => e.id).toList();
+    final toUpdateIds = toUpdate.map((final e) => e.id).toList();
     final toRemove = servers
-        .map((server) {
+        .map((final server) {
           if (server.remoteId == null) {
             return null;
           }
 
-          return toUpdate.where((e) => server.remoteId == e.id).isNotEmpty
+          return toUpdate.where((final e) => server.remoteId == e.id).isNotEmpty
               ? null
               : server.id;
         })
         .whereType<int>()
         .toList();
     final toAdd =
-        remoteList.where((remote) => !toUpdateIds.contains(remote.id));
+        remoteList.where((final remote) => !toUpdateIds.contains(remote.id));
     await db.transaction(() async {
       // exist both in local and remote, update server info
       for (final e in toUpdate) {
         await (db.localAnnilServers.update()
-              ..where((tbl) => tbl.remoteId.equals(e.id)))
+              ..where((final tbl) => tbl.remoteId.equals(e.id)))
             .write(
           LocalAnnilServersCompanion(
             name: Value(e.name),
@@ -141,15 +141,16 @@ class AnnilService extends ChangeNotifier {
         );
       }
       // remove deleted servers
-      await db.localAnnilServers.deleteWhere((tbl) => tbl.id.isIn(toRemove));
+      await db.localAnnilServers
+          .deleteWhere((final tbl) => tbl.id.isIn(toRemove));
       await db.localAnnilAlbums
-          .deleteWhere((tbl) => tbl.annilId.isIn(toRemove));
+          .deleteWhere((final tbl) => tbl.annilId.isIn(toRemove));
       // add new servers
       await db.batch(
-        (batch) => batch.insertAll(
+        (final batch) => batch.insertAll(
           db.localAnnilServers,
           toAdd.map(
-            (e) => LocalAnnilServersCompanion.insert(
+            (final e) => LocalAnnilServersCompanion.insert(
               name: e.name,
               url: e.url,
               token: e.token,
@@ -165,14 +166,14 @@ class AnnilService extends ChangeNotifier {
   }
 
   Future<List<LocalAnnilServer>> _getActiveServerByAlbumId(
-      String albumId) async {
-    final db = context.read<LocalDatabase>();
+      final String albumId) async {
+    final db = ref.read(localDatabaseProvider);
     return await db.annilToUse(albumId).get();
   }
 
   Future<String?> getAudioUrl({
-    required TrackIdentifier track,
-    required PreferQuality quality,
+    required final TrackIdentifier track,
+    required final PreferQuality quality,
   }) async {
     final servers = await _getActiveServerByAlbumId(track.albumId);
     if (servers.isNotEmpty) {
@@ -185,7 +186,8 @@ class AnnilService extends ChangeNotifier {
     return null;
   }
 
-  Future<Uri?> getCoverUrl({required String albumId, int? discId}) async {
+  Future<Uri?> getCoverUrl(
+      {required final String albumId, final int? discId}) async {
     if (NetworkService.isOnline) {
       final servers = await _getActiveServerByAlbumId(albumId);
       if (servers.isEmpty) {
@@ -205,10 +207,10 @@ class AnnilService extends ChangeNotifier {
 
   /// Refresh all annil servers
   Future<void> reload() async {
-    final db = context.read<LocalDatabase>();
+    final db = ref.read(localDatabaseProvider);
     final albumList = <String>{};
     if (NetworkService.isOnline) {
-      await Future.wait(servers.map((server) async {
+      await Future.wait(servers.map((final server) async {
         try {
           await updateAlbums(server);
         } catch (e) {
@@ -226,11 +228,11 @@ class AnnilService extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isAlbumAvailable(String albumId) {
+  bool isAlbumAvailable(final String albumId) {
     return albums.contains(albumId);
   }
 
-  bool isTrackAvailable(TrackIdentifier id) {
+  bool isTrackAvailable(final TrackIdentifier id) {
     return isCacheAvailable(id) ||
         (NetworkService.isOnline && albums.contains(id.albumId));
   }
@@ -243,28 +245,28 @@ class AnnilService extends ChangeNotifier {
 
     return root
         .list()
-        .where((entry) {
+        .where((final entry) {
           if (entry is! Directory) {
             return false;
           }
           // return true if music file exists (any file with no extension, or flac extension)
-          return entry.listSync().any((e) =>
+          return entry.listSync().any((final e) =>
               e is File &&
               (p.basename(e.path).endsWith('.flac') ||
                   !p.basename(e.path).contains('.')));
         })
-        .map((entry) => p.basename(entry.path))
+        .map((final entry) => p.basename(entry.path))
         .toSet();
   }
 
-  static bool isCacheAvailable(TrackIdentifier id) {
+  static bool isCacheAvailable(final TrackIdentifier id) {
     final path = getAudioCachePath(id);
     return File(path).existsSync();
   }
 
   /// Get the available album list of an Annil server.
-  Future<void> updateAlbums(LocalAnnilServer server) async {
-    final db = context.read<LocalDatabase>();
+  Future<void> updateAlbums(final LocalAnnilServer server) async {
+    final db = ref.read(localDatabaseProvider);
     final etag = etags[server.id];
 
     try {
@@ -287,8 +289,8 @@ class AnnilService extends ChangeNotifier {
         await db.transaction(() async {
           await db.updateAnnilETag(server.id, newETag);
           await db.localAnnilAlbums
-              .deleteWhere((tbl) => tbl.annilId.equals(server.id));
-          await db.batch((batch) => batch.insertAll(db.localAnnilAlbums, [
+              .deleteWhere((final tbl) => tbl.annilId.equals(server.id));
+          await db.batch((final batch) => batch.insertAll(db.localAnnilAlbums, [
                 for (final album in response.data as List<dynamic>)
                   LocalAnnilAlbumsCompanion.insert(
                     annilId: server.id,
@@ -305,7 +307,7 @@ class AnnilService extends ChangeNotifier {
         await db.transaction(() async {
           await db.updateAnnilETag(server.id, null);
           await db.localAnnilAlbums
-              .deleteWhere((tbl) => tbl.annilId.equals(server.id));
+              .deleteWhere((final tbl) => tbl.annilId.equals(server.id));
         });
         rethrow;
       }
@@ -333,7 +335,7 @@ enum PreferQuality {
     }
   }
 
-  factory PreferQuality.fromString(String str) {
+  factory PreferQuality.fromString(final String str) {
     switch (str) {
       case 'low':
         return PreferQuality.low;

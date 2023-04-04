@@ -1,6 +1,5 @@
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
@@ -8,18 +7,19 @@ import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DesktopBottomPlayer extends StatelessWidget {
+class DesktopBottomPlayer extends ConsumerWidget {
   const DesktopBottomPlayer({super.key, required this.onClick});
 
   final VoidCallback onClick;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final player = ref.read(playbackProvider);
+
     return GestureDetector(
       onTap: () {
-        final player = context.read<PlaybackService>();
         if (player.playing != null) {
           onClick();
         }
@@ -51,59 +51,40 @@ class DesktopBottomPlayer extends StatelessWidget {
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Consumer<PlaybackService>(
-                              builder: (context, player, child) {
+                            child: Consumer(
+                              builder: (final context, final ref, final child) {
+                                final playing = ref.watch(playingProvider);
+
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      player.playing?.track.title ??
-                                          'Not playing',
+                                      playing?.track.title ?? 'Not playing',
                                       style: context.textTheme.titleMedium
                                           ?.apply(fontWeightDelta: 2),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     ArtistText(
-                                      player.playing?.track.artist ?? '',
+                                      playing?.track.artist ?? '',
                                       style: context.textTheme.labelSmall,
                                     ),
                                     const SizedBox(height: 8),
                                     RepaintBoundary(
-                                      child: Consumer<PlaybackService>(
-                                        builder: (context, player, child) {
-                                          return ChangeNotifierProvider.value(
-                                            value: player.playing,
-                                            child: Selector<PlayingTrack?,
-                                                List<Duration>>(
-                                              selector: (_, playing) => [
-                                                playing?.position ??
-                                                    Duration.zero,
-                                                playing?.duration ??
-                                                    Duration.zero,
-                                              ],
-                                              builder:
-                                                  (context, durations, child) {
-                                                return ProgressBar(
-                                                  progress: durations[0],
-                                                  total: durations[1],
-                                                  onSeek: (position) {
-                                                    player.seek(position);
-                                                  },
-                                                  barHeight: 3.0,
-                                                  thumbRadius: 6,
-                                                  thumbGlowRadius: 12,
-                                                  thumbCanPaintOutsideBar:
-                                                      false,
-                                                  timeLabelLocation:
-                                                      TimeLabelLocation.sides,
-                                                  timeLabelTextStyle: context
-                                                      .textTheme.labelSmall,
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
+                                      child: ProgressBar(
+                                        progress:
+                                            playing?.position ?? Duration.zero,
+                                        total:
+                                            playing?.duration ?? Duration.zero,
+                                        onSeek: player.seek,
+                                        barHeight: 3.0,
+                                        thumbRadius: 6,
+                                        thumbGlowRadius: 12,
+                                        thumbCanPaintOutsideBar: false,
+                                        timeLabelLocation:
+                                            TimeLabelLocation.sides,
+                                        timeLabelTextStyle:
+                                            context.textTheme.labelSmall,
                                       ),
                                     ),
                                   ],
@@ -123,8 +104,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.skip_previous),
                         iconSize: 28,
-                        onPressed: () =>
-                            context.read<PlaybackService>().previous(),
+                        onPressed: player.previous,
                       ),
                       const PlayPauseButton(
                         type: PlayPauseButtonType.elevated,
@@ -133,7 +113,7 @@ class DesktopBottomPlayer extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.skip_next),
                         iconSize: 28,
-                        onPressed: () => context.read<PlaybackService>().next(),
+                        onPressed: player.next,
                       ),
                       const LoopModeButton(),
                     ],

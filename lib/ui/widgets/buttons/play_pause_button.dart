@@ -1,8 +1,9 @@
-import 'package:annix/services/download/download_models.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/buttons/animated_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum PlayPauseButtonType {
   floating,
@@ -10,7 +11,7 @@ enum PlayPauseButtonType {
   flat,
 }
 
-class PlayPauseButton extends StatefulWidget {
+class PlayPauseButton extends HookConsumerWidget {
   final double size;
   final PlayPauseButtonType type;
 
@@ -25,106 +26,80 @@ class PlayPauseButton extends StatefulWidget {
   }
 
   @override
-  State<PlayPauseButton> createState() => _PlayPauseButtonState();
-}
-
-class _PlayPauseButtonState extends State<PlayPauseButton>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final player = context.read<PlaybackService>();
-    _controller = AnimationController(
-      vsync: this,
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final player = ref.watch(playbackProvider);
+    final controller = useAnimationController(
       duration: const Duration(milliseconds: 250),
-      value: player.playerStatus == PlayerStatus.playing ? 1 : 0,
+      initialValue: player.playerStatus == PlayerStatus.playing ? 1 : 0,
     );
-    player.addListener(() {
+    useEffect(() {
       if (player.playerStatus == PlayerStatus.playing) {
-        _controller.forward();
+        controller.forward();
       } else if (player.playerStatus == PlayerStatus.paused ||
           player.playerStatus == PlayerStatus.stopped) {
-        _controller.reverse();
+        controller.reverse();
       }
-    });
-  }
 
-  @override
-  Widget build(BuildContext context) {
+      return null;
+    }, [player.playerStatus]);
+
+    final isBuffering = player.playerStatus == PlayerStatus.buffering;
+    final downloadProgress = ref.watch(playingDownloadProgressProvider);
+
+    Widget child;
+    if (isBuffering) {
+      final total = downloadProgress!.total;
+      child = Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          value: total == null ? null : downloadProgress.current / total,
+        ),
+      );
+    } else {
+      if (type == PlayPauseButtonType.floating) {
+        return FloatingActionButton(
+          child: AnimatedIconWidget(
+            controller: controller,
+            icon: AnimatedIcons.play_pause,
+          ),
+          onPressed: () {
+            player.playOrPause();
+          },
+        );
+      } else if (type == PlayPauseButtonType.elevated) {
+        return Card(
+          elevation: 2,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            child: Center(
+              child: AnimatedIconWidget(
+                controller: controller,
+                icon: AnimatedIcons.play_pause,
+              ),
+            ),
+            onTap: () {
+              player.playOrPause();
+            },
+          ),
+        );
+      } else {
+        return IconButton(
+          icon: AnimatedIconWidget(
+            controller: controller,
+            icon: AnimatedIcons.play_pause,
+          ),
+          onPressed: () {
+            player.playOrPause();
+          },
+        );
+      }
+    }
+
     return SizedBox(
-      height: widget.size,
-      width: widget.size,
-      child: Consumer<PlaybackService>(
-        builder: (context, player, child) {
-          final isBuffering = player.playerStatus == PlayerStatus.buffering;
-          final downloadProgress = player.playing?.source.downloadProgress;
-
-          if (isBuffering) {
-            // TODO: refactor
-            return ChangeNotifierProvider.value(
-              value: downloadProgress,
-              builder: (context, child) {
-                return Consumer<ValueNotifier<DownloadProgress>>(
-                  builder: (context, progress, child) {
-                    // TODO: add transition animation when progress bar becomes play/pause button
-                    final total = progress.value.total;
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        value: total == null
-                            ? null
-                            : progress.value.current / total,
-                      ),
-                    );
-                  },
-                );
-              },
-            );
-          } else {
-            if (widget.type == PlayPauseButtonType.floating) {
-              return FloatingActionButton(
-                child: AnimatedIconWidget(
-                  controller: _controller,
-                  icon: AnimatedIcons.play_pause,
-                ),
-                onPressed: () {
-                  player.playOrPause();
-                },
-              );
-            } else if (widget.type == PlayPauseButtonType.elevated) {
-              return Card(
-                elevation: 2,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Center(
-                    child: AnimatedIconWidget(
-                      controller: _controller,
-                      icon: AnimatedIcons.play_pause,
-                    ),
-                  ),
-                  onTap: () {
-                    player.playOrPause();
-                  },
-                ),
-              );
-            } else {
-              return IconButton(
-                icon: AnimatedIconWidget(
-                  controller: _controller,
-                  icon: AnimatedIcons.play_pause,
-                ),
-                onPressed: () {
-                  player.playOrPause();
-                },
-              );
-            }
-          }
-        },
-      ),
+      height: size,
+      width: size,
+      child: child,
     );
   }
 }

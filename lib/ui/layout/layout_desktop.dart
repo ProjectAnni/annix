@@ -40,7 +40,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
   bool showIsPlaying = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final root = Scaffold(
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -66,7 +66,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
                       return NavigationRail(
                         minExtendedWidth: 192,
                         selectedIndex: selectedIndex,
-                        onDestinationSelected: (index) {
+                        onDestinationSelected: (final index) {
                           widget.router.off(name: pages[index]);
                         },
                         extended: true,
@@ -116,7 +116,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
 
     return Navigator(
       pages: [MaterialPage(child: root)],
-      onPopPage: (route, result) {
+      onPopPage: (final route, final result) {
         return false;
       },
       observers: [ThemePopObserver()],

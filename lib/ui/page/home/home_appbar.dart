@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 // Modified from https://github.com/flutter/flutter/issues/117483#issuecomment-1377699454
 class FloatingSearchBar extends StatelessWidget {
   const FloatingSearchBar({
-    Key? key,
+    final Key? key,
     this.height = 56,
     required this.trailingIcon,
     required this.supportingText,
@@ -20,7 +20,7 @@ class FloatingSearchBar extends StatelessWidget {
   final String supportingText;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final colorScheme = context.colorScheme;
     final textTheme = context.textTheme;
 
@@ -83,7 +83,7 @@ class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final anniv = context.watch<AnnivService>();
     final info = anniv.info;
 

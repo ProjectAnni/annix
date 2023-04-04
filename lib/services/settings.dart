@@ -111,8 +111,8 @@ class SettingsController {
   }
 
   Future<void> Function() saveChangedVariable<T>(
-    String key,
-    ValueNotifier<T> notifier,
+    final String key,
+    final ValueNotifier<T> notifier,
   ) {
     return () async {
       final value = notifier.value;

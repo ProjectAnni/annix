@@ -1,11 +1,12 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/lyric/lyric_provider.dart';
-import 'package:annix/services/lyric/lyric_provider_netease.dart';
-import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
+import 'package:annix/services/lyric/lyric_source.dart';
+import 'package:annix/services/lyric/lyric_source_netease.dart';
+import 'package:annix/services/lyric/lyric_source_petitlyrics.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum LyricSearchState {
   userInput,
@@ -13,20 +14,20 @@ enum LyricSearchState {
   displaySearchResultList,
 }
 
-class SearchLyricsDialog extends StatefulWidget {
+class SearchLyricsDialog extends ConsumerStatefulWidget {
   final TrackInfoWithAlbum track;
 
   const SearchLyricsDialog({super.key, required this.track});
 
   @override
-  State<SearchLyricsDialog> createState() => _SearchLyricsDialogState();
+  ConsumerState<SearchLyricsDialog> createState() => _SearchLyricsDialogState();
 }
 
-class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
+class _SearchLyricsDialogState extends ConsumerState<SearchLyricsDialog> {
   LyricSearchState _state = LyricSearchState.userInput;
 
   // Step 1 - Input data
-  LyricProviders _lyricProvider = LyricProviders.PetitLyrics;
+  LyricSources _lyricProvider = LyricSources.PetitLyrics;
   late TextEditingController _titleController;
   late TextEditingController _artistController;
   late TextEditingController _albumController;
@@ -34,12 +35,12 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
   // Step 2 - Available lyric list
   List<LyricSearchResponse> _searchResult = [];
 
-  LyricProvider _getLyricProvider() {
+  LyricSource _getLyricProvider() {
     switch (_lyricProvider) {
-      case LyricProviders.PetitLyrics:
-        return LyricProviderPetitLyrics();
-      case LyricProviders.Netease:
-        return LyricProviderNetease();
+      case LyricSources.PetitLyrics:
+        return LyricSourcePetitLyrics();
+      case LyricSources.Netease:
+        return LyricSourceNetease();
     }
   }
 
@@ -76,29 +77,29 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     if (_state == LyricSearchState.userInput) {
       return SimpleDialog(
         title: const Text('Search Lyrics'),
         contentPadding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
-          DropdownButtonFormField<LyricProviders>(
+          DropdownButtonFormField<LyricSources>(
             isExpanded: true,
             decoration: const InputDecoration(
               labelText: 'Lyric Provider',
             ),
             items: const [
               DropdownMenuItem(
-                value: LyricProviders.PetitLyrics,
+                value: LyricSources.PetitLyrics,
                 child: Text('PetitLyrics'),
               ),
               DropdownMenuItem(
-                value: LyricProviders.Netease,
+                value: LyricSources.Netease,
                 child: Text('Netease Music'),
               ),
             ],
             value: _lyricProvider,
-            onChanged: (provider) =>
+            onChanged: (final provider) =>
                 _lyricProvider = provider ?? _lyricProvider,
           ),
           TextFormField(
@@ -147,7 +148,7 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                 ? Center(child: Text(t.no_lyric_found))
                 : ListView.builder(
                     shrinkWrap: true,
-                    itemBuilder: (context, index) {
+                    itemBuilder: (final context, final index) {
                       final result = _searchResult[index];
                       return ListTile(
                         title: Text(
@@ -159,8 +160,8 @@ class _SearchLyricsDialogState extends State<SearchLyricsDialog> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
-                          final player = context.read<PlaybackService>();
-                          result.lyric.then((lyric) {
+                          final player = ref.read(playbackProvider);
+                          result.lyric.then((final lyric) {
                             player.playing?.updateLyric(TrackLyric(
                               lyric: lyric,
                               type: widget.track.type,

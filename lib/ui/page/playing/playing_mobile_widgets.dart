@@ -1,9 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
@@ -17,19 +16,19 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-class PlayingScreenMobileBottomBar extends StatelessWidget {
+class PlayingScreenMobileBottomBar extends ConsumerWidget {
   final ValueNotifier<bool> showLyrics;
 
   const PlayingScreenMobileBottomBar({super.key, required this.showLyrics});
 
   @override
-  Widget build(BuildContext context) {
-    final delegate = AnnixRouterDelegate.of(context);
-    final player = context.read<PlaybackService>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final delegate = ref.read(routerProvider);
+    final player = ref.read(playbackProvider);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -42,13 +41,12 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
             },
           ),
           onLongPress: () {
-            final player = context.read<PlaybackService>();
             final playing = player.playing?.track;
             if (playing != null) {
               showDialog(
                 context: context,
                 useRootNavigator: true,
-                builder: (context) {
+                builder: (final context) {
                   return SearchLyricsDialog(track: playing);
                 },
               );
@@ -63,10 +61,10 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
               context: context,
               isScrollControlled: true,
               clipBehavior: Clip.antiAlias,
-              builder: (context) {
+              builder: (final context) {
                 return DraggableScrollableSheet(
                   expand: false,
-                  builder: (context, scrollController) {
+                  builder: (final context, final scrollController) {
                     return Column(
                       children: [
                         const DragHandle(),
@@ -91,7 +89,7 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
           //         borderRadius: BorderRadius.circular(20)),
           //   ),
           // ),
-          builder: (context, controller, child) {
+          builder: (final context, final controller, final child) {
             return IconButton(
               icon: child!,
               onPressed: () {
@@ -139,60 +137,52 @@ class PlayingScreenMobileBottomBar extends StatelessWidget {
   }
 }
 
-class PlayingScreenMobileTrackInfo extends StatelessWidget {
+class PlayingScreenMobileTrackInfo extends ConsumerWidget {
   const PlayingScreenMobileTrackInfo({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final playing = ref.watch(playingProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Consumer<PlaybackService>(
-          builder: (context, player, child) => Center(
-            child: Text(
-              player.playing?.track.title ?? '',
-              style: context.textTheme.titleLarge?.copyWith(height: 1.5),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+        Text(
+          playing?.track.title ?? '',
+          style: context.textTheme.titleLarge?.copyWith(height: 1.5),
+          overflow: TextOverflow.ellipsis,
         ),
-        Consumer<PlaybackService>(
-          builder: (context, player, child) => ArtistText(
-            player.playing?.track.artist ?? '',
-            style: context.textTheme.titleMedium,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+        ArtistText(
+          playing?.track.artist ?? '',
+          style: context.textTheme.titleMedium,
+          overflow: TextOverflow.ellipsis,
+        )
       ],
     );
   }
 }
 
-class PlayingScreenMobileControl extends StatelessWidget {
+class PlayingScreenMobileControl extends ConsumerWidget {
   const PlayingScreenMobileControl({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final player = ref.read(playbackProvider);
+
     return Column(
       children: [
-        Consumer<PlaybackService>(
-          builder: (context, player, child) {
-            return ChangeNotifierProvider.value(
-              value: player.playing,
-              child: Consumer<PlayingTrack?>(
-                builder: (context, playing, child) {
-                  return ProgressBar(
-                    progress: playing?.position ?? Duration.zero,
-                    total: playing?.duration ?? Duration.zero,
-                    onSeek: (position) {
-                      player.seek(position);
-                    },
-                    barHeight: 2.0,
-                    thumbRadius: 5.0,
-                    thumbCanPaintOutsideBar: false,
-                  );
-                },
-              ),
+        Consumer(
+          builder: (final context, final ref, final child) {
+            final playing = ref.watch(playingProvider);
+
+            return ProgressBar(
+              progress: playing?.position ?? Duration.zero,
+              total: playing?.duration ?? Duration.zero,
+              onSeek: (final position) {
+                player.seek(position);
+              },
+              barHeight: 2.0,
+              thumbRadius: 5.0,
+              thumbCanPaintOutsideBar: false,
             );
           },
         ),
@@ -203,13 +193,13 @@ class PlayingScreenMobileControl extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.skip_previous),
               iconSize: 32,
-              onPressed: () => context.read<PlaybackService>().previous(),
+              onPressed: player.previous,
             ),
             PlayPauseButton.large(),
             IconButton(
               icon: const Icon(Icons.skip_next),
               iconSize: 32,
-              onPressed: () => context.read<PlaybackService>().next(),
+              onPressed: player.next,
             ),
             const LoopModeButton(),
           ],
@@ -256,10 +246,11 @@ class _MusicCoverOrLyricState extends State<MusicCoverOrLyric> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return PageTransitionSwitcher(
       duration: const Duration(milliseconds: 300),
-      transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+      transitionBuilder:
+          (final child, final primaryAnimation, final secondaryAnimation) {
         return FadeThroughTransition(
           animation: primaryAnimation,
           secondaryAnimation: secondaryAnimation,

@@ -5,7 +5,6 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MobileBottomPlayer extends StatelessWidget {
   final double height;
@@ -13,7 +12,7 @@ class MobileBottomPlayer extends StatelessWidget {
   const MobileBottomPlayer({super.key, this.height = 60});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -38,7 +37,7 @@ class MobileBottomPlayer extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Consumer<PlaybackService>(
-              builder: (context, player, child) => Column(
+              builder: (final context, final player, final child) => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -51,7 +50,7 @@ class MobileBottomPlayer extends StatelessWidget {
                   ValueListenableBuilder<bool>(
                     valueListenable:
                         Global.settings.mobileShowArtistInBottomPlayer,
-                    builder: (context, showArtist, _) {
+                    builder: (final context, final showArtist, final _) {
                       if (showArtist) {
                         return ArtistText(
                           player.playing?.track.artist ?? '',
@@ -69,10 +68,10 @@ class MobileBottomPlayer extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Selector<PlaybackService, PlayingTrack?>(
-              selector: (context, player) {
+              selector: (final context, final player) {
                 return player.playing;
               },
-              builder: (context, playing, child) {
+              builder: (final context, final playing, final child) {
                 if (playing == null) {
                   return child!;
                 }
@@ -80,7 +79,7 @@ class MobileBottomPlayer extends StatelessWidget {
                 return ChangeNotifierProvider.value(
                   value: playing,
                   child: Selector<PlayingTrack, double>(
-                    selector: (context, playing) {
+                    selector: (final context, final playing) {
                       if (playing.duration == Duration.zero) {
                         return 0;
                       }
@@ -88,7 +87,7 @@ class MobileBottomPlayer extends StatelessWidget {
                       return playing.position.inMicroseconds /
                           playing.duration.inMicroseconds;
                     },
-                    builder: (context, progress, child) {
+                    builder: (final context, final progress, final child) {
                       return Stack(
                         alignment: Alignment.center,
                         children: [

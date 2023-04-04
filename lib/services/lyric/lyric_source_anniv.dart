@@ -1,21 +1,23 @@
-import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/global.dart';
-import 'package:annix/services/lyric/lyric_provider.dart';
+import 'package:annix/providers.dart';
+import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LyricProviderAnniv extends LyricProvider {
-  final _anniv = Global.context.read<AnnivService>();
+class LyricSourceAnniv extends LyricSource {
+  final Ref<Object?> ref;
+
+  LyricSourceAnniv(this.ref);
 
   @override
   Future<List<LyricSearchResponse>> search({
-    required TrackIdentifier track,
-    required String title,
-    String? artist,
-    String? album,
+    required final TrackIdentifier track,
+    required final String title,
+    final String? artist,
+    final String? album,
   }) async {
-    final lyric = await _anniv.client!.getLyric(track);
+    final anniv = ref.read(annivProvider);
+    final lyric = await anniv.client!.getLyric(track);
     final source = lyric?.source;
     if (source == null) {
       return [];

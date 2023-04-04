@@ -24,10 +24,10 @@ class MetadataService {
   Future<Map<String, Album>>? _getAlbumDebouncer;
 
   /// Get album information
-  Future<Album?> getAlbum({required String albumId}) async {
+  Future<Album?> getAlbum({required final String albumId}) async {
     _getAlbumDebounceList.add(albumId);
     _getAlbumDebouncer ??=
-        Future.delayed(const Duration(milliseconds: 200)).then((_) async {
+        Future.delayed(const Duration(milliseconds: 200)).then((final _) async {
       final albumsToGet = _getAlbumDebounceList;
       _getAlbumDebounceList = {};
       _getAlbumDebouncer = null;
@@ -47,7 +47,7 @@ class MetadataService {
     return albums[albumId];
   }
 
-  Future<Map<String, Album>> getAlbums(List<String> albums) async {
+  Future<Map<String, Album>> getAlbums(final List<String> albums) async {
     final albumToGet = albums.toSet().toList();
     final result = <String, Album>{};
 
@@ -58,7 +58,7 @@ class MetadataService {
       if (result.length == albums.length) {
         return result;
       } else {
-        albumToGet.removeWhere((albumId) => result.containsKey(albumId));
+        albumToGet.removeWhere((final albumId) => result.containsKey(albumId));
       }
     }
 
@@ -66,14 +66,14 @@ class MetadataService {
   }
 
   /// Get track information
-  Future<Track?> getTrack(TrackIdentifier id) async {
+  Future<Track?> getTrack(final TrackIdentifier id) async {
     final album = await getAlbum(albumId: id.albumId);
     return album?.discs[id.discId - 1].tracks[id.trackId - 1];
   }
 
   Future<Map<TrackIdentifier, TrackInfoWithAlbum?>> getTracks(
-      List<TrackIdentifier> ids) async {
-    final albumIds = ids.map((id) => id.albumId).toSet().toList();
+      final List<TrackIdentifier> ids) async {
+    final albumIds = ids.map((final id) => id.albumId).toSet().toList();
     final albums = await getAlbums(albumIds);
 
     final result = <TrackIdentifier, TrackInfoWithAlbum?>{};
@@ -105,7 +105,7 @@ class MetadataService {
   }
 
   /// Get album id by tag name
-  Future<Set<String>> getAlbumsByTag(String tag) async {
+  Future<Set<String>> getAlbumsByTag(final String tag) async {
     for (final source in sources) {
       final albums = await source.getAlbumsByTag(tag);
       if (albums.isNotEmpty) {

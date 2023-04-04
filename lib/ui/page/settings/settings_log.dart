@@ -6,7 +6,7 @@ import 'package:annix/i18n/strings.g.dart';
 class SettingsLogView extends StatelessWidget {
   const SettingsLogView({super.key});
 
-  Icon getLogLevelIcon(LogLevel level) {
+  Icon getLogLevelIcon(final LogLevel level) {
     switch (level) {
       case LogLevel.DEBUG:
         return const Icon(Icons.bug_report_outlined);
@@ -21,11 +21,11 @@ class SettingsLogView extends StatelessWidget {
     }
   }
 
-  void showDetailDialog(BuildContext context, Log log) {
+  void showDetailDialog(final BuildContext context, final Log log) {
     showDialog(
       context: context,
       useRootNavigator: true,
-      builder: (context) {
+      builder: (final context) {
         return AlertDialog(
           title: const Text('Detail'),
           content: SingleChildScrollView(
@@ -45,7 +45,7 @@ class SettingsLogView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(t.settings.view_logs),
@@ -54,12 +54,12 @@ class SettingsLogView extends StatelessWidget {
             icon: const Icon(Icons.delete_outline),
             onPressed: () {
               final delegate = AnnixRouterDelegate.of(context);
-              FLog.clearLogs().then((_) => delegate.popRoute());
+              FLog.clearLogs().then((final _) => delegate.popRoute());
             },
           ),
           // TODO: Log filter
           PopupMenuButton(
-            itemBuilder: (context) {
+            itemBuilder: (final context) {
               return [
                 // PopupMenuItem(
                 //   value: 'clear',
@@ -75,12 +75,12 @@ class SettingsLogView extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<List<Log>>(
-        future: FLog.getAllLogs().then((value) => value.reversed.toList()),
-        builder: (context, snapshot) {
+        future: FLog.getAllLogs().then((final value) => value.reversed.toList()),
+        builder: (final context, final snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (final context, final index) {
                 final log = snapshot.data![index];
                 return ListTile(
                   leading: getLogLevelIcon(log.logLevel!),

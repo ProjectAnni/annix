@@ -6,13 +6,13 @@ class AnimatedIconWidget extends AnimatedWidget {
   const AnimatedIconWidget({
     super.key,
     required this.icon,
-    required AnimationController controller,
+    required final AnimationController controller,
   }) : super(listenable: controller);
 
   Animation<double> get _progress => listenable as Animation<double>;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AnimatedIcon(
       icon: icon,
       progress: _progress,

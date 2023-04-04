@@ -5,7 +5,6 @@ import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/font.dart';
 import 'package:annix/services/network/proxy.dart';
 import 'package:annix/services/settings.dart';
-import 'package:annix/services/theme.dart';
 import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +32,7 @@ class Global {
   static final mobileWeSlideFooterController =
       AnniWeSlideController(initial: true);
 
-  static AnnixProxy proxy = AnnixProxy();
-
   static final DownloadManager downloadManager = DownloadManager();
-
-  static final AnnixTheme theme = AnnixTheme();
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();

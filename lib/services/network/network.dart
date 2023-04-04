@@ -16,7 +16,7 @@ class NetworkService extends ChangeNotifier {
     Global.settings.useMobileNetwork.addListener(notifyListeners);
   }
 
-  void _updateState(ConnectivityResult result) {
+  void _updateState(final ConnectivityResult result) {
     switch (result) {
       // wireless or wired
       case ConnectivityResult.wifi:
@@ -36,7 +36,7 @@ class NetworkService extends ChangeNotifier {
           // on apple devices, VPN connection may result in ConnectivityResult.none
           // so add an polyfill to check internet accessibility
           // https://github.com/fluttercommunity/plus_plugins/issues/857
-          _canVisitInternet().then((value) {
+          _canVisitInternet().then((final value) {
             // keep `isMobileNetwork` property and set isConnected
             isConnected = value;
             notifyListeners();

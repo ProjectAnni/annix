@@ -9,10 +9,10 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
+        headerSliverBuilder: (final context, final innerBoxIsScrolled) {
           return [
             const HomeAppBar(),
           ];
@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  List<Widget> content(BuildContext context) {
+  List<Widget> content(final BuildContext context) {
     return <Widget>[
       const SliverToBoxAdapter(child: HomeActionGrid()),
 

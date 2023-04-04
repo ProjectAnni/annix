@@ -36,7 +36,7 @@ class AnnixTheme extends ChangeNotifier {
   ThemeMode _themeMode;
   ThemeMode get themeMode => _themeMode;
 
-  void setTemporaryScheme(ColorScheme scheme, ColorScheme darkScheme) {
+  void setTemporaryScheme(final ColorScheme scheme, final ColorScheme darkScheme) {
     _temporaryPrimaryColor = scheme.primary;
     _temporaryPrimaryScheme = scheme;
     _temporaryPrimaryDarkScheme = darkScheme;
@@ -56,14 +56,14 @@ class AnnixTheme extends ChangeNotifier {
     }
   }
 
-  void setScheme(ColorScheme scheme, ColorScheme darkScheme) {
+  void setScheme(final ColorScheme scheme, final ColorScheme darkScheme) {
     _primaryColor = scheme.primary;
     _primaryScheme = scheme;
     _primaryDarkScheme = darkScheme;
     notifyListeners();
   }
 
-  void setThemeMode(ThemeMode mode) {
+  void setThemeMode(final ThemeMode mode) {
     if (mode != _themeMode) {
       _themeMode = mode;
       notifyListeners();
@@ -77,8 +77,8 @@ class AnnixTheme extends ChangeNotifier {
 
 class ThemePopObserver extends NavigatorObserver {
   @override
-  didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+  didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+    WidgetsBinding.instance.addPostFrameCallback((final _) {
       Global.theme.revokeTemporaryScheme();
     });
   }

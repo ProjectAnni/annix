@@ -25,7 +25,7 @@ class SqliteMetadataSource extends MetadataSource {
     return false;
   }
 
-  Future<Album?> _getAlbum(String albumId) async {
+  Future<Album?> _getAlbum(final String albumId) async {
     final album = await database.getAlbum(albumId: UuidValue(albumId));
     if (album == null) {
       return null;
@@ -35,24 +35,24 @@ class SqliteMetadataSource extends MetadataSource {
   }
 
   @override
-  Future<Map<String, Album>> getAlbums(List<String> albums) async {
+  Future<Map<String, Album>> getAlbums(final List<String> albums) async {
     return Map.fromEntries(
-        (await Future.wait(albums.map((albumId) => _getAlbum(albumId))))
-            .where((e) => e != null)
-            .map((e) => MapEntry(e!.albumId, e)));
+        (await Future.wait(albums.map((final albumId) => _getAlbum(albumId))))
+            .where((final e) => e != null)
+            .map((final e) => MapEntry(e!.albumId, e)));
   }
 
   @override
-  Future<Set<String>> getAlbumsByTag(String tag) async {
+  Future<Set<String>> getAlbumsByTag(final String tag) async {
     final albums = await database.getAlbumsByTag(tag: tag, recursive: false);
-    return albums.map((e) => e.toString()).toSet();
+    return albums.map((final e) => e.toString()).toSet();
   }
 
   @override
   Future<Map<String, TagEntry>> getTags() async {
     final tags = await database.getTags();
     return Map.fromEntries(
-      tags.map((t) {
+      tags.map((final t) {
         final pos = t.name.indexOf(':');
         final type = t.name.substring(0, pos);
         final name = t.name.substring(pos + 1);

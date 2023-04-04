@@ -17,13 +17,13 @@ class TwoSideSliver extends MultiChildRenderObjectWidget {
         super(children: [left, right]);
 
   @override
-  RenderTwoSideSliver createRenderObject(BuildContext context) {
+  RenderTwoSideSliver createRenderObject(final BuildContext context) {
     return RenderTwoSideSliver(leftPercentage: leftPercentage);
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderTwoSideSliver renderObject) {
+      final BuildContext context, final RenderTwoSideSliver renderObject) {
     renderObject.leftPercentage = leftPercentage;
   }
 }
@@ -38,20 +38,20 @@ class _TwoSideParentData extends SliverPhysicalParentData
 
 class RenderTwoSideSliver extends RenderSliver
     with ContainerRenderObjectMixin<RenderSliver, _TwoSideParentData> {
-  RenderTwoSideSliver({required double leftPercentage})
+  RenderTwoSideSliver({required final double leftPercentage})
       : _leftPercentage = leftPercentage;
 
   double get leftPercentage => _leftPercentage;
   double _leftPercentage;
 
-  set leftPercentage(double value) {
+  set leftPercentage(final double value) {
     if (_leftPercentage == value) return;
     _leftPercentage = value;
     markNeedsLayout();
   }
 
   @override
-  void setupParentData(RenderSliver child) {
+  void setupParentData(final RenderSliver child) {
     if (child.parentData is! _TwoSideParentData) {
       child.parentData = _TwoSideParentData();
     }
@@ -101,7 +101,7 @@ class RenderTwoSideSliver extends RenderSliver
   }
 
   @override
-  void paint(PaintingContext context, Offset offset) {
+  void paint(final PaintingContext context, final Offset offset) {
     if (!geometry!.visible) return;
     context.paintChild(left, offset);
     context.paintChild(
@@ -112,9 +112,9 @@ class RenderTwoSideSliver extends RenderSliver
 
   @override
   bool hitTestChildren(
-    SliverHitTestResult result, {
-    required double mainAxisPosition,
-    required double crossAxisPosition,
+    final SliverHitTestResult result, {
+    required final double mainAxisPosition,
+    required final double crossAxisPosition,
   }) {
     for (final child in _childrenInHitTestOrder) {
       if (child.geometry!.visible) {
@@ -142,7 +142,7 @@ class RenderTwoSideSliver extends RenderSliver
   /// Otherwise Widgets like [Slider] or [PopupMenuButton] won't work even
   /// though the rest of Widget will work (like [ElevatedButton])
   @override
-  void applyPaintTransform(RenderSliver child, Matrix4 transform) {
+  void applyPaintTransform(final RenderSliver child, final Matrix4 transform) {
     child.twoSide.applyPaintTransform(transform);
   }
 }
