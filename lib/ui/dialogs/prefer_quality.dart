@@ -1,9 +1,11 @@
-import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-Future<PreferQuality> showPreferQualityDialog(final BuildContext context) async {
-  PreferQuality quality = Global.settings.defaultAudioQuality.value;
+Future<PreferQuality> showPreferQualityDialog(
+    final BuildContext context, final WidgetRef ref) async {
+  PreferQuality quality = ref.read(settingsProvider).defaultAudioQuality.value;
 
   await showDialog(
     context: context,

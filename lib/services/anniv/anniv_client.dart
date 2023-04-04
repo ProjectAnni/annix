@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
@@ -13,6 +14,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 import 'package:f_logs/f_logs.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as p;
 
 class AnnivError extends Error {
@@ -30,8 +32,10 @@ class AnnivError extends Error {
 class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
+  final Ref ref;
 
-  AnnivClient({required final String url, required final CookieJar cookieJar})
+  AnnivClient(this.ref,
+      {required final String url, required final CookieJar cookieJar})
       : _client = Dio(
           BaseOptions(
             baseUrl: url,
@@ -43,7 +47,8 @@ class AnnivClient {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(
       onRequest: (final options, final handler) {
-        options.queryParameters.removeWhere((final key, final value) => value == false);
+        options.queryParameters
+            .removeWhere((final key, final value) => value == false);
         return handler.next(options);
       },
       onResponse: (final response, final handler) {
@@ -96,12 +101,13 @@ class AnnivClient {
     );
   }
 
-  static Future<AnnivClient> login({
+  static Future<AnnivClient> login(
+    final Ref ref, {
     required final String url,
     required final String email,
     required final String password,
   }) async {
-    final client = AnnivClient(url: url, cookieJar: _loadCookieJar());
+    final client = AnnivClient(ref, url: url, cookieJar: _loadCookieJar());
     await client._login(email: email, password: password);
     await client._save();
     return client;
@@ -109,12 +115,12 @@ class AnnivClient {
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static AnnivClient? load() {
+  static AnnivClient? load(final Ref ref) {
     final annivUrl = Global.preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      return AnnivClient(url: annivUrl, cookieJar: _loadCookieJar());
+      return AnnivClient(ref, url: annivUrl, cookieJar: _loadCookieJar());
     }
   }
 
@@ -193,7 +199,8 @@ class AnnivClient {
         await _client.get('/api/meta/album', queryParameters: {'id[]': albums});
     final Map<String, dynamic> responseAlbums = response.data;
     return responseAlbums
-        .map((final key, final value) => MapEntry(key, value as Map<String, dynamic>))
+        .map((final key, final value) =>
+            MapEntry(key, value as Map<String, dynamic>))
         .map(
           (final albumId, final album) => MapEntry(
             albumId,
@@ -350,12 +357,12 @@ class AnnivClient {
 
     // 2. download db
     final dbPath = p.join(saveRoot, 'repo.db');
-    final task = Global.downloadManager.add(DownloadTask(
-      url: '/api/meta/db/repo.db',
-      category: DownloadCategory.database,
-      savePath: dbPath,
-      client: _client,
-    ));
+    final task = ref.read(downloadManagerProvider).add(DownloadTask(
+          url: '/api/meta/db/repo.db',
+          category: DownloadCategory.database,
+          savePath: dbPath,
+          client: _client,
+        ));
     await task.start();
 
     // 3. rename json after db downloaded
@@ -371,8 +378,9 @@ class AnnivClient {
 
   Future<Map<String, List<String>>> getTagsRelationship() async {
     final response = await _client.get('/api/meta/tag-graph');
-    return (response.data as Map<String, dynamic>).map((final key, final value) => MapEntry(
-        key, (value as List<dynamic>).map((final e) => e.toString()).toList()));
+    return (response.data as Map<String, dynamic>).map(
+        (final key, final value) => MapEntry(key,
+            (value as List<dynamic>).map((final e) => e.toString()).toList()));
   }
 
   Future<List<Album>> getAlbumsByTag(final String tag) async {

@@ -1,9 +1,11 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /// n |
 /// a |
@@ -16,7 +18,7 @@ import 'package:annix/i18n/strings.g.dart';
 /// __|______________________
 ///            player
 ///
-class AnnixLayoutDesktop extends StatefulWidget {
+class AnnixLayoutDesktop extends ConsumerStatefulWidget {
   final AnnixRouterDelegate router;
   final Widget child;
 
@@ -27,10 +29,10 @@ class AnnixLayoutDesktop extends StatefulWidget {
   });
 
   @override
-  State<AnnixLayoutDesktop> createState() => _AnnixLayoutDesktopState();
+  ConsumerState<AnnixLayoutDesktop> createState() => _AnnixLayoutDesktopState();
 }
 
-class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
+class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
   static const pages = <String>[
     '/home',
     '/tags',
@@ -119,7 +121,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
       onPopPage: (final route, final result) {
         return false;
       },
-      observers: [ThemePopObserver()],
+      observers: [ThemePopObserver(ref.read(themeProvider))],
     );
   }
 }

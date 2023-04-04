@@ -1,3 +1,4 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/layout/layout_desktop.dart';
@@ -20,15 +21,17 @@ import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
+  final Ref ref;
   final List<AnnixPage> _pages = [];
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
 
-  AnnixRouterDelegate() {
+  AnnixRouterDelegate(this.ref) {
     to(name: '/home');
   }
 
@@ -38,7 +41,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       key: navigatorKey,
       // copy once, or it will not be rebuilt
       pages: [..._pages],
-      observers: [ThemePopObserver()],
+      observers: [ThemePopObserver(ref.read(themeProvider))],
       onPopPage: _onPopPage,
     );
     if (context.isDesktopOrLandscape) {

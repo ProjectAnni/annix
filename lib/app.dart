@@ -1,4 +1,3 @@
-import 'package:annix/global.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +12,8 @@ class AnnixApp extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final theme = ref.watch(themeProvider);
     final delegate = ref.read(routerProvider);
+    final locale = ref.watch(localeProvider);
 
-    // load local / remote album list
-    // FIXME: do not reload annil every time theme updates
-    ref.read(annilProvider).reload();
     return MaterialApp.router(
       title: 'Annix',
       debugShowCheckedModeBanner: false,
@@ -27,7 +24,7 @@ class AnnixApp extends ConsumerWidget {
       themeMode: theme.themeMode,
 
       // i18n
-      locale: TranslationProvider.of(context).flutterLocale,
+      locale: (locale.value ?? LocaleSettings.currentLocale).flutterLocale,
       // use provider
       supportedLocales: AppLocaleUtils.supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
@@ -41,7 +38,7 @@ class AnnixApp extends ConsumerWidget {
           initialEntries: [
             OverlayEntry(
               builder: (final context) => ValueListenableBuilder<bool>(
-                valueListenable: Global.settings.autoScaleUI,
+                valueListenable: ref.read(settingsProvider).autoScaleUI,
                 builder: (final context, final value, final child) {
                   if (value) {
                     return ResponsiveWrapper.builder(

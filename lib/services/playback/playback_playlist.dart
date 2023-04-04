@@ -1,9 +1,9 @@
-import 'package:annix/global.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 
 class Playlist {
   final PlaylistData intro;
@@ -11,10 +11,11 @@ class Playlist {
 
   const Playlist({required this.intro, required this.items});
 
-  static Future<Playlist> load(final int id) async {
-    final db = Global.context.read<LocalDatabase>();
-    final anniv = Global.context.read<AnnivService>();
-
+  static Future<Playlist> load({
+    required final int id,
+    required final LocalDatabase db,
+    required final AnnivService anniv,
+  }) async {
     final intro = await (db.playlist.select()
           ..where((final tbl) => tbl.id.equals(id)))
         .getSingle();

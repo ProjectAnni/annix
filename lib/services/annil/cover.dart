@@ -21,8 +21,8 @@ class _CoverReverseProxy {
   _CoverReverseProxy(this.ref);
 
   final client = Dio();
-  final Ref<Object?> ref;
-  final downloadingMap = const {};
+  final Ref ref;
+  final downloadingMap = {};
 
   Future<File?> getCoverImage(final CoverItem cover) async {
     final annil = ref.read(annilProvider);

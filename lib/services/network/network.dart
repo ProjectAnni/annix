@@ -1,19 +1,23 @@
 import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class NetworkService extends ChangeNotifier {
-  static bool isMobileNetwork = false;
-  static bool isConnected = true;
+  final Ref ref;
+
+  bool isMobileNetwork = false;
+  bool isConnected = true;
 
   final Connectivity _connectivity = Connectivity();
   final Dio _client = Dio();
 
-  NetworkService() {
+  NetworkService(this.ref) {
     _connectivity.onConnectivityChanged.listen(_updateState);
     _connectivity.checkConnectivity().then(_updateState);
-    Global.settings.useMobileNetwork.addListener(notifyListeners);
+    ref.read(settingsProvider).useMobileNetwork.addListener(notifyListeners);
   }
 
   void _updateState(final ConnectivityResult result) {
@@ -66,8 +70,8 @@ class NetworkService extends ChangeNotifier {
     return false;
   }
 
-  static bool get isOnline {
+  bool get isOnline {
     return isConnected &&
-        (!isMobileNetwork || Global.settings.useMobileNetwork.value);
+        (!isMobileNetwork || ref.read(settingsProvider).useMobileNetwork.value);
   }
 }

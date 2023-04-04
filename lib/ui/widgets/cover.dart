@@ -1,4 +1,3 @@
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +30,7 @@ class PlayingMusicCover extends ConsumerWidget {
       child = MusicCover.fromAlbum(
         key: ValueKey(playing.identifier.albumId),
         albumId: playing.identifier.albumId,
-        provider: playing.source.coverProvider,
+        image: playing.source.coverProvider,
         fit: fit,
         filterQuality: filterQuality,
         onImage: (final provider) async {
@@ -65,8 +64,10 @@ class PlayingMusicCover extends ConsumerWidget {
   }
 }
 
-class MusicCover extends StatelessWidget {
-  final ImageProvider image;
+class MusicCover extends ConsumerWidget {
+  final String albumId;
+  final int? discId;
+  final ImageProvider? image;
 
   final BoxFit? fit;
   final FilterQuality filterQuality;
@@ -80,7 +81,7 @@ class MusicCover extends StatelessWidget {
   factory MusicCover.fromAlbum({
     required final String albumId,
     final int? discId,
-    final ImageProvider? provider,
+    final ImageProvider? image,
     final Key? key,
     final BoxFit? fit,
     final FilterQuality filterQuality = FilterQuality.low,
@@ -89,12 +90,10 @@ class MusicCover extends StatelessWidget {
     final double? width,
     final double? height,
   }) {
-    final image = provider ??
-        ExtendedNetworkImageProvider(
-          Global.proxy.coverUrl(albumId, discId),
-        );
-    return MusicCover(
+    return MusicCover._(
       key: key,
+      albumId: albumId,
+      discId: discId,
       image: image,
       fit: fit,
       filterQuality: filterQuality,
@@ -105,18 +104,18 @@ class MusicCover extends StatelessWidget {
     );
   }
 
-  MusicCover({
+  const MusicCover._({
     super.key,
-    required this.image,
+    required this.albumId,
+    this.discId,
+    this.image,
     this.fit,
-    this.filterQuality = FilterQuality.low,
+    required this.filterQuality,
     this.tag,
     this.onImage,
     this.width,
     this.height,
-  }) {
-    onImage?.call(image);
-  }
+  });
 
   Widget? _loadStateChanged(final ExtendedImageState state) {
     switch (state.extendedImageLoadState) {
@@ -136,7 +135,14 @@ class MusicCover extends StatelessWidget {
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final image = this.image ??
+        ExtendedNetworkImageProvider(
+          ref.read(proxyProvider).coverUrl(albumId, discId),
+        );
+
+    onImage?.call(image);
+
     return ExtendedImage(
       image: image,
       fit: fit,

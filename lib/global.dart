@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:annix/services/download/download_manager.dart';
-import 'package:annix/services/font.dart';
-import 'package:annix/services/network/proxy.dart';
-import 'package:annix/services/settings.dart';
 import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +10,6 @@ import 'package:path/path.dart' as p;
 
 class Global {
   static late SharedPreferences preferences;
-
-  static final settings = SettingsController();
 
   static bool isDesktop =
       Platform.isLinux || Platform.isWindows || Platform.isMacOS;
@@ -32,14 +26,8 @@ class Global {
   static final mobileWeSlideFooterController =
       AnniWeSlideController(initial: true);
 
-  static final DownloadManager downloadManager = DownloadManager();
-
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
-    await proxy.start();
-    settings.init();
-
-    await FontService.load(settings.fontPath.value);
 
     if (isDesktop) {
       doWhenWindowReady(() {

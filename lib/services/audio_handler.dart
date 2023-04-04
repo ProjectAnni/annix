@@ -15,6 +15,8 @@ import 'package:anni_mpris_service/anni_mpris_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnixAudioHandler extends BaseAudioHandler {
+  final Ref ref;
+
   final PlaybackService player;
   PlayingTrack? playing;
 
@@ -23,7 +25,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   List<LocalFavoriteTrack> _favorites = [];
 
-  static Future<void> init(final Ref<Object?> ref) async {
+  static Future<void> init(final Ref ref) async {
     if (Platform.isLinux) {
       AudioServicePlatform.instance = LinuxAudioService(ref);
     }
@@ -87,7 +89,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
     });
   }
 
-  AnnixAudioHandler._(final Ref<Object?> ref)
+  AnnixAudioHandler._(this.ref)
       : player = ref.read(playbackProvider),
         anniv = ref.read(annivProvider),
         database = ref.read(localDatabaseProvider) {
@@ -218,13 +220,14 @@ class AnnixAudioHandler extends BaseAudioHandler {
         (mediaItem.value?.id != playing?.id ||
             mediaItem.value?.duration !=
                 (player.playing?.duration ?? Duration.zero))) {
+      final proxy = ref.read(proxyProvider);
       mediaItem.add(MediaItem(
         id: playing!.id,
         title: playing!.track.title,
         album: playing!.track.albumTitle,
         artist: playing!.track.artist,
         duration: player.playing?.duration ?? Duration.zero,
-        artUri: Global.proxy.coverUri(
+        artUri: proxy.coverUri(
           playing!.identifier.albumId,
           playing!.identifier.discId,
         ),
@@ -237,7 +240,7 @@ class LinuxAudioService extends AudioServicePlatform {
   final AnnixMPRISService mpris;
   bool seekOnNextUpdate = false;
 
-  LinuxAudioService(final Ref<Object?> ref) : mpris = AnnixMPRISService(ref);
+  LinuxAudioService(final Ref ref) : mpris = AnnixMPRISService(ref);
 
   @override
   Future<void> configure(final ConfigureRequest request) async {}
@@ -285,7 +288,7 @@ class LinuxAudioService extends AudioServicePlatform {
 class AnnixMPRISService extends MPRISService {
   final PlaybackService player;
 
-  AnnixMPRISService(final Ref<Object?> ref)
+  AnnixMPRISService(final Ref ref)
       : player = ref.read(playbackProvider),
         super(
           'annix',

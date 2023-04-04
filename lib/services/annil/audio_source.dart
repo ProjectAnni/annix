@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/annil.dart';
@@ -13,12 +14,16 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
+
 class AudioCancelledError extends Error {}
 
 class AnnilAudioSource extends Source {
   final PreferQuality? quality;
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
+
+  // final AnnilService;
 
   final DownloadState downloadProgress =
       DownloadState(const DownloadProgress(current: 0));
@@ -64,10 +69,8 @@ class AnnilAudioSource extends Source {
     if (file.existsSync() && file.lengthSync() > 0) {
       await player.setSourceDeviceFile(offlinePath);
     } else {
-      // download full audio first
-      if (_preloadFuture == null) {
-        preload();
-      }
+      // preload should be triggered before setOnPlayer
+      assert(_preloadFuture != null);
       try {
         await _preloadFuture;
       } catch (e) {
@@ -89,52 +92,55 @@ class AnnilAudioSource extends Source {
     }
   }
 
-  void preload() {
+  void preload(final Ref ref) {
     if (_preloadFuture != null) {
       return;
     }
 
-    _preloadFuture = _preload();
+    _preloadFuture = _preload(ref);
     // preload cover without await
-    _preloadCover();
+    _preloadCover(ref);
   }
 
   bool preloaded = false;
 
-  static Future<DownloadTask?> spawnDownloadTask({
+  static DownloadTaskCallback spawnDownloadTask({
     required final TrackInfoWithAlbum track,
     final PreferQuality? quality,
-    String? savePath,
-  }) async {
-    final downloadQuality =
-        quality ?? Global.settings.defaultAudioQuality.value;
-    final annil = Global.context.read<AnnilService>();
-    final url =
-        await annil.getAudioUrl(track: track.id, quality: downloadQuality);
-    if (url == null) {
-      return null;
-    }
+    final String? savePath,
+  }) {
+    return (final ref) async {
+      final downloadQuality =
+          quality ?? ref.read(settingsProvider).defaultAudioQuality.value;
+      final annil = ref.read(annilProvider);
+      final url =
+          await annil.getAudioUrl(track: track.id, quality: downloadQuality);
+      if (url == null) {
+        return null;
+      }
 
-    savePath ??= getAudioCachePath(track.id);
-    return DownloadTask(
-      category: DownloadCategory.audio,
-      url: url,
-      savePath: savePath,
-      data: TrackDownloadTaskData(info: track, quality: downloadQuality),
-    );
+      final path = savePath ?? getAudioCachePath(track.id);
+      return DownloadTask(
+        category: DownloadCategory.audio,
+        url: url,
+        savePath: path,
+        data: TrackDownloadTaskData(info: track, quality: downloadQuality),
+      );
+    };
   }
 
-  Future<void> _preload() async {
+  Future<void> _preload(final Ref ref) async {
     final savePath = getAudioCachePath(track.id);
     final file = File(savePath);
     if (!file.existsSync() || file.lengthSync() == 0) {
-      final task = await spawnDownloadTask(
+      final taskCallback = spawnDownloadTask(
         track: track,
         savePath: savePath,
       );
+      final task = await taskCallback(ref);
       if (task != null) {
         await file.parent.create(recursive: true);
-        Global.downloadManager.add(task);
+        ref.read(downloadManagerProvider).add(task);
         _downloadTask = task;
         _downloadTask?.addListener(_onDownloadProgress);
         final response = await task.start();
@@ -151,8 +157,9 @@ class AnnilAudioSource extends Source {
     preloaded = true;
   }
 
-  Future<void> _preloadCover() async {
-    final image = Global.proxy.coverUrl(track.id.albumId, track.id.discId);
+  Future<void> _preloadCover(final Ref ref) async {
+    final proxy = ref.read(proxyProvider);
+    final image = proxy.coverUrl(track.id.albumId, track.id.discId);
     coverProvider = ExtendedNetworkImageProvider(image.toString());
     // ignore: use_build_context_synchronously
 

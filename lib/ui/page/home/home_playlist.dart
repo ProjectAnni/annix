@@ -37,7 +37,11 @@ class PlaylistView extends ConsumerWidget {
             ),
             onTap: () async {
               final delegate = AnnixRouterDelegate.of(context);
-              final list = await Playlist.load(playlist.id);
+              final list = await Playlist.load(
+                id: playlist.id,
+                db: ref.read(localDatabaseProvider),
+                anniv: ref.read(annivProvider),
+              );
               delegate.to(name: '/playlist', arguments: list);
             },
           );

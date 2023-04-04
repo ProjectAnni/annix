@@ -1,4 +1,3 @@
-import 'package:annix/global.dart';
 import 'package:annix/services/font.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +35,8 @@ class AnnixTheme extends ChangeNotifier {
   ThemeMode _themeMode;
   ThemeMode get themeMode => _themeMode;
 
-  void setTemporaryScheme(final ColorScheme scheme, final ColorScheme darkScheme) {
+  void setTemporaryScheme(
+      final ColorScheme scheme, final ColorScheme darkScheme) {
     _temporaryPrimaryColor = scheme.primary;
     _temporaryPrimaryScheme = scheme;
     _temporaryPrimaryDarkScheme = darkScheme;
@@ -76,10 +76,14 @@ class AnnixTheme extends ChangeNotifier {
 }
 
 class ThemePopObserver extends NavigatorObserver {
+  final AnnixTheme theme;
+
+  ThemePopObserver(this.theme);
+
   @override
   didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     WidgetsBinding.instance.addPostFrameCallback((final _) {
-      Global.theme.revokeTemporaryScheme();
+      theme.revokeTemporaryScheme();
     });
   }
 }

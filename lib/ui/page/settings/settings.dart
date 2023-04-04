@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/ui/dialogs/enum_select.dart';
@@ -11,6 +12,7 @@ import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/services/local/cache.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:file_picker/file_picker.dart';
@@ -40,12 +42,12 @@ class SettingsTileBuilder<T> extends AbstractSettingsTile {
   }
 }
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(final BuildContext context) {
-    final settings = Global.settings;
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final settings = ref.read(settingsProvider);
 
     return Scaffold(
       appBar: maybeAppBar(
@@ -68,7 +70,8 @@ class SettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.skipCertificateVerification,
-                builder: (final context, final p, final child) => SettingsTile.switchTile(
+                builder: (final context, final p, final child) =>
+                    SettingsTile.switchTile(
                   onToggle: (final value) {
                     settings.skipCertificateVerification.value = value;
                   },
@@ -79,10 +82,11 @@ class SettingsScreen extends StatelessWidget {
               ),
               SettingsTileBuilder<PreferQuality>(
                 value: settings.defaultAudioQuality,
-                builder: (final context, final p, final child) => SettingsTile.navigation(
+                builder: (final context, final p, final child) =>
+                    SettingsTile.navigation(
                   onPressed: (final context) async {
-                    final quality = await showPreferQualityDialog(context);
-                    Global.settings.defaultAudioQuality.value = quality;
+                    final quality = await showPreferQualityDialog(context, ref);
+                    settings.defaultAudioQuality.value = quality;
                   },
                   leading: const Icon(Icons.high_quality),
                   title: Text(t.settings.default_audio_quality),
@@ -96,7 +100,8 @@ class SettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.autoScaleUI,
-                builder: (final context, final p, final _) => SettingsTile.switchTile(
+                builder: (final context, final p, final _) =>
+                    SettingsTile.switchTile(
                   onToggle: (final value) {
                     settings.autoScaleUI.value = value;
                     AnnixRouterDelegate.of(context).popRoute();
@@ -109,7 +114,8 @@ class SettingsScreen extends StatelessWidget {
               if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.blurPlayingPage,
-                  builder: (final context, final p, final _) => SettingsTile.switchTile(
+                  builder: (final context, final p, final _) =>
+                      SettingsTile.switchTile(
                     onToggle: (final value) {
                       settings.blurPlayingPage.value = value;
                     },
@@ -120,7 +126,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
               SettingsTileBuilder<SearchTrackDisplayType>(
                 value: settings.searchTrackDisplayType,
-                builder: (final context, final p, final child) => SettingsTile.navigation(
+                builder: (final context, final p, final child) =>
+                    SettingsTile.navigation(
                   onPressed: (final context) async {
                     final result = await showEnumSelectDialog(
                       context,
@@ -132,7 +139,7 @@ class SettingsScreen extends StatelessWidget {
                       },
                       settings.searchTrackDisplayType.value,
                     );
-                    Global.settings.searchTrackDisplayType.value = result;
+                    settings.searchTrackDisplayType.value = result;
                   },
                   leading: const Icon(Icons.high_quality),
                   title: const Text('SearchTrackDisplayType'),
@@ -141,7 +148,8 @@ class SettingsScreen extends StatelessWidget {
               ),
               SettingsTileBuilder<String?>(
                 value: settings.fontPath,
-                builder: (final context, final p, final _) => SettingsTile.navigation(
+                builder: (final context, final p, final _) =>
+                    SettingsTile.navigation(
                   leading: const Icon(Icons.font_download),
                   title: Text(t.settings.custom_font_path),
                   description: Text(p ?? t.settings.custom_font_not_specified),
@@ -162,7 +170,8 @@ class SettingsScreen extends StatelessWidget {
               if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.mobileShowArtistInBottomPlayer,
-                  builder: (final context, final p, final _) => SettingsTile.switchTile(
+                  builder: (final context, final p, final _) =>
+                      SettingsTile.switchTile(
                     onToggle: (final value) {
                       settings.mobileShowArtistInBottomPlayer.value = value;
                     },
@@ -180,7 +189,8 @@ class SettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.useMobileNetwork,
-                builder: (final context, final p, final _) => SettingsTile.switchTile(
+                builder: (final context, final p, final _) =>
+                    SettingsTile.switchTile(
                   onToggle: (final value) {
                     settings.useMobileNetwork.value = value;
                   },
@@ -260,7 +270,9 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     barrierDismissible: false,
                   );
-                  AnnixStore().clear('lyric').then((final _) => navigator.pop());
+                  AnnixStore()
+                      .clear('lyric')
+                      .then((final _) => navigator.pop());
                 },
               ),
             ],

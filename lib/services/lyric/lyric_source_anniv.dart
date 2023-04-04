@@ -5,7 +5,7 @@ import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LyricSourceAnniv extends LyricSource {
-  final Ref<Object?> ref;
+  final Ref ref;
 
   LyricSourceAnniv(this.ref);
 

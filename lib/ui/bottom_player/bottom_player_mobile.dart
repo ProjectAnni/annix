@@ -1,10 +1,10 @@
-import 'package:annix/global.dart';
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MobileBottomPlayer extends StatelessWidget {
   final double height;
@@ -36,68 +36,66 @@ class MobileBottomPlayer extends StatelessWidget {
           ),
           Expanded(
             flex: 1,
-            child: Consumer<PlaybackService>(
-              builder: (final context, final player, final child) => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    player.playing?.track.title ?? '',
-                    style: context.textTheme.titleSmall,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                  ),
-                  ValueListenableBuilder<bool>(
-                    valueListenable:
-                        Global.settings.mobileShowArtistInBottomPlayer,
-                    builder: (final context, final showArtist, final _) {
-                      if (showArtist) {
-                        return ArtistText(
-                          player.playing?.track.artist ?? '',
-                          style: context.textTheme.bodySmall,
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                ],
-              ),
+            child: Consumer(
+              builder: (final context, final ref, final child) {
+                final playing = ref.watch(playingProvider);
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      playing?.track.title ?? '',
+                      style: context.textTheme.titleSmall,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                    ),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: ref
+                          .read(settingsProvider)
+                          .mobileShowArtistInBottomPlayer,
+                      builder: (final context, final showArtist, final _) {
+                        if (showArtist) {
+                          return ArtistText(
+                            playing?.track.artist ?? '',
+                            style: context.textTheme.bodySmall,
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Selector<PlaybackService, PlayingTrack?>(
-              selector: (final context, final player) {
-                return player.playing;
-              },
-              builder: (final context, final playing, final child) {
-                if (playing == null) {
+            child: Consumer(
+              builder: (final context, final ref, final child) {
+                final double? progress =
+                    ref.watch(playingProvider.select((final playing) {
+                  if (playing == null) {
+                    return null;
+                  }
+
+                  if (playing.duration == Duration.zero) {
+                    return 0;
+                  }
+
+                  return playing.position.inMicroseconds /
+                      playing.duration.inMicroseconds;
+                }));
+                if (progress == null) {
                   return child!;
                 }
 
-                return ChangeNotifierProvider.value(
-                  value: playing,
-                  child: Selector<PlayingTrack, double>(
-                    selector: (final context, final playing) {
-                      if (playing.duration == Duration.zero) {
-                        return 0;
-                      }
-
-                      return playing.position.inMicroseconds /
-                          playing.duration.inMicroseconds;
-                    },
-                    builder: (final context, final progress, final child) {
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CircularProgressIndicator(value: progress),
-                          child!,
-                        ],
-                      );
-                    },
-                    child: child,
-                  ),
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(value: progress),
+                    child!,
+                  ],
                 );
               },
               child: PlayPauseButton.small(),

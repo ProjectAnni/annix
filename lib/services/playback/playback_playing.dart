@@ -13,7 +13,7 @@ class PlayingTrack extends ChangeNotifier {
   bool _disposed = false;
 
   final AnnilAudioSource source;
-  final Ref<Object?> ref;
+  final Ref ref;
 
   PlayingTrack(this.source, this.ref) {
     getLyric().then(updateLyric, onError: (final _) => updateLyric(null));

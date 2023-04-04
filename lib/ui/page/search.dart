@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -161,7 +159,8 @@ class _SearchResult extends ConsumerWidget {
                     final e = result.tracks![index];
 
                     return ValueListenableBuilder<SearchTrackDisplayType>(
-                      valueListenable: Global.settings.searchTrackDisplayType,
+                      valueListenable:
+                          ref.read(settingsProvider).searchTrackDisplayType,
                       builder: (final context, final type, final _) {
                         return ListTile(
                           isThreeLine: type.isThreeLine,

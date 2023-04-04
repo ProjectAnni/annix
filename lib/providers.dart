@@ -1,11 +1,13 @@
 import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:annix/services/network/proxy.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/services/settings.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:drift/drift.dart';
@@ -20,9 +22,15 @@ part 'providers.g.dart';
 final localeProvider =
     StreamProvider((final ref) => LocaleSettings.getLocaleStream());
 final themeProvider = ChangeNotifierProvider((final ref) => AnnixTheme());
-final networkProvider = Provider((final ref) => NetworkService());
-final routerProvider = Provider((final ref) => AnnixRouterDelegate());
+final networkProvider =
+    ChangeNotifierProvider((final ref) => NetworkService(ref));
+final isOnlineProvider =
+    StateProvider((final ref) => ref.watch(networkProvider).isOnline);
+final routerProvider = Provider((final ref) => AnnixRouterDelegate(ref));
 final proxyProvider = Provider((final ref) => AnnixProxy(ref));
+final settingsProvider = Provider((final ref) => SettingsService(ref));
+final downloadManagerProvider =
+    ChangeNotifierProvider((final ref) => DownloadManager());
 
 // db
 @Riverpod(keepAlive: true)

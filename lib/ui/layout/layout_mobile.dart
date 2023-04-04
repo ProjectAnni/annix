@@ -1,5 +1,5 @@
 import 'package:annix/global.dart';
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
@@ -7,10 +7,11 @@ import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/route/page.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:we_slide/we_slide.dart';
 import 'package:annix/i18n/strings.g.dart';
 
-class AnnixLayoutMobile extends StatelessWidget {
+class AnnixLayoutMobile extends ConsumerWidget {
   final AnnixRouterDelegate router;
   final Widget child;
 
@@ -27,27 +28,24 @@ class AnnixLayoutMobile extends StatelessWidget {
   });
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
 
     final root = Scaffold(
-      body: Selector2<PlaybackService, AnnixRouterDelegate, List<bool>>(
-        selector: (final context, final player, final delegate) {
-          final isQueueEmpty = player.queue.isEmpty;
-          final isPlaying = player.playing != null;
+      body: Consumer(
+        builder: (final context, final ref, final child) {
+          final delegate = ref.watch(routerProvider);
           final isMainPage = pages.contains(delegate.currentRoute);
-          return [isQueueEmpty, isPlaying, isMainPage];
-        },
-        builder: (final context, final result, final child) {
-          final isQueueEmpty = result[0];
-          final isPlaying = result[1];
-          final isMainPage = result[2];
           if (!isMainPage) {
             Global.mobileWeSlideFooterController.hide();
           } else {
             Global.mobileWeSlideFooterController.show();
           }
 
+          final isQueueEmpty =
+              ref.watch(playbackProvider.select((final p) => p.queue.isEmpty));
+          final isPlaying = ref
+              .watch(playbackProvider.select((final p) => p.playing != null));
           return WeSlide(
             controller: Global.mobileWeSlideController,
             footerController: Global.mobileWeSlideFooterController,
@@ -70,17 +68,13 @@ class AnnixLayoutMobile extends StatelessWidget {
               },
               child: const MobileBottomPlayer(),
             ),
-            panel: ValueListenableProvider.value(
-              value: Global.settings.blurPlayingPage,
-              updateShouldNotify: (final old, final value) => true,
-              child: Builder(
-                builder: (final context) {
-                  final blur = context.watch<bool>();
-                  return blur
-                      ? const PlayingScreenMobileBlur()
-                      : const PlayingScreenMobile();
-                },
-              ),
+            panel: ValueListenableBuilder(
+              valueListenable: ref.read(settingsProvider).blurPlayingPage,
+              builder: (final context, final bool blur, final child) {
+                return blur
+                    ? const PlayingScreenMobileBlur()
+                    : const PlayingScreenMobile();
+              },
             ),
             footerHeight: 80,
             footer: (() {
@@ -128,7 +122,7 @@ class AnnixLayoutMobile extends StatelessWidget {
       onPopPage: (final route, final result) {
         return false;
       },
-      observers: [ThemePopObserver()],
+      observers: [ThemePopObserver(ref.read(themeProvider))],
     );
   }
 }

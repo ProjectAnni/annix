@@ -1,6 +1,7 @@
 import 'package:annix/app.dart';
 import 'package:annix/global.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:annix/providers.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
+
+  final container = ProviderContainer();
+  await container.read(proxyProvider).start();
 
   await Global.init();
   LocaleSettings.useDeviceLocale();
@@ -30,8 +34,9 @@ Future<void> main() async {
 
   try {
     runApp(
-      const ProviderScope(
-        child: AnnixApp(),
+      UncontrolledProviderScope(
+        container: container,
+        child: const AnnixApp(),
       ),
     );
   } catch (e) {

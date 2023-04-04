@@ -4,7 +4,7 @@ import 'package:annix/services/metadata/metadata_source_sqlite.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnivSqliteMetadataSource extends SqliteMetadataSource {
-  final Ref<Object?> ref;
+  final Ref ref;
 
   AnnivSqliteMetadataSource(this.ref) : super(Global.dataRoot);
 

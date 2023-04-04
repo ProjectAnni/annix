@@ -95,7 +95,8 @@ class Album {
     }
   }
 
-  factory Album.fromJson(final Map<String, dynamic> json) => _$AlbumFromJson(json);
+  factory Album.fromJson(final Map<String, dynamic> json) =>
+      _$AlbumFromJson(json);
 
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 
@@ -144,7 +145,8 @@ class Disc {
 
   TrackType get type => _type ?? album.type;
 
-  factory Disc.fromJson(final Map<String, dynamic> json) => _$DiscFromJson(json);
+  factory Disc.fromJson(final Map<String, dynamic> json) =>
+      _$DiscFromJson(json);
 
   Map<String, dynamic> toJson() => _$DiscToJson(this);
 }
@@ -177,7 +179,8 @@ class Track {
         trackId: disc.tracks.indexOf(this) + 1,
       );
 
-  factory Track.fromJson(final Map<String, dynamic> json) => _$TrackFromJson(json);
+  factory Track.fromJson(final Map<String, dynamic> json) =>
+      _$TrackFromJson(json);
 
   Map<String, dynamic> toJson() => _$TrackToJson(this);
 }

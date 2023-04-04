@@ -6,36 +6,36 @@ part of 'anniv_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SiteInfo _$SiteInfoFromJson(Map<String, dynamic> json) => SiteInfo(
+SiteInfo _$SiteInfoFromJson(final Map<String, dynamic> json) => SiteInfo(
       siteName: json['site_name'] as String,
       description: json['description'] as String,
       protocolVersion: json['protocol_version'] as String,
       features:
-          (json['features'] as List<dynamic>).map((e) => e as String).toList(),
+          (json['features'] as List<dynamic>).map((final e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$SiteInfoToJson(SiteInfo instance) => <String, dynamic>{
+Map<String, dynamic> _$SiteInfoToJson(final SiteInfo instance) => <String, dynamic>{
       'site_name': instance.siteName,
       'description': instance.description,
       'protocol_version': instance.protocolVersion,
       'features': instance.features,
     };
 
-UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => UserInfo(
+UserInfo _$UserInfoFromJson(final Map<String, dynamic> json) => UserInfo(
       userId: json['user_id'] as String,
       email: json['email'] as String,
       nickname: json['nickname'] as String,
       avatar: json['avatar'] as String,
     );
 
-Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
+Map<String, dynamic> _$UserInfoToJson(final UserInfo instance) => <String, dynamic>{
       'user_id': instance.userId,
       'email': instance.email,
       'nickname': instance.nickname,
       'avatar': instance.avatar,
     };
 
-AnnilToken _$AnnilTokenFromJson(Map<String, dynamic> json) => AnnilToken(
+AnnilToken _$AnnilTokenFromJson(final Map<String, dynamic> json) => AnnilToken(
       id: json['id'] as String,
       name: json['name'] as String,
       url: json['url'] as String,
@@ -44,7 +44,7 @@ AnnilToken _$AnnilTokenFromJson(Map<String, dynamic> json) => AnnilToken(
       controlled: json['controlled'] as bool,
     );
 
-Map<String, dynamic> _$AnnilTokenToJson(AnnilToken instance) =>
+Map<String, dynamic> _$AnnilTokenToJson(final AnnilToken instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
@@ -54,7 +54,7 @@ Map<String, dynamic> _$AnnilTokenToJson(AnnilToken instance) =>
       'controlled': instance.controlled,
     };
 
-AlbumInfo _$AlbumInfoFromJson(Map<String, dynamic> json) => AlbumInfo(
+AlbumInfo _$AlbumInfoFromJson(final Map<String, dynamic> json) => AlbumInfo(
       albumId: json['album_id'] as String,
       title: json['title'] as String,
       edition: json['edition'] as String?,
@@ -63,7 +63,7 @@ AlbumInfo _$AlbumInfoFromJson(Map<String, dynamic> json) => AlbumInfo(
       date: json['date'] as String,
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
       discs: (json['discs'] as List<dynamic>)
-          .map((e) => DiscInfo.fromJson(e as Map<String, dynamic>))
+          .map((final e) => DiscInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -76,63 +76,63 @@ const _$TrackTypeEnumMap = {
   TrackType.vocal: 'vocal',
 };
 
-DiscInfo _$DiscInfoFromJson(Map<String, dynamic> json) => DiscInfo(
+DiscInfo _$DiscInfoFromJson(final Map<String, dynamic> json) => DiscInfo(
       title: json['title'] as String?,
       artist: json['artist'] as String?,
       catalog: json['catalog'] as String,
       type: $enumDecodeNullable(_$TrackTypeEnumMap, json['type']),
       tracks: (json['tracks'] as List<dynamic>)
-          .map((e) => TrackInfo.fromJson(e as Map<String, dynamic>))
+          .map((final e) => TrackInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-DiscIdentifier _$DiscIdentifierFromJson(Map<String, dynamic> json) =>
+DiscIdentifier _$DiscIdentifierFromJson(final Map<String, dynamic> json) =>
     DiscIdentifier(
       albumId: json['album_id'] as String,
       discId: json['disc_id'] as int,
     );
 
-Map<String, dynamic> _$DiscIdentifierToJson(DiscIdentifier instance) =>
+Map<String, dynamic> _$DiscIdentifierToJson(final DiscIdentifier instance) =>
     <String, dynamic>{
       'album_id': instance.albumId,
       'disc_id': instance.discId,
     };
 
-TrackIdentifier _$TrackIdentifierFromJson(Map<String, dynamic> json) =>
+TrackIdentifier _$TrackIdentifierFromJson(final Map<String, dynamic> json) =>
     TrackIdentifier(
       albumId: json['album_id'] as String,
       discId: json['disc_id'] as int,
       trackId: json['track_id'] as int,
     );
 
-Map<String, dynamic> _$TrackIdentifierToJson(TrackIdentifier instance) =>
+Map<String, dynamic> _$TrackIdentifierToJson(final TrackIdentifier instance) =>
     <String, dynamic>{
       'album_id': instance.albumId,
       'disc_id': instance.discId,
       'track_id': instance.trackId,
     };
 
-TrackInfo _$TrackInfoFromJson(Map<String, dynamic> json) => TrackInfo(
+TrackInfo _$TrackInfoFromJson(final Map<String, dynamic> json) => TrackInfo(
       title: json['title'] as String,
       artist: json['artist'] as String?,
       type: $enumDecodeNullable(_$TrackTypeEnumMap, json['type']),
     );
 
-RequiredTrackInfo _$RequiredTrackInfoFromJson(Map<String, dynamic> json) =>
+RequiredTrackInfo _$RequiredTrackInfoFromJson(final Map<String, dynamic> json) =>
     RequiredTrackInfo(
       title: json['title'] as String,
       artist: json['artist'] as String,
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
     );
 
-Map<String, dynamic> _$RequiredTrackInfoToJson(RequiredTrackInfo instance) =>
+Map<String, dynamic> _$RequiredTrackInfoToJson(final RequiredTrackInfo instance) =>
     <String, dynamic>{
       'title': instance.title,
       'artist': instance.artist,
       'type': _$TrackTypeEnumMap[instance.type]!,
     };
 
-TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
+TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(final Map<String, dynamic> json) =>
     TrackInfoWithAlbum(
       id: TrackInfoWithAlbum._trackFromJson(
           readValueFlatten(json, 'id') as Map<String, dynamic>),
@@ -142,7 +142,7 @@ TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
     );
 
-PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
+PlaylistInfo _$PlaylistInfoFromJson(final Map<String, dynamic> json) => PlaylistInfo(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
@@ -155,7 +155,7 @@ PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
     );
 
 Map<String, dynamic> _$PatchedPlaylistInfoToJson(
-        PatchedPlaylistInfo instance) =>
+        final PatchedPlaylistInfo instance) =>
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
@@ -164,34 +164,34 @@ Map<String, dynamic> _$PatchedPlaylistInfoToJson(
       'last_modified': instance.lastModified,
     };
 
-SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
+SearchResult _$SearchResultFromJson(final Map<String, dynamic> json) => SearchResult(
       albums: (json['albums'] as List<dynamic>?)
-          ?.map((e) => Album.fromJson(e as Map<String, dynamic>))
+          ?.map((final e) => Album.fromJson(e as Map<String, dynamic>))
           .toList(),
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((e) => TrackInfoWithAlbum.fromJson(e as Map<String, dynamic>))
+          ?.map((final e) => TrackInfoWithAlbum.fromJson(e as Map<String, dynamic>))
           .toList(),
       playlists: (json['playlists'] as List<dynamic>?)
-          ?.map((e) => PlaylistInfo.fromJson(e as Map<String, dynamic>))
+          ?.map((final e) => PlaylistInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-LyricResponse _$LyricResponseFromJson(Map<String, dynamic> json) =>
+LyricResponse _$LyricResponseFromJson(final Map<String, dynamic> json) =>
     LyricResponse(
       source: LyricLanguage.fromJson(json['source'] as Map<String, dynamic>),
       translations: (json['translations'] as List<dynamic>)
-          .map((e) => LyricLanguage.fromJson(e as Map<String, dynamic>))
+          .map((final e) => LyricLanguage.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-LyricLanguage _$LyricLanguageFromJson(Map<String, dynamic> json) =>
+LyricLanguage _$LyricLanguageFromJson(final Map<String, dynamic> json) =>
     LyricLanguage(
       language: json['language'] as String,
       type: json['type'] as String,
       data: json['data'] as String,
     );
 
-Map<String, dynamic> _$LyricLanguageToJson(LyricLanguage instance) =>
+Map<String, dynamic> _$LyricLanguageToJson(final LyricLanguage instance) =>
     <String, dynamic>{
       'language': instance.language,
       'type': instance.type,
@@ -199,12 +199,12 @@ Map<String, dynamic> _$LyricLanguageToJson(LyricLanguage instance) =>
     };
 
 RepoDatabaseDescription _$RepoDatabaseDescriptionFromJson(
-        Map<String, dynamic> json) =>
+        final Map<String, dynamic> json) =>
     RepoDatabaseDescription(
       lastModified: json['last_modified'] as int,
     );
 
-TagInfo _$TagInfoFromJson(Map<String, dynamic> json) => TagInfo(
+TagInfo _$TagInfoFromJson(final Map<String, dynamic> json) => TagInfo(
       name: json['name'] as String,
       type: $enumDecode(_$TagTypeEnumMap, json['type']),
     );
@@ -222,14 +222,14 @@ const _$TagTypeEnumMap = {
   TagType.Category: 'category',
 };
 
-Map<String, dynamic> _$SongPlayRecordToJson(SongPlayRecord instance) =>
+Map<String, dynamic> _$SongPlayRecordToJson(final SongPlayRecord instance) =>
     <String, dynamic>{
       'track': instance.track,
       'at': instance.at,
     };
 
 SongPlayRecordResult _$SongPlayRecordResultFromJson(
-        Map<String, dynamic> json) =>
+        final Map<String, dynamic> json) =>
     SongPlayRecordResult(
       track: TrackIdentifier.fromJson(json['track'] as Map<String, dynamic>),
       count: json['count'] as int,

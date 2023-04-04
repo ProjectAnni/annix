@@ -7,12 +7,13 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
 
 class AnnixProxy {
-  Ref<Object?> ref;
+  final Ref ref;
+
   AnnixProxy(this.ref);
 
   late HttpServer server;
 
-  Future<void> start() async {
+  Future<AnnixProxy> start() async {
     final app = Router();
     final coverProxy = ref.read(coverProxyProvider);
 
@@ -28,6 +29,7 @@ class AnnixProxy {
       }
     });
     server = await shelf_io.serve(app, InternetAddress.loopbackIPv4, 0);
+    return this;
   }
 
   String coverUrl(final String albumId, final int? discId) {

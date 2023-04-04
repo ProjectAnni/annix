@@ -9,38 +9,38 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class AnnixNative {
-  Future<LocalStore> newStaticMethodLocalStore({required String root, dynamic hint});
+  Future<LocalStore> newStaticMethodLocalStore({required final String root, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodLocalStoreConstMeta;
 
   Future<void> insertMethodLocalStore(
-      {required LocalStore that, required String category, required String key, required String value, dynamic hint});
+      {required final LocalStore that, required final String category, required final String key, required final String value, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kInsertMethodLocalStoreConstMeta;
 
   Future<String?> getMethodLocalStore(
-      {required LocalStore that, required String category, required String key, dynamic hint});
+      {required final LocalStore that, required final String category, required final String key, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kGetMethodLocalStoreConstMeta;
 
-  Future<void> clearMethodLocalStore({required LocalStore that, String? category, dynamic hint});
+  Future<void> clearMethodLocalStore({required final LocalStore that, final String? category, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kClearMethodLocalStoreConstMeta;
 
-  Future<LocalDb> newStaticMethodLocalDb({required String path, dynamic hint});
+  Future<LocalDb> newStaticMethodLocalDb({required final String path, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodLocalDbConstMeta;
 
-  Future<String?> getAlbumMethodLocalDb({required LocalDb that, required UuidValue albumId, dynamic hint});
+  Future<String?> getAlbumMethodLocalDb({required final LocalDb that, required final UuidValue albumId, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kGetAlbumMethodLocalDbConstMeta;
 
   Future<List<UuidValue>> getAlbumsByTagMethodLocalDb(
-      {required LocalDb that, required String tag, required bool recursive, dynamic hint});
+      {required final LocalDb that, required final String tag, required final bool recursive, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kGetAlbumsByTagMethodLocalDbConstMeta;
 
-  Future<List<TagItem>> getTagsMethodLocalDb({required LocalDb that, dynamic hint});
+  Future<List<TagItem>> getTagsMethodLocalDb({required final LocalDb that, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kGetTagsMethodLocalDbConstMeta;
 
@@ -56,7 +56,7 @@ abstract class AnnixNative {
 @sealed
 class MutexConnection extends FrbOpaque {
   final AnnixNative bridge;
-  MutexConnection.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  MutexConnection.fromRaw(final int ptr, final int size, this.bridge) : super.unsafe(ptr, size);
   @override
   DropFnType get dropFn => bridge.dropOpaqueMutexConnection;
 
@@ -70,7 +70,7 @@ class MutexConnection extends FrbOpaque {
 @sealed
 class MutexRepoDatabaseRead extends FrbOpaque {
   final AnnixNative bridge;
-  MutexRepoDatabaseRead.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  MutexRepoDatabaseRead.fromRaw(final int ptr, final int size, this.bridge) : super.unsafe(ptr, size);
   @override
   DropFnType get dropFn => bridge.dropOpaqueMutexRepoDatabaseRead;
 
@@ -90,22 +90,22 @@ class LocalDb {
     required this.repo,
   });
 
-  static Future<LocalDb> newLocalDb({required AnnixNative bridge, required String path, dynamic hint}) =>
+  static Future<LocalDb> newLocalDb({required final AnnixNative bridge, required final String path, final dynamic hint}) =>
       bridge.newStaticMethodLocalDb(path: path, hint: hint);
 
-  Future<String?> getAlbum({required UuidValue albumId, dynamic hint}) => bridge.getAlbumMethodLocalDb(
+  Future<String?> getAlbum({required final UuidValue albumId, final dynamic hint}) => bridge.getAlbumMethodLocalDb(
         that: this,
         albumId: albumId,
       );
 
-  Future<List<UuidValue>> getAlbumsByTag({required String tag, required bool recursive, dynamic hint}) =>
+  Future<List<UuidValue>> getAlbumsByTag({required final String tag, required final bool recursive, final dynamic hint}) =>
       bridge.getAlbumsByTagMethodLocalDb(
         that: this,
         tag: tag,
         recursive: recursive,
       );
 
-  Future<List<TagItem>> getTags({dynamic hint}) => bridge.getTagsMethodLocalDb(
+  Future<List<TagItem>> getTags({final dynamic hint}) => bridge.getTagsMethodLocalDb(
         that: this,
       );
 }
@@ -119,10 +119,10 @@ class LocalStore {
     required this.conn,
   });
 
-  static Future<LocalStore> newLocalStore({required AnnixNative bridge, required String root, dynamic hint}) =>
+  static Future<LocalStore> newLocalStore({required final AnnixNative bridge, required final String root, final dynamic hint}) =>
       bridge.newStaticMethodLocalStore(root: root, hint: hint);
 
-  Future<void> insert({required String category, required String key, required String value, dynamic hint}) =>
+  Future<void> insert({required final String category, required final String key, required final String value, final dynamic hint}) =>
       bridge.insertMethodLocalStore(
         that: this,
         category: category,
@@ -130,13 +130,13 @@ class LocalStore {
         value: value,
       );
 
-  Future<String?> get({required String category, required String key, dynamic hint}) => bridge.getMethodLocalStore(
+  Future<String?> get({required final String category, required final String key, final dynamic hint}) => bridge.getMethodLocalStore(
         that: this,
         category: category,
         key: key,
       );
 
-  Future<void> clear({String? category, dynamic hint}) => bridge.clearMethodLocalStore(
+  Future<void> clear({final String? category, final dynamic hint}) => bridge.clearMethodLocalStore(
         that: this,
         category: category,
       );

@@ -1,9 +1,9 @@
-import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Modified from https://github.com/flutter/flutter/issues/117483#issuecomment-1377699454
 class FloatingSearchBar extends StatelessWidget {
@@ -79,12 +79,12 @@ class FloatingSearchBar extends StatelessWidget {
   }
 }
 
-class HomeAppBar extends StatelessWidget {
+class HomeAppBar extends ConsumerWidget {
   const HomeAppBar({super.key});
 
   @override
-  Widget build(final BuildContext context) {
-    final anniv = context.watch<AnnivService>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final anniv = ref.watch(annivProvider);
     final info = anniv.info;
 
     if (info != null) {

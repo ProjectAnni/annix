@@ -5,7 +5,6 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/global.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
@@ -16,7 +15,7 @@ import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:collection/collection.dart';
 
 class AnnilService extends ChangeNotifier {
-  final Ref<Object?> ref;
+  final Ref ref;
   final Dio _client = Dio();
 
   List<LocalAnnilServer> servers = [];
@@ -50,6 +49,8 @@ class AnnilService extends ChangeNotifier {
 
     final network = ref.read(networkProvider);
     network.addListener(() => reload());
+
+    reload();
   }
 
   Future<void> addRemoteServer({
@@ -188,7 +189,7 @@ class AnnilService extends ChangeNotifier {
 
   Future<Uri?> getCoverUrl(
       {required final String albumId, final int? discId}) async {
-    if (NetworkService.isOnline) {
+    if (ref.read(isOnlineProvider)) {
       final servers = await _getActiveServerByAlbumId(albumId);
       if (servers.isEmpty) {
         return null;
@@ -209,7 +210,7 @@ class AnnilService extends ChangeNotifier {
   Future<void> reload() async {
     final db = ref.read(localDatabaseProvider);
     final albumList = <String>{};
-    if (NetworkService.isOnline) {
+    if (ref.read(isOnlineProvider)) {
       await Future.wait(servers.map((final server) async {
         try {
           await updateAlbums(server);
@@ -234,7 +235,7 @@ class AnnilService extends ChangeNotifier {
 
   bool isTrackAvailable(final TrackIdentifier id) {
     return isCacheAvailable(id) ||
-        (NetworkService.isOnline && albums.contains(id.albumId));
+        (ref.read(isOnlineProvider) && albums.contains(id.albumId));
   }
 
   static Future<Set<String>> getCachedAlbums() async {

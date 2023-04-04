@@ -70,7 +70,7 @@ class PlaybackService extends ChangeNotifier {
   static final PropertyValueNotifier<Map<String, Duration>> durationMap =
       PropertyValueNotifier({});
 
-  final Ref<Object?> ref;
+  final Ref ref;
 
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
@@ -221,10 +221,11 @@ class PlaybackService extends ChangeNotifier {
 
     // preload the next track
     if (queue.length > currentIndex + 1) {
-      queue[currentIndex + 1].preload();
+      queue[currentIndex + 1].preload(ref);
     }
 
     try {
+      source.preload(ref);
       // wait for audio file to download and play it
       if (setSourceOnly) {
         await PlaybackService.player.setSource(source);
@@ -435,7 +436,7 @@ class PlaybackService extends ChangeNotifier {
     await Global.preferences.setDouble('player.volume', volume);
   }
 
-  Future<void> fullShuffleMode(final Ref<Object?> ref,
+  Future<void> fullShuffleMode(
       {final int count = 30, final bool waitUntilPlayback = false}) async {
     final AnnilService annil = ref.read(annilProvider);
     final albums = annil.albums;

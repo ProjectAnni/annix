@@ -72,7 +72,8 @@ class PlayPauseButton extends HookConsumerWidget {
           elevation: 2,
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
               child: AnimatedIconWidget(
                 controller: controller,
                 icon: AnimatedIcons.play_pause,

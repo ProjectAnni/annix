@@ -9,7 +9,6 @@ import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/global.dart';
-import 'package:annix/services/network/network.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ class SiteUserInfo {
 }
 
 class AnnivService extends ChangeNotifier {
-  final Ref<Object?> ref;
+  final Ref ref;
 
   AnnivClient? client;
 
@@ -33,7 +32,7 @@ class AnnivService extends ChangeNotifier {
 
   AnnivService(this.ref) {
     // 1. init client
-    client = AnnivClient.load();
+    client = AnnivClient.load(ref);
 
     // 2. load cached site info & user info
     _loadInfo();
@@ -41,11 +40,11 @@ class AnnivService extends ChangeNotifier {
     // check login status
     final network = ref.read(networkProvider);
     network.addListener(() {
-      if (NetworkService.isOnline) {
+      if (network.isOnline) {
         checkLogin(client);
       }
     });
-    if (NetworkService.isOnline) {
+    if (network.isOnline) {
       checkLogin(client);
     }
 
@@ -97,8 +96,12 @@ class AnnivService extends ChangeNotifier {
 
   Future<void> login(
       final String url, final String email, final String password) async {
-    final anniv =
-        await AnnivClient.login(url: url, email: email, password: password);
+    final anniv = await AnnivClient.login(
+      ref,
+      url: url,
+      email: email,
+      password: password,
+    );
     await checkLogin(anniv);
   }
 
