@@ -16,6 +16,7 @@ class _AlbumWallState extends State<AlbumWall> {
   @override
   Widget build(final BuildContext context) {
     return MasonryGridView.count(
+      primary: false,
       crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,

@@ -106,6 +106,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
     final reversedFavorite = favorites.reversed;
 
     return ListView.builder(
+      primary: false,
       itemCount: reversedFavorite.length,
       padding: EdgeInsets.zero,
       itemBuilder: (final context, final index) {
