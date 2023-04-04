@@ -7,6 +7,7 @@ import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/services/network/proxy.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -88,7 +89,14 @@ class AnnilAudioSource {
     if (isCanceled) {
       throw AudioCancelledError();
     }
-    await player.open(offlinePath, autoplay: autoplay);
+    final url = Global.proxy
+        .audioUri(
+          track.id,
+          quality ?? Global.settings.defaultAudioQuality.value,
+        )
+        .toString();
+    print(url);
+    await player.open(url, autoplay: autoplay);
   }
 
   void preload() {
@@ -103,28 +111,28 @@ class AnnilAudioSource {
 
   bool preloaded = false;
 
-  static Future<DownloadTask?> spawnDownloadTask({
-    required TrackInfoWithAlbum track,
-    PreferQuality? quality,
-    String? savePath,
-  }) async {
-    final downloadQuality =
-        quality ?? Global.settings.defaultAudioQuality.value;
-    final annil = Global.context.read<AnnilService>();
-    final url =
-        await annil.getAudioUrl(track: track.id, quality: downloadQuality);
-    if (url == null) {
-      return null;
-    }
+  // static Future<DownloadTask?> spawnDownloadTask({
+  //   required TrackInfoWithAlbum track,
+  //   PreferQuality? quality,
+  //   String? savePath,
+  // }) async {
+  //   final downloadQuality =
+  //       quality ?? Global.settings.defaultAudioQuality.value;
+  //   final annil = Global.context.read<AnnilService>();
+  //   final url =
+  //       await annil.getAudioUrl(track: track.id, quality: downloadQuality);
+  //   if (url == null) {
+  //     return null;
+  //   }
 
-    savePath ??= getAudioCachePath(track.id);
-    return DownloadTask(
-      category: DownloadCategory.audio,
-      url: url,
-      savePath: savePath,
-      data: TrackDownloadTaskData(info: track, quality: downloadQuality),
-    );
-  }
+  //   savePath ??= getAudioCachePath(track.id);
+  //   return DownloadTask(
+  //     category: DownloadCategory.audio,
+  //     url: url,
+  //     savePath: savePath,
+  //     data: TrackDownloadTaskData(info: track, quality: downloadQuality),
+  //   );
+  // }
 
   Future<void> _preload() async {
     final annil = Global.context.read<AnnilService>();
@@ -137,24 +145,24 @@ class AnnilAudioSource {
     await audioFile.parent.create(recursive: true);
     await durationFile.parent.create(recursive: true);
 
-    if (!audioFile.existsSync() || audioFile.lengthSync() == 0) {
-      final task = await spawnDownloadTask(
-        track: track,
-        savePath: audioPath,
-      );
-      if (task != null) {
-        Global.downloadManager.add(task);
-        _downloadTask = task;
-        _downloadTask?.addListener(_onDownloadProgress);
-        final response = await task.start();
+    // if (!audioFile.existsSync() || audioFile.lengthSync() == 0) {
+    //   final task = await spawnDownloadTask(
+    //     track: track,
+    //     savePath: audioPath,
+    //   );
+    //   if (task != null) {
+    //     Global.downloadManager.add(task);
+    //     _downloadTask = task;
+    //     _downloadTask?.addListener(_onDownloadProgress);
+    //     final response = await task.start();
 
-        final duration =
-            int.parse(response.headers.value('x-duration-seconds')!);
-        await durationFile.writeAsString(duration.toString());
-      } else {
-        throw UnsupportedError('No available annil server found');
-      }
-    }
+    //     final duration =
+    //         int.parse(response.headers.value('x-duration-seconds')!);
+    //     await durationFile.writeAsString(duration.toString());
+    //   } else {
+    //     throw UnsupportedError('No available annil server found');
+    //   }
+    // }
 
     if (!durationFile.existsSync()) {
       final duration = await annil.getAudioDuration(track.id);
