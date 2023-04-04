@@ -23,8 +23,6 @@ class AnnilAudioSource extends Source {
   final TrackInfoWithAlbum track;
   ExtendedNetworkImageProvider? coverProvider;
 
-  // final AnnilService;
-
   final DownloadState downloadProgress =
       DownloadState(const DownloadProgress(current: 0));
 
