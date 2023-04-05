@@ -45,13 +45,13 @@ Widget fadeTransitionBuilder(
 }
 
 class AnnixPage extends Page {
-  final bool disableAppBarDismissal;
+  final bool? disableAppBarDismissal;
   final Widget child;
   final AnnixRoutePageBuilder? pageBuilder;
   final Duration? transitionDuration;
 
   const AnnixPage({
-    this.disableAppBarDismissal = false,
+    this.disableAppBarDismissal,
     required this.child,
     super.key,
     super.name,
@@ -66,7 +66,8 @@ class AnnixPage extends Page {
         ? const Duration(milliseconds: 150)
         : this.transitionDuration ?? const Duration(milliseconds: 300);
     return AnnixRoute(
-      disableAppBarDismissal: disableAppBarDismissal,
+      disableAppBarDismissal:
+          disableAppBarDismissal ?? context.isDesktopOrLandscape,
       settings: this,
       transitionDuration: transitionDuration,
       reverseTransitionDuration: transitionDuration,

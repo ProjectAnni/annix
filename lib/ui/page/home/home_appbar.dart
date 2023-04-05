@@ -5,7 +5,9 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeAppBar extends ConsumerWidget {
-  const HomeAppBar({super.key});
+  final EdgeInsets padding;
+
+  const HomeAppBar({super.key, this.padding = const EdgeInsets.all(16)});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -31,14 +33,22 @@ class HomeAppBar extends ConsumerWidget {
       },
     );
 
-    return SliverToBoxAdapter(
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: child,
-        ),
+    return SafeArea(
+      child: Padding(
+        padding: padding,
+        child: child,
       ),
+    );
+  }
+}
+
+class SliverHomeAppBar extends StatelessWidget {
+  const SliverHomeAppBar({super.key});
+
+  @override
+  Widget build(final BuildContext context) {
+    return const SliverToBoxAdapter(
+      child: HomeAppBar(),
     );
   }
 }

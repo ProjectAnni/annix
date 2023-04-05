@@ -28,13 +28,6 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: widget.onBack,
-            ),
-          ),
           Expanded(
             flex: 20,
             child: Row(

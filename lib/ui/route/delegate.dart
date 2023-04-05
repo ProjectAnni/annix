@@ -154,7 +154,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     final Duration? transitionDuration,
   }) {
     Widget child;
-    bool disableAppBarDismissal = false;
+    bool? disableAppBarDismissal;
 
     switch (routeSettings.name) {
       case '/login':

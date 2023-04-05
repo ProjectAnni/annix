@@ -2,6 +2,7 @@ import 'package:annix/ui/page/home/home_action_grid.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/home/home_title.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 
@@ -14,7 +15,9 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (final context, final innerBoxIsScrolled) {
-            return [const HomeAppBar()];
+            return [
+              if (context.isMobileOrPortrait) const SliverHomeAppBar(),
+            ];
           },
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
