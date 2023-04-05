@@ -66,8 +66,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     if (await rootNavigator.maybePop()) {
       return true;
-    } else if (Global.mobileWeSlideController.isOpened) {
-      Global.mobileWeSlideController.hide();
+    } else if (AnnixLayoutMobile.slideController.isOpened) {
+      AnnixLayoutMobile.slideController.hide();
       return true;
     } else if (canPop()) {
       _pages.removeLast();

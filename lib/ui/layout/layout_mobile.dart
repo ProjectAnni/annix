@@ -1,4 +1,3 @@
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
@@ -6,12 +5,16 @@ import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/route/page.dart';
+import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:we_slide/we_slide.dart';
 import 'package:annix/i18n/strings.g.dart';
 
 class AnnixLayoutMobile extends ConsumerWidget {
+  static final slideController = AnniWeSlideController(initial: false);
+  static final slideFooterController = AnniWeSlideController(initial: true);
+
   final AnnixRouterDelegate router;
   final Widget child;
 
@@ -37,9 +40,9 @@ class AnnixLayoutMobile extends ConsumerWidget {
           final delegate = ref.watch(routerProvider);
           final isMainPage = pages.contains(delegate.currentRoute);
           if (!isMainPage) {
-            Global.mobileWeSlideFooterController.hide();
+            slideFooterController.hide();
           } else {
-            Global.mobileWeSlideFooterController.show();
+            slideFooterController.show();
           }
 
           final isQueueEmpty =
@@ -47,8 +50,8 @@ class AnnixLayoutMobile extends ConsumerWidget {
           final isPlaying = ref
               .watch(playbackProvider.select((final p) => p.playing != null));
           return WeSlide(
-            controller: Global.mobileWeSlideController,
-            footerController: Global.mobileWeSlideFooterController,
+            controller: slideController,
+            footerController: slideFooterController,
             parallax: true,
             hideAppBar: true,
             hideFooter: true,
@@ -63,7 +66,7 @@ class AnnixLayoutMobile extends ConsumerWidget {
             panelHeader: GestureDetector(
               onTap: () {
                 if (isPlaying) {
-                  Global.mobileWeSlideController.show();
+                  slideController.show();
                 }
               },
               child: const MobileBottomPlayer(),

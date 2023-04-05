@@ -1,8 +1,8 @@
 import 'package:animations/animations.dart';
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
+import 'package:annix/ui/layout/layout_mobile.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
@@ -107,7 +107,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               child: Text(t.playing.view_albums),
               onPressed: () {
                 // hide playing page
-                Global.mobileWeSlideController.hide();
+                AnnixLayoutMobile.slideController.hide();
                 // jump to album page
                 delegate.to(
                   name: '/album',

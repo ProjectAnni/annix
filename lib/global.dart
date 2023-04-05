@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,10 +20,6 @@ class Global {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   static BuildContext get context => navigatorKey.currentContext!;
-
-  static final mobileWeSlideController = AnniWeSlideController(initial: false);
-  static final mobileWeSlideFooterController =
-      AnniWeSlideController(initial: true);
 
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
