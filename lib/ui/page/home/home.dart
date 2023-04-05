@@ -11,17 +11,17 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (final context, final innerBoxIsScrolled) {
-          return [
-            const HomeAppBar(),
-          ];
-        },
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: CustomScrollView(
-            primary: false,
-            slivers: content(context),
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (final context, final innerBoxIsScrolled) {
+            return [const HomeAppBar()];
+          },
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CustomScrollView(
+              primary: false,
+              slivers: content(context),
+            ),
           ),
         ),
       ),
