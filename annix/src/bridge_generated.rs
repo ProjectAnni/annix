@@ -21,6 +21,22 @@ use std::sync::Arc;
 
 // Section: wire functions
 
+fn wire_update_network_status_impl(
+    port_: MessagePort,
+    is_online: impl Wire2Api<bool> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "update_network_status",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_is_online = is_online.wire2api();
+            move |task_callback| Ok(update_network_status(api_is_online))
+        },
+    )
+}
 fn wire_new__static_method__LocalStore_impl(
     port_: MessagePort,
     root: impl Wire2Api<String> + UnwindSafe,

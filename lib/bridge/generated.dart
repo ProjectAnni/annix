@@ -24,6 +24,22 @@ class AnnixNativeImpl implements AnnixNative {
   /// Only valid on web/WASM platforms.
   factory AnnixNativeImpl.wasm(FutureOr<WasmModule> module) => AnnixNativeImpl(module as ExternalLibrary);
   AnnixNativeImpl.raw(this._platform);
+  Future<void> updateNetworkStatus({required bool isOnline, dynamic hint}) {
+    var arg0 = isOnline;
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_update_network_status(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kUpdateNetworkStatusConstMeta,
+      argValues: [isOnline],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kUpdateNetworkStatusConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "update_network_status",
+        argNames: ["isOnline"],
+      );
+
   Future<LocalStore> newStaticMethodLocalStore({required String root, dynamic hint}) {
     var arg0 = _platform.api2wire_String(root);
     return _platform.executeNormal(FlutterRustBridgeTask(
@@ -426,6 +442,20 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _init_frb_dart_api_dlPtr =
       _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.Pointer<ffi.Void>)>>('init_frb_dart_api_dl');
   late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr.asFunction<int Function(ffi.Pointer<ffi.Void>)>();
+
+  void wire_update_network_status(
+    int port_,
+    bool is_online,
+  ) {
+    return _wire_update_network_status(
+      port_,
+      is_online,
+    );
+  }
+
+  late final _wire_update_network_statusPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Bool)>>('wire_update_network_status');
+  late final _wire_update_network_status = _wire_update_network_statusPtr.asFunction<void Function(int, bool)>();
 
   void wire_new__static_method__LocalStore(
     int port_,

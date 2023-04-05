@@ -224,6 +224,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     return page;
   }
 
+  @Deprecated('Use `ref.read` instead')
   static AnnixRouterDelegate of(final BuildContext context) {
     final delegate = Router.of(context).routerDelegate;
     assert(delegate is AnnixRouterDelegate, 'Delegate type must match');

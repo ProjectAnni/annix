@@ -42,6 +42,8 @@ uintptr_t new_dart_opaque(Dart_Handle handle);
 
 intptr_t init_frb_dart_api_dl(void *obj);
 
+void wire_update_network_status(int64_t port_, bool is_online);
+
 void wire_new__static_method__LocalStore(int64_t port_, struct wire_uint_8_list *root);
 
 void wire_insert__method__LocalStore(int64_t port_,
@@ -94,6 +96,7 @@ void free_WireSyncReturn(WireSyncReturn ptr);
 
 static int64_t dummy_method_to_enforce_bundling(void) {
     int64_t dummy_var = 0;
+    dummy_var ^= ((int64_t) (void*) wire_update_network_status);
     dummy_var ^= ((int64_t) (void*) wire_new__static_method__LocalStore);
     dummy_var ^= ((int64_t) (void*) wire_insert__method__LocalStore);
     dummy_var ^= ((int64_t) (void*) wire_get__method__LocalStore);

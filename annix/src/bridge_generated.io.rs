@@ -2,6 +2,11 @@ use super::*;
 // Section: wire functions
 
 #[no_mangle]
+pub extern "C" fn wire_update_network_status(port_: i64, is_online: bool) {
+    wire_update_network_status_impl(port_, is_online)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_new__static_method__LocalStore(port_: i64, root: *mut wire_uint_8_list) {
     wire_new__static_method__LocalStore_impl(port_, root)
 }

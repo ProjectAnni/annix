@@ -1,3 +1,4 @@
+import 'package:annix/bridge/bridge.dart';
 import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -43,7 +44,7 @@ class NetworkService extends ChangeNotifier {
           _canVisitInternet().then((final value) {
             // keep `isMobileNetwork` property and set isConnected
             isConnected = value;
-            notifyListeners();
+            updateAndNotify();
           });
           // early return, do not notify listeners here
           return;
@@ -54,6 +55,12 @@ class NetworkService extends ChangeNotifier {
         isMobileNetwork = false;
         break;
     }
+    updateAndNotify();
+  }
+
+  /// Update network status both in NetworkService and
+  void updateAndNotify() {
+    api.updateNetworkStatus(isOnline: isOnline);
     notifyListeners();
   }
 

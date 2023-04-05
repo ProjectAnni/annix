@@ -9,6 +9,10 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class AnnixNative {
+  Future<void> updateNetworkStatus({required final bool isOnline, final dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kUpdateNetworkStatusConstMeta;
+
   Future<LocalStore> newStaticMethodLocalStore({required final String root, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodLocalStoreConstMeta;
