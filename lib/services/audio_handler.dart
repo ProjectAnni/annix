@@ -6,7 +6,6 @@ import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/ui/layout/layout_mobile.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
@@ -85,7 +84,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
     AudioService.notificationClicked.listen((final clicked) {
       if (clicked) {
-        AnnixLayoutMobile.slideController.show();
+        final router = ref.read(routerProvider);
+        router.slideController.show();
       }
     });
   }

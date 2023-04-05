@@ -12,7 +12,6 @@ import 'package:we_slide/we_slide.dart';
 import 'package:annix/i18n/strings.g.dart';
 
 class AnnixLayoutMobile extends ConsumerWidget {
-  static final slideController = AnniWeSlideController(initial: false);
   static final slideFooterController = AnniWeSlideController(initial: true);
 
   final AnnixRouterDelegate router;
@@ -50,7 +49,7 @@ class AnnixLayoutMobile extends ConsumerWidget {
           final isPlaying = ref
               .watch(playbackProvider.select((final p) => p.playing != null));
           return WeSlide(
-            controller: slideController,
+            controller: router.slideController,
             footerController: slideFooterController,
             parallax: true,
             hideAppBar: true,
@@ -66,7 +65,7 @@ class AnnixLayoutMobile extends ConsumerWidget {
             panelHeader: GestureDetector(
               onTap: () {
                 if (isPlaying) {
-                  slideController.show();
+                  router.slideController.show();
                 }
               },
               child: const MobileBottomPlayer(),

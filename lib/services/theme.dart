@@ -50,8 +50,10 @@ class AnnixTheme extends ChangeNotifier {
 
     if (_temporaryPrimaryScheme != _cache[albumId]['scheme'] ||
         _temporaryPrimaryDarkScheme != _cache[albumId]['darkScheme']) {
-      _setTemporaryScheme(
-          _cache[albumId]!['scheme'], _cache[albumId]!['darkScheme']);
+      WidgetsBinding.instance.addPostFrameCallback((final _) {
+        _setTemporaryScheme(
+            _cache[albumId]!['scheme'], _cache[albumId]!['darkScheme']);
+      });
     }
   }
 

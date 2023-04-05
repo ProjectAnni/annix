@@ -19,12 +19,15 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
+import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
+  final slideController = AnniWeSlideController(initial: false);
+
   final Ref ref;
   final List<AnnixPage> _pages = [];
 
@@ -32,6 +35,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
 
   AnnixRouterDelegate(this.ref) {
+    slideController.addListener(() => notifyListeners());
+
     to(name: '/home');
   }
 
@@ -66,10 +71,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     if (await rootNavigator.maybePop()) {
       return true;
-    } else if (AnnixLayoutMobile.slideController.isOpened) {
-      AnnixLayoutMobile.slideController.hide();
+    } else if (slideController.isOpened) {
+      slideController.hide();
       return true;
-    } else if (canPop()) {
+    } else if (_canPop()) {
       _pages.removeLast();
       notifyListeners();
       return true;
@@ -79,16 +84,26 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     }
   }
 
+  bool mayPop() {
+    if (slideController.isOpened) {
+      return true;
+    } else if (slideController.isOpened) {
+      return true;
+    } else {
+      return _canPop();
+    }
+  }
+
   String get currentRoute => _pages.last.name!;
 
-  bool canPop() {
+  bool _canPop() {
     return _pages.length > 1;
   }
 
   bool _onPopPage<T>(final Route<T> route, final T result) {
     if (!route.didPop(result)) return false;
 
-    if (canPop()) {
+    if (_canPop()) {
       _pages.removeLast();
       notifyListeners();
       return true;

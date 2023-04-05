@@ -3,7 +3,6 @@ import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
-import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,8 +23,6 @@ class AnnixLayoutDesktop extends ConsumerStatefulWidget {
 }
 
 class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
-  static final slideController = AnniWeSlideController(initial: false);
-
   static const pages = <String>[
     '/home',
     '/tags',
@@ -36,7 +33,7 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
   Widget build(final BuildContext context) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
 
-    final body = Expanded(
+    final body = Material(
       child: Row(
         children: <Widget>[
           (() {
@@ -84,59 +81,69 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
       ),
     );
 
-    final slide = Consumer(builder: (final context, final ref, final child) {
-      final isPlaying =
-          ref.watch(playbackProvider.select((final p) => p.playing != null));
+    final slide = Consumer(
+      child: body,
+      builder: (final context, final ref, final child) {
+        final isPlaying =
+            ref.watch(playbackProvider.select((final p) => p.playing != null));
 
-      return WeSlide(
-        controller: slideController,
-        hideAppBar: false,
-        hideFooter: false,
-        parallax: true,
-        panelBorderRadiusBegin: 12,
-        panelBorderRadiusEnd: 0,
-        backgroundColor: Colors.transparent,
-        appBarHeight: 60,
-        appBar: Material(
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 80,
-                child: Center(child: FlutterLogo()),
-              ),
-              IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  widget.router.popRoute();
-                },
-              ),
-              const Spacer(),
-              const SizedBox(
-                width: 360,
-                child: HomeAppBar(
-                  padding: EdgeInsets.zero,
+        return WeSlide(
+          controller: widget.router.slideController,
+          hideAppBar: false,
+          hideFooter: false,
+          parallax: true,
+          panelBorderRadiusBegin: 12,
+          panelBorderRadiusEnd: 0,
+          backgroundColor: Colors.transparent,
+          appBarHeight: 60,
+          appBar: Material(
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Consumer(
+                    builder: (final context, final ref, final child) {
+                      final router = ref.watch(routerProvider);
+                      return IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: router.mayPop()
+                            ? () {
+                                router.popRoute();
+                              }
+                            : null,
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+                const Spacer(),
+                const SizedBox(
+                  width: 360,
+                  child: HomeAppBar(
+                    padding: EdgeInsets.zero,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        body: Material(child: body),
-        panelMinSize: 80,
-        panelMaxSize: panelMaxSize,
-        isUpSlide: false,
-        panelHeader: GestureDetector(
-          onTap: () {
-            if (isPlaying) {
-              slideController.show();
-            }
-          },
-          child: const MobileBottomPlayer(),
-        ),
-        panel: PlayingDesktopScreen(onBack: slideController.hide),
-        footerHeight: 96,
-        footer: DesktopBottomPlayer(onClick: () => slideController.show()),
-      );
-    });
+          body: child!,
+          panelMinSize: 96,
+          panelMaxSize: panelMaxSize,
+          isUpSlide: false,
+          panelHeader: GestureDetector(
+            onTap: () {
+              if (isPlaying) {
+                widget.router.slideController.show();
+              }
+            },
+            child: const MobileBottomPlayer(),
+          ),
+          panel: const PlayingDesktopScreen(),
+          footerHeight: 96,
+          footer: DesktopBottomPlayer(
+              onClick: () => widget.router.slideController.show()),
+        );
+      },
+    );
 
     final root = Scaffold(body: slide);
     return root;

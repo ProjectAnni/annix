@@ -11,9 +11,7 @@ import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PlayingDesktopScreen extends StatefulWidget {
-  const PlayingDesktopScreen({super.key, required this.onBack});
-
-  final VoidCallback onBack;
+  const PlayingDesktopScreen({super.key});
 
   @override
   State<PlayingDesktopScreen> createState() => _PlayingDesktopScreenState();
