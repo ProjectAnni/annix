@@ -8,7 +8,6 @@ import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/path.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
@@ -129,8 +128,9 @@ class AnnivService extends ChangeNotifier {
   }
 
   void _loadInfo() {
-    final site = Global.preferences.getString('anniv_site');
-    final user = Global.preferences.getString('anniv_user');
+    final preferences = ref.read(preferencesProvider);
+    final site = preferences.getString('anniv_site');
+    final user = preferences.getString('anniv_user');
     if (site != null && user != null) {
       info = SiteUserInfo(
         site: SiteInfo.fromJson(jsonDecode(site)),
@@ -140,14 +140,15 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> _saveInfo() async {
+    final preferences = ref.read(preferencesProvider);
     if (info != null) {
       final site = info!.site.toJson();
       final user = info!.user.toJson();
-      await Global.preferences.setString('anniv_site', jsonEncode(site));
-      await Global.preferences.setString('anniv_user', jsonEncode(user));
+      preferences.set('anniv_site', jsonEncode(site));
+      preferences.set('anniv_user', jsonEncode(user));
     } else {
-      await Global.preferences.remove('anniv_site');
-      await Global.preferences.remove('anniv_user');
+      preferences.remove('anniv_site');
+      preferences.remove('anniv_user');
     }
     notifyListeners();
   }

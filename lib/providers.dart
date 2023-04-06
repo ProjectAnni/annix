@@ -3,10 +3,10 @@ import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/services/local/preferences.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:annix/services/network/proxy.dart';
-import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/services/theme.dart';
@@ -32,7 +32,7 @@ final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));
 final downloadManagerProvider =
     ChangeNotifierProvider((final ref) => DownloadManager());
-final pathProvider = Provider((final _) => PathService());
+final preferencesProvider = Provider((final ref) => PreferencesStore(ref));
 
 // db
 @Riverpod(keepAlive: true)
@@ -52,5 +52,5 @@ final playbackProvider =
     ChangeNotifierProvider((final ref) => PlaybackService(ref));
 final playingProvider = ChangeNotifierProvider(
     (final ref) => ref.watch(playbackProvider.select((final p) => p.playing)));
-final playingDownloadProgressProvider = StateProvider(
-    (final ref) => ref.watch(playingProvider)?.source.downloadProgress);
+final playingDownloadProgressProvider = StateProvider((final ref) =>
+    ref.watch(playingProvider.select((final p) => p?.source.downloadProgress)));

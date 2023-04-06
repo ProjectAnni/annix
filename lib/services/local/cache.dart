@@ -10,7 +10,7 @@ class AnnixStore {
     return _instance;
   }
 
-  Future<LocalStore> _database;
+  final LocalStore _database;
 
   AnnixStore._()
       : _database = api.newStaticMethodLocalStore(root: PathService.dataRoot);
@@ -20,7 +20,7 @@ class AnnixStore {
   }
 
   Future<void> clear(final String category) async {
-    final db = await _database;
+    final db = _database;
     await db.clear(category: category);
   }
 }
@@ -39,8 +39,7 @@ class AnnixStoreCategory {
       return _cache[key];
     }
 
-    final db = await _store._database;
-    final value = await db.get(category: _category, key: key);
+    final value = await _store._database.get(category: _category, key: key);
     if (value == null) {
       return null;
     }
@@ -54,13 +53,12 @@ class AnnixStoreCategory {
 
   Future<void> set(final String key, final value) async {
     _cache[key] = value;
-    final db = await _store._database;
-    await db.insert(category: _category, key: key, value: jsonEncode(value));
+    await _store._database
+        .insert(category: _category, key: key, value: jsonEncode(value));
   }
 
   Future<void> clear() async {
     _cache.clear();
-    final db = await _store._database;
-    await db.clear(category: _category);
+    await _store._database.clear(category: _category);
   }
 }

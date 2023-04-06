@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:annix/app.dart';
-import 'package:annix/global.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
+import 'package:annix/services/path.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,9 +16,8 @@ Future<void> main() async {
 
   final container = ProviderContainer();
   await Future.wait([
+    PathService.init(),
     container.read(proxyProvider).start(),
-    container.read(pathProvider).init(),
-    Global.init(),
   ]);
 
   LocaleSettings.useDeviceLocale();
@@ -34,6 +36,15 @@ Future<void> main() async {
     FLog.error(text: 'Root isolate error', exception: error, stacktrace: stack);
     return true;
   };
+
+  if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    doWhenWindowReady(() {
+      const initialSize = Size(1280, 800);
+      appWindow.minSize = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
+  }
 
   try {
     runApp(

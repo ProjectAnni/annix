@@ -7,8 +7,50 @@ pub extern "C" fn wire_update_network_status(port_: i64, is_online: bool) {
 }
 
 #[no_mangle]
-pub extern "C" fn wire_new__static_method__LocalStore(port_: i64, root: *mut wire_uint_8_list) {
-    wire_new__static_method__LocalStore_impl(port_, root)
+pub extern "C" fn wire_new__static_method__NativePreferenceStore(
+    root: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_new__static_method__NativePreferenceStore_impl(root)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_get__method__NativePreferenceStore(
+    that: *mut wire_NativePreferenceStore,
+    key: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_get__method__NativePreferenceStore_impl(that, key)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_set__method__NativePreferenceStore(
+    that: *mut wire_NativePreferenceStore,
+    key: *mut wire_uint_8_list,
+    value: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_set__method__NativePreferenceStore_impl(that, key, value)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_remove__method__NativePreferenceStore(
+    that: *mut wire_NativePreferenceStore,
+    key: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_remove__method__NativePreferenceStore_impl(that, key)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_remove_prefix__method__NativePreferenceStore(
+    that: *mut wire_NativePreferenceStore,
+    prefix: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_remove_prefix__method__NativePreferenceStore_impl(that, prefix)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_new__static_method__LocalStore(
+    root: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_new__static_method__LocalStore_impl(root)
 }
 
 #[no_mangle]
@@ -93,6 +135,11 @@ pub extern "C" fn new_box_autoadd_local_store_0() -> *mut wire_LocalStore {
 }
 
 #[no_mangle]
+pub extern "C" fn new_box_autoadd_native_preference_store_0() -> *mut wire_NativePreferenceStore {
+    support::new_leak_box_ptr(wire_NativePreferenceStore::new_with_null_ptr())
+}
+
+#[no_mangle]
 pub extern "C" fn new_uint_8_list_0(len: i32) -> *mut wire_uint_8_list {
     let ans = wire_uint_8_list {
         ptr: support::new_leak_vec_ptr(Default::default(), len),
@@ -170,6 +217,12 @@ impl Wire2Api<LocalStore> for *mut wire_LocalStore {
         Wire2Api::<LocalStore>::wire2api(*wrap).into()
     }
 }
+impl Wire2Api<NativePreferenceStore> for *mut wire_NativePreferenceStore {
+    fn wire2api(self) -> NativePreferenceStore {
+        let wrap = unsafe { support::box_from_leak_ptr(self) };
+        Wire2Api::<NativePreferenceStore>::wire2api(*wrap).into()
+    }
+}
 impl Wire2Api<LocalDb> for wire_LocalDb {
     fn wire2api(self) -> LocalDb {
         LocalDb {
@@ -180,6 +233,13 @@ impl Wire2Api<LocalDb> for wire_LocalDb {
 impl Wire2Api<LocalStore> for wire_LocalStore {
     fn wire2api(self) -> LocalStore {
         LocalStore {
+            conn: self.conn.wire2api(),
+        }
+    }
+}
+impl Wire2Api<NativePreferenceStore> for wire_NativePreferenceStore {
+    fn wire2api(self) -> NativePreferenceStore {
+        NativePreferenceStore {
             conn: self.conn.wire2api(),
         }
     }
@@ -216,6 +276,12 @@ pub struct wire_LocalDb {
 #[repr(C)]
 #[derive(Clone)]
 pub struct wire_LocalStore {
+    conn: wire_MutexConnection,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_NativePreferenceStore {
     conn: wire_MutexConnection,
 }
 
@@ -276,6 +342,20 @@ impl NewWithNullPtr for wire_LocalStore {
 }
 
 impl Default for wire_LocalStore {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+
+impl NewWithNullPtr for wire_NativePreferenceStore {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            conn: wire_MutexConnection::new_with_null_ptr(),
+        }
+    }
+}
+
+impl Default for wire_NativePreferenceStore {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }

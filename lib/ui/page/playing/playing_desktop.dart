@@ -51,11 +51,12 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                     children: [
                       Consumer(
                         builder: (final context, final ref, final child) {
-                          final playing = ref.watch(playingProvider);
+                          final track = ref.watch(
+                              playingProvider.select((final p) => p?.track));
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SelectableText(
-                              playing?.track.title ?? '',
+                              track?.title ?? '',
                               style: context.textTheme.titleLarge!.copyWith(
                                 color: context.colorScheme.onPrimaryContainer,
                               ),
@@ -67,8 +68,9 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                       const SizedBox(height: 4),
                       Consumer(
                         builder: (final context, final ref, final child) {
-                          final playing = ref.watch(playingProvider);
-                          if (playing == null) {
+                          final track = ref.watch(
+                              playingProvider.select((final p) => p?.track));
+                          if (track == null) {
                             return const SizedBox.shrink();
                           }
 
@@ -82,7 +84,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                   size: 20,
                                 ),
                                 label: ArtistText(
-                                  playing.track.artist,
+                                  track.artist,
                                   expandable: false,
                                 ),
                                 onPressed: () {},
@@ -93,7 +95,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                   size: 20,
                                 ),
                                 label: Text(
-                                  playing.track.albumTitle,
+                                  track.albumTitle,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -102,7 +104,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                       AnnixRouterDelegate.of(context);
                                   router.to(
                                     name: '/album',
-                                    arguments: playing.track.id.albumId,
+                                    arguments: track.id.albumId,
                                   );
                                 },
                               ),

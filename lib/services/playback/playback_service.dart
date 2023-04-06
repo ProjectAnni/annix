@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/annil.dart';
@@ -134,9 +133,10 @@ class PlaybackService extends ChangeNotifier {
   }
 
   _load() {
-    final queue = Global.preferences.getStringList('player.queue') ?? [];
+    final preferences = ref.read(preferencesProvider);
+    final queue = preferences.getStringList('player.queue') ?? [];
+    final playingIndex = preferences.getInt('player.playingIndex');
 
-    final playingIndex = Global.preferences.getInt('player.playingIndex');
     if (playingIndex != null &&
         playingIndex >= 0 &&
         playingIndex < queue.length) {
@@ -146,10 +146,10 @@ class PlaybackService extends ChangeNotifier {
       setPlayingIndex(playingIndex);
     }
 
-    final loopMode = Global.preferences.getInt('player.loopMode');
+    final loopMode = preferences.getInt('player.loopMode');
     this.loopMode = LoopMode.values[loopMode ?? 0];
 
-    volume = Global.preferences.getDouble('player.volume') ?? 1.0;
+    volume = preferences.getDouble('player.volume') ?? 1.0;
     PlaybackService.player.setVolume(volume);
 
     WidgetsBinding.instance.addPostFrameCallback((final _) =>
@@ -389,7 +389,7 @@ class PlaybackService extends ChangeNotifier {
   Future<void> setLoopMode(final LoopMode mode) async {
     loopMode = mode;
     notifyListeners();
-    await Global.preferences.setInt('player.loopMode', loopMode.index);
+    ref.read(preferencesProvider).set('player.loopMode', loopMode.index);
   }
 
   Future<void> setPlayingIndex(final int index,
@@ -403,11 +403,7 @@ class PlaybackService extends ChangeNotifier {
       this.playing = PlayingTrack(queue[index], ref);
     }
 
-    if (nowPlayingIndex != null) {
-      await Global.preferences.setInt('player.playingIndex', nowPlayingIndex);
-    } else {
-      await Global.preferences.remove('player.playingIndex');
-    }
+    ref.read(preferencesProvider).set('player.playingIndex', index);
     if (notify) notifyListeners();
   }
 
@@ -423,7 +419,7 @@ class PlaybackService extends ChangeNotifier {
       playing = null;
     }
 
-    await Global.preferences.setStringList('player.queue',
+    ref.read(preferencesProvider).set('player.queue',
         queue.map((final e) => jsonEncode(e.toJson())).toList());
 
     await play(reload: true);
@@ -434,7 +430,7 @@ class PlaybackService extends ChangeNotifier {
     notifyListeners();
 
     await PlaybackService.player.setVolume(volume);
-    await Global.preferences.setDouble('player.volume', volume);
+    ref.read(preferencesProvider).set('player.volume', volume);
   }
 
   Future<void> fullShuffleMode(

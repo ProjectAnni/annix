@@ -11,13 +11,14 @@ class FavoriteButton extends ConsumerWidget {
     final anniv = ref.read(annivProvider);
 
     final favoriteTracks = ref.watch(favoriteTracksProvider);
-    final playingTrack = ref.watch(playingProvider);
+    final playingTrack =
+        ref.watch(playingProvider.select((final p) => p?.track));
 
     final favorites = favoriteTracks.value ?? [];
     return IconButton(
       isSelected: favorites.any(
         (final f) =>
-            playingTrack?.identifier ==
+            playingTrack?.id ==
             TrackIdentifier(
               albumId: f.albumId,
               discId: f.discId,
@@ -27,9 +28,8 @@ class FavoriteButton extends ConsumerWidget {
       icon: const Icon(Icons.favorite_border_outlined),
       selectedIcon: const Icon(Icons.favorite_outlined),
       onPressed: () async {
-        final track = playingTrack?.track;
-        if (track != null) {
-          anniv.toggleFavoriteTrack(track);
+        if (playingTrack != null) {
+          anniv.toggleFavoriteTrack(playingTrack);
         }
       },
     );

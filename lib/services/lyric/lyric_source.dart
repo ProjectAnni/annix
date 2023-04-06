@@ -24,9 +24,8 @@ abstract class LyricSource {
   });
 
   static final _store = AnnixStore().category('lyric');
-  static Future<LyricResult?> getLocal(final String id) => _store
-      .get(id)
-      .then((final value) => value == null ? null : LyricResult.fromJson(value));
+  static Future<LyricResult?> getLocal(final String id) => _store.get(id).then(
+      (final value) => value == null ? null : LyricResult.fromJson(value));
 
   static Future<void> saveLocal(final String id, final LyricResult lyric) =>
       _store.set(id, lyric.toJson());

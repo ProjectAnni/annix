@@ -8,7 +8,7 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:we_slide/we_slide.dart';
 
-class AnnixLayoutDesktop extends ConsumerStatefulWidget {
+class AnnixLayoutDesktop extends StatefulWidget {
   final AnnixRouterDelegate router;
   final Widget child;
 
@@ -19,10 +19,10 @@ class AnnixLayoutDesktop extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AnnixLayoutDesktop> createState() => _AnnixLayoutDesktopState();
+  State<AnnixLayoutDesktop> createState() => _AnnixLayoutDesktopState();
 }
 
-class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
+class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
   static const pages = <String>[
     '/home',
     '/tags',
@@ -92,11 +92,11 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
           backgroundColor: Colors.transparent,
           appBarHeight: 60,
           appBar: Material(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Consumer(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                children: [
+                  Consumer(
                     builder: (final context, final ref, final child) {
                       final router = ref.watch(routerProvider);
                       return IconButton(
@@ -109,15 +109,17 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
                       );
                     },
                   ),
-                ),
-                const Spacer(),
-                const SizedBox(
-                  width: 360,
-                  child: HomeAppBar(
-                    padding: EdgeInsets.zero,
-                  ),
-                ),
-              ],
+                  const Spacer(),
+                  Consumer(builder: (final context, final ref, final child) {
+                    final info =
+                        ref.watch(annivProvider.select((final v) => v.info));
+                    return SizedBox(
+                      width: 360,
+                      child: HomeAppBar(padding: EdgeInsets.zero, info: info),
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
           body: child!,

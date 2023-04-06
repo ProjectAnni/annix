@@ -13,7 +13,29 @@ abstract class AnnixNative {
 
   FlutterRustBridgeTaskConstMeta get kUpdateNetworkStatusConstMeta;
 
-  Future<LocalStore> newStaticMethodLocalStore({required final String root, final dynamic hint});
+  NativePreferenceStore newStaticMethodNativePreferenceStore({required final String root, final dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodNativePreferenceStoreConstMeta;
+
+  String? getMethodNativePreferenceStore({required final NativePreferenceStore that, required final String key, final dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kGetMethodNativePreferenceStoreConstMeta;
+
+  void setMethodNativePreferenceStore(
+      {required final NativePreferenceStore that, required final String key, required final String value, final dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSetMethodNativePreferenceStoreConstMeta;
+
+  void removeMethodNativePreferenceStore({required final NativePreferenceStore that, required final String key, final dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kRemoveMethodNativePreferenceStoreConstMeta;
+
+  void removePrefixMethodNativePreferenceStore(
+      {required final NativePreferenceStore that, required final String prefix, final dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kRemovePrefixMethodNativePreferenceStoreConstMeta;
+
+  LocalStore newStaticMethodLocalStore({required final String root, final dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodLocalStoreConstMeta;
 
@@ -123,7 +145,7 @@ class LocalStore {
     required this.conn,
   });
 
-  static Future<LocalStore> newLocalStore({required final AnnixNative bridge, required final String root, final dynamic hint}) =>
+  static LocalStore newLocalStore({required final AnnixNative bridge, required final String root, final dynamic hint}) =>
       bridge.newStaticMethodLocalStore(root: root, hint: hint);
 
   Future<void> insert({required final String category, required final String key, required final String value, final dynamic hint}) =>
@@ -143,6 +165,41 @@ class LocalStore {
   Future<void> clear({final String? category, final dynamic hint}) => bridge.clearMethodLocalStore(
         that: this,
         category: category,
+      );
+}
+
+class NativePreferenceStore {
+  final AnnixNative bridge;
+  final MutexConnection conn;
+
+  const NativePreferenceStore({
+    required this.bridge,
+    required this.conn,
+  });
+
+  static NativePreferenceStore newNativePreferenceStore(
+          {required final AnnixNative bridge, required final String root, final dynamic hint}) =>
+      bridge.newStaticMethodNativePreferenceStore(root: root, hint: hint);
+
+  String? get({required final String key, final dynamic hint}) => bridge.getMethodNativePreferenceStore(
+        that: this,
+        key: key,
+      );
+
+  void set({required final String key, required final String value, final dynamic hint}) => bridge.setMethodNativePreferenceStore(
+        that: this,
+        key: key,
+        value: value,
+      );
+
+  void remove({required final String key, final dynamic hint}) => bridge.removeMethodNativePreferenceStore(
+        that: this,
+        key: key,
+      );
+
+  void removePrefix({required final String prefix, final dynamic hint}) => bridge.removePrefixMethodNativePreferenceStore(
+        that: this,
+        prefix: prefix,
       );
 }
 

@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -6,14 +7,26 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeAppBar extends ConsumerWidget {
   final EdgeInsets padding;
+  final SiteUserInfo? info;
 
-  const HomeAppBar({super.key, this.padding = const EdgeInsets.all(16)});
+  const HomeAppBar({
+    super.key,
+    this.padding = const EdgeInsets.all(16),
+    this.info,
+  });
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final info = ref.watch(annivProvider.select((final v) => v.info));
     if (info == null) {
-      return const _NotLoginAppBar();
+      return Align(
+        alignment: Alignment.centerRight,
+        child: TextButton(
+          child: Text(t.server.login),
+          onPressed: () {
+            AnnixRouterDelegate.of(context).to(name: '/login');
+          },
+        ),
+      );
     }
 
     final child = SearchBar(
@@ -21,7 +34,7 @@ class HomeAppBar extends ConsumerWidget {
       trailing: [
         IconButton(
           icon: CircleAvatar(
-            child: Text(info.user.nickname.substring(0, 1)),
+            child: Text(info!.user.nickname.substring(0, 1)),
           ),
           onPressed: () {
             AnnixRouterDelegate.of(context).to(name: '/server');
@@ -42,13 +55,18 @@ class HomeAppBar extends ConsumerWidget {
   }
 }
 
-class SliverHomeAppBar extends StatelessWidget {
+class SliverHomeAppBar extends ConsumerWidget {
   const SliverHomeAppBar({super.key});
 
   @override
-  Widget build(final BuildContext context) {
-    return const SliverToBoxAdapter(
-      child: HomeAppBar(),
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final info = ref.watch(annivProvider.select((final v) => v.info));
+    if (info == null) {
+      return const _NotLoginAppBar();
+    }
+
+    return SliverToBoxAdapter(
+      child: HomeAppBar(info: info),
     );
   }
 }

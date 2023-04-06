@@ -161,11 +161,12 @@ class _LyricView extends StatelessWidget {
         return Consumer(
           builder: (final iconColor, final ref, final child) {
             final player = ref.watch(playbackProvider);
-            final playing = ref.watch(playingProvider);
+            final position =
+                ref.watch(playingProvider.select((final p) => p?.position));
             return LyricsReader(
               model: lyric!.lyric.model,
               lyricUi: ui,
-              position: playing?.position.inMilliseconds ?? 0,
+              position: position?.inMilliseconds ?? 0,
               playing: player.playerStatus == PlayerStatus.playing,
               emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
             );

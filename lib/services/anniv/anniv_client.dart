@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -93,9 +92,9 @@ class AnnivClient {
     ));
   }
 
-  static PersistCookieJar _loadCookieJar() {
+  static PersistCookieJar _loadCookieJar(final Ref ref) {
     return PersistCookieJar(
-      storage: CookieStorage(),
+      storage: CookieStorage(ref.read(preferencesProvider)),
       ignoreExpires: true,
       persistSession: true,
     );
@@ -107,7 +106,7 @@ class AnnivClient {
     required final String email,
     required final String password,
   }) async {
-    final client = AnnivClient(ref, url: url, cookieJar: _loadCookieJar());
+    final client = AnnivClient(ref, url: url, cookieJar: _loadCookieJar(ref));
     await client._login(email: email, password: password);
     await client._save();
     return client;
@@ -116,17 +115,18 @@ class AnnivClient {
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
   static AnnivClient? load(final Ref ref) {
-    final annivUrl = Global.preferences.getString('anniv_url');
+    final preferences = ref.read(preferencesProvider);
+    final annivUrl = preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      return AnnivClient(ref, url: annivUrl, cookieJar: _loadCookieJar());
+      return AnnivClient(ref, url: annivUrl, cookieJar: _loadCookieJar(ref));
     }
   }
 
   /// Save anniv url to shared preferences
   Future<void> _save() async {
-    await Global.preferences.setString('anniv_url', _client.options.baseUrl);
+    ref.read(preferencesProvider).set('anniv_url', _client.options.baseUrl);
   }
 
   /// Get site info from Anniv server
@@ -164,7 +164,7 @@ class AnnivClient {
     // do not wait here
     _client.post('/api/user/logout').catchError((final err) {});
     _cookieJar.deleteAll();
-    await Global.preferences.remove('anniv_url');
+    ref.read(preferencesProvider).remove('anniv_url');
     return;
   }
 

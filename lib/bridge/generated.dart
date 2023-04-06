@@ -40,11 +40,101 @@ class AnnixNativeImpl implements AnnixNative {
         argNames: ["isOnline"],
       );
 
-  Future<LocalStore> newStaticMethodLocalStore({required String root, dynamic hint}) {
+  NativePreferenceStore newStaticMethodNativePreferenceStore({required String root, dynamic hint}) {
     var arg0 = _platform.api2wire_String(root);
-    return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_new__static_method__LocalStore(port_, arg0),
-      parseSuccessData: (d) => _wire2api_local_store(d),
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_new__static_method__NativePreferenceStore(arg0),
+      parseSuccessData: _wire2api_native_preference_store,
+      constMeta: kNewStaticMethodNativePreferenceStoreConstMeta,
+      argValues: [root],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodNativePreferenceStoreConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "new__static_method__NativePreferenceStore",
+        argNames: ["root"],
+      );
+
+  String? getMethodNativePreferenceStore({required NativePreferenceStore that, required String key, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_native_preference_store(that);
+    var arg1 = _platform.api2wire_String(key);
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_get__method__NativePreferenceStore(arg0, arg1),
+      parseSuccessData: _wire2api_opt_String,
+      constMeta: kGetMethodNativePreferenceStoreConstMeta,
+      argValues: [that, key],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kGetMethodNativePreferenceStoreConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "get__method__NativePreferenceStore",
+        argNames: ["that", "key"],
+      );
+
+  void setMethodNativePreferenceStore(
+      {required NativePreferenceStore that, required String key, required String value, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_native_preference_store(that);
+    var arg1 = _platform.api2wire_String(key);
+    var arg2 = _platform.api2wire_String(value);
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_set__method__NativePreferenceStore(arg0, arg1, arg2),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSetMethodNativePreferenceStoreConstMeta,
+      argValues: [that, key, value],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSetMethodNativePreferenceStoreConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "set__method__NativePreferenceStore",
+        argNames: ["that", "key", "value"],
+      );
+
+  void removeMethodNativePreferenceStore({required NativePreferenceStore that, required String key, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_native_preference_store(that);
+    var arg1 = _platform.api2wire_String(key);
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_remove__method__NativePreferenceStore(arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kRemoveMethodNativePreferenceStoreConstMeta,
+      argValues: [that, key],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kRemoveMethodNativePreferenceStoreConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "remove__method__NativePreferenceStore",
+        argNames: ["that", "key"],
+      );
+
+  void removePrefixMethodNativePreferenceStore(
+      {required NativePreferenceStore that, required String prefix, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_native_preference_store(that);
+    var arg1 = _platform.api2wire_String(prefix);
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_remove_prefix__method__NativePreferenceStore(arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kRemovePrefixMethodNativePreferenceStoreConstMeta,
+      argValues: [that, prefix],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kRemovePrefixMethodNativePreferenceStoreConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "remove_prefix__method__NativePreferenceStore",
+        argNames: ["that", "prefix"],
+      );
+
+  LocalStore newStaticMethodLocalStore({required String root, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(root);
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_new__static_method__LocalStore(arg0),
+      parseSuccessData: _wire2api_local_store,
       constMeta: kNewStaticMethodLocalStoreConstMeta,
       argValues: [root],
       hint: hint,
@@ -236,6 +326,15 @@ class AnnixNativeImpl implements AnnixNative {
     );
   }
 
+  NativePreferenceStore _wire2api_native_preference_store(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return NativePreferenceStore(
+      bridge: this,
+      conn: _wire2api_MutexConnection(arr[0]),
+    );
+  }
+
   String? _wire2api_opt_String(dynamic raw) {
     return raw == null ? null : _wire2api_String(raw);
   }
@@ -320,6 +419,13 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
   }
 
   @protected
+  ffi.Pointer<wire_NativePreferenceStore> api2wire_box_autoadd_native_preference_store(NativePreferenceStore raw) {
+    final ptr = inner.new_box_autoadd_native_preference_store_0();
+    _api_fill_to_wire_native_preference_store(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_uint_8_list> api2wire_opt_String(String? raw) {
     return raw == null ? ffi.nullptr : api2wire_String(raw);
   }
@@ -355,11 +461,20 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
     _api_fill_to_wire_local_store(apiObj, wireObj.ref);
   }
 
+  void _api_fill_to_wire_box_autoadd_native_preference_store(
+      NativePreferenceStore apiObj, ffi.Pointer<wire_NativePreferenceStore> wireObj) {
+    _api_fill_to_wire_native_preference_store(apiObj, wireObj.ref);
+  }
+
   void _api_fill_to_wire_local_db(LocalDb apiObj, wire_LocalDb wireObj) {
     wireObj.repo = api2wire_MutexRepoDatabaseRead(apiObj.repo);
   }
 
   void _api_fill_to_wire_local_store(LocalStore apiObj, wire_LocalStore wireObj) {
+    wireObj.conn = api2wire_MutexConnection(apiObj.conn);
+  }
+
+  void _api_fill_to_wire_native_preference_store(NativePreferenceStore apiObj, wire_NativePreferenceStore wireObj) {
     wireObj.conn = api2wire_MutexConnection(apiObj.conn);
   }
 }
@@ -457,21 +572,104 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Bool)>>('wire_update_network_status');
   late final _wire_update_network_status = _wire_update_network_statusPtr.asFunction<void Function(int, bool)>();
 
-  void wire_new__static_method__LocalStore(
-    int port_,
+  WireSyncReturn wire_new__static_method__NativePreferenceStore(
+    ffi.Pointer<wire_uint_8_list> root,
+  ) {
+    return _wire_new__static_method__NativePreferenceStore(
+      root,
+    );
+  }
+
+  late final _wire_new__static_method__NativePreferenceStorePtr =
+      _lookup<ffi.NativeFunction<WireSyncReturn Function(ffi.Pointer<wire_uint_8_list>)>>(
+          'wire_new__static_method__NativePreferenceStore');
+  late final _wire_new__static_method__NativePreferenceStore = _wire_new__static_method__NativePreferenceStorePtr
+      .asFunction<WireSyncReturn Function(ffi.Pointer<wire_uint_8_list>)>();
+
+  WireSyncReturn wire_get__method__NativePreferenceStore(
+    ffi.Pointer<wire_NativePreferenceStore> that,
+    ffi.Pointer<wire_uint_8_list> key,
+  ) {
+    return _wire_get__method__NativePreferenceStore(
+      that,
+      key,
+    );
+  }
+
+  late final _wire_get__method__NativePreferenceStorePtr = _lookup<
+      ffi.NativeFunction<
+          WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_get__method__NativePreferenceStore');
+  late final _wire_get__method__NativePreferenceStore = _wire_get__method__NativePreferenceStorePtr
+      .asFunction<WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>, ffi.Pointer<wire_uint_8_list>)>();
+
+  WireSyncReturn wire_set__method__NativePreferenceStore(
+    ffi.Pointer<wire_NativePreferenceStore> that,
+    ffi.Pointer<wire_uint_8_list> key,
+    ffi.Pointer<wire_uint_8_list> value,
+  ) {
+    return _wire_set__method__NativePreferenceStore(
+      that,
+      key,
+      value,
+    );
+  }
+
+  late final _wire_set__method__NativePreferenceStorePtr = _lookup<
+      ffi.NativeFunction<
+          WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_set__method__NativePreferenceStore');
+  late final _wire_set__method__NativePreferenceStore = _wire_set__method__NativePreferenceStorePtr.asFunction<
+      WireSyncReturn Function(
+          ffi.Pointer<wire_NativePreferenceStore>, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  WireSyncReturn wire_remove__method__NativePreferenceStore(
+    ffi.Pointer<wire_NativePreferenceStore> that,
+    ffi.Pointer<wire_uint_8_list> key,
+  ) {
+    return _wire_remove__method__NativePreferenceStore(
+      that,
+      key,
+    );
+  }
+
+  late final _wire_remove__method__NativePreferenceStorePtr = _lookup<
+      ffi.NativeFunction<
+          WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_remove__method__NativePreferenceStore');
+  late final _wire_remove__method__NativePreferenceStore = _wire_remove__method__NativePreferenceStorePtr
+      .asFunction<WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>, ffi.Pointer<wire_uint_8_list>)>();
+
+  WireSyncReturn wire_remove_prefix__method__NativePreferenceStore(
+    ffi.Pointer<wire_NativePreferenceStore> that,
+    ffi.Pointer<wire_uint_8_list> prefix,
+  ) {
+    return _wire_remove_prefix__method__NativePreferenceStore(
+      that,
+      prefix,
+    );
+  }
+
+  late final _wire_remove_prefix__method__NativePreferenceStorePtr = _lookup<
+      ffi.NativeFunction<
+          WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_remove_prefix__method__NativePreferenceStore');
+  late final _wire_remove_prefix__method__NativePreferenceStore = _wire_remove_prefix__method__NativePreferenceStorePtr
+      .asFunction<WireSyncReturn Function(ffi.Pointer<wire_NativePreferenceStore>, ffi.Pointer<wire_uint_8_list>)>();
+
+  WireSyncReturn wire_new__static_method__LocalStore(
     ffi.Pointer<wire_uint_8_list> root,
   ) {
     return _wire_new__static_method__LocalStore(
-      port_,
       root,
     );
   }
 
   late final _wire_new__static_method__LocalStorePtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>(
+      _lookup<ffi.NativeFunction<WireSyncReturn Function(ffi.Pointer<wire_uint_8_list>)>>(
           'wire_new__static_method__LocalStore');
   late final _wire_new__static_method__LocalStore =
-      _wire_new__static_method__LocalStorePtr.asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+      _wire_new__static_method__LocalStorePtr.asFunction<WireSyncReturn Function(ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_insert__method__LocalStore(
     int port_,
@@ -643,6 +841,16 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _new_box_autoadd_local_store_0 =
       _new_box_autoadd_local_store_0Ptr.asFunction<ffi.Pointer<wire_LocalStore> Function()>();
 
+  ffi.Pointer<wire_NativePreferenceStore> new_box_autoadd_native_preference_store_0() {
+    return _new_box_autoadd_native_preference_store_0();
+  }
+
+  late final _new_box_autoadd_native_preference_store_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>>(
+          'new_box_autoadd_native_preference_store_0');
+  late final _new_box_autoadd_native_preference_store_0 =
+      _new_box_autoadd_native_preference_store_0Ptr.asFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>();
+
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
   ) {
@@ -733,6 +941,10 @@ class wire_uint_8_list extends ffi.Struct {
 
 class wire_MutexConnection extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
+}
+
+class wire_NativePreferenceStore extends ffi.Struct {
+  external wire_MutexConnection conn;
 }
 
 class wire_LocalStore extends ffi.Struct {

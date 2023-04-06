@@ -19,17 +19,18 @@ class PlayingMusicCover extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final playing = ref.watch(playingProvider);
+    final playingId =
+        ref.watch(playingProvider.select((final v) => v?.identifier));
     Widget child;
 
-    if (playing == null) {
+    if (playingId == null) {
       // not playing
       child = const DummyMusicCover();
     } else {
       // is playing
       child = MusicCover.fromAlbum(
-        key: ValueKey(playing.identifier.albumId),
-        albumId: playing.identifier.albumId,
+        key: ValueKey(playingId.albumId),
+        albumId: playingId.albumId,
         fit: fit,
         filterQuality: filterQuality,
         onImage: (final provider) async {

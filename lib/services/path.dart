@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
@@ -7,9 +8,7 @@ class PathService {
   static late final String storageRoot;
   static late final String dataRoot;
 
-  PathService();
-
-  Future<void> init() async {
+  static Future<void> init() async {
     final isPortableMode = File(p.normalize(
             p.join(Platform.resolvedExecutable, '..', 'portable.enable')))
         .existsSync();
@@ -34,6 +33,9 @@ class PathService {
         storageRoot = (await getExternalStorageDirectory())!.path;
       }
     }
+
+    debugPrint('storageRoot: $storageRoot');
+    debugPrint('dataRoot: $dataRoot');
   }
 }
 
