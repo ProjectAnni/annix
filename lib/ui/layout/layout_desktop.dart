@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/route/delegate.dart';
@@ -8,7 +9,7 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:we_slide/we_slide.dart';
 
-class AnnixLayoutDesktop extends StatefulWidget {
+class AnnixLayoutDesktop extends ConsumerWidget {
   final AnnixRouterDelegate router;
   final Widget child;
 
@@ -18,11 +19,6 @@ class AnnixLayoutDesktop extends StatefulWidget {
     required this.router,
   });
 
-  @override
-  State<AnnixLayoutDesktop> createState() => _AnnixLayoutDesktopState();
-}
-
-class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
   static const pages = <String>[
     '/home',
     '/tags',
@@ -30,21 +26,21 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
   ];
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
 
     final body = Material(
       child: Row(
         children: <Widget>[
           (() {
-            final route = widget.router.currentRoute;
+            final route = router.currentRoute;
             final selectedIndex =
                 pages.contains(route) ? pages.indexOf(route) : null;
 
             return NavigationRail(
               selectedIndex: selectedIndex,
               onDestinationSelected: (final index) {
-                widget.router.off(name: pages[index]);
+                router.off(name: pages[index]);
               },
               labelType: NavigationRailLabelType.all,
               destinations: <NavigationRailDestination>[
@@ -71,7 +67,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(child: widget.child),
+                Expanded(child: child),
               ],
             ),
           ),
@@ -83,7 +79,7 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
       child: body,
       builder: (final context, final ref, final child) {
         return WeSlide(
-          controller: widget.router.slideController,
+          controller: router.slideController,
           hideAppBar: false,
           hideFooter: false,
           parallax: true,
@@ -133,7 +129,11 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
               final isPlaying = ref.read(
                   playbackProvider.select((final p) => p.playing != null));
               if (isPlaying) {
-                widget.router.slideController.show();
+                if (router.slideController.isOpened) {
+                  router.slideController.hide();
+                } else {
+                  router.slideController.show();
+                }
               }
             },
           ),
@@ -142,14 +142,13 @@ class _AnnixLayoutDesktopState extends State<AnnixLayoutDesktop> {
     );
 
     final root = Scaffold(body: slide);
-    return root;
 
-    // return Navigator(
-    //   pages: [MaterialPage(child: root)],
-    //   onPopPage: (final route, final result) {
-    //     return false;
-    //   },
-    //   observers: [ThemePopObserver(ref.read(themeProvider))],
-    // );
+    return Navigator(
+      pages: [MaterialPage(child: root)],
+      onPopPage: (final route, final result) {
+        return false;
+      },
+      observers: [ThemePopObserver(ref.read(themeProvider))],
+    );
   }
 }
