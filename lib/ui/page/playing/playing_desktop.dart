@@ -1,6 +1,7 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -36,9 +37,13 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                 Expanded(
                   flex: 10,
                   child: Center(
-                    child: showPlaylist
-                        ? PlayingQueue(controller: ScrollController())
-                        : const PlayingMusicCover(card: true),
+                    child: FadeIndexedStack(
+                      index: showPlaylist ? 0 : 1,
+                      children: [
+                        PlayingQueue(controller: ScrollController()),
+                        const PlayingMusicCover(card: true),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
