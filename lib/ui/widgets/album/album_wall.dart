@@ -14,12 +14,13 @@ class AlbumWall extends StatefulWidget {
 
 class _AlbumWallState extends State<AlbumWall> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return MasonryGridView.count(
+      primary: false,
       crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (final BuildContext context, final int index) {
         final albumId = widget.albumIds[index];
         return AlbumGrid(
           albumId: albumId,

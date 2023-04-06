@@ -1,4 +1,4 @@
-import 'package:annix/services/lyric/lyric_provider.dart';
+import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -15,7 +15,7 @@ enum PlayerStatus {
   paused,
   stopped;
 
-  factory PlayerStatus.fromPlayingStatus(PlayerState state) {
+  factory PlayerStatus.fromPlayingStatus(final PlayerState state) {
     switch (state) {
       case PlayerState.playing:
         return PlayerStatus.playing;

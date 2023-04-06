@@ -1,14 +1,12 @@
-import 'package:annix/services/annil/annil.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class _SongPlayRecordResultWithMetadata {
   final SongPlayRecordResult record;
@@ -23,24 +21,24 @@ class _SongPlayRecordResultWithMetadata {
   int get count => record.count;
 }
 
-class PlaybackHistoryPage extends StatelessWidget {
+class PlaybackHistoryPage extends ConsumerWidget {
   const PlaybackHistoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final annil = context.read<AnnilService>();
-    final anniv = context.read<AnnivService>();
-    final metadata = context.read<MetadataService>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final annil = ref.read(annilProvider);
+    final anniv = ref.read(annivProvider);
+    final metadata = ref.read(metadataProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(t.recent_played),
       ),
       body: FutureBuilder<List<_SongPlayRecordResultWithMetadata>>(
-        future: anniv.client?.getUserPlaybackStats().then((data) {
-          final tracks = data.map((t) => t.track).toList();
-          return metadata.getTracks(tracks).then((meta) {
-            return data.map((record) {
+        future: anniv.client?.getUserPlaybackStats().then((final data) {
+          final tracks = data.map((final t) => t.track).toList();
+          return metadata.getTracks(tracks).then((final meta) {
+            return data.map((final record) {
               return _SongPlayRecordResultWithMetadata(
                 record: record,
                 metadata:
@@ -49,7 +47,7 @@ class PlaybackHistoryPage extends StatelessWidget {
             }).toList();
           });
         }),
-        builder: (context, snapshot) {
+        builder: (final context, final snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             final data = snapshot.data!;
             return ListView(
@@ -79,9 +77,9 @@ class PlaybackHistoryPage extends StatelessWidget {
                       ),
                     ),
                     onTap: () async {
-                      final player = context.read<PlaybackService>();
+                      final player = ref.read(playbackProvider);
                       final sources = data
-                          .map((track) =>
+                          .map((final track) =>
                               AnnilAudioSource(track: record.metadata))
                           .toList();
 

@@ -1,11 +1,14 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
-import 'package:annix/services/network/network.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
   final AnnivService anniv;
+
+  Ref get ref => anniv.ref;
 
   AnnivMetadataSource(this.anniv);
 
@@ -13,10 +16,10 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
   Future<void> prepare() async {}
 
   @override
-  Future<Map<String, Album>> getAlbumsDetail(List<String> albums) async {
+  Future<Map<String, Album>> getAlbumsDetail(final List<String> albums) async {
     final client = anniv.client;
 
-    if (NetworkService.isOnline && client != null) {
+    if (ref.read(isOnlineProvider) && client != null) {
       return await client.getAlbumMetadata(albums);
     } else {
       return {};
@@ -24,15 +27,15 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
   }
 
   @override
-  Future<Set<String>> getAlbumsByTag(String tag) async {
+  Future<Set<String>> getAlbumsByTag(final String tag) async {
     final client = anniv.client;
 
-    if (NetworkService.isOnline && client != null) {
+    if (ref.read(isOnlineProvider) && client != null) {
       final albums = await client.getAlbumsByTag(tag);
       for (final album in albums) {
         persist(album);
       }
-      return albums.map((e) => e.albumId).toSet();
+      return albums.map((final e) => e.albumId).toSet();
     } else {
       return {};
     }
@@ -42,13 +45,13 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
   Future<Map<String, TagEntry>> getTags() async {
     final client = anniv.client;
 
-    if (NetworkService.isOnline && client != null) {
+    if (ref.read(isOnlineProvider) && client != null) {
       final result =
           await Future.wait([client.getTags(), client.getTagsRelationship()]);
       final tags = result[0] as List<TagInfo>;
       final childrenMap = result[1] as Map<String, List<String>>;
       return Map.fromEntries(tags.map(
-        (e) => MapEntry(
+        (final e) => MapEntry(
           e.name,
           TagEntry(
             name: e.name,

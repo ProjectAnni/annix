@@ -5,34 +5,33 @@ import 'package:annix/services/local/cache.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:flutter_lyric/lyrics_reader_model.dart';
 
-enum LyricProviders {
+enum LyricSources {
   // ignore: constant_identifier_names
   PetitLyrics,
   // ignore: constant_identifier_names
   Netease,
 }
 
-/// [LyricProvider] is an abstract class that provides methods to search and fetch lyrics.
+/// [LyricSource] is an abstract class that provides methods to search and fetch lyrics.
 ///
 /// The [search] method returns a list of handles that can be used to fetch the lyrics.
-abstract class LyricProvider {
+abstract class LyricSource {
   Future<List<LyricSearchResponse>> search({
-    required TrackIdentifier track,
-    required String title,
-    String? artist,
-    String? album,
+    required final TrackIdentifier track,
+    required final String title,
+    final String? artist,
+    final String? album,
   });
 
   static final _store = AnnixStore().category('lyric');
-  static Future<LyricResult?> getLocal(String id) => _store
-      .get(id)
-      .then((value) => value == null ? null : LyricResult.fromJson(value));
+  static Future<LyricResult?> getLocal(final String id) => _store.get(id).then(
+      (final value) => value == null ? null : LyricResult.fromJson(value));
 
-  static Future<void> saveLocal(String id, LyricResult lyric) =>
+  static Future<void> saveLocal(final String id, final LyricResult lyric) =>
       _store.set(id, lyric.toJson());
 }
 
-/// [LyricSearchResponse] is the response of [LyricProvider.search].
+/// [LyricSearchResponse] is the response of [LyricSource.search].
 abstract class LyricSearchResponse {
   String get title;
   List<String> get artists;
@@ -96,7 +95,7 @@ class LyricResult {
       model: modelJson == null
           ? null
           : (LyricsModelBuilder.create()
-                ..mainLines = modelJson.map((lineJson) {
+                ..mainLines = modelJson.map((final lineJson) {
                   final line = LyricsLineModel();
                   line.startTime = lineJson['startTime'];
                   line.mainText = lineJson['mainText'];
@@ -104,7 +103,7 @@ class LyricResult {
 
                   if (lineJson['spanList'] != null) {
                     final spans = lineJson['spanList'] as List<dynamic>;
-                    line.spanList = spans.map((spanJson) {
+                    line.spanList = spans.map((final spanJson) {
                       final span = LyricSpanInfo();
                       span.index = spanJson['index'];
                       span.start = spanJson['start'];
@@ -126,7 +125,7 @@ class LyricResult {
     if (model == null) {
       json['model'] = null;
     } else {
-      json['model'] = model!.lyrics.map((line) {
+      json['model'] = model!.lyrics.map((final line) {
         final lineJson = <String, dynamic>{};
         lineJson['startTime'] = line.startTime;
         lineJson['mainText'] = line.mainText;
@@ -135,7 +134,7 @@ class LyricResult {
         if (line.spanList == null) {
           lineJson['spanList'] = null;
         } else {
-          lineJson['spanList'] = line.spanList!.map((span) {
+          lineJson['spanList'] = line.spanList!.map((final span) {
             final spanJson = <String, dynamic>{};
             spanJson['index'] = span.index;
             spanJson['start'] = span.start;

@@ -1,6 +1,7 @@
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -8,12 +9,10 @@ import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PlayingDesktopScreen extends StatefulWidget {
-  const PlayingDesktopScreen({super.key, required this.onBack});
-
-  final VoidCallback onBack;
+  const PlayingDesktopScreen({super.key});
 
   @override
   State<PlayingDesktopScreen> createState() => _PlayingDesktopScreenState();
@@ -23,18 +22,11 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
   bool showPlaylist = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: widget.onBack,
-            ),
-          ),
           Expanded(
             flex: 20,
             child: Row(
@@ -45,9 +37,13 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                 Expanded(
                   flex: 10,
                   child: Center(
-                    child: showPlaylist
-                        ? PlayingQueue(controller: ScrollController())
-                        : const PlayingMusicCover(card: true),
+                    child: FadeIndexedStack(
+                      index: showPlaylist ? 0 : 1,
+                      children: [
+                        PlayingQueue(controller: ScrollController()),
+                        const PlayingMusicCover(card: true),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -58,12 +54,14 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Consumer<PlaybackService>(
-                        builder: (context, player, child) {
+                      Consumer(
+                        builder: (final context, final ref, final child) {
+                          final track = ref.watch(
+                              playingProvider.select((final p) => p?.track));
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SelectableText(
-                              player.playing?.track.title ?? '',
+                              track?.title ?? '',
                               style: context.textTheme.titleLarge!.copyWith(
                                 color: context.colorScheme.onPrimaryContainer,
                               ),
@@ -73,9 +71,10 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                         },
                       ),
                       const SizedBox(height: 4),
-                      Consumer<PlaybackService>(
-                        builder: (context, player, child) {
-                          final track = player.playing?.track;
+                      Consumer(
+                        builder: (final context, final ref, final child) {
+                          final track = ref.watch(
+                              playingProvider.select((final p) => p?.track));
                           if (track == null) {
                             return const SizedBox.shrink();
                           }
@@ -164,20 +163,24 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                           });
                         },
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.lyrics_outlined),
-                        onPressed: () {
-                          final player = context.read<PlaybackService>();
-                          final playing = player.playing?.track;
-                          if (playing != null) {
-                            showDialog(
-                              context: context,
-                              useRootNavigator: true,
-                              builder: (context) {
-                                return SearchLyricsDialog(track: playing);
-                              },
-                            );
-                          }
+                      Consumer(
+                        builder: (final context, final ref, final child) {
+                          return IconButton(
+                            icon: const Icon(Icons.lyrics_outlined),
+                            onPressed: () {
+                              final player = ref.read(playbackProvider);
+                              final playing = player.playing?.track;
+                              if (playing != null) {
+                                showDialog(
+                                  context: context,
+                                  useRootNavigator: true,
+                                  builder: (final context) {
+                                    return SearchLyricsDialog(track: playing);
+                                  },
+                                );
+                              }
+                            },
+                          );
                         },
                       ),
                       IconButton(

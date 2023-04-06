@@ -11,10 +11,10 @@ typedef AnnixRoutePageBuilder = Widget Function(
 );
 
 Widget fadeThroughTransitionBuilder(
-  BuildContext context,
-  Animation<double> animation,
-  Animation<double> secondaryAnimation,
-  Widget child,
+  final BuildContext context,
+  final Animation<double> animation,
+  final Animation<double> secondaryAnimation,
+  final Widget child,
 ) {
   return FadeThroughTransition(
     animation: animation,
@@ -23,11 +23,20 @@ Widget fadeThroughTransitionBuilder(
   );
 }
 
+Widget noneTransitionBuilder(
+  final BuildContext context,
+  final Animation<double> animation,
+  final Animation<double> secondaryAnimation,
+  final Widget child,
+) {
+  return child;
+}
+
 Widget fadeTransitionBuilder(
-  BuildContext context,
-  Animation<double> animation,
-  Animation<double> secondaryAnimation,
-  Widget child,
+  final BuildContext context,
+  final Animation<double> animation,
+  final Animation<double> secondaryAnimation,
+  final Widget child,
 ) {
   return FadeTransition(
     opacity: animation,
@@ -36,13 +45,13 @@ Widget fadeTransitionBuilder(
 }
 
 class AnnixPage extends Page {
-  final bool disableAppBarDismissal;
+  final bool? disableAppBarDismissal;
   final Widget child;
   final AnnixRoutePageBuilder? pageBuilder;
   final Duration? transitionDuration;
 
   const AnnixPage({
-    this.disableAppBarDismissal = false,
+    this.disableAppBarDismissal,
     required this.child,
     super.key,
     super.name,
@@ -52,13 +61,17 @@ class AnnixPage extends Page {
   });
 
   @override
-  Route createRoute(BuildContext context) {
+  Route createRoute(final BuildContext context) {
+    final transitionDuration = context.isDesktop
+        ? const Duration(milliseconds: 150)
+        : this.transitionDuration ?? const Duration(milliseconds: 300);
     return AnnixRoute(
-      disableAppBarDismissal: disableAppBarDismissal,
+      disableAppBarDismissal:
+          disableAppBarDismissal ?? context.isDesktopOrLandscape,
       settings: this,
-      transitionDuration:
-          transitionDuration ?? const Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) {
+      transitionDuration: transitionDuration,
+      reverseTransitionDuration: transitionDuration,
+      pageBuilder: (final context, final animation, final secondaryAnimation) {
         return (pageBuilder ??
             (context.isDesktopOrLandscape
                 ? fadeTransitionBuilder

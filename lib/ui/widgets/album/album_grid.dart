@@ -1,18 +1,18 @@
-import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum AlbumGridStyle {
   card,
   none,
 }
 
-class AlbumGrid extends StatelessWidget {
+class AlbumGrid extends ConsumerWidget {
   final String albumId;
   final AlbumGridStyle style;
 
@@ -23,12 +23,12 @@ class AlbumGrid extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final metadata = context.read<MetadataService>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final metadata = ref.read(metadataProvider);
     final metadataFuture = metadata.getAlbum(albumId: albumId);
 
-    void toAlbum(BuildContext context) {
-      metadataFuture.then((album) {
+    void toAlbum(final BuildContext context) {
+      metadataFuture.then((final album) {
         if (album != null) {
           AnnixRouterDelegate.of(context).to(name: '/album', arguments: album);
         }
@@ -48,7 +48,7 @@ class AlbumGrid extends StatelessWidget {
         ),
         FutureBuilder<Album?>(
           future: metadataFuture,
-          builder: (context, snapshot) {
+          builder: (final context, final snapshot) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               child: Column(

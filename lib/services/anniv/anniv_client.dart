@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -13,6 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 import 'package:f_logs/f_logs.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as p;
 
 class AnnivError extends Error {
@@ -30,8 +31,10 @@ class AnnivError extends Error {
 class AnnivClient {
   final Dio _client;
   final CookieJar _cookieJar;
+  final Ref ref;
 
-  AnnivClient({required String url, required CookieJar cookieJar})
+  AnnivClient(this.ref,
+      {required final String url, required final CookieJar cookieJar})
       : _client = Dio(
           BaseOptions(
             baseUrl: url,
@@ -42,11 +45,12 @@ class AnnivClient {
         _cookieJar = cookieJar {
     _client.interceptors.add(CookieManager(_cookieJar));
     _client.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        options.queryParameters.removeWhere((key, value) => value == false);
+      onRequest: (final options, final handler) {
+        options.queryParameters
+            .removeWhere((final key, final value) => value == false);
         return handler.next(options);
       },
-      onResponse: (response, handler) {
+      onResponse: (final response, final handler) {
         if (response.statusCode != 200) {
           // response status of anniv MUST be 200
           return handler.reject(DioError(
@@ -88,20 +92,21 @@ class AnnivClient {
     ));
   }
 
-  static PersistCookieJar _loadCookieJar() {
+  static PersistCookieJar _loadCookieJar(final Ref ref) {
     return PersistCookieJar(
-      storage: CookieStorage(),
+      storage: CookieStorage(ref.read(preferencesProvider)),
       ignoreExpires: true,
       persistSession: true,
     );
   }
 
-  static Future<AnnivClient> login({
-    required String url,
-    required String email,
-    required String password,
+  static Future<AnnivClient> login(
+    final Ref ref, {
+    required final String url,
+    required final String email,
+    required final String password,
   }) async {
-    final client = AnnivClient(url: url, cookieJar: _loadCookieJar());
+    final client = AnnivClient(ref, url: url, cookieJar: _loadCookieJar(ref));
     await client._login(email: email, password: password);
     await client._save();
     return client;
@@ -109,18 +114,19 @@ class AnnivClient {
 
   /// Load anniv url from shared preferences & load cookies
   /// If no url is found or not login, return null
-  static AnnivClient? load() {
-    final annivUrl = Global.preferences.getString('anniv_url');
+  static AnnivClient? load(final Ref ref) {
+    final preferences = ref.read(preferencesProvider);
+    final annivUrl = preferences.getString('anniv_url');
     if (annivUrl == null) {
       return null;
     } else {
-      return AnnivClient(url: annivUrl, cookieJar: _loadCookieJar());
+      return AnnivClient(ref, url: annivUrl, cookieJar: _loadCookieJar(ref));
     }
   }
 
   /// Save anniv url to shared preferences
   Future<void> _save() async {
-    await Global.preferences.setString('anniv_url', _client.options.baseUrl);
+    ref.read(preferencesProvider).set('anniv_url', _client.options.baseUrl);
   }
 
   /// Get site info from Anniv server
@@ -140,8 +146,8 @@ class AnnivClient {
 
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95
   Future<UserInfo> _login({
-    required String email,
-    required String password,
+    required final String email,
+    required final String password,
   }) async {
     final response = await _client.post(
       '/api/user/login',
@@ -156,9 +162,9 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     // do not wait here
-    _client.post('/api/user/logout').catchError((err) {});
+    _client.post('/api/user/logout').catchError((final err) {});
     _cookieJar.deleteAll();
-    await Global.preferences.remove('anniv_url');
+    ref.read(preferencesProvider).remove('anniv_url');
     return;
   }
 
@@ -166,17 +172,17 @@ class AnnivClient {
   Future<List<AnnilToken>> getCredentials() async {
     final response = await _client.get('/api/credential');
     return (response.data as List<dynamic>)
-        .map((e) => AnnilToken.fromJson(e))
+        .map((final e) => AnnilToken.fromJson(e))
         .toList();
   }
 
   /// https://book.anni.rs/06.anniv/04.credential.html#%E4%BF%AE%E6%94%B9-token
   Future<void> updateCredential(
-    String id, {
-    String? name,
-    String? url,
-    String? token,
-    int? priority,
+    final String id, {
+    final String? name,
+    final String? url,
+    final String? token,
+    final int? priority,
   }) async {
     await _client.patch('/api/credential', data: {
       'id': id,
@@ -188,14 +194,15 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/08.meta.html#%E4%B8%93%E8%BE%91%E4%BF%A1%E6%81%AF
-  Future<Map<String, Album>> getAlbumMetadata(List<String> albums) async {
+  Future<Map<String, Album>> getAlbumMetadata(final List<String> albums) async {
     final response =
         await _client.get('/api/meta/album', queryParameters: {'id[]': albums});
     final Map<String, dynamic> responseAlbums = response.data;
     return responseAlbums
-        .map((key, value) => MapEntry(key, value as Map<String, dynamic>))
+        .map((final key, final value) =>
+            MapEntry(key, value as Map<String, dynamic>))
         .map(
-          (albumId, album) => MapEntry(
+          (final albumId, final album) => MapEntry(
             albumId,
             Album.fromJson(album),
           ),
@@ -204,10 +211,10 @@ class AnnivClient {
 
   // https://book.anni.rs/06.anniv/09.search.html
   Future<SearchResult> search(
-    String keyword, {
-    bool searchAlbums = false,
-    bool searchTracks = false,
-    bool searchPlaylists = false,
+    final String keyword, {
+    final bool searchAlbums = false,
+    final bool searchTracks = false,
+    final bool searchPlaylists = false,
   }) async {
     final response = await _client.get('/api/search', queryParameters: {
       'keyword': keyword,
@@ -222,12 +229,12 @@ class AnnivClient {
   Future<List<TrackInfoWithAlbum>> getFavoriteTracks() async {
     final response = await _client.get('/api/favorite/music');
     return (response.data as List<dynamic>)
-        .map((e) => TrackInfoWithAlbum.fromJson(e))
+        .map((final e) => TrackInfoWithAlbum.fromJson(e))
         .toList();
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E6%B7%BB%E5%8A%A0%E5%8D%95%E6%9B%B2
-  Future<void> addFavoriteTrack(TrackIdentifier track) async {
+  Future<void> addFavoriteTrack(final TrackIdentifier track) async {
     await _client.put('/api/favorite/music', data: {
       'album_id': track.albumId,
       'disc_id': track.discId,
@@ -236,7 +243,7 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E5%88%A0%E9%99%A4%E5%8D%95%E6%9B%B2
-  Future<void> removeFavoriteTrack(TrackIdentifier track) async {
+  Future<void> removeFavoriteTrack(final TrackIdentifier track) async {
     await _client.delete('/api/favorite/music', data: {
       'album_id': track.albumId,
       'disc_id': track.discId,
@@ -251,31 +258,31 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E6%B7%BB%E5%8A%A0%E6%94%B6%E8%97%8F%E4%B8%93%E8%BE%91
-  Future<void> addFavoriteAlbum(String albumId) async {
+  Future<void> addFavoriteAlbum(final String albumId) async {
     await _client.put('/api/favorite/album', data: {
       'album_id': albumId,
     });
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E5%88%A0%E9%99%A4%E6%94%B6%E8%97%8F%E4%B8%93%E8%BE%91
-  Future<void> removeFavoriteAlbum(String albumId) async {
+  Future<void> removeFavoriteAlbum(final String albumId) async {
     await _client.delete('/api/favorite/album', data: {
       'album_id': albumId,
     });
   }
 
   // https://book.anni.rs/06.anniv/03.playlist.html#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E7%94%A8%E6%88%B7%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
-  Future<List<PlaylistInfo>> getPlaylistByUserId([String? userId]) async {
+  Future<List<PlaylistInfo>> getPlaylistByUserId([final String? userId]) async {
     final response = await _client.get('/api/playlists', queryParameters: {
       if (userId != null) 'user_id': userId,
     });
     return (response.data as List<dynamic>)
-        .map((e) => PlaylistInfo.fromJson(e))
+        .map((final e) => PlaylistInfo.fromJson(e))
         .toList();
   }
 
   // https://book.anni.rs/06.anniv/03.playlist.html#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
-  Future<Playlist> getPlaylistDetail(String id) async {
+  Future<Playlist> getPlaylistDetail(final String id) async {
     final response =
         await _client.get('/api/playlist', queryParameters: {'id': id});
     return Playlist.fromJson(response.data);
@@ -283,26 +290,26 @@ class AnnivClient {
 
   // https://book.anni.rs/06.anniv/03.playlist.html#%E5%88%9B%E5%BB%BA%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
   Future<Playlist> createPlaylist({
-    required String name,
-    required String description,
-    bool public = true,
-    DiscIdentifier? cover,
-    List<AnnivPlaylistItem> items = const [],
+    required final String name,
+    required final String description,
+    final bool public = true,
+    final DiscIdentifier? cover,
+    final List<AnnivPlaylistItem> items = const [],
   }) async {
     final response = await _client.put('/api/playlist', data: {
       'name': name,
       'description': description,
       'is_public': public,
       'cover': cover?.toJson(),
-      'items': items.map((e) => e.toJson()).toList(),
+      'items': items.map((final e) => e.toJson()).toList(),
     });
     return Playlist.fromJson(response.data);
   }
 
   // https://book.anni.rs/06.anniv/03.playlist.html#%E4%BF%AE%E6%94%B9%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
   Future<Playlist> updatePlaylistInfo({
-    required String playlistId,
-    required PatchedPlaylistInfo info,
+    required final String playlistId,
+    required final PatchedPlaylistInfo info,
   }) async {
     final response = await _client.patch('/api/playlist', data: {
       'id': playlistId,
@@ -312,7 +319,7 @@ class AnnivClient {
     return Playlist.fromJson(response.data);
   }
 
-  Future<LyricResponse?> getLyric(TrackIdentifier track) async {
+  Future<LyricResponse?> getLyric(final TrackIdentifier track) async {
     try {
       final response = await _client.get('/api/lyric', queryParameters: {
         'album_id': track.albumId,
@@ -342,7 +349,7 @@ class AnnivClient {
     return response.data!;
   }
 
-  Future<void> downloadRepoDatabase(String saveRoot) async {
+  Future<void> downloadRepoDatabase(final String saveRoot) async {
     // 1. download json
     final jsonPath = p.join(saveRoot, 'repo.json');
     await _client.download('/api/meta/db/repo.json', '$jsonPath.downloading');
@@ -350,12 +357,12 @@ class AnnivClient {
 
     // 2. download db
     final dbPath = p.join(saveRoot, 'repo.db');
-    final task = Global.downloadManager.add(DownloadTask(
-      url: '/api/meta/db/repo.db',
-      category: DownloadCategory.database,
-      savePath: dbPath,
-      client: _client,
-    ));
+    final task = ref.read(downloadManagerProvider).add(DownloadTask(
+          url: '/api/meta/db/repo.db',
+          category: DownloadCategory.database,
+          savePath: dbPath,
+          client: _client,
+        ));
     await task.start();
 
     // 3. rename json after db downloaded
@@ -365,30 +372,31 @@ class AnnivClient {
   Future<List<TagInfo>> getTags() async {
     final response = await _client.get('/api/meta/tags');
     return (response.data as List<dynamic>)
-        .map((e) => TagInfo.fromJson(e))
+        .map((final e) => TagInfo.fromJson(e))
         .toList();
   }
 
   Future<Map<String, List<String>>> getTagsRelationship() async {
     final response = await _client.get('/api/meta/tag-graph');
-    return (response.data as Map<String, dynamic>).map((key, value) => MapEntry(
-        key, (value as List<dynamic>).map((e) => e.toString()).toList()));
+    return (response.data as Map<String, dynamic>).map(
+        (final key, final value) => MapEntry(key,
+            (value as List<dynamic>).map((final e) => e.toString()).toList()));
   }
 
-  Future<List<Album>> getAlbumsByTag(String tag) async {
+  Future<List<Album>> getAlbumsByTag(final String tag) async {
     final response = await _client
         .get('/api/meta/albums/by-tag', queryParameters: {'tag': tag});
     return (response.data as List<dynamic>)
-        .map((e) => Album.fromJson(e))
+        .map((final e) => Album.fromJson(e))
         .toList();
   }
 
   // https://book.anni.rs/06.anniv/06.statistics.html#%E6%92%AD%E6%94%BE%E8%AE%B0%E5%BD%95
-  Future<void> trackPlayback(List<SongPlayRecord> records) async {
+  Future<void> trackPlayback(final List<SongPlayRecord> records) async {
     if (records.isNotEmpty) {
       await _client.post(
         '/api/stat',
-        data: records.map((e) => e.toJson()).toList(),
+        data: records.map((final e) => e.toJson()).toList(),
       );
     }
   }
@@ -399,7 +407,7 @@ class AnnivClient {
       'from': 0,
     });
     return (response.data as List<dynamic>)
-        .map((e) => SongPlayRecordResult.fromJson(e))
+        .map((final e) => SongPlayRecordResult.fromJson(e))
         .toList();
   }
 }

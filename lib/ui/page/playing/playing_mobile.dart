@@ -29,7 +29,7 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       body: Container(
         color: context.colorScheme.secondaryContainer,

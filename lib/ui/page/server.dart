@@ -1,22 +1,21 @@
-import 'package:annix/services/annil/annil.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
 import 'package:annix/ui/route/delegate.dart';
-import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Anniv
-class AnnivCard extends StatelessWidget {
+class AnnivCard extends ConsumerWidget {
   const AnnivCard({super.key});
 
   // Card content before login
-  Widget beforeLogin(BuildContext context) {
+  Widget beforeLogin(final BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24.0).copyWith(bottom: 12, right: 20),
       child: Column(
@@ -44,7 +43,11 @@ class AnnivCard extends StatelessWidget {
     );
   }
 
-  Widget afterLogin(BuildContext context, SiteUserInfo info) {
+  Widget afterLogin(
+    final BuildContext context,
+    final WidgetRef ref,
+    final SiteUserInfo info,
+  ) {
     return Padding(
       padding:
           const EdgeInsets.only(bottom: 4.0, right: 12.0, top: 16, left: 16),
@@ -81,16 +84,15 @@ class AnnivCard extends StatelessWidget {
               // TODO: Add more things in this card
               const SizedBox(height: 80),
               PopupMenuButton<String>(
-                itemBuilder: (context) => [
+                itemBuilder: (final context) => [
                   PopupMenuItem(
                     value: 'Logout',
                     child: Text(t.server.logout),
                   ),
                 ],
-                onSelected: (value) {
+                onSelected: (final value) {
                   if (value == 'Logout') {
-                    final anniv = context.read<AnnivService>();
-                    anniv.logout();
+                    ref.read(annivProvider).logout();
                   }
                 },
               ),
@@ -106,8 +108,7 @@ class AnnivCard extends StatelessWidget {
                 TextButton(
                   child: const Text('Update Database'),
                   onPressed: () async {
-                    final anniv = context.read<AnnivService>();
-                    await anniv.updateDatabase();
+                    ref.read(annivProvider).updateDatabase();
                   },
                 ),
             ],
@@ -118,18 +119,14 @@ class AnnivCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final inner = Consumer<AnnivService>(
-      builder: (context, AnnivService anniv, child) {
-        if (anniv.info == null) {
-          return beforeLogin(context);
-        } else {
-          return afterLogin(context, anniv.info!);
-        }
-      },
-    );
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final annivInfo = ref.watch(annivProvider.select((final v) => v.info));
 
-    return Card(child: inner);
+    return Card(
+      child: annivInfo == null
+          ? beforeLogin(context)
+          : afterLogin(context, ref, annivInfo),
+    );
   }
 }
 
@@ -142,7 +139,7 @@ class AnnilListTile extends StatelessWidget {
   const AnnilListTile({super.key, required this.annil, required this.enabled});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ListTile(
       title: Text(annil.name),
       leading: const Icon(Icons.library_music_outlined),
@@ -166,7 +163,7 @@ class ServerView extends StatelessWidget {
   const ServerView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(t.server.server),
@@ -182,8 +179,8 @@ class ServerView extends StatelessWidget {
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => AnnilAddDialog(
-                    onSubmit: (name, url, token) {
+                  builder: (final context) => AnnilAddDialog(
+                    onSubmit: (final name, final url, final token) {
                       // TODO: save annil
                     },
                   ),
@@ -192,29 +189,30 @@ class ServerView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Consumer<AnnilService>(
-              builder: (context, annil, child) {
+            child: Consumer(
+              builder: (final context, final ref, final child) {
+                final annil = ref.watch(annilProvider);
                 return ReorderableListView(
                   buildDefaultDragHandles: true,
-                  onReorder: (oldIndex, newIndex) async {
+                  onReorder: (final oldIndex, final newIndex) async {
                     var oldAnnil = annil.servers[oldIndex];
                     final newAnnil = annil.servers[newIndex];
 
-                    final db = context.read<LocalDatabase>();
-                    final anniv = context.read<AnnivService>();
+                    final db = ref.read(localDatabaseProvider);
+                    final anniv = ref.read(annivProvider);
                     if (oldIndex < newIndex) {
                       // - priority
                       oldAnnil =
                           oldAnnil.copyWith(priority: newAnnil.priority - 1);
                       await (db.localAnnilServers.update()
-                            ..where((tbl) => tbl.id.equals(oldAnnil.id)))
+                            ..where((final tbl) => tbl.id.equals(oldAnnil.id)))
                           .write(oldAnnil);
                     } else if (oldIndex > newIndex) {
                       // + priority
                       oldAnnil =
                           oldAnnil.copyWith(priority: newAnnil.priority + 1);
                       await (db.localAnnilServers.update()
-                            ..where((tbl) => tbl.id.equals(oldAnnil.id)))
+                            ..where((final tbl) => tbl.id.equals(oldAnnil.id)))
                           .write(oldAnnil);
                     }
 
@@ -229,7 +227,7 @@ class ServerView extends StatelessWidget {
                   },
                   children: annil.servers
                       .map(
-                        (server) => AnnilListTile(
+                        (final server) => AnnilListTile(
                           annil: server,
                           key: ValueKey(server.priority),
                           enabled: annil.etags[server.id] != null,

@@ -5,7 +5,7 @@ class DragHandle extends StatelessWidget {
   const DragHandle({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: SizedBox(

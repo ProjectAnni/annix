@@ -1,29 +1,25 @@
-import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AnnivLoginPage extends StatefulWidget {
+class AnnivLoginPage extends HookConsumerWidget {
   const AnnivLoginPage({super.key});
 
-  @override
-  State<AnnivLoginPage> createState() => _AnnivLoginPageState();
-}
-
-class _AnnivLoginPageState extends State<AnnivLoginPage> {
-  final _serverUrlController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  void _showSnackBar(BuildContext context, String text) {
+  void _showSnackBar(final BuildContext context, final String text) {
     final snackBar = SnackBar(content: Text(text));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final serverUrlController = useTextEditingController();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(t.server.login_to_anniv),
@@ -40,7 +36,7 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
                   border: OutlineInputBorder(),
                   labelText: 'Server',
                 ),
-                controller: _serverUrlController,
+                controller: serverUrlController,
                 autofillHints: const [AutofillHints.url],
               ),
             ),
@@ -53,7 +49,7 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
-                controller: _emailController,
+                controller: emailController,
                 autofillHints: const [AutofillHints.email],
               ),
             ),
@@ -66,7 +62,7 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
                   labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
-                controller: _passwordController,
+                controller: passwordController,
                 obscureText: true,
                 autofillHints: const [AutofillHints.password],
               ),
@@ -79,11 +75,11 @@ class _AnnivLoginPageState extends State<AnnivLoginPage> {
         isExtended: true,
         child: const Icon(Icons.check),
         onPressed: () async {
-          final anniv = context.read<AnnivService>();
+          final anniv = ref.read(annivProvider);
 
-          var url = _serverUrlController.text;
-          var email = _emailController.text;
-          final password = _passwordController.text;
+          var url = serverUrlController.text;
+          var email = emailController.text;
+          final password = passwordController.text;
           final delegate = AnnixRouterDelegate.of(context);
           if (url.isEmpty) {
             _showSnackBar(context, 'Please enter a valid URL');

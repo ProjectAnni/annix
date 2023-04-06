@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
@@ -15,13 +14,13 @@ import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void playFullList({
-  required PlaybackService player,
-  required List<AnnilAudioSource> tracks,
-  bool shuffle = false,
-  int initialIndex = 0,
+  required final PlaybackService player,
+  required final List<AnnilAudioSource> tracks,
+  final bool shuffle = false,
+  final int initialIndex = 0,
 }) async {
   assert(
     // when shuffle is on, initialIndex can only be zero
@@ -70,6 +69,8 @@ class PlaybackService extends ChangeNotifier {
   static final PropertyValueNotifier<Map<String, Duration>> durationMap =
       PropertyValueNotifier({});
 
+  final Ref ref;
+
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
   double volume = 1.0;
@@ -93,10 +94,10 @@ class PlaybackService extends ChangeNotifier {
   // is switched, or at the time when the first 'resume' action was produced.
   bool loadedAndPaused = false;
 
-  PlaybackService(BuildContext context) : anniv = context.read() {
+  PlaybackService(this.ref) : anniv = ref.read(annivProvider) {
     _load();
 
-    PlaybackService.player.onPlayerStateChanged.listen((s) {
+    PlaybackService.player.onPlayerStateChanged.listen((final s) {
       // stop event from player can not interrupt buffering state
       if (!(playerStatus == PlayerStatus.buffering &&
           s == PlayerState.stopped)) {
@@ -105,10 +106,10 @@ class PlaybackService extends ChangeNotifier {
       }
     });
 
-    PlaybackService.player.onPlayerComplete.listen((event) => next());
+    PlaybackService.player.onPlayerComplete.listen((final event) => next());
 
     // Position
-    PlaybackService.player.onPositionChanged.listen((updatedPosition) {
+    PlaybackService.player.onPositionChanged.listen((final updatedPosition) {
       playing?.updatePosition(updatedPosition);
     });
     // Duration
@@ -121,7 +122,7 @@ class PlaybackService extends ChangeNotifier {
         }
       }
     });
-    PlaybackService.player.onDurationChanged.listen((updatedDuration) {
+    PlaybackService.player.onDurationChanged.listen((final updatedDuration) {
       final id = playing?.id;
       if (id != null) {
         if (updatedDuration > Duration.zero) {
@@ -132,31 +133,33 @@ class PlaybackService extends ChangeNotifier {
   }
 
   _load() {
-    final queue = Global.preferences.getStringList('player.queue') ?? [];
+    final preferences = ref.read(preferencesProvider);
+    final queue = preferences.getStringList('player.queue') ?? [];
+    final playingIndex = preferences.getInt('player.playingIndex');
 
-    final playingIndex = Global.preferences.getInt('player.playingIndex');
     if (playingIndex != null &&
         playingIndex >= 0 &&
         playingIndex < queue.length) {
-      this.queue =
-          queue.map((e) => AnnilAudioSource.fromJson(jsonDecode(e))).toList();
+      this.queue = queue
+          .map((final e) => AnnilAudioSource.fromJson(jsonDecode(e)))
+          .toList();
       setPlayingIndex(playingIndex);
     }
 
-    final loopMode = Global.preferences.getInt('player.loopMode');
+    final loopMode = preferences.getInt('player.loopMode');
     this.loopMode = LoopMode.values[loopMode ?? 0];
 
-    volume = Global.preferences.getDouble('player.volume') ?? 1.0;
+    volume = preferences.getDouble('player.volume') ?? 1.0;
     PlaybackService.player.setVolume(volume);
 
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => play(reload: true, setSourceOnly: true, trackPlayback: false));
+    WidgetsBinding.instance.addPostFrameCallback((final _) =>
+        play(reload: true, setSourceOnly: true, trackPlayback: false));
   }
 
   Future<void> play({
-    bool reload = false,
-    bool setSourceOnly = false,
-    bool trackPlayback = true,
+    final bool reload = false,
+    final bool setSourceOnly = false,
+    final bool trackPlayback = true,
   }) async {
     if (Platform.isIOS) {
       PlaybackServiceHackForIOS();
@@ -165,7 +168,7 @@ class PlaybackService extends ChangeNotifier {
     if (queue.isEmpty) return;
 
     // activate audio session
-    if (!await AudioSession.instance.then((e) => e.setActive(true))) {
+    if (!await AudioSession.instance.then((final e) => e.setActive(true))) {
       // request denied
       return;
     }
@@ -218,10 +221,11 @@ class PlaybackService extends ChangeNotifier {
 
     // preload the next track
     if (queue.length > currentIndex + 1) {
-      queue[currentIndex + 1].preload();
+      queue[currentIndex + 1].preload(ref);
     }
 
     try {
+      source.preload(ref);
       // wait for audio file to download and play it
       if (setSourceOnly) {
         await PlaybackService.player.setSource(source);
@@ -253,7 +257,7 @@ class PlaybackService extends ChangeNotifier {
   Future<void> pause() async {
     FLog.trace(text: 'Pause playing');
     // deactivate audio session
-    if (!await AudioSession.instance.then((e) => e.setActive(false))) {
+    if (!await AudioSession.instance.then((final e) => e.setActive(false))) {
       // request denied
       return;
     }
@@ -268,12 +272,14 @@ class PlaybackService extends ChangeNotifier {
     }
   }
 
-  Future<void> stop([bool setInactive = true]) async {
+  Future<void> stop([final bool setInactive = true]) async {
+    final isApple = Platform.isIOS || Platform.isMacOS;
     playing?.updateDuration(Duration.zero);
     await Future.wait([
-      if (setInactive) AudioSession.instance.then((i) => i.setActive(false)),
-      if (!Global.isApple) PlaybackService.player.release(),
-      if (Global.isApple) PlaybackService.player.stop(),
+      if (setInactive)
+        AudioSession.instance.then((final i) => i.setActive(false)),
+      if (!isApple) PlaybackService.player.release(),
+      if (isApple) PlaybackService.player.stop(),
     ]);
   }
 
@@ -339,7 +345,7 @@ class PlaybackService extends ChangeNotifier {
     }
   }
 
-  Future<void> seek(Duration position) async {
+  Future<void> seek(final Duration position) async {
     FLog.trace(text: 'Seek to position $position');
 
     // seek first for ui update
@@ -349,7 +355,7 @@ class PlaybackService extends ChangeNotifier {
     await PlaybackService.player.seek(position);
   }
 
-  Future<void> remove(int index) async {
+  Future<void> remove(final int index) async {
     if (index < 0 || index >= queue.length) return;
     final removeCurrentPlayingTrack = index == playingIndex;
 
@@ -365,7 +371,7 @@ class PlaybackService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> jump(int index) async {
+  Future<void> jump(final int index) async {
     FLog.trace(text: 'Jump to $index in playing queue');
     if (queue.isNotEmpty) {
       final to = index % queue.length;
@@ -380,33 +386,29 @@ class PlaybackService extends ChangeNotifier {
     }
   }
 
-  Future<void> setLoopMode(LoopMode mode) async {
+  Future<void> setLoopMode(final LoopMode mode) async {
     loopMode = mode;
     notifyListeners();
-    await Global.preferences.setInt('player.loopMode', loopMode.index);
+    ref.read(preferencesProvider).set('player.loopMode', loopMode.index);
   }
 
-  Future<void> setPlayingIndex(int index,
-      {bool reload = false, bool notify = true}) async {
+  Future<void> setPlayingIndex(final int index,
+      {final bool reload = false, final bool notify = true}) async {
     loadedAndPaused = false;
 
     final playing = this.playing;
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index || reload) {
       playing?.dispose();
-      this.playing = PlayingTrack(queue[index]);
+      this.playing = PlayingTrack(queue[index], ref);
     }
 
-    if (nowPlayingIndex != null) {
-      await Global.preferences.setInt('player.playingIndex', nowPlayingIndex);
-    } else {
-      await Global.preferences.remove('player.playingIndex');
-    }
+    ref.read(preferencesProvider).set('player.playingIndex', index);
     if (notify) notifyListeners();
   }
 
-  Future<void> setPlayingQueue(List<AnnilAudioSource> songs,
-      {int initialIndex = 0}) async {
+  Future<void> setPlayingQueue(final List<AnnilAudioSource> songs,
+      {final int initialIndex = 0}) async {
     // 1. set playing queue
     queue = songs;
     // 2. set playing index
@@ -417,23 +419,23 @@ class PlaybackService extends ChangeNotifier {
       playing = null;
     }
 
-    await Global.preferences.setStringList(
-        'player.queue', queue.map((e) => jsonEncode(e.toJson())).toList());
+    ref.read(preferencesProvider).set('player.queue',
+        queue.map((final e) => jsonEncode(e.toJson())).toList());
 
     await play(reload: true);
   }
 
-  Future<void> setVolume(double volume) async {
+  Future<void> setVolume(final double volume) async {
     this.volume = volume;
     notifyListeners();
 
     await PlaybackService.player.setVolume(volume);
-    await Global.preferences.setDouble('player.volume', volume);
+    ref.read(preferencesProvider).set('player.volume', volume);
   }
 
-  Future<void> fullShuffleMode(BuildContext context,
-      {int count = 30, bool waitUntilPlayback = false}) async {
-    final AnnilService annil = context.read();
+  Future<void> fullShuffleMode(
+      {final int count = 30, final bool waitUntilPlayback = false}) async {
+    final AnnilService annil = ref.read(annilProvider);
     final albums = annil.albums;
     if (albums.isEmpty) {
       return;
@@ -446,7 +448,7 @@ class PlaybackService extends ChangeNotifier {
       albumIds.add(albumId);
     }
 
-    final MetadataService metadata = context.read();
+    final metadata = ref.read(metadataProvider);
     final metadataMap = await metadata.getAlbums(albumIds);
     final Set<TrackIdentifier> tracks = {};
     for (final albumId in albumIds) {
@@ -473,8 +475,8 @@ class PlaybackService extends ChangeNotifier {
       }
     }
 
-    final songs =
-        tracks.map((id) => AnnilAudioSource.from(id: id, metadata: metadata));
+    final songs = tracks
+        .map((final id) => AnnilAudioSource.from(id: id, metadata: metadata));
     await setLoopMode(LoopMode.off);
 
     final queue = await Future.wait(songs);

@@ -7,6 +7,7 @@ class AnnixRoute extends PageRouteBuilder {
     this.disableAppBarDismissal = false,
     super.settings,
     super.transitionDuration,
+    super.reverseTransitionDuration,
     required super.pageBuilder,
   });
 

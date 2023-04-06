@@ -30,7 +30,7 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [

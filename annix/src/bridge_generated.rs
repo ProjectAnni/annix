@@ -21,19 +21,119 @@ use std::sync::Arc;
 
 // Section: wire functions
 
-fn wire_new__static_method__LocalStore_impl(
+fn wire_update_network_status_impl(
     port_: MessagePort,
-    root: impl Wire2Api<String> + UnwindSafe,
+    is_online: impl Wire2Api<bool> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "new__static_method__LocalStore",
+            debug_name: "update_network_status",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
         move || {
+            let api_is_online = is_online.wire2api();
+            move |task_callback| Ok(update_network_status(api_is_online))
+        },
+    )
+}
+fn wire_new__static_method__NativePreferenceStore_impl(
+    root: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "new__static_method__NativePreferenceStore",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
             let api_root = root.wire2api();
-            move |task_callback| Ok(LocalStore::new(api_root))
+            Ok(NativePreferenceStore::new(api_root))
+        },
+    )
+}
+fn wire_get__method__NativePreferenceStore_impl(
+    that: impl Wire2Api<NativePreferenceStore> + UnwindSafe,
+    key: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "get__method__NativePreferenceStore",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_key = key.wire2api();
+            Ok(NativePreferenceStore::get(&api_that, api_key))
+        },
+    )
+}
+fn wire_set__method__NativePreferenceStore_impl(
+    that: impl Wire2Api<NativePreferenceStore> + UnwindSafe,
+    key: impl Wire2Api<String> + UnwindSafe,
+    value: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "set__method__NativePreferenceStore",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_key = key.wire2api();
+            let api_value = value.wire2api();
+            Ok(NativePreferenceStore::set(&api_that, api_key, api_value))
+        },
+    )
+}
+fn wire_remove__method__NativePreferenceStore_impl(
+    that: impl Wire2Api<NativePreferenceStore> + UnwindSafe,
+    key: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "remove__method__NativePreferenceStore",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_key = key.wire2api();
+            Ok(NativePreferenceStore::remove(&api_that, api_key))
+        },
+    )
+}
+fn wire_remove_prefix__method__NativePreferenceStore_impl(
+    that: impl Wire2Api<NativePreferenceStore> + UnwindSafe,
+    prefix: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "remove_prefix__method__NativePreferenceStore",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_prefix = prefix.wire2api();
+            Ok(NativePreferenceStore::remove_prefix(&api_that, api_prefix))
+        },
+    )
+}
+fn wire_new__static_method__LocalStore_impl(
+    root: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "new__static_method__LocalStore",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
+            let api_root = root.wire2api();
+            Ok(LocalStore::new(api_root))
         },
     )
 }
@@ -230,6 +330,13 @@ impl support::IntoDart for LocalStore {
     }
 }
 impl support::IntoDartExceptPrimitive for LocalStore {}
+
+impl support::IntoDart for NativePreferenceStore {
+    fn into_dart(self) -> support::DartAbi {
+        vec![self.conn.into_dart()].into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for NativePreferenceStore {}
 
 impl support::IntoDart for TagItem {
     fn into_dart(self) -> support::DartAbi {

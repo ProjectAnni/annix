@@ -1,28 +1,27 @@
 import 'dart:io';
 
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/annil.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
 
 class AudioCancelledError extends Error {}
 
 class AnnilAudioSource extends Source {
   final PreferQuality? quality;
   final TrackInfoWithAlbum track;
-  ExtendedNetworkImageProvider? coverProvider;
 
-  final ValueNotifier<DownloadProgress> downloadProgress = ValueNotifier(
-    const DownloadProgress(current: 0),
-  );
+  final DownloadState downloadProgress =
+      DownloadState(const DownloadProgress(current: 0));
 
   bool isCanceled = false;
   Future<void>? _preloadFuture;
@@ -36,9 +35,9 @@ class AnnilAudioSource extends Source {
   });
 
   static Future<AnnilAudioSource?> from({
-    required MetadataService metadata,
-    required TrackIdentifier id,
-    PreferQuality? quality,
+    required final MetadataService metadata,
+    required final TrackIdentifier id,
+    final PreferQuality? quality,
   }) async {
     final track = await metadata.getTrack(id);
     if (track != null) {
@@ -54,7 +53,7 @@ class AnnilAudioSource extends Source {
   String get id => track.id.toString();
 
   @override
-  Future<void> setOnPlayer(AudioPlayer player) async {
+  Future<void> setOnPlayer(final AudioPlayer player) async {
     // when setOnPlayer was called, player expects to play current track
     // but user may change track before player is ready
     // so isCanceled is always false here, and may become true later
@@ -65,10 +64,8 @@ class AnnilAudioSource extends Source {
     if (file.existsSync() && file.lengthSync() > 0) {
       await player.setSourceDeviceFile(offlinePath);
     } else {
-      // download full audio first
-      if (_preloadFuture == null) {
-        preload();
-      }
+      // preload should be triggered before setOnPlayer
+      assert(_preloadFuture != null);
       try {
         await _preloadFuture;
       } catch (e) {
@@ -90,59 +87,62 @@ class AnnilAudioSource extends Source {
     }
   }
 
-  void preload() {
+  void preload(final Ref ref) {
     if (_preloadFuture != null) {
       return;
     }
 
-    _preloadFuture = _preload();
+    _preloadFuture = _preload(ref);
     // preload cover without await
-    _preloadCover();
+    _preloadCover(ref);
   }
 
   bool preloaded = false;
 
-  static Future<DownloadTask?> spawnDownloadTask({
-    required TrackInfoWithAlbum track,
-    PreferQuality? quality,
-    String? savePath,
-  }) async {
-    final downloadQuality =
-        quality ?? Global.settings.defaultAudioQuality.value;
-    final annil = Global.context.read<AnnilService>();
-    final url =
-        await annil.getAudioUrl(track: track.id, quality: downloadQuality);
-    if (url == null) {
-      return null;
-    }
+  static DownloadTaskCallback spawnDownloadTask({
+    required final TrackInfoWithAlbum track,
+    final PreferQuality? quality,
+    final String? savePath,
+  }) {
+    return (final ref) async {
+      final downloadQuality =
+          quality ?? ref.read(settingsProvider).defaultAudioQuality.value;
+      final annil = ref.read(annilProvider);
+      final url =
+          await annil.getAudioUrl(track: track.id, quality: downloadQuality);
+      if (url == null) {
+        return null;
+      }
 
-    savePath ??= getAudioCachePath(track.id);
-    return DownloadTask(
-      category: DownloadCategory.audio,
-      url: url,
-      savePath: savePath,
-      data: TrackDownloadTaskData(info: track, quality: downloadQuality),
-    );
+      final path = savePath ?? getAudioCachePath(track.id);
+      return DownloadTask(
+        category: DownloadCategory.audio,
+        url: url,
+        savePath: path,
+        data: TrackDownloadTaskData(info: track, quality: downloadQuality),
+      );
+    };
   }
 
-  Future<void> _preload() async {
+  Future<void> _preload(final Ref ref) async {
     final savePath = getAudioCachePath(track.id);
     final file = File(savePath);
     if (!file.existsSync() || file.lengthSync() == 0) {
-      final task = await spawnDownloadTask(
+      final taskCallback = spawnDownloadTask(
         track: track,
         savePath: savePath,
       );
+      final task = await taskCallback(ref);
       if (task != null) {
         await file.parent.create(recursive: true);
-        Global.downloadManager.add(task);
+        ref.read(downloadManagerProvider).add(task);
         _downloadTask = task;
         _downloadTask?.addListener(_onDownloadProgress);
         final response = await task.start();
 
         final duration = int.parse(response.headers['x-duration-seconds']![0]);
         // +1 to avoid duration exceeding
-        PlaybackService.durationMap.update((map) {
+        PlaybackService.durationMap.update((final map) {
           map[id] = Duration(seconds: duration + 1);
         });
       } else {
@@ -152,20 +152,15 @@ class AnnilAudioSource extends Source {
     preloaded = true;
   }
 
-  Future<void> _preloadCover() async {
-    final image = Global.proxy.coverUrl(track.id.albumId, track.id.discId);
-    coverProvider = ExtendedNetworkImageProvider(image.toString());
-    // ignore: use_build_context_synchronously
-
-    if (Global.navigatorKey.currentContext != null) {
-      precacheImage(coverProvider!, Global.context);
-    }
+  Future<void> _preloadCover(final Ref ref) async {
+    final proxy = ref.read(proxyProvider);
+    final image = proxy.coverUrl(track.id.albumId, track.id.discId);
+    Dio().get(image);
   }
 
   void cancel() {
     _downloadTask?.cancel();
     _downloadTask?.removeListener(_onDownloadProgress);
-    // FIXME: do not use protected `hasListeners`
     if (downloadProgress.hasListeners) {
       downloadProgress.dispose();
     }
@@ -173,7 +168,7 @@ class AnnilAudioSource extends Source {
   }
 
   /////// Serialization ///////
-  static AnnilAudioSource fromJson(Map<String, dynamic> json) {
+  static AnnilAudioSource fromJson(final Map<String, dynamic> json) {
     return AnnilAudioSource(
       track: TrackInfoWithAlbum.fromJson(json['track']),
       quality: PreferQuality.fromString(json['quality']),
@@ -190,7 +185,7 @@ class AnnilAudioSource extends Source {
   void _onDownloadProgress() {
     final progress = _downloadTask?.progress;
     if (progress != null) {
-      downloadProgress.value = progress;
+      downloadProgress.update(progress);
     }
   }
 }

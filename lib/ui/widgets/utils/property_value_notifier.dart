@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 
 class PropertyValueNotifier<T> extends ValueNotifier<T> {
-  PropertyValueNotifier(T value) : super(value);
+  PropertyValueNotifier(final T value) : super(value);
 
-  void update(void Function(T) callback) {
+  void update(final void Function(T) callback) {
     callback(value);
     super.notifyListeners();
   }

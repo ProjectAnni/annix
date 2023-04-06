@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:annix/global.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/annil.dart';
+import 'package:annix/services/path.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/ui/dialogs/enum_select.dart';
 import 'package:annix/ui/dialogs/loading.dart';
@@ -11,10 +12,10 @@ import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/services/local/cache.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as p;
 
 typedef WidgetCallback = Widget Function();
 
@@ -31,7 +32,7 @@ class SettingsTileBuilder<T> extends AbstractSettingsTile {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ValueListenableBuilder<T>(
       valueListenable: value,
       builder: builder,
@@ -40,12 +41,12 @@ class SettingsTileBuilder<T> extends AbstractSettingsTile {
   }
 }
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final settings = Global.settings;
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final settings = ref.read(settingsProvider);
 
     return Scaffold(
       appBar: maybeAppBar(
@@ -68,8 +69,9 @@ class SettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.skipCertificateVerification,
-                builder: (context, p, child) => SettingsTile.switchTile(
-                  onToggle: (value) {
+                builder: (final context, final p, final child) =>
+                    SettingsTile.switchTile(
+                  onToggle: (final value) {
                     settings.skipCertificateVerification.value = value;
                   },
                   initialValue: p,
@@ -79,10 +81,11 @@ class SettingsScreen extends StatelessWidget {
               ),
               SettingsTileBuilder<PreferQuality>(
                 value: settings.defaultAudioQuality,
-                builder: (context, p, child) => SettingsTile.navigation(
-                  onPressed: (context) async {
-                    final quality = await showPreferQualityDialog(context);
-                    Global.settings.defaultAudioQuality.value = quality;
+                builder: (final context, final p, final child) =>
+                    SettingsTile.navigation(
+                  onPressed: (final context) async {
+                    final quality = await showPreferQualityDialog(context, ref);
+                    settings.defaultAudioQuality.value = quality;
                   },
                   leading: const Icon(Icons.high_quality),
                   title: Text(t.settings.default_audio_quality),
@@ -96,8 +99,9 @@ class SettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.autoScaleUI,
-                builder: (context, p, _) => SettingsTile.switchTile(
-                  onToggle: (value) {
+                builder: (final context, final p, final _) =>
+                    SettingsTile.switchTile(
+                  onToggle: (final value) {
                     settings.autoScaleUI.value = value;
                     AnnixRouterDelegate.of(context).popRoute();
                   },
@@ -109,8 +113,9 @@ class SettingsScreen extends StatelessWidget {
               if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.blurPlayingPage,
-                  builder: (context, p, _) => SettingsTile.switchTile(
-                    onToggle: (value) {
+                  builder: (final context, final p, final _) =>
+                      SettingsTile.switchTile(
+                    onToggle: (final value) {
                       settings.blurPlayingPage.value = value;
                     },
                     initialValue: p,
@@ -120,8 +125,9 @@ class SettingsScreen extends StatelessWidget {
                 ),
               SettingsTileBuilder<SearchTrackDisplayType>(
                 value: settings.searchTrackDisplayType,
-                builder: (context, p, child) => SettingsTile.navigation(
-                  onPressed: (context) async {
+                builder: (final context, final p, final child) =>
+                    SettingsTile.navigation(
+                  onPressed: (final context) async {
                     final result = await showEnumSelectDialog(
                       context,
                       {
@@ -132,7 +138,7 @@ class SettingsScreen extends StatelessWidget {
                       },
                       settings.searchTrackDisplayType.value,
                     );
-                    Global.settings.searchTrackDisplayType.value = result;
+                    settings.searchTrackDisplayType.value = result;
                   },
                   leading: const Icon(Icons.high_quality),
                   title: const Text('SearchTrackDisplayType'),
@@ -141,11 +147,12 @@ class SettingsScreen extends StatelessWidget {
               ),
               SettingsTileBuilder<String?>(
                 value: settings.fontPath,
-                builder: (context, p, _) => SettingsTile.navigation(
+                builder: (final context, final p, final _) =>
+                    SettingsTile.navigation(
                   leading: const Icon(Icons.font_download),
                   title: Text(t.settings.custom_font_path),
                   description: Text(p ?? t.settings.custom_font_not_specified),
-                  onPressed: (context) async {
+                  onPressed: (final context) async {
                     final result = await FilePicker.platform.pickFiles(
                       allowedExtensions: ['ttf', 'otf'],
                       type: FileType.custom,
@@ -162,8 +169,9 @@ class SettingsScreen extends StatelessWidget {
               if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.mobileShowArtistInBottomPlayer,
-                  builder: (context, p, _) => SettingsTile.switchTile(
-                    onToggle: (value) {
+                  builder: (final context, final p, final _) =>
+                      SettingsTile.switchTile(
+                    onToggle: (final value) {
                       settings.mobileShowArtistInBottomPlayer.value = value;
                     },
                     initialValue: p,
@@ -180,8 +188,9 @@ class SettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTileBuilder<bool>(
                 value: settings.useMobileNetwork,
-                builder: (context, p, _) => SettingsTile.switchTile(
-                  onToggle: (value) {
+                builder: (final context, final p, final _) =>
+                    SettingsTile.switchTile(
+                  onToggle: (final value) {
                     settings.useMobileNetwork.value = value;
                   },
                   initialValue: p,
@@ -199,7 +208,7 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.report_outlined),
                 title: Text(t.settings.view_logs),
                 description: Text(t.settings.view_logs_desc),
-                onPressed: (context) {
+                onPressed: (final context) {
                   AnnixRouterDelegate.of(context).to(name: '/settings/log');
                 },
               ),
@@ -208,12 +217,12 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.data_array),
                 title: Text(t.settings.clear_database),
                 description: Text(t.settings.clear_database_desc),
-                onPressed: (context) {
+                onPressed: (final context) {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   showDialog(
                     context: context,
                     useRootNavigator: true,
-                    builder: (context) => SimpleDialog(
+                    builder: (final context) => SimpleDialog(
                       title: Text(t.progress),
                       children: const [
                         Center(
@@ -224,8 +233,8 @@ class SettingsScreen extends StatelessWidget {
                     barrierDismissible: false,
                   );
 
-                  final file = File(p.join(Global.dataRoot, 'local.db'));
-                  file.delete().then((_) => navigator.pop());
+                  final file = File(localDbPath());
+                  file.delete().then((final _) => navigator.pop());
                 },
               ),
               // clear local metadata cache
@@ -233,7 +242,7 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.featured_play_list_outlined),
                 title: Text(t.settings.clear_metadata_cache),
                 description: Text(t.settings.clear_metadata_cache_desc),
-                onPressed: (context) async {
+                onPressed: (final context) async {
                   final delegate = AnnixRouterDelegate.of(context);
                   showLoadingDialog(context);
                   await AnnixStore().clear('album');
@@ -245,12 +254,12 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.lyrics_outlined),
                 title: Text(t.settings.clear_lyric_cache),
                 description: Text(t.settings.clear_lyric_cache_desc),
-                onPressed: (context) {
+                onPressed: (final context) {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   showDialog(
                     context: context,
                     useRootNavigator: true,
-                    builder: (context) => SimpleDialog(
+                    builder: (final context) => SimpleDialog(
                       title: Text(t.progress),
                       children: const [
                         Center(
@@ -260,7 +269,9 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     barrierDismissible: false,
                   );
-                  AnnixStore().clear('lyric').then((_) => navigator.pop());
+                  AnnixStore()
+                      .clear('lyric')
+                      .then((final _) => navigator.pop());
                 },
               ),
             ],

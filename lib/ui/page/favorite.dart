@@ -1,7 +1,5 @@
-import 'package:annix/global.dart';
-import 'package:annix/services/annil/annil.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -9,29 +7,34 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/fade_indexed_stack.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class FavoritePage extends StatefulWidget {
+class FavoritePage extends ConsumerStatefulWidget {
   const FavoritePage({super.key});
 
   @override
-  State<FavoritePage> createState() => _FavoritePageState();
+  ConsumerState<FavoritePage> createState() => _FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
+class _FavoritePageState extends ConsumerState<FavoritePage> {
   bool showTracks = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Material(
       child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
+        headerSliverBuilder: (final context, final innerBoxIsScrolled) {
           return [
             SliverAppBar(
               pinned: true,
-              floating: true,
+              // always display appbar title on desktop
+              floating: context.isDesktopOrLandscape ? false : true,
+              // do not show elevation on desktop
+              scrolledUnderElevation: context.isDesktopOrLandscape ? 0 : null,
               title: Text(t.my_favorite),
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(60),
@@ -57,7 +60,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     ],
                     selected: {showTracks},
                     showSelectedIcon: false,
-                    onSelectionChanged: (value) {
+                    onSelectionChanged: (final value) {
                       setState(() {
                         showTracks = value.first;
                       });
@@ -69,7 +72,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: () {
-                    final anniv = context.read<AnnivService>();
+                    final anniv = ref.read(annivProvider);
                     if (showTracks) {
                       anniv.syncFavoriteTrack();
                     } else {
@@ -81,42 +84,32 @@ class _FavoritePageState extends State<FavoritePage> {
             ),
           ];
         },
-        body: AnimatedCrossFade(
-          crossFadeState:
-              showTracks ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: _favoriteTracks(),
-          secondChild: _favoriteAlbums(),
-          duration: const Duration(milliseconds: 300),
-          layoutBuilder: (topChild, topChildKey, bottomChild, bottomChildKey) {
-            return Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  key: bottomChildKey,
-                  child: bottomChild,
-                ),
-                Positioned(
-                  key: topChildKey,
-                  child: topChild,
-                ),
-              ],
-            );
-          },
+        body: FadeIndexedStack(
+          index: showTracks ? 0 : 1,
+          duration: context.isDesktop
+              ? const Duration(milliseconds: 150)
+              : const Duration(milliseconds: 300),
+          children: [
+            _favoriteTracks(),
+            _favoriteAlbums(),
+          ],
         ),
       ),
     );
   }
 
   Widget _favoriteTracks() {
-    final AnnilService annil = context.read();
-    final PlaybackService player = context.read();
-    final List<LocalFavoriteTrack> favorites = context.watch();
+    final annil = ref.read(annilProvider);
+    final player = ref.read(playbackProvider);
+    final favoriteTracks = ref.watch(favoriteTracksProvider);
+    final favorites = favoriteTracks.value ?? [];
     final reversedFavorite = favorites.reversed;
 
     return ListView.builder(
+      primary: false,
       itemCount: reversedFavorite.length,
       padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         final favorite = reversedFavorite.elementAt(index);
         return ListTile(
           leading: CoverCard(
@@ -155,18 +148,20 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   Widget _favoriteAlbums() {
-    final List<LocalFavoriteAlbum> favorites = context.watch();
-    final reversedFavorite = favorites.reversed.map((e) => e.albumId).toList();
+    final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
+    final favorites = favoriteAlbums.value ?? [];
+    final reversedFavorite =
+        favorites.reversed.map((final e) => e.albumId).toList();
 
     return AlbumWall(albumIds: reversedFavorite);
   }
 
-  List<AnnilAudioSource> getTracks(List<LocalFavoriteTrack> favorites) {
-    final annil = Global.context.read<AnnilService>();
+  List<AnnilAudioSource> getTracks(final List<LocalFavoriteTrack> favorites) {
+    final annil = ref.read(annilProvider);
 
     return favorites.reversed
         .map(
-          (fav) {
+          (final fav) {
             final id = TrackIdentifier(
               albumId: fav.albumId,
               discId: fav.discId,
@@ -187,7 +182,7 @@ class _FavoritePageState extends State<FavoritePage> {
           },
         )
         .whereType<TrackInfoWithAlbum>()
-        .map((track) => AnnilAudioSource(track: track))
+        .map((final track) => AnnilAudioSource(track: track))
         .toList();
   }
 }

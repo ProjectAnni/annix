@@ -1,6 +1,8 @@
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum AnnilDialogMode {
   add,
@@ -10,14 +12,14 @@ enum AnnilDialogMode {
 typedef AnnilDialogOnSubmitCallback = void Function(
     String name, String url, String token);
 
-class BaseAnnilDialog extends StatefulWidget {
+class AnnilDialog extends HookConsumerWidget {
   final AnnilDialogOnSubmitCallback onSubmit;
   final String? name;
   final String? url;
   final String? token;
   final AnnilDialogMode mode;
 
-  const BaseAnnilDialog({
+  const AnnilDialog({
     super.key,
     required this.onSubmit,
     this.name,
@@ -27,32 +29,21 @@ class BaseAnnilDialog extends StatefulWidget {
   });
 
   @override
-  State<BaseAnnilDialog> createState() => _BaseAnnilDialogState();
-}
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final serverNameController = useTextEditingController(text: name);
+    final serverUrlController = useTextEditingController(text: url);
+    final serverTokenController = useTextEditingController(text: token);
 
-class _BaseAnnilDialogState extends State<BaseAnnilDialog> {
-  late final TextEditingController _serverNameController;
-  late final TextEditingController _serverUrlController;
-  late final TextEditingController _serverTokenController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _serverNameController = TextEditingController(text: widget.name);
-    _serverUrlController = TextEditingController(text: widget.url);
-    _serverTokenController = TextEditingController(text: widget.token);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return AlertDialog(
+      titlePadding: const EdgeInsets.only(top: 8),
+      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      elevation: 16,
       title: Center(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: widget.mode == AnnilDialogMode.add
+              child: mode == AnnilDialogMode.add
                   ? const Icon(Icons.add_box_outlined, size: 32)
                   : const Icon(Icons.edit_outlined, size: 32),
             ),
@@ -65,54 +56,41 @@ class _BaseAnnilDialogState extends State<BaseAnnilDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Name',
-              ),
-              controller: _serverNameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+              controller: serverNameController,
             ),
             TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Server',
-              ),
-              controller: _serverUrlController,
+              decoration: const InputDecoration(labelText: 'Server'),
+              controller: serverUrlController,
             ),
             TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Token',
-              ),
-              controller: _serverTokenController,
+              decoration: const InputDecoration(labelText: 'Token'),
+              controller: serverTokenController,
             ),
           ],
         ),
       ),
       actions: [
         TextButton(
-          style: TextButton.styleFrom(
-            textStyle: context.textTheme.labelLarge,
-          ),
+          style: TextButton.styleFrom(textStyle: context.textTheme.labelLarge),
           child: const Text('Cancel'),
           onPressed: () => AnnixRouterDelegate.of(context).popRoute(),
         ),
         TextButton(
-          style: TextButton.styleFrom(
-            textStyle: context.textTheme.labelLarge,
-          ),
-          child: widget.mode == AnnilDialogMode.add
+          style: TextButton.styleFrom(textStyle: context.textTheme.labelLarge),
+          child: mode == AnnilDialogMode.add
               ? const Text('Add')
               : const Text('Update'),
           onPressed: () {
             AnnixRouterDelegate.of(context).popRoute();
-            widget.onSubmit(
-              _serverNameController.text,
-              _serverUrlController.text,
-              _serverTokenController.text,
+            onSubmit(
+              serverNameController.text,
+              serverUrlController.text,
+              serverTokenController.text,
             );
           },
         ),
       ],
-      titlePadding: const EdgeInsets.only(top: 8),
-      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      elevation: 16,
     );
   }
 }
@@ -123,8 +101,8 @@ class AnnilAddDialog extends StatelessWidget {
   const AnnilAddDialog({super.key, required this.onSubmit});
 
   @override
-  Widget build(BuildContext context) {
-    return BaseAnnilDialog(
+  Widget build(final BuildContext context) {
+    return AnnilDialog(
       mode: AnnilDialogMode.add,
       onSubmit: onSubmit,
     );

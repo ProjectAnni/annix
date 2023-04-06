@@ -1,17 +1,107 @@
 pub use anni_repo::{db::RepoDatabaseRead, prelude::JsonAlbum};
 pub use flutter_rust_bridge::RustOpaque;
+use flutter_rust_bridge::SyncReturn;
 pub use rusqlite::Connection;
 pub use std::sync::Mutex;
 pub use uuid::Uuid;
 
 use std::path::PathBuf;
 
+use crate::network::{NetworkStatus, NETWORK};
+
+pub fn update_network_status(is_online: bool) {
+    let mut network = NETWORK.write().unwrap();
+    *network = if is_online {
+        NetworkStatus::Online
+    } else {
+        NetworkStatus::Offline
+    };
+}
+
+pub struct NativePreferenceStore {
+    pub conn: RustOpaque<Mutex<Connection>>,
+}
+
+impl NativePreferenceStore {
+    pub fn new(root: String) -> SyncReturn<NativePreferenceStore> {
+        let db_path = PathBuf::from(root).join("preference.db");
+        let conn = Connection::open(db_path).unwrap();
+        conn.execute(
+            r#"
+CREATE TABLE IF NOT EXISTS preferences(
+    key    TEXT PRIMARY KEY ON CONFLICT REPLACE,
+    value  TEXT NOT NULL
+);
+"#,
+            (),
+        )
+        .unwrap();
+
+        let conn = RustOpaque::new(Mutex::new(conn));
+        SyncReturn(Self { conn })
+    }
+
+    pub fn get(&self, key: String) -> SyncReturn<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn
+            .prepare("SELECT value FROM preferences WHERE key = ?")
+            .unwrap();
+        let mut rows = stmt.query(rusqlite::params![key]).unwrap();
+        let result = rows
+            .next()
+            .ok()
+            .and_then(|r| r)
+            .and_then(|row| row.get(0).ok());
+
+        SyncReturn(result)
+    }
+
+    pub fn set(&self, key: String, value: String) -> SyncReturn<()> {
+        self.conn
+            .lock()
+            .unwrap()
+            .execute(
+                "INSERT INTO preferences (key, value) VALUES (?, ?)",
+                rusqlite::params![key, value],
+            )
+            .unwrap();
+
+        SyncReturn(())
+    }
+
+    pub fn remove(&self, key: String) -> SyncReturn<()> {
+        self.conn
+            .lock()
+            .unwrap()
+            .execute(
+                "DELETE FROM preferences WHERE key = ?",
+                rusqlite::params![key],
+            )
+            .unwrap();
+
+        SyncReturn(())
+    }
+
+    pub fn remove_prefix(&self, prefix: String) -> SyncReturn<()> {
+        self.conn
+            .lock()
+            .unwrap()
+            .execute(
+                "DELETE FROM preferences WHERE key LIKE ?",
+                rusqlite::params![format!("{}%", prefix)],
+            )
+            .unwrap();
+
+        SyncReturn(())
+    }
+}
+
 pub struct LocalStore {
     pub conn: RustOpaque<Mutex<Connection>>,
 }
 
 impl LocalStore {
-    pub fn new(root: String) -> LocalStore {
+    pub fn new(root: String) -> SyncReturn<LocalStore> {
         let db_path = PathBuf::from(root).join("cache.db");
         let conn = Connection::open(db_path).unwrap();
         conn.execute(
@@ -22,13 +112,13 @@ CREATE TABLE IF NOT EXISTS store(
   key      TEXT NOT NULL,
   value    TEXT NOT NULL,
   UNIQUE("category", "key", "value") ON CONFLICT REPLACE
-)"#,
+);"#,
             (),
         )
         .unwrap();
 
         let conn = RustOpaque::new(Mutex::new(conn));
-        Self { conn }
+        SyncReturn(Self { conn })
     }
 
     pub fn insert(&self, category: String, key: String, value: String) {

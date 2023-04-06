@@ -1,19 +1,19 @@
-import 'package:annix/global.dart';
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MobileBottomPlayer extends StatelessWidget {
-  final double height;
+  /// Height of the mobile player bar
+  static const double height = 60;
 
-  const MobileBottomPlayer({super.key, this.height = 60});
+  const MobileBottomPlayer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -37,68 +37,66 @@ class MobileBottomPlayer extends StatelessWidget {
           ),
           Expanded(
             flex: 1,
-            child: Consumer<PlaybackService>(
-              builder: (context, player, child) => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    player.playing?.track.title ?? '',
-                    style: context.textTheme.titleSmall,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                  ),
-                  ValueListenableBuilder<bool>(
-                    valueListenable:
-                        Global.settings.mobileShowArtistInBottomPlayer,
-                    builder: (context, showArtist, _) {
-                      if (showArtist) {
-                        return ArtistText(
-                          player.playing?.track.artist ?? '',
-                          style: context.textTheme.bodySmall,
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                ],
-              ),
+            child: Consumer(
+              builder: (final context, final ref, final child) {
+                final playing = ref.watch(playingProvider);
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      playing?.track.title ?? '',
+                      style: context.textTheme.titleSmall,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                    ),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: ref
+                          .read(settingsProvider)
+                          .mobileShowArtistInBottomPlayer,
+                      builder: (final context, final showArtist, final _) {
+                        if (showArtist) {
+                          return ArtistText(
+                            playing?.track.artist ?? '',
+                            style: context.textTheme.bodySmall,
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Selector<PlaybackService, PlayingTrack?>(
-              selector: (context, player) {
-                return player.playing;
-              },
-              builder: (context, playing, child) {
-                if (playing == null) {
+            child: Consumer(
+              builder: (final context, final ref, final child) {
+                final double? progress =
+                    ref.watch(playingProvider.select((final playing) {
+                  if (playing == null) {
+                    return null;
+                  }
+
+                  if (playing.duration == Duration.zero) {
+                    return 0;
+                  }
+
+                  return playing.position.inMicroseconds /
+                      playing.duration.inMicroseconds;
+                }));
+                if (progress == null) {
                   return child!;
                 }
 
-                return ChangeNotifierProvider.value(
-                  value: playing,
-                  child: Selector<PlayingTrack, double>(
-                    selector: (context, playing) {
-                      if (playing.duration == Duration.zero) {
-                        return 0;
-                      }
-
-                      return playing.position.inMicroseconds /
-                          playing.duration.inMicroseconds;
-                    },
-                    builder: (context, progress, child) {
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CircularProgressIndicator(value: progress),
-                          child!,
-                        ],
-                      );
-                    },
-                    child: child,
-                  ),
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(value: progress),
+                    child!,
+                  ],
                 );
               },
               child: PlayPauseButton.small(),

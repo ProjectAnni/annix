@@ -2,6 +2,7 @@ import 'package:annix/ui/page/home/home_action_grid.dart';
 import 'package:annix/ui/page/home/home_appbar.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/home/home_title.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 
@@ -9,25 +10,28 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            const HomeAppBar(),
-          ];
-        },
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: CustomScrollView(
-            slivers: content(context),
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (final context, final innerBoxIsScrolled) {
+            return [
+              if (context.isMobileOrPortrait) const SliverHomeAppBar(),
+            ];
+          },
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CustomScrollView(
+              primary: false,
+              slivers: content(context),
+            ),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> content(BuildContext context) {
+  List<Widget> content(final BuildContext context) {
     return <Widget>[
       const SliverToBoxAdapter(child: HomeActionGrid()),
 

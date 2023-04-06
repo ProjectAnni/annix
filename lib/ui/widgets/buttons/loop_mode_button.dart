@@ -1,12 +1,14 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LoopModeButton extends StatelessWidget {
+class LoopModeButton extends ConsumerWidget {
   const LoopModeButton({super.key});
 
-  Icon getIcon(LoopMode loopMode, {Color? inactiveColor}) {
+  // TODO: move getIcon and next to LoopMode
+  Icon getIcon(final LoopMode loopMode, {final Color? inactiveColor}) {
     switch (loopMode) {
       case LoopMode.off:
         return Icon(Icons.repeat, color: inactiveColor);
@@ -19,7 +21,7 @@ class LoopModeButton extends StatelessWidget {
     }
   }
 
-  LoopMode next(LoopMode loopMode) {
+  LoopMode next(final LoopMode loopMode) {
     switch (loopMode) {
       case LoopMode.off:
         return LoopMode.all;
@@ -33,18 +35,18 @@ class LoopModeButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Selector<PlaybackService, LoopMode>(
-      selector: (_, player) => player.loopMode,
-      builder: (_, loopMode, child) => IconButton(
-        icon: getIcon(
-          loopMode,
-          inactiveColor: context.theme.iconTheme.color?.withOpacity(0.3),
-        ),
-        onPressed: () {
-          context.read<PlaybackService>().setLoopMode(next(loopMode));
-        },
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final loopMode =
+        ref.watch(playbackProvider.select((final p) => p.loopMode));
+    final playback = ref.read(playbackProvider);
+    return IconButton(
+      icon: getIcon(
+        loopMode,
+        inactiveColor: context.theme.iconTheme.color?.withOpacity(0.3),
       ),
+      onPressed: () {
+        playback.setLoopMode(next(loopMode));
+      },
     );
   }
 }

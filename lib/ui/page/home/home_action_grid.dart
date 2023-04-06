@@ -1,16 +1,16 @@
-import 'package:annix/services/playback/playback_service.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HomeActionGrid extends StatelessWidget {
+class HomeActionGrid extends ConsumerWidget {
   const HomeActionGrid({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     return GridView.count(
       padding: EdgeInsets.zero,
       crossAxisCount: context.isDesktopOrLandscape
@@ -35,8 +35,8 @@ class HomeActionGrid extends StatelessWidget {
           title: t.playback.shuffle,
           onPressed: () {
             showLoadingDialog(context);
-            context.read<PlaybackService>().fullShuffleMode(context).then(
-              (value) {
+            ref.read(playbackProvider).fullShuffleMode().then(
+              (final value) {
                 Navigator.of(context, rootNavigator: true).pop();
               },
             );
@@ -74,7 +74,7 @@ class HomeActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ElevatedButton.icon(
       icon: icon,
       label: Text(title),

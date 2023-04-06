@@ -1,34 +1,34 @@
-import 'package:annix/global.dart';
+import 'package:annix/services/local/preferences.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 
 class CookieStorage implements Storage {
-  @override
-  Future<void> init(bool persistSession, bool ignoreExpires) async {}
+  final PreferencesStore preferences;
+
+  CookieStorage(this.preferences);
 
   @override
-  Future<String?> read(String key) async {
-    return Global.preferences.getString(getKey(key));
+  Future<void> init(
+      final bool persistSession, final bool ignoreExpires) async {}
+
+  @override
+  Future<String?> read(final String key) async {
+    return preferences.getString(getKey(key));
   }
 
   @override
-  Future<void> write(String key, String value) async {
-    await Global.preferences.setString(getKey(key), value);
+  Future<void> write(final String key, final String value) async {
+    preferences.set(getKey(key), value);
   }
 
   @override
-  Future<void> delete(String key) async {
-    await Global.preferences.remove(getKey(key));
+  Future<void> delete(final String key) async {
+    preferences.remove(getKey(key));
   }
 
   @override
-  Future<void> deleteAll(List<String> keys) async {
-    final keys = Global.preferences.getKeys();
-    for (final key in keys) {
-      if (key.startsWith('cookie_')) {
-        await Global.preferences.remove(key);
-      }
-    }
+  Future<void> deleteAll(final List<String> keys) async {
+    preferences.removePrefix('cookie_');
   }
 
-  String getKey(String key) => 'cookie_$key';
+  String getKey(final String key) => 'cookie_$key';
 }

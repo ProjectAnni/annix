@@ -9,7 +9,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'anniv_model.g.dart';
 
-Object? readValueFlatten(Map json, String key) {
+Object? readValueFlatten(final Map json, final String key) {
   return json;
 }
 
@@ -27,7 +27,7 @@ class SiteInfo {
     required this.features,
   });
 
-  factory SiteInfo.fromJson(Map<String, dynamic> json) =>
+  factory SiteInfo.fromJson(final Map<String, dynamic> json) =>
       _$SiteInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$SiteInfoToJson(this);
@@ -47,7 +47,7 @@ class UserInfo {
     required this.avatar,
   });
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) =>
+  factory UserInfo.fromJson(final Map<String, dynamic> json) =>
       _$UserInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserInfoToJson(this);
@@ -71,7 +71,7 @@ class AnnilToken {
     required this.controlled,
   });
 
-  factory AnnilToken.fromJson(Map<String, dynamic> json) =>
+  factory AnnilToken.fromJson(final Map<String, dynamic> json) =>
       _$AnnilTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$AnnilTokenToJson(this);
@@ -99,7 +99,7 @@ class AlbumInfo {
     required this.discs,
   });
 
-  factory AlbumInfo.fromJson(Map<String, dynamic> json) =>
+  factory AlbumInfo.fromJson(final Map<String, dynamic> json) =>
       _$AlbumInfoFromJson(json);
 }
 
@@ -119,7 +119,7 @@ class DiscInfo {
     required this.tracks,
   });
 
-  factory DiscInfo.fromJson(Map<String, dynamic> json) =>
+  factory DiscInfo.fromJson(final Map<String, dynamic> json) =>
       _$DiscInfoFromJson(json);
 
   Disc toDisc() {
@@ -128,7 +128,7 @@ class DiscInfo {
       artist: artist,
       catalog: catalog,
       type: type,
-      tracks: tracks.map((e) => e.toTrack()).toList(),
+      tracks: tracks.map((final e) => e.toTrack()).toList(),
     );
   }
 }
@@ -143,14 +143,14 @@ class DiscIdentifier {
     required this.discId,
   });
 
-  factory DiscIdentifier.fromJson(Map<String, dynamic> json) =>
+  factory DiscIdentifier.fromJson(final Map<String, dynamic> json) =>
       _$DiscIdentifierFromJson(json);
 
   Map<String, dynamic> toJson() => _$DiscIdentifierToJson(this);
 
   String? toIdentifier() => '$albumId/$discId';
 
-  factory DiscIdentifier.fromIdentifier(String identifier) {
+  factory DiscIdentifier.fromIdentifier(final String identifier) {
     final parts = identifier.split('/');
     return DiscIdentifier(
       albumId: parts[0],
@@ -171,10 +171,10 @@ class TrackIdentifier {
     required this.trackId,
   });
 
-  factory TrackIdentifier.fromJson(Map<String, dynamic> json) =>
+  factory TrackIdentifier.fromJson(final Map<String, dynamic> json) =>
       _$TrackIdentifierFromJson(json);
 
-  factory TrackIdentifier.fromSlashSplitString(String slashed) {
+  factory TrackIdentifier.fromSlashSplitString(final String slashed) {
     final split = slashed.split('/');
     return TrackIdentifier(
       albumId: split[0],
@@ -189,7 +189,7 @@ class TrackIdentifier {
   String toString() => '$albumId/$discId/$trackId';
 
   @override
-  bool operator ==(Object other) {
+  bool operator ==(final Object other) {
     if (identical(this, other)) return true;
     if (other is! TrackIdentifier) return false;
     return albumId == other.albumId &&
@@ -213,7 +213,7 @@ class TrackInfo {
     this.type,
   });
 
-  factory TrackInfo.fromJson(Map<String, dynamic> json) =>
+  factory TrackInfo.fromJson(final Map<String, dynamic> json) =>
       _$TrackInfoFromJson(json);
 
   Track toTrack() {
@@ -237,7 +237,7 @@ class RequiredTrackInfo {
     required this.type,
   });
 
-  factory RequiredTrackInfo.fromJson(Map<String, dynamic> json) =>
+  factory RequiredTrackInfo.fromJson(final Map<String, dynamic> json) =>
       _$RequiredTrackInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$RequiredTrackInfoToJson(this);
@@ -261,10 +261,10 @@ class TrackInfoWithAlbum {
     required this.type,
   });
 
-  factory TrackInfoWithAlbum.fromJson(Map<String, dynamic> json) =>
+  factory TrackInfoWithAlbum.fromJson(final Map<String, dynamic> json) =>
       _$TrackInfoWithAlbumFromJson(json);
 
-  static TrackIdentifier _trackFromJson(Map<String, dynamic> json) =>
+  static TrackIdentifier _trackFromJson(final Map<String, dynamic> json) =>
       TrackIdentifier.fromJson(json);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -277,7 +277,7 @@ class TrackInfoWithAlbum {
         'type': _$TrackTypeEnumMap[type],
       };
 
-  factory TrackInfoWithAlbum.fromTrack(Track track) {
+  factory TrackInfoWithAlbum.fromTrack(final Track track) {
     return TrackInfoWithAlbum(
       id: track.id,
       title: track.title,
@@ -308,11 +308,11 @@ class PlaylistInfo {
     required this.lastModified,
   });
 
-  factory PlaylistInfo.fromJson(Map<String, dynamic> json) =>
+  factory PlaylistInfo.fromJson(final Map<String, dynamic> json) =>
       _$PlaylistInfoFromJson(json);
 
   PlaylistCompanion toCompanion(
-      {Value<int> id = const Value.absent(), bool hasItems = false}) {
+      {final Value<int> id = const Value.absent(), final bool hasItems = false}) {
     return PlaylistCompanion(
       id: id,
       name: Value(name),
@@ -353,10 +353,10 @@ class Playlist {
 
   Playlist({required this.intro, required this.items});
 
-  factory Playlist.fromJson(Map<String, dynamic> json) {
+  factory Playlist.fromJson(final Map<String, dynamic> json) {
     final intro = PlaylistInfo.fromJson(json);
     final items = (json['items'] as List)
-        .map((e) => AnnivPlaylistItem.fromJson(e))
+        .map((final e) => AnnivPlaylistItem.fromJson(e))
         .toList();
     return Playlist(intro: intro, items: items);
   }
@@ -379,7 +379,7 @@ enum PlaylistItemType {
     }
   }
 
-  factory PlaylistItemType.fromInstance(AnnivPlaylistItem item) {
+  factory PlaylistItemType.fromInstance(final AnnivPlaylistItem item) {
     if (item is AnnivPlaylistItemTrack) {
       return PlaylistItemType.normal;
     } else if (item is AnnivPlaylistItemDummyTrack) {
@@ -398,7 +398,7 @@ abstract class AnnivPlaylistItem {
 
   AnnivPlaylistItem({this.description});
 
-  factory AnnivPlaylistItem.fromDatabase(PlaylistItemData data) {
+  factory AnnivPlaylistItem.fromDatabase(final PlaylistItemData data) {
     return AnnivPlaylistItem.fromJson({
       'type': data.type,
       'description': data.description,
@@ -406,7 +406,7 @@ abstract class AnnivPlaylistItem {
     });
   }
 
-  factory AnnivPlaylistItem.fromJson(Map<String, dynamic> json) {
+  factory AnnivPlaylistItem.fromJson(final Map<String, dynamic> json) {
     final type = json['type'] as String;
     switch (type) {
       case 'normal':
@@ -428,8 +428,8 @@ abstract class AnnivPlaylistItem {
   }
 
   PlaylistItemCompanion toCompanion({
-    required int playlistId,
-    required int order,
+    required final int playlistId,
+    required final int order,
   }) {
     return PlaylistItemCompanion(
       playlistId: Value(playlistId),
@@ -446,7 +446,7 @@ class AnnivPlaylistItemTrack extends AnnivPlaylistItem {
 
   AnnivPlaylistItemTrack({super.description, required this.info});
 
-  factory AnnivPlaylistItemTrack.fromJson(Map<String, dynamic> json) =>
+  factory AnnivPlaylistItemTrack.fromJson(final Map<String, dynamic> json) =>
       AnnivPlaylistItemTrack(
         info: TrackInfoWithAlbum.fromJson(json['info']),
         description: json['description'],
@@ -465,7 +465,7 @@ class AnnivPlaylistItemDummyTrack extends AnnivPlaylistItem {
 
   AnnivPlaylistItemDummyTrack({super.description, required this.info});
 
-  factory AnnivPlaylistItemDummyTrack.fromJson(Map<String, dynamic> json) =>
+  factory AnnivPlaylistItemDummyTrack.fromJson(final Map<String, dynamic> json) =>
       AnnivPlaylistItemDummyTrack(
         info: RequiredTrackInfo.fromJson(json['info']),
         description: json['description'],
@@ -484,7 +484,7 @@ class AnnivPlaylistItemAlbum extends AnnivPlaylistItem {
 
   AnnivPlaylistItemAlbum({super.description, required this.albumId});
 
-  factory AnnivPlaylistItemAlbum.fromJson(Map<String, dynamic> json) =>
+  factory AnnivPlaylistItemAlbum.fromJson(final Map<String, dynamic> json) =>
       AnnivPlaylistItemAlbum(
         albumId: json['info'],
         description: json['description'],
@@ -506,7 +506,7 @@ class SearchResult {
 
   SearchResult({this.albums, this.tracks, this.playlists});
 
-  factory SearchResult.fromJson(Map<String, dynamic> json) =>
+  factory SearchResult.fromJson(final Map<String, dynamic> json) =>
       _$SearchResultFromJson(json);
 }
 
@@ -517,7 +517,7 @@ class LyricResponse {
 
   LyricResponse({required this.source, required this.translations});
 
-  factory LyricResponse.fromJson(Map<String, dynamic> json) =>
+  factory LyricResponse.fromJson(final Map<String, dynamic> json) =>
       _$LyricResponseFromJson(json);
 }
 
@@ -535,7 +535,7 @@ class LyricLanguage {
     required this.data,
   });
 
-  factory LyricLanguage.fromJson(Map<String, dynamic> json) =>
+  factory LyricLanguage.fromJson(final Map<String, dynamic> json) =>
       _$LyricLanguageFromJson(json);
 
   Map<String, dynamic> toJson() => _$LyricLanguageToJson(this);
@@ -547,7 +547,7 @@ class RepoDatabaseDescription {
 
   RepoDatabaseDescription({required this.lastModified});
 
-  factory RepoDatabaseDescription.fromJson(Map<String, dynamic> json) =>
+  factory RepoDatabaseDescription.fromJson(final Map<String, dynamic> json) =>
       _$RepoDatabaseDescriptionFromJson(json);
 }
 
@@ -564,7 +564,7 @@ enum TagType {
   Unknown,
   Category;
 
-  factory TagType.fromString(String type) {
+  factory TagType.fromString(final String type) {
     switch (type) {
       case 'artist':
         return TagType.Artist;
@@ -598,7 +598,7 @@ class TagInfo {
 
   TagInfo({required this.name, required this.type});
 
-  factory TagInfo.fromJson(Map<String, dynamic> json) =>
+  factory TagInfo.fromJson(final Map<String, dynamic> json) =>
       _$TagInfoFromJson(json);
 }
 
@@ -619,6 +619,6 @@ class SongPlayRecordResult {
 
   SongPlayRecordResult({required this.track, required this.count});
 
-  factory SongPlayRecordResult.fromJson(Map<String, dynamic> json) =>
+  factory SongPlayRecordResult.fromJson(final Map<String, dynamic> json) =>
       _$SongPlayRecordResultFromJson(json);
 }

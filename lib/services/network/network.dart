@@ -1,22 +1,28 @@
-import 'package:annix/global.dart';
+import 'dart:io';
+
+import 'package:annix/bridge/bridge.dart';
+import 'package:annix/providers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class NetworkService extends ChangeNotifier {
-  static bool isMobileNetwork = false;
-  static bool isConnected = true;
+  final Ref ref;
+
+  bool isMobileNetwork = false;
+  bool isConnected = true;
 
   final Connectivity _connectivity = Connectivity();
   final Dio _client = Dio();
 
-  NetworkService() {
+  NetworkService(this.ref) {
     _connectivity.onConnectivityChanged.listen(_updateState);
     _connectivity.checkConnectivity().then(_updateState);
-    Global.settings.useMobileNetwork.addListener(notifyListeners);
+    ref.read(settingsProvider).useMobileNetwork.addListener(notifyListeners);
   }
 
-  void _updateState(ConnectivityResult result) {
+  void _updateState(final ConnectivityResult result) {
     switch (result) {
       // wireless or wired
       case ConnectivityResult.wifi:
@@ -32,14 +38,16 @@ class NetworkService extends ChangeNotifier {
         break;
       default:
         // no network or vpn
-        if (Global.isApple || result == ConnectivityResult.vpn) {
+        if (Platform.isIOS ||
+            Platform.isMacOS ||
+            result == ConnectivityResult.vpn) {
           // on apple devices, VPN connection may result in ConnectivityResult.none
           // so add an polyfill to check internet accessibility
           // https://github.com/fluttercommunity/plus_plugins/issues/857
-          _canVisitInternet().then((value) {
+          _canVisitInternet().then((final value) {
             // keep `isMobileNetwork` property and set isConnected
             isConnected = value;
-            notifyListeners();
+            updateAndNotify();
           });
           // early return, do not notify listeners here
           return;
@@ -50,6 +58,12 @@ class NetworkService extends ChangeNotifier {
         isMobileNetwork = false;
         break;
     }
+    updateAndNotify();
+  }
+
+  /// Update network status both in NetworkService and
+  void updateAndNotify() {
+    api.updateNetworkStatus(isOnline: isOnline);
     notifyListeners();
   }
 
@@ -66,8 +80,8 @@ class NetworkService extends ChangeNotifier {
     return false;
   }
 
-  static bool get isOnline {
+  bool get isOnline {
     return isConnected &&
-        (!isMobileNetwork || Global.settings.useMobileNetwork.value);
+        (!isMobileNetwork || ref.read(settingsProvider).useMobileNetwork.value);
   }
 }

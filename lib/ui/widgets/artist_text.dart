@@ -16,7 +16,7 @@ class Artist {
   Artist({required this.name, required this.children});
 }
 
-Artist _readArtist(_ArtistParser reader) {
+Artist _readArtist(final _ArtistParser reader) {
   String name = '';
   final children = <Artist>[];
 
@@ -50,7 +50,7 @@ Artist _readArtist(_ArtistParser reader) {
   return Artist(name: name, children: children);
 }
 
-List<Artist> _readArtists(_ArtistParser reader) {
+List<Artist> _readArtists(final _ArtistParser reader) {
   final res = <Artist>[];
   res.add(_readArtist(reader));
   while (reader.data.length > reader.idx && reader.data[reader.idx] == '、') {
@@ -92,7 +92,7 @@ class _ArtistTextState extends State<ArtistText> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return GestureDetector(
       onLongPress: toggleExtend,
       child: Row(
@@ -103,7 +103,7 @@ class _ArtistTextState extends State<ArtistText> {
             child: Text(
               fullArtist
                   ? widget.artist
-                  : widget.artists.map((e) => e.name).join('、'),
+                  : widget.artists.map((final e) => e.name).join('、'),
               style: widget.style,
               overflow: widget.overflow,
               maxLines: 1,

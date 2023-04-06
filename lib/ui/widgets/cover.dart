@@ -1,10 +1,9 @@
-import 'package:annix/global.dart';
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PlayingMusicCover extends StatelessWidget {
+class PlayingMusicCover extends ConsumerWidget {
   final bool card;
   final BoxFit? fit;
   final FilterQuality filterQuality;
@@ -19,43 +18,41 @@ class PlayingMusicCover extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final child = Selector<PlaybackService, PlayingTrack?>(
-      selector: (context, player) => player.playing,
-      builder: (context, playing, child) {
-        if (playing == null) {
-          // not playing
-          return const DummyMusicCover();
-        }
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final playingId =
+        ref.watch(playingProvider.select((final v) => v?.identifier));
+    Widget child;
 
-        // is playing
-        Widget child = MusicCover.fromAlbum(
-          key: ValueKey(playing.identifier.albumId),
-          albumId: playing.identifier.albumId,
-          provider: playing.source.coverProvider,
-          fit: fit,
-          filterQuality: filterQuality,
-          onImage: (provider) async {
-            final scheme =
-                await ColorScheme.fromImageProvider(provider: provider);
-            final darkScheme = await ColorScheme.fromImageProvider(
-                provider: provider, brightness: Brightness.dark);
-            Global.theme.setScheme(scheme, darkScheme);
+    if (playingId == null) {
+      // not playing
+      child = const DummyMusicCover();
+    } else {
+      // is playing
+      child = MusicCover.fromAlbum(
+        key: ValueKey(playingId.albumId),
+        albumId: playingId.albumId,
+        fit: fit,
+        filterQuality: filterQuality,
+        onImage: (final provider) async {
+          final scheme =
+              await ColorScheme.fromImageProvider(provider: provider);
+          final darkScheme = await ColorScheme.fromImageProvider(
+              provider: provider, brightness: Brightness.dark);
+          ref.read(themeProvider).setScheme(scheme, darkScheme);
+        },
+      );
+
+      if (animated) {
+        child = AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder:
+              (final Widget child, final Animation<double> animation) {
+            return FadeTransition(opacity: animation, child: child);
           },
+          child: child,
         );
-
-        if (animated) {
-          child = AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            child: child,
-          );
-        }
-        return child;
-      },
-    );
+      }
+    }
 
     if (card) {
       return CoverCard(
@@ -67,8 +64,9 @@ class PlayingMusicCover extends StatelessWidget {
   }
 }
 
-class MusicCover extends StatelessWidget {
-  final ImageProvider image;
+class MusicCover extends ConsumerWidget {
+  final String albumId;
+  final int? discId;
 
   final BoxFit? fit;
   final FilterQuality filterQuality;
@@ -80,24 +78,20 @@ class MusicCover extends StatelessWidget {
   final void Function(ImageProvider)? onImage;
 
   factory MusicCover.fromAlbum({
-    required String albumId,
-    int? discId,
-    ImageProvider? provider,
-    Key? key,
-    BoxFit? fit,
-    FilterQuality filterQuality = FilterQuality.low,
-    String? tag,
-    void Function(ImageProvider)? onImage,
-    double? width,
-    double? height,
+    required final String albumId,
+    final int? discId,
+    final Key? key,
+    final BoxFit? fit,
+    final FilterQuality filterQuality = FilterQuality.low,
+    final String? tag,
+    final void Function(ImageProvider)? onImage,
+    final double? width,
+    final double? height,
   }) {
-    final image = provider ??
-        ExtendedNetworkImageProvider(
-          Global.proxy.coverUrl(albumId, discId),
-        );
-    return MusicCover(
+    return MusicCover._(
       key: key,
-      image: image,
+      albumId: albumId,
+      discId: discId,
       fit: fit,
       filterQuality: filterQuality,
       tag: tag,
@@ -107,20 +101,19 @@ class MusicCover extends StatelessWidget {
     );
   }
 
-  MusicCover({
+  const MusicCover._({
     super.key,
-    required this.image,
+    required this.albumId,
+    this.discId,
     this.fit,
-    this.filterQuality = FilterQuality.low,
+    required this.filterQuality,
     this.tag,
     this.onImage,
     this.width,
     this.height,
-  }) {
-    onImage?.call(image);
-  }
+  });
 
-  Widget? _loadStateChanged(ExtendedImageState state) {
+  Widget? _loadStateChanged(final ExtendedImageState state) {
     switch (state.extendedImageLoadState) {
       case LoadState.completed:
         final image = state.extendedImageInfo!.image;
@@ -138,7 +131,12 @@ class MusicCover extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final image = ExtendedNetworkImageProvider(
+        ref.read(proxyProvider).coverUrl(albumId, discId));
+
+    onImage?.call(image);
+
     return ExtendedImage(
       image: image,
       fit: fit,
@@ -153,7 +151,7 @@ class CoverCard extends StatelessWidget {
   const CoverCard({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Card(
       clipBehavior: Clip.hardEdge,
       elevation: 1,
@@ -173,7 +171,7 @@ class DummyMusicCover extends StatelessWidget {
   const DummyMusicCover({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final cover = AspectRatio(
       aspectRatio: 1,
       child: Container(

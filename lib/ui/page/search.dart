@@ -1,11 +1,7 @@
 import 'dart:async';
-
-import 'package:annix/global.dart';
-import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
-import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/services/settings.dart';
@@ -15,21 +11,21 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage> {
   SearchResult? _result;
   bool isLoading = false;
 
-  Future<void> search(AnnivClient anniv, String keyword) async {
+  Future<void> search(final AnnivClient anniv, final String keyword) async {
     primaryFocus?.unfocus(disposition: UnfocusDisposition.scope);
     setState(() {
       _result = null;
@@ -56,15 +52,15 @@ class _SearchPageState extends State<SearchPage> {
   Set<TagEntry> tags = {};
 
   @override
-  Widget build(BuildContext context) {
-    final anniv = context.read<AnnivService>();
+  Widget build(final BuildContext context) {
+    final anniv = ref.read(annivProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: TextField(
           autofocus: true,
           decoration: InputDecoration(hintText: t.search),
-          onSubmitted: (keyword) => search(anniv.client!, keyword),
+          onSubmitted: (final keyword) => search(anniv.client!, keyword),
         ),
       ),
       body: Column(
@@ -87,7 +83,7 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
               ...tags.map(
-                (tag) {
+                (final tag) {
                   if (tag.type == TagType.Category) {
                     return InputChip(
                       label: Text(tag.name),
@@ -127,13 +123,13 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-class _SearchResult extends StatelessWidget {
+class _SearchResult extends ConsumerWidget {
   final SearchResult result;
 
   const _SearchResult({required this.result});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     return DefaultTabController(
       length: 3,
       child: Column(
@@ -159,12 +155,13 @@ class _SearchResult extends StatelessWidget {
               children: [
                 // Tracks
                 ListView.builder(
-                  itemBuilder: (context, index) {
+                  itemBuilder: (final context, final index) {
                     final e = result.tracks![index];
 
                     return ValueListenableBuilder<SearchTrackDisplayType>(
-                      valueListenable: Global.settings.searchTrackDisplayType,
-                      builder: (context, type, _) {
+                      valueListenable:
+                          ref.read(settingsProvider).searchTrackDisplayType,
+                      builder: (final context, final type, final _) {
                         return ListTile(
                           isThreeLine: type.isThreeLine,
                           leading: CoverCard(
@@ -188,8 +185,8 @@ class _SearchResult extends StatelessWidget {
                             ],
                           ),
                           onTap: () async {
-                            final player = context.read<PlaybackService>();
-                            final metadata = context.read<MetadataService>();
+                            final player = ref.read(playbackProvider);
+                            final metadata = ref.read(metadataProvider);
                             final audio = await AnnilAudioSource.from(
                               id: e.id,
                               metadata: metadata,
@@ -206,7 +203,7 @@ class _SearchResult extends StatelessWidget {
                 ),
                 // Albums
                 ListView.builder(
-                  itemBuilder: (context, index) {
+                  itemBuilder: (final context, final index) {
                     final album = result.albums![index];
                     return ListTile(
                       leading: CoverCard(
@@ -227,7 +224,7 @@ class _SearchResult extends StatelessWidget {
                 ),
                 // Playlists
                 ListView.builder(
-                  itemBuilder: (context, index) {
+                  itemBuilder: (final context, final index) {
                     final item = result.playlists![index];
                     final coverAlbumId = item.cover?.albumId;
                     return ListTile(

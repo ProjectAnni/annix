@@ -24,9 +24,9 @@ class ReleaseDate {
     return result;
   }
 
-  static readValue(Map map, String key) => map[key] as dynamic;
+  static readValue(final Map map, final String key) => map[key] as dynamic;
 
-  factory ReleaseDate.fromJson(String value) {
+  factory ReleaseDate.fromJson(final String value) {
     // "yyyy-mm-dd"
     // "yyyy-mm"
     // "yyyy"
@@ -50,7 +50,7 @@ enum TrackType {
   radio,
   vocal;
 
-  factory TrackType.fromString(String value) {
+  factory TrackType.fromString(final String value) {
     return $enumDecode(
       _$TrackTypeEnumMap,
       value,
@@ -95,7 +95,8 @@ class Album {
     }
   }
 
-  factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
+  factory Album.fromJson(final Map<String, dynamic> json) =>
+      _$AlbumFromJson(json);
 
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 
@@ -124,10 +125,10 @@ class Disc {
   final List<Track> tracks;
 
   Disc({
-    String? title,
+    final String? title,
     required this.catalog,
-    String? artist,
-    TrackType? type,
+    final String? artist,
+    final TrackType? type,
     this.tags,
     required this.tracks,
   })  : _title = title,
@@ -144,7 +145,8 @@ class Disc {
 
   TrackType get type => _type ?? album.type;
 
-  factory Disc.fromJson(Map<String, dynamic> json) => _$DiscFromJson(json);
+  factory Disc.fromJson(final Map<String, dynamic> json) =>
+      _$DiscFromJson(json);
 
   Map<String, dynamic> toJson() => _$DiscToJson(this);
 }
@@ -161,8 +163,8 @@ class Track {
 
   Track({
     required this.title,
-    String? artist,
-    TrackType? type,
+    final String? artist,
+    final TrackType? type,
     this.tags = const [],
   })  : _artist = artist,
         _type = type;
@@ -177,7 +179,8 @@ class Track {
         trackId: disc.tracks.indexOf(this) + 1,
       );
 
-  factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
+  factory Track.fromJson(final Map<String, dynamic> json) =>
+      _$TrackFromJson(json);
 
   Map<String, dynamic> toJson() => _$TrackToJson(this);
 }

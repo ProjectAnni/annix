@@ -1,11 +1,11 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:provider/provider.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 extension on LyricAlign {
   TextAlign get textAlign {
@@ -32,11 +32,14 @@ extension on LyricAlign {
 }
 
 class PlayingLyricUI extends LyricUI {
+  final BuildContext context;
+
   final LyricAlign align;
   final bool isKaraoke;
   final TextTheme textTheme;
 
-  PlayingLyricUI({
+  PlayingLyricUI(
+    this.context, {
     required this.textTheme,
     this.align = LyricAlign.CENTER,
     required this.isKaraoke,
@@ -47,7 +50,7 @@ class PlayingLyricUI extends LyricUI {
     return textTheme.titleMedium!.copyWith(
       fontWeight: FontWeight.w500,
       height: 1,
-      color: isKaraoke ? null : Global.context.colorScheme.primary,
+      color: isKaraoke ? null : context.colorScheme.primary,
     );
   }
 
@@ -80,14 +83,14 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   double getPlayingLineBias() {
-    return Global.context.isDesktopOrLandscape
+    return context.isDesktopOrLandscape
         ? 0.2 // on desktop, we tend to make lyric display at top
         : 0.5; // but on mobile phone, it would look better at the center of the screen
   }
 
   @override
   Color getLyricHightlightColor() {
-    return Global.context.colorScheme.primary;
+    return context.colorScheme.primary;
   }
 
   @override
@@ -97,31 +100,17 @@ class PlayingLyricUI extends LyricUI {
   bool enableHighlight() => isKaraoke;
 }
 
-class LyricView extends StatelessWidget {
+class LyricView extends ConsumerWidget {
   final LyricAlign alignment;
 
   const LyricView({super.key, this.alignment = LyricAlign.CENTER});
 
   @override
-  Widget build(BuildContext context) {
-    return Selector<PlaybackService, PlayingTrack?>(
-      selector: (_, player) => player.playing,
-      builder: (context, playing, child) {
-        return ChangeNotifierProvider.value(
-          value: playing,
-          builder: (context, child) {
-            return Selector<PlayingTrack?, TrackLyric?>(
-              selector: (_, playing) => playing?.lyric,
-              builder: (context, lyric, child) {
-                return _LyricView(
-                  lyric: lyric,
-                  lyricAlign: alignment,
-                );
-              },
-            );
-          },
-        );
-      },
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final lyric = ref.watch(playingProvider.select((final p) => p?.lyric));
+    return _LyricView(
+      lyric: lyric,
+      lyricAlign: alignment,
     );
   }
 }
@@ -131,13 +120,12 @@ class _LyricView extends StatelessWidget {
   final TrackLyric? lyric;
 
   const _LyricView({
-    super.key,
     this.lyric,
     this.lyricAlign = LyricAlign.CENTER,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     if (lyric == null) {
       return Align(
         alignment: lyricAlign.alignment,
@@ -165,26 +153,22 @@ class _LyricView extends StatelessWidget {
         final isKaraoke = lyric?.lyric.model?.lyrics[0].spanList != null;
 
         final ui = PlayingLyricUI(
+          context,
           textTheme: context.textTheme,
           align: lyricAlign,
           isKaraoke: isKaraoke,
         );
-        return Consumer<PlaybackService>(
-          builder: (iconColor, player, child) {
-            return ChangeNotifierProvider.value(
-              value: player.playing,
-              child: Selector<PlayingTrack?, int?>(
-                selector: (_, playing) => playing?.position.inMilliseconds,
-                builder: (context, position, child) {
-                  return LyricsReader(
-                    model: lyric!.lyric.model,
-                    lyricUi: ui,
-                    position: position ?? 0,
-                    playing: player.playerStatus == PlayerStatus.playing,
-                    emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
-                  );
-                },
-              ),
+        return Consumer(
+          builder: (final iconColor, final ref, final child) {
+            final player = ref.watch(playbackProvider);
+            final position =
+                ref.watch(playingProvider.select((final p) => p?.position));
+            return LyricsReader(
+              model: lyric!.lyric.model,
+              lyricUi: ui,
+              position: position?.inMilliseconds ?? 0,
+              playing: player.playerStatus == PlayerStatus.playing,
+              emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
             );
           },
         );
@@ -192,7 +176,7 @@ class _LyricView extends StatelessWidget {
     }
   }
 
-  Widget _textLyric(BuildContext context, String text) {
+  Widget _textLyric(final BuildContext context, final String text) {
     return SingleChildScrollView(
       child: FractionallySizedBox(
         widthFactor: 1,

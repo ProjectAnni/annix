@@ -1,20 +1,22 @@
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/lyric/lyric_provider.dart';
-import 'package:annix/services/lyric/lyric_provider_anniv.dart';
-import 'package:annix/services/lyric/lyric_provider_petitlyrics.dart';
+import 'package:annix/services/lyric/lyric_source.dart';
+import 'package:annix/services/lyric/lyric_source_anniv.dart';
+import 'package:annix/services/lyric/lyric_source_petitlyrics.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PlayingTrack extends ChangeNotifier {
   bool _disposed = false;
 
   final AnnilAudioSource source;
+  final Ref ref;
 
-  PlayingTrack(this.source) {
-    getLyric().then(updateLyric, onError: (_) => updateLyric(null));
+  PlayingTrack(this.source, this.ref) {
+    getLyric().then(updateLyric, onError: (final _) => updateLyric(null));
   }
 
   TrackLyric? lyric;
@@ -27,17 +29,17 @@ class PlayingTrack extends ChangeNotifier {
 
   String get id => source.id;
 
-  void updatePosition(Duration position) {
+  void updatePosition(final Duration position) {
     this.position = position;
     if (!_disposed) notifyListeners();
   }
 
-  void updateDuration(Duration duration) {
+  void updateDuration(final Duration duration) {
     this.duration = duration;
     if (!_disposed) notifyListeners();
   }
 
-  void updateLyric(TrackLyric? lyric) {
+  void updateLyric(final TrackLyric? lyric) {
     this.lyric = lyric ?? TrackLyric.empty();
     if (!_disposed) notifyListeners();
   }
@@ -58,13 +60,13 @@ class PlayingTrack extends ChangeNotifier {
       final id = this.id;
 
       // 1. local cache
-      var lyric = await LyricProvider.getLocal(id);
+      var lyric = await LyricSource.getLocal(id);
 
       // 2. anniv
       if (lyric == null) {
-        final anniv = LyricProviderAnniv();
+        final anniv = LyricSourceAnniv(ref);
         final result =
-        await anniv.search(track: identifier, title: track.title);
+            await anniv.search(track: identifier, title: track.title);
         if (result.isNotEmpty) {
           lyric = await result[0].lyric;
         }
@@ -72,7 +74,7 @@ class PlayingTrack extends ChangeNotifier {
 
       // 3. lyric provider
       if (lyric == null) {
-        final LyricProvider provider = LyricProviderPetitLyrics();
+        final LyricSource provider = LyricSourcePetitLyrics();
         final songs = await provider.search(
           track: identifier,
           title: track.title,
@@ -86,7 +88,7 @@ class PlayingTrack extends ChangeNotifier {
 
       // 4. save to local cache
       if (lyric != null) {
-        LyricProvider.saveLocal(id, lyric);
+        LyricSource.saveLocal(id, lyric);
         return TrackLyric(lyric: lyric, type: track.type);
       }
 

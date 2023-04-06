@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:annix/services/annil/annil.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/anniv/anniv_client.dart';
-import 'package:annix/global.dart';
-import 'package:annix/services/network/network.dart';
+import 'package:annix/services/path.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SiteUserInfo {
   SiteInfo site;
@@ -23,7 +22,7 @@ class SiteUserInfo {
 }
 
 class AnnivService extends ChangeNotifier {
-  BuildContext context;
+  final Ref ref;
 
   AnnivClient? client;
 
@@ -31,21 +30,21 @@ class AnnivService extends ChangeNotifier {
 
   bool get isLogin => info != null;
 
-  AnnivService(this.context) {
+  AnnivService(this.ref) {
     // 1. init client
-    client = AnnivClient.load();
+    client = AnnivClient.load(ref);
 
     // 2. load cached site info & user info
     _loadInfo();
 
     // check login status
-    final network = context.read<NetworkService>();
+    final network = ref.read(networkProvider);
     network.addListener(() {
-      if (NetworkService.isOnline) {
+      if (network.isOnline) {
         checkLogin(client);
       }
     });
-    if (NetworkService.isOnline) {
+    if (network.isOnline) {
       checkLogin(client);
     }
 
@@ -53,7 +52,7 @@ class AnnivService extends ChangeNotifier {
     loadMetadata();
   }
 
-  Future<void> checkLogin(AnnivClient? client) async {
+  Future<void> checkLogin(final AnnivClient? client) async {
     if (client != null) {
       try {
         final result =
@@ -82,7 +81,7 @@ class AnnivService extends ChangeNotifier {
       // do not await here
       Future.wait([
         (() async {
-          final annil = context.read<AnnilService>();
+          final annil = ref.read(annilProvider);
           final annilTokens = await client.getCredentials();
           await annil.sync(annilTokens);
         })(),
@@ -95,14 +94,19 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<void> login(String url, String email, String password) async {
-    final anniv =
-        await AnnivClient.login(url: url, email: email, password: password);
+  Future<void> login(
+      final String url, final String email, final String password) async {
+    final anniv = await AnnivClient.login(
+      ref,
+      url: url,
+      email: email,
+      password: password,
+    );
     await checkLogin(anniv);
   }
 
   Future<void> logout() async {
-    final annil = Global.context.read<AnnilService>();
+    final annil = ref.read(annilProvider);
 
     // 1. clear anniv info
     info = null;
@@ -124,8 +128,9 @@ class AnnivService extends ChangeNotifier {
   }
 
   void _loadInfo() {
-    final site = Global.preferences.getString('anniv_site');
-    final user = Global.preferences.getString('anniv_user');
+    final preferences = ref.read(preferencesProvider);
+    final site = preferences.getString('anniv_site');
+    final user = preferences.getString('anniv_user');
     if (site != null && user != null) {
       info = SiteUserInfo(
         site: SiteInfo.fromJson(jsonDecode(site)),
@@ -135,23 +140,24 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<void> _saveInfo() async {
+    final preferences = ref.read(preferencesProvider);
     if (info != null) {
       final site = info!.site.toJson();
       final user = info!.user.toJson();
-      await Global.preferences.setString('anniv_site', jsonEncode(site));
-      await Global.preferences.setString('anniv_user', jsonEncode(user));
+      preferences.set('anniv_site', jsonEncode(site));
+      preferences.set('anniv_user', jsonEncode(user));
     } else {
-      await Global.preferences.remove('anniv_site');
-      await Global.preferences.remove('anniv_user');
+      preferences.remove('anniv_site');
+      preferences.remove('anniv_user');
     }
     notifyListeners();
   }
 
   //////////////////////////////// Favorite ///////////////////////////////
-  Future<void> addFavoriteTrack(TrackIdentifier track) async {
+  Future<void> addFavoriteTrack(final TrackIdentifier track) async {
     if (client != null) {
-      final db = Global.context.read<LocalDatabase>();
-      final MetadataService metadata = Global.context.read<MetadataService>();
+      final db = ref.read(localDatabaseProvider);
+      final MetadataService metadata = ref.read(metadataProvider);
       final trackMetadata = await metadata.getTrack(track);
 
       await client?.addFavoriteTrack(track);
@@ -169,12 +175,12 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFavoriteTrack(TrackIdentifier id) async {
+  Future<void> removeFavoriteTrack(final TrackIdentifier id) async {
     if (client != null) {
-      final db = Global.context.read<LocalDatabase>();
+      final db = ref.read(localDatabaseProvider);
       await client?.removeFavoriteTrack(id);
       await (db.localFavoriteTracks.delete()
-            ..where((f) =>
+            ..where((final f) =>
                 f.albumId.equals(id.albumId) &
                 f.discId.equals(id.discId) &
                 f.trackId.equals(id.trackId)))
@@ -182,8 +188,8 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<bool> toggleFavoriteTrack(TrackInfoWithAlbum track) async {
-    final db = Global.context.read<LocalDatabase>();
+  Future<bool> toggleFavoriteTrack(final TrackInfoWithAlbum track) async {
+    final db = ref.read(localDatabaseProvider);
 
     if (await db
         .isTrackFavorite(track.id.albumId, track.id.discId, track.id.trackId)
@@ -200,20 +206,20 @@ class AnnivService extends ChangeNotifier {
     await client?.getFavoriteTracks().then(_syncFavoriteTrack);
   }
 
-  Future<void> _syncFavoriteTrack(List<TrackInfoWithAlbum> list) async {
-    final db = context.read<LocalDatabase>();
+  Future<void> _syncFavoriteTrack(final List<TrackInfoWithAlbum> list) async {
+    final db = ref.read(localDatabaseProvider);
 
     await db.transaction(() async {
       // clear favorite list
       await db.localFavoriteTracks.delete().go();
       // write new favorite list in
       await db.batch(
-        (batch) => batch.insertAll(
+        (final batch) => batch.insertAll(
           db.localFavoriteTracks,
           // reverse the list so that the latest favorite is at the end of the list
           list.reversed
               .map(
-                (e) => LocalFavoriteTracksCompanion.insert(
+                (final e) => LocalFavoriteTracksCompanion.insert(
                   albumId: e.id.albumId,
                   discId: e.id.discId,
                   trackId: e.id.trackId,
@@ -229,9 +235,9 @@ class AnnivService extends ChangeNotifier {
     });
   }
 
-  Future<void> addFavoriteAlbum(String albumId) async {
+  Future<void> addFavoriteAlbum(final String albumId) async {
     if (client != null) {
-      final db = Global.context.read<LocalDatabase>();
+      final db = ref.read(localDatabaseProvider);
 
       await client?.addFavoriteAlbum(albumId);
       await db.localFavoriteAlbums.insert().insert(
@@ -242,18 +248,18 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFavoriteAlbum(String albumId) async {
+  Future<void> removeFavoriteAlbum(final String albumId) async {
     if (client != null) {
-      final db = Global.context.read<LocalDatabase>();
+      final db = ref.read(localDatabaseProvider);
       await client?.removeFavoriteAlbum(albumId);
       await (db.localFavoriteAlbums.delete()
-            ..where((f) => f.albumId.equals(albumId)))
+            ..where((final f) => f.albumId.equals(albumId)))
           .go();
     }
   }
 
-  Future<bool> toggleFavoriteAlbum(String albumId) async {
-    final db = Global.context.read<LocalDatabase>();
+  Future<bool> toggleFavoriteAlbum(final String albumId) async {
+    final db = ref.read(localDatabaseProvider);
 
     if (await db.isAlbumFavorite(albumId).getSingle()) {
       await removeFavoriteAlbum(albumId);
@@ -268,20 +274,20 @@ class AnnivService extends ChangeNotifier {
     await client?.getFavoriteAlbums().then(_syncFavoriteAlbum);
   }
 
-  Future<void> _syncFavoriteAlbum(List<String> list) async {
-    final db = context.read<LocalDatabase>();
+  Future<void> _syncFavoriteAlbum(final List<String> list) async {
+    final db = ref.read(localDatabaseProvider);
 
     await db.transaction(() async {
       // clear favorite album list
       await db.localFavoriteAlbums.delete().go();
       // write new favorite albums
       await db.batch(
-        (batch) => batch.insertAll(
+        (final batch) => batch.insertAll(
           db.localFavoriteAlbums,
           // reverse the list so that the latest favorite is at the end of the list
           list.reversed
               .map(
-                (e) => LocalFavoriteAlbumsCompanion.insert(
+                (final e) => LocalFavoriteAlbumsCompanion.insert(
                   albumId: e,
                 ),
               )
@@ -292,11 +298,11 @@ class AnnivService extends ChangeNotifier {
   }
 
   //////////////////////////////// Playlist ///////////////////////////////
-  Future<void> syncPlaylist(List<PlaylistInfo> list) async {
-    final db = Global.context.read<LocalDatabase>();
-    final map = Map.fromEntries(list.map((e) => MapEntry(e.id, e)));
+  Future<void> syncPlaylist(final List<PlaylistInfo> list) async {
+    final db = ref.read(localDatabaseProvider);
+    final map = Map.fromEntries(list.map((final e) => MapEntry(e.id, e)));
 
-    await db.playlist.select().asyncMap((playlist) async {
+    await db.playlist.select().asyncMap((final playlist) async {
       final isRemote = playlist.remoteId != null;
       if (isRemote) {
         final remote = map[playlist.remoteId];
@@ -305,13 +311,13 @@ class AnnivService extends ChangeNotifier {
         if (remote == null) {
           db.playlist.deleteOne(playlist);
           db.playlistItem
-              .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
+              .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
         } else {
           // playlist exists on remote, compare last_modified and update it
           if (playlist.lastModified != remote.lastModified) {
             // clear items
             await db.playlistItem
-                .deleteWhere((tbl) => tbl.playlistId.equals(playlist.id));
+                .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
             // update modified playlist
             await db.playlist
                 .update()
@@ -329,8 +335,8 @@ class AnnivService extends ChangeNotifier {
   }
 
   Future<List<AnnivPlaylistItem>?> getPlaylistItems(
-      PlaylistData playlist) async {
-    final db = Global.context.read<LocalDatabase>();
+      final PlaylistData playlist) async {
+    final db = ref.read(localDatabaseProvider);
     if (!playlist.hasItems) {
       // remote playlist without track items
       // try to fetch items
@@ -340,12 +346,12 @@ class AnnivService extends ChangeNotifier {
         final remote = await client!.getPlaylistDetail(playlist.remoteId!);
 
         // update tracks
-        await db.batch((batch) => batch.insertAll(
+        await db.batch((final batch) => batch.insertAll(
               db.playlistItem,
               remote.items
                   .asMap()
                   .entries
-                  .map((e) => e.value
+                  .map((final e) => e.value
                       .toCompanion(playlistId: playlist.id, order: e.key))
                   .toList(),
             ));
@@ -360,12 +366,12 @@ class AnnivService extends ChangeNotifier {
     }
 
     final items = await db.playlistItems(playlist.id).get();
-    return items.map((e) => AnnivPlaylistItem.fromDatabase(e)).toList();
+    return items.map((final e) => AnnivPlaylistItem.fromDatabase(e)).toList();
   }
 
   ////////////////////////////// Statistics //////////////////////////////
-  Future<void> trackPlayback(TrackIdentifier track, int at) async {
-    final db = Global.context.read<LocalDatabase>();
+  Future<void> trackPlayback(final TrackIdentifier track, final int at) async {
+    final db = ref.read(localDatabaseProvider);
     await db.playbackRecords.insert().insert(PlaybackRecordsCompanion.insert(
           albumId: track.albumId,
           discId: track.discId,
@@ -377,7 +383,7 @@ class AnnivService extends ChangeNotifier {
     if (client != null) {
       final records = await db.transaction(() async {
         final records = await db.playbackRecordsToSubmit().get();
-        final ids = records.map((e) => e.id).toList();
+        final ids = records.map((final e) => e.id).toList();
         await db.lockPlaybackRecords(ids);
         return records;
       });
@@ -394,13 +400,14 @@ class AnnivService extends ChangeNotifier {
 
       // swap current track map, submit to anniv server
       final tracks = trackMap.entries
-          .map((entry) => SongPlayRecord(track: entry.key, at: entry.value))
+          .map((final entry) =>
+              SongPlayRecord(track: entry.key, at: entry.value))
           .toList();
       try {
         await client!.trackPlayback(tracks);
       } catch (_) {
         // unlock tracks for next submission
-        final ids = records.map((e) => e.id).toList();
+        final ids = records.map((final e) => e.id).toList();
         await db.unlockPlaybackRecords(ids);
       }
     }
@@ -408,15 +415,15 @@ class AnnivService extends ChangeNotifier {
 
   /////////////////////////////// Database ///////////////////////////////
   Future<void> updateDatabase() async {
-    await client!.downloadRepoDatabase(Global.storageRoot);
+    await client!.downloadRepoDatabase(PathService.storageRoot);
     await loadMetadata();
   }
 
   Future<void> loadMetadata() async {
-    final metadata = context.read<MetadataService>();
+    final metadata = ref.read(metadataProvider);
     metadata.sources.insert(0, AnnivMetadataSource(this));
     try {
-      final db = AnnivSqliteMetadataSource();
+      final db = AnnivSqliteMetadataSource(ref);
       await db.prepare();
       metadata.sources.insert(0, db);
     } catch (_) {}

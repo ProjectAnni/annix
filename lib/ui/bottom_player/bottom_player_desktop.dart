@@ -1,149 +1,126 @@
-import 'package:annix/services/playback/playback.dart';
+import 'package:annix/providers.dart';
+import 'package:annix/services/playback/playback_service.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
+import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DesktopBottomPlayer extends StatelessWidget {
-  const DesktopBottomPlayer({super.key, required this.onClick});
+class DesktopBottomPlayer extends ConsumerWidget {
+  /// Constant height of the player
+  static const double height = 96;
 
+  /// Callback triggered when the cover is clicked
   final VoidCallback onClick;
 
+  const DesktopBottomPlayer({super.key, required this.onClick});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final player = ref.read(playbackProvider);
+
+    return Container(
+      color: ElevationOverlay.colorWithOverlay(
+        context.colorScheme.surface,
+        context.colorScheme.primary,
+        0.5,
+      ),
+      height: height,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _cover(player),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _trackInfoAndProgress(player),
+            ),
+          ),
+          // right
+          _playbackControl(player),
+        ],
+      ),
+    );
+  }
+
+  Widget _cover(final PlaybackService player) {
     return GestureDetector(
       onTap: () {
-        final player = context.read<PlaybackService>();
         if (player.playing != null) {
           onClick();
         }
       },
-      child: Container(
-        color: ElevationOverlay.colorWithOverlay(
-          context.colorScheme.surface,
-          context.colorScheme.primary,
-          0.5,
-        ),
-        height: 96,
-        child: Column(
+      child: const PlayingMusicCover(
+        animated: false,
+        card: false,
+      ),
+    );
+  }
+
+  Widget _trackInfoAndProgress(final PlaybackService player) {
+    return Consumer(
+      builder: (final context, final ref, final child) {
+        final playing = ref.watch(playingProvider);
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // const Divider(height: 1),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // left
-                  Expanded(
-                    child: Row(
-                      children: [
-                        // cover
-                        const PlayingMusicCover(
-                          animated: false,
-                          card: false,
-                        ),
-                        // track info
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Consumer<PlaybackService>(
-                              builder: (context, player, child) {
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      player.playing?.track.title ??
-                                          'Not playing',
-                                      style: context.textTheme.titleMedium
-                                          ?.apply(fontWeightDelta: 2),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    ArtistText(
-                                      player.playing?.track.artist ?? '',
-                                      style: context.textTheme.labelSmall,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    RepaintBoundary(
-                                      child: Consumer<PlaybackService>(
-                                        builder: (context, player, child) {
-                                          return ChangeNotifierProvider.value(
-                                            value: player.playing,
-                                            child: Selector<PlayingTrack?,
-                                                List<Duration>>(
-                                              selector: (_, playing) => [
-                                                playing?.position ??
-                                                    Duration.zero,
-                                                playing?.duration ??
-                                                    Duration.zero,
-                                              ],
-                                              builder:
-                                                  (context, durations, child) {
-                                                return ProgressBar(
-                                                  progress: durations[0],
-                                                  total: durations[1],
-                                                  onSeek: (position) {
-                                                    player.seek(position);
-                                                  },
-                                                  barHeight: 3.0,
-                                                  thumbRadius: 6,
-                                                  thumbGlowRadius: 12,
-                                                  thumbCanPaintOutsideBar:
-                                                      false,
-                                                  timeLabelLocation:
-                                                      TimeLabelLocation.sides,
-                                                  timeLabelTextStyle: context
-                                                      .textTheme.labelSmall,
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // right
-                  Row(
-                    children: [
-                      // const VolumeController(),
-                      const FavoriteButton(),
-                      IconButton(
-                        icon: const Icon(Icons.skip_previous),
-                        iconSize: 28,
-                        onPressed: () =>
-                            context.read<PlaybackService>().previous(),
-                      ),
-                      const PlayPauseButton(
-                        type: PlayPauseButtonType.elevated,
-                        size: 56,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.skip_next),
-                        iconSize: 28,
-                        onPressed: () => context.read<PlaybackService>().next(),
-                      ),
-                      const LoopModeButton(),
-                    ],
-                  ),
-                ],
+            Text(
+              playing?.track.title ?? 'Not playing',
+              style: context.textTheme.titleMedium?.apply(fontWeightDelta: 2),
+              overflow: TextOverflow.ellipsis,
+            ),
+            ArtistText(
+              playing?.track.artist ?? '',
+              style: context.textTheme.labelSmall,
+            ),
+            const SizedBox(height: 8),
+            RepaintBoundary(
+              child: ProgressBar(
+                progress: playing?.position ?? Duration.zero,
+                total: playing?.duration ?? Duration.zero,
+                onSeek: player.seek,
+                barHeight: 3.0,
+                thumbRadius: 6,
+                thumbGlowRadius: 12,
+                thumbCanPaintOutsideBar: false,
+                timeLabelLocation: TimeLabelLocation.sides,
+                timeLabelTextStyle: context.textTheme.labelSmall,
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Widget _playbackControl(final PlaybackService player) {
+    return Row(
+      children: [
+        const VolumeController(),
+        const FavoriteButton(),
+        IconButton(
+          icon: const Icon(Icons.skip_previous),
+          iconSize: 28,
+          onPressed: player.previous,
         ),
-      ),
+        const PlayPauseButton(
+          type: PlayPauseButtonType.elevated,
+          size: 56,
+        ),
+        IconButton(
+          icon: const Icon(Icons.skip_next),
+          iconSize: 28,
+          onPressed: player.next,
+        ),
+        const LoopModeButton(),
+      ],
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 class FontService {
   static int _fontId = 0;
 
-  static Future<String?> load(String? path) async {
+  static Future<String?> load(final String? path) async {
     if (path == null) {
       _fontId = 0;
       return null;

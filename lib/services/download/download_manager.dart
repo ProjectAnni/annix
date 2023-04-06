@@ -6,13 +6,13 @@ class DownloadManager extends ChangeNotifier {
   final List<DownloadTask> tasks = [];
   final Pool pool = Pool(3);
 
-  DownloadTask add(DownloadTask task) {
+  DownloadTask add(final DownloadTask task) {
     tasks.insert(0, task);
     notifyListeners();
     return task;
   }
 
-  Future<void> addAll(List<DownloadTask> tasks) async {
+  Future<void> addAll(final List<DownloadTask> tasks) async {
     this.tasks.insertAll(0, tasks);
     notifyListeners();
 

@@ -1,57 +1,59 @@
-import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/local/database.dart';
-import 'package:annix/services/playback/playback.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class FavoriteButton extends StatelessWidget {
+class FavoriteButton extends ConsumerWidget {
   const FavoriteButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final AnnivService anniv = context.read();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final anniv = ref.read(annivProvider);
 
-    return Consumer2<PlaybackService, List<LocalFavoriteTrack>>(
-      builder: (context, player, favorites, child) => IconButton(
-        isSelected: favorites.any((f) =>
-            player.playing?.identifier ==
+    final favoriteTracks = ref.watch(favoriteTracksProvider);
+    final playingTrack =
+        ref.watch(playingProvider.select((final p) => p?.track));
+
+    final favorites = favoriteTracks.value ?? [];
+    return IconButton(
+      isSelected: favorites.any(
+        (final f) =>
+            playingTrack?.id ==
             TrackIdentifier(
               albumId: f.albumId,
               discId: f.discId,
               trackId: f.trackId,
-            )),
-        icon: const Icon(Icons.favorite_border_outlined),
-        selectedIcon: const Icon(Icons.favorite_outlined),
-        onPressed: () async {
-          final track = player.playing?.track;
-          if (track != null) {
-            anniv.toggleFavoriteTrack(track);
-          }
-        },
+            ),
       ),
+      icon: const Icon(Icons.favorite_border_outlined),
+      selectedIcon: const Icon(Icons.favorite_outlined),
+      onPressed: () async {
+        if (playingTrack != null) {
+          anniv.toggleFavoriteTrack(playingTrack);
+        }
+      },
     );
   }
 }
 
-class FavoriteAlbumButton extends StatelessWidget {
+class FavoriteAlbumButton extends ConsumerWidget {
   final String albumId;
 
   const FavoriteAlbumButton({super.key, required this.albumId});
 
   @override
-  Widget build(BuildContext context) {
-    final AnnivService anniv = context.read();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final anniv = ref.read(annivProvider);
+    final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
+    final favorites = favoriteAlbums.value ?? [];
 
-    return Consumer<List<LocalFavoriteAlbum>>(
-      builder: (context, favorites, child) => IconButton(
-        isSelected: favorites.any((album) => album.albumId == albumId),
-        icon: const Icon(Icons.star_border_outlined),
-        selectedIcon: const Icon(Icons.star_outlined),
-        onPressed: () async {
-          anniv.toggleFavoriteAlbum(albumId);
-        },
-      ),
+    return IconButton(
+      isSelected: favorites.any((final album) => album.albumId == albumId),
+      icon: const Icon(Icons.star_border_outlined),
+      selectedIcon: const Icon(Icons.star_outlined),
+      onPressed: () async {
+        anniv.toggleFavoriteAlbum(albumId);
+      },
     );
   }
 }

@@ -21,13 +21,13 @@ abstract class MetadataSource {
   }
 
   /// Get detail of multiple albums
-  Future<Map<String, Album>> getAlbums(List<String> albums);
+  Future<Map<String, Album>> getAlbums(final List<String> albums);
 
   /// Get info of all tags
   Future<Map<String, TagEntry>> getTags();
 
   /// Get album id by tag name
-  Future<Set<String>> getAlbumsByTag(String tag);
+  Future<Set<String>> getAlbumsByTag(final String tag);
 }
 
 mixin CachedMetadataStore {
@@ -35,11 +35,11 @@ mixin CachedMetadataStore {
   static final _albumStore = AnnixStore().category('album');
   static final _albumCache = <String, Album>{};
 
-  static Album? getFromCache(String albumId) {
+  static Album? getFromCache(final String albumId) {
     return _albumCache[albumId];
   }
 
-  Future<void> persist(Album album) async {
+  Future<void> persist(final Album album) async {
     await _albumStore.set(album.albumId, album.toJson());
   }
 
@@ -48,7 +48,7 @@ mixin CachedMetadataStore {
     _albumStore.clear();
   }
 
-  Future<Map<String, Album>> getAlbums(List<String> albums) async {
+  Future<Map<String, Album>> getAlbums(final List<String> albums) async {
     // deduplicate album list
     final albumToGet = albums.toSet();
     final result = <String, Album>{};
@@ -85,5 +85,5 @@ mixin CachedMetadataStore {
     return result;
   }
 
-  Future<Map<String, Album>> getAlbumsDetail(List<String> albums);
+  Future<Map<String, Album>> getAlbumsDetail(final List<String> albums);
 }
