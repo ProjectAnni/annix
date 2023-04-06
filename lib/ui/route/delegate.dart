@@ -14,7 +14,6 @@ import 'package:annix/ui/page/tag/tag_list.dart';
 import 'package:annix/ui/page/settings/settings.dart';
 import 'package:annix/ui/page/settings/settings_log.dart';
 import 'package:annix/ui/page/tag/tag_detail.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/search.dart';
@@ -32,7 +31,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final List<AnnixPage> _pages = [];
 
   @override
-  final GlobalKey<NavigatorState> navigatorKey = Global.navigatorKey;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   AnnixRouterDelegate(this.ref) {
     slideController.addListener(() => notifyListeners());
@@ -67,7 +66,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
   @override
   Future<bool> popRoute() async {
-    final rootNavigator = Navigator.of(Global.context, rootNavigator: true);
+    final rootNavigator =
+        Navigator.of(navigatorKey.currentContext!, rootNavigator: true);
 
     if (await rootNavigator.maybePop()) {
       return true;
@@ -123,6 +123,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     //   return;
     // }
 
+    if (slideController.isOpened) {
+      slideController.hide();
+    }
+
     _pages.add(_createPage(
       RouteSettings(name: name, arguments: arguments),
       pageBuilder: pageBuilder,
@@ -137,6 +141,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     final AnnixRoutePageBuilder? pageBuilder,
     final Duration? transitionDuration,
   }) {
+    if (slideController.isOpened) {
+      slideController.hide();
+    }
+
     _pages.clear();
     to(
       name: name,
@@ -152,6 +160,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     final AnnixRoutePageBuilder? pageBuilder,
     final Duration? transitionDuration,
   }) {
+    if (slideController.isOpened) {
+      slideController.hide();
+    }
+
     if (_pages.isNotEmpty) {
       _pages.removeLast();
     }

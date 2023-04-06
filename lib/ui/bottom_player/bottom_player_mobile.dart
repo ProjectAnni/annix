@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MobileBottomPlayer extends StatelessWidget {
-  final double height;
+  /// Height of the mobile player bar
+  static const double height = 60;
 
-  const MobileBottomPlayer({super.key, this.height = 60});
+  const MobileBottomPlayer({super.key});
 
   @override
   Widget build(final BuildContext context) {

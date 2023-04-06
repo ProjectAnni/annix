@@ -4,14 +4,12 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/annil.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/widgets.dart';
+import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
@@ -21,7 +19,6 @@ class AudioCancelledError extends Error {}
 class AnnilAudioSource extends Source {
   final PreferQuality? quality;
   final TrackInfoWithAlbum track;
-  ExtendedNetworkImageProvider? coverProvider;
 
   final DownloadState downloadProgress =
       DownloadState(const DownloadProgress(current: 0));
@@ -158,12 +155,7 @@ class AnnilAudioSource extends Source {
   Future<void> _preloadCover(final Ref ref) async {
     final proxy = ref.read(proxyProvider);
     final image = proxy.coverUrl(track.id.albumId, track.id.discId);
-    coverProvider = ExtendedNetworkImageProvider(image.toString());
-    // ignore: use_build_context_synchronously
-
-    if (Global.navigatorKey.currentContext != null) {
-      precacheImage(coverProvider!, Global.context);
-    }
+    Dio().get(image);
   }
 
   void cancel() {

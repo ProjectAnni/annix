@@ -1,7 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/global.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
@@ -33,11 +32,14 @@ extension on LyricAlign {
 }
 
 class PlayingLyricUI extends LyricUI {
+  final BuildContext context;
+
   final LyricAlign align;
   final bool isKaraoke;
   final TextTheme textTheme;
 
-  PlayingLyricUI({
+  PlayingLyricUI(
+    this.context, {
     required this.textTheme,
     this.align = LyricAlign.CENTER,
     required this.isKaraoke,
@@ -48,7 +50,7 @@ class PlayingLyricUI extends LyricUI {
     return textTheme.titleMedium!.copyWith(
       fontWeight: FontWeight.w500,
       height: 1,
-      color: isKaraoke ? null : Global.context.colorScheme.primary,
+      color: isKaraoke ? null : context.colorScheme.primary,
     );
   }
 
@@ -81,14 +83,14 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   double getPlayingLineBias() {
-    return Global.context.isDesktopOrLandscape
+    return context.isDesktopOrLandscape
         ? 0.2 // on desktop, we tend to make lyric display at top
         : 0.5; // but on mobile phone, it would look better at the center of the screen
   }
 
   @override
   Color getLyricHightlightColor() {
-    return Global.context.colorScheme.primary;
+    return context.colorScheme.primary;
   }
 
   @override
@@ -151,6 +153,7 @@ class _LyricView extends StatelessWidget {
         final isKaraoke = lyric?.lyric.model?.lyrics[0].spanList != null;
 
         final ui = PlayingLyricUI(
+          context,
           textTheme: context.textTheme,
           align: lyricAlign,
           isKaraoke: isKaraoke,

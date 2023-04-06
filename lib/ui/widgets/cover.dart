@@ -30,7 +30,6 @@ class PlayingMusicCover extends ConsumerWidget {
       child = MusicCover.fromAlbum(
         key: ValueKey(playing.identifier.albumId),
         albumId: playing.identifier.albumId,
-        image: playing.source.coverProvider,
         fit: fit,
         filterQuality: filterQuality,
         onImage: (final provider) async {
@@ -67,7 +66,6 @@ class PlayingMusicCover extends ConsumerWidget {
 class MusicCover extends ConsumerWidget {
   final String albumId;
   final int? discId;
-  final ImageProvider? image;
 
   final BoxFit? fit;
   final FilterQuality filterQuality;
@@ -81,7 +79,6 @@ class MusicCover extends ConsumerWidget {
   factory MusicCover.fromAlbum({
     required final String albumId,
     final int? discId,
-    final ImageProvider? image,
     final Key? key,
     final BoxFit? fit,
     final FilterQuality filterQuality = FilterQuality.low,
@@ -94,7 +91,6 @@ class MusicCover extends ConsumerWidget {
       key: key,
       albumId: albumId,
       discId: discId,
-      image: image,
       fit: fit,
       filterQuality: filterQuality,
       tag: tag,
@@ -108,7 +104,6 @@ class MusicCover extends ConsumerWidget {
     super.key,
     required this.albumId,
     this.discId,
-    this.image,
     this.fit,
     required this.filterQuality,
     this.tag,
@@ -136,10 +131,8 @@ class MusicCover extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final image = this.image ??
-        ExtendedNetworkImageProvider(
-          ref.read(proxyProvider).coverUrl(albumId, discId),
-        );
+    final image = ExtendedNetworkImageProvider(
+        ref.read(proxyProvider).coverUrl(albumId, discId));
 
     onImage?.call(image);
 

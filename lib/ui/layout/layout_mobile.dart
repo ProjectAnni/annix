@@ -58,8 +58,10 @@ class AnnixLayoutMobile extends ConsumerWidget {
             panelBorderRadiusEnd: 0,
             backgroundColor: Colors.transparent,
             body: Material(child: child),
-            panelMinSize:
-                (isQueueEmpty ? 0 : 60 /* panel header*/) + 80 /* footer */,
+            panelMinSize: (isQueueEmpty
+                    ? 0
+                    : MobileBottomPlayer.height /* panel header*/) +
+                80 /* footer */,
             panelMaxSize: panelMaxSize,
             isUpSlide: isPlaying,
             panelHeader: GestureDetector(

@@ -42,7 +42,6 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
                 pages.contains(route) ? pages.indexOf(route) : null;
 
             return NavigationRail(
-              // minExtendedWidth: 192,
               selectedIndex: selectedIndex,
               onDestinationSelected: (final index) {
                 widget.router.off(name: pages[index]);
@@ -67,7 +66,6 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
               ],
             );
           })(),
-          // const VerticalDivider(),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,9 +82,6 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
     final slide = Consumer(
       child: body,
       builder: (final context, final ref, final child) {
-        final isPlaying =
-            ref.watch(playbackProvider.select((final p) => p.playing != null));
-
         return WeSlide(
           controller: widget.router.slideController,
           hideAppBar: false,
@@ -126,21 +121,20 @@ class _AnnixLayoutDesktopState extends ConsumerState<AnnixLayoutDesktop> {
             ),
           ),
           body: child!,
-          panelMinSize: 96,
+          panelMinSize: 0,
           panelMaxSize: panelMaxSize,
           isUpSlide: false,
-          panelHeader: GestureDetector(
-            onTap: () {
+          panel: const PlayingDesktopScreen(),
+          footerHeight: DesktopBottomPlayer.height,
+          footer: DesktopBottomPlayer(
+            onClick: () {
+              final isPlaying = ref.read(
+                  playbackProvider.select((final p) => p.playing != null));
               if (isPlaying) {
                 widget.router.slideController.show();
               }
             },
-            child: const MobileBottomPlayer(),
           ),
-          panel: const PlayingDesktopScreen(),
-          footerHeight: 96,
-          footer: DesktopBottomPlayer(
-              onClick: () => widget.router.slideController.show()),
         );
       },
     );

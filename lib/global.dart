@@ -17,10 +17,6 @@ class Global {
   static late String storageRoot;
   static late String dataRoot;
 
-  static GlobalKey<NavigatorState> navigatorKey = GlobalKey();
-
-  static BuildContext get context => navigatorKey.currentContext!;
-
   static Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
 

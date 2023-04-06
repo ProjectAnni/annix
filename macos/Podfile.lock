@@ -101,12 +101,12 @@ SPEC CHECKSUMS:
   path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   share_plus: 76dd39142738f7a68dd57b05093b5e8193f220f7
-  shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
+  shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   sqlite3: 50117e9e063a9ef2b865f7bdf2f2601e5d368e9a
   sqlite3_flutter_libs: cfe190df811dcc0a495dc7ab09d3cda5f92740d2
   url_launcher_macos: c04e4fa86382d4f94f6b38f14625708be3ae52e2
 
-PODFILE CHECKSUM: 290b89638b803a41d96e2a2c02a9e1e635956f78
+PODFILE CHECKSUM: 6ee491d2834a2beb2dd96dda71c0adb8387b6b89
 
 COCOAPODS: 1.11.2
