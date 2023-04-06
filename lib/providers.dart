@@ -1,6 +1,7 @@
 import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
+import 'package:annix/services/audio_handler.dart';
 import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/local/preferences.dart';
@@ -17,9 +18,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'providers.g.dart';
 
-/// ChangeNotifierProvider(create: (c) => PlaybackService(c), lazy: false),
-/// Provider(create: (c) => AnnixAudioHandler.init(c), lazy: false),
-
 final localeProvider =
     StreamProvider((final ref) => LocaleSettings.getLocaleStream());
 final themeProvider = ChangeNotifierProvider((final ref) => AnnixTheme());
@@ -33,6 +31,8 @@ final settingsProvider = Provider((final ref) => SettingsService(ref));
 final downloadManagerProvider =
     ChangeNotifierProvider((final ref) => DownloadManager());
 final preferencesProvider = Provider((final ref) => PreferencesStore(ref));
+final audioServiceProvider =
+    FutureProvider((final ref) => AnnixAudioHandler.init(ref));
 
 // db
 @Riverpod(keepAlive: true)

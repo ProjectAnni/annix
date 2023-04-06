@@ -15,9 +15,10 @@ Future<void> main() async {
   FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
 
   final container = ProviderContainer();
+  await PathService.init();
   await Future.wait([
-    PathService.init(),
     container.read(proxyProvider).start(),
+    container.read(audioServiceProvider.future),
   ]);
 
   LocaleSettings.useDeviceLocale();
