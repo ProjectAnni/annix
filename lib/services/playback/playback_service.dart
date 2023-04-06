@@ -273,12 +273,13 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> stop([final bool setInactive = true]) async {
+    final isApple = Platform.isIOS || Platform.isMacOS;
     playing?.updateDuration(Duration.zero);
     await Future.wait([
       if (setInactive)
         AudioSession.instance.then((final i) => i.setActive(false)),
-      if (!Global.isApple) PlaybackService.player.release(),
-      if (Global.isApple) PlaybackService.player.stop(),
+      if (!isApple) PlaybackService.player.release(),
+      if (isApple) PlaybackService.player.stop(),
     ]);
   }
 

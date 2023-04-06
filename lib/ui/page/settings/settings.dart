@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/annil/annil.dart';
+import 'package:annix/services/path.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/ui/dialogs/enum_select.dart';
 import 'package:annix/ui/dialogs/loading.dart';
@@ -16,7 +16,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as p;
 
 typedef WidgetCallback = Widget Function();
 
@@ -234,7 +233,7 @@ class SettingsScreen extends ConsumerWidget {
                     barrierDismissible: false,
                   );
 
-                  final file = File(p.join(Global.dataRoot, 'local.db'));
+                  final file = File(localDbPath());
                   file.delete().then((final _) => navigator.pop());
                 },
               ),

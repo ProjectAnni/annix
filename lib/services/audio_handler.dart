@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/local/database.dart';
@@ -162,7 +161,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         );
 
     final controls = [
-      if (!Global.isApple)
+      if (!Platform.isIOS && !Platform.isMacOS)
         isFavorite
             ? const MediaControl(
                 label: 'Unfavorite',

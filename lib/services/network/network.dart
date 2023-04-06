@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:annix/bridge/bridge.dart';
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -37,7 +38,9 @@ class NetworkService extends ChangeNotifier {
         break;
       default:
         // no network or vpn
-        if (Global.isApple || result == ConnectivityResult.vpn) {
+        if (Platform.isIOS ||
+            Platform.isMacOS ||
+            result == ConnectivityResult.vpn) {
           // on apple devices, VPN connection may result in ConnectivityResult.none
           // so add an polyfill to check internet accessibility
           // https://github.com/fluttercommunity/plus_plugins/issues/857

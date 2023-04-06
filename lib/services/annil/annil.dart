@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
-import 'package:annix/global.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/services/path.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
@@ -239,7 +239,7 @@ class AnnilService extends ChangeNotifier {
   }
 
   static Future<Set<String>> getCachedAlbums() async {
-    final root = Directory(p.join(Global.storageRoot, 'audio'));
+    final root = Directory(audioCachePath());
     if (!root.existsSync()) {
       return {};
     }

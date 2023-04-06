@@ -12,9 +12,12 @@ Future<void> main() async {
   FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
 
   final container = ProviderContainer();
-  await container.read(proxyProvider).start();
+  await Future.wait([
+    container.read(proxyProvider).start(),
+    container.read(pathProvider).init(),
+    Global.init(),
+  ]);
 
-  await Global.init();
   LocaleSettings.useDeviceLocale();
 
   FlutterError.onError = (final details) {

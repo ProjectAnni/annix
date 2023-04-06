@@ -6,6 +6,7 @@ import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/network/network.dart';
 import 'package:annix/services/network/proxy.dart';
+import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/services/theme.dart';
@@ -31,6 +32,7 @@ final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));
 final downloadManagerProvider =
     ChangeNotifierProvider((final ref) => DownloadManager());
+final pathProvider = Provider((final _) => PathService());
 
 // db
 @Riverpod(keepAlive: true)

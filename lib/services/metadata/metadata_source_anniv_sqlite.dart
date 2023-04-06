@@ -1,12 +1,12 @@
-import 'package:annix/global.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_source_sqlite.dart';
+import 'package:annix/services/path.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnivSqliteMetadataSource extends SqliteMetadataSource {
   final Ref ref;
 
-  AnnivSqliteMetadataSource(this.ref) : super(Global.dataRoot);
+  AnnivSqliteMetadataSource(this.ref) : super(PathService.dataRoot);
 
   @override
   Future<bool> canUpdate() async {

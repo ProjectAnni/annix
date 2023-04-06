@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:annix/bridge/bridge.dart';
-import 'package:annix/global.dart';
+import 'package:annix/services/path.dart';
 
 class AnnixStore {
   static final AnnixStore _instance = AnnixStore._();
@@ -13,7 +13,7 @@ class AnnixStore {
   Future<LocalStore> _database;
 
   AnnixStore._()
-      : _database = api.newStaticMethodLocalStore(root: Global.dataRoot);
+      : _database = api.newStaticMethodLocalStore(root: PathService.dataRoot);
 
   AnnixStoreCategory category(final String category) {
     return AnnixStoreCategory(this, category);

@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:annix/global.dart';
+import 'package:annix/services/path.dart';
 import 'package:drift/drift.dart';
 
 import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
 
 part 'database.g.dart';
 
@@ -18,7 +17,7 @@ class LocalDatabase extends _$LocalDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final file = File(p.join(Global.dataRoot, 'local.db'));
+    final file = File(localDbPath());
     return NativeDatabase(file);
   });
 }
