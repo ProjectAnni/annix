@@ -17,3 +17,12 @@ impl NetworkStatus {
 }
 
 pub static NETWORK: Lazy<RwLock<NetworkStatus>> = Lazy::new(|| RwLock::new(NetworkStatus::Offline));
+
+pub fn update_network_status(is_online: bool) {
+    let mut network = NETWORK.write().unwrap();
+    *network = if is_online {
+        NetworkStatus::Online
+    } else {
+        NetworkStatus::Offline
+    };
+}

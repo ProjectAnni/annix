@@ -1,12 +1,35 @@
-rust_input: [src/api.rs]
-rust_output: [src/bridge_generated.rs]
+rust_input:
+  - src/repo/api.rs
+  - src/preferences/api.rs
+  - src/store/api.rs
+  - src/network/api.rs
+rust_output:
+  - src/repo/generated.rs
+  - src/preferences/generated.rs
+  - src/store/generated.rs
+  - src/network/generated.rs
 
-dart_output: [../lib/bridge/generated.dart]
-dart_decl_output: ../lib/bridge/definitions.dart
-dart_format_line_length: 120
-dart_enums_style: true
-c_output: [../ios/Runner/bridge_generated.h]
+class_name: 
+  - ApiRepository
+  - ApiPreferenceStore
+  - ApiStore
+  - ApiNetwork
+dart_output:
+  - ../lib/bridge/generated_repo.dart
+  - ../lib/bridge/generated_preferences.dart
+  - ../lib/bridge/generated_store.dart
+  - ../lib/bridge/generated_network.dart
+c_output:
+  - ../ios/Runner/generated_repo.h
+  - ../ios/Runner/generated_preferences.h
+  - ../ios/Runner/generated_store.h
+  - ../ios/Runner/generated_network.h
 extra_c_output_path:
   - ../macos/Runner/
+
+# dart_decl_output: ../lib/bridge/definitions.dart
+dart_format_line_length: 120
+dart_enums_style: true
 # dump: []
+skip_add_mod_to_lib: true
 wasm: false

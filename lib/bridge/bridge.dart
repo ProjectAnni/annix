@@ -3,20 +3,28 @@
 
 import 'dart:ffi';
 
-import 'package:annix/bridge/generated.dart';
-import 'package:annix/bridge/definitions.dart';
-export 'package:annix/bridge/definitions.dart';
+import 'package:annix/bridge/generated_network.dart';
+import 'package:annix/bridge/generated_repo.dart';
+import 'package:annix/bridge/generated_store.dart';
+import 'package:annix/bridge/generated_preferences.dart';
 
 // Re-export the bridge so it is only necessary to import this file.
-export 'generated.dart';
 import 'dart:io' as io;
+export 'generated_network.dart' show NetworkStatus;
+export 'generated_repo.dart' show LocalDb;
+export 'generated_store.dart' show LocalStore;
+export 'generated_preferences.dart' show NativePreferenceStore;
 
 const _base = 'annix_native';
 
 // On MacOS, the dynamic library is not bundled with the binary,
 // but rather directly **linked** against the binary.
-final _dylib = io.Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
-
-final AnnixNative api = AnnixNativeImpl(io.Platform.isIOS || io.Platform.isMacOS
+final _dylibPath = io.Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
+final _dylib = io.Platform.isIOS || io.Platform.isMacOS
     ? DynamicLibrary.executable()
-    : DynamicLibrary.open(_dylib));
+    : DynamicLibrary.open(_dylibPath);
+
+final ApiRepository nativeRepository = ApiRepositoryImpl(_dylib);
+final ApiStore nativeStore = ApiStoreImpl(_dylib);
+final ApiNetwork nativeNetwork = ApiNetworkImpl(_dylib);
+final ApiPreferenceStore nativePreferenceStore = ApiPreferenceStoreImpl(_dylib);

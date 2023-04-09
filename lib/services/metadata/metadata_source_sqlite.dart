@@ -16,8 +16,8 @@ class SqliteMetadataSource extends MetadataSource {
 
   @override
   Future<void> prepare() async {
-    database =
-        await api.newStaticMethodLocalDb(path: p.join(dbFolderPath, 'repo.db'));
+    database = await nativeRepository.newStaticMethodLocalDb(
+        path: p.join(dbFolderPath, 'repo.db'));
   }
 
   @override

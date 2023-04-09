@@ -13,7 +13,8 @@ class AnnixStore {
   final LocalStore _database;
 
   AnnixStore._()
-      : _database = api.newStaticMethodLocalStore(root: PathService.dataRoot);
+      : _database =
+            nativeStore.newStaticMethodLocalStore(root: PathService.dataRoot);
 
   AnnixStoreCategory category(final String category) {
     return AnnixStoreCategory(this, category);

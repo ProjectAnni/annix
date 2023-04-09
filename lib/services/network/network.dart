@@ -63,7 +63,7 @@ class NetworkService extends ChangeNotifier {
 
   /// Update network status both in NetworkService and
   void updateAndNotify() {
-    api.updateNetworkStatus(isOnline: isOnline);
+    nativeNetwork.updateNetworkStatus(isOnline: isOnline);
     notifyListeners();
   }
 

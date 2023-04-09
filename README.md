@@ -15,14 +15,6 @@ Desktop / Mobile client for Project Anni.
 # https://github.com/dart-lang/ffigen/issues/257#issuecomment-1061788936
 export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
 
-flutter_rust_bridge_codegen \
-    --rust-input annix/src/api.rs \
-    --dart-output lib/bridge/generated.dart \
-    --dart-decl-output lib/bridge/definitions.dart \
-    --c-output ios/Runner/bridge_generated.h \
-    --extra-c-output-path macos/Runner/ \
-    --rust-output annix/src/bridge_generated.rs
-
 # [Optional] Build models
 flutter pub run build_runner build --delete-conflicting-outputs
 

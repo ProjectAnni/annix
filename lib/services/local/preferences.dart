@@ -8,7 +8,7 @@ class PreferencesStore {
   late final NativePreferenceStore _store;
 
   PreferencesStore(final Ref ref)
-      : _store = api.newStaticMethodNativePreferenceStore(
+      : _store = nativePreferenceStore.newStaticMethodNativePreferenceStore(
             root: PathService.dataRoot);
 
   T? get<T>(final String key) {
