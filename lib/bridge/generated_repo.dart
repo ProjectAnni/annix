@@ -313,16 +313,6 @@ class ApiRepositoryWire implements FlutterRustBridgeWireBase {
   ApiRepositoryWire.fromLookup(ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName) lookup)
       : _lookup = lookup;
 
-  ffi.Pointer<wire_NativePreferenceStore> new_box_autoadd_native_preference_store_1() {
-    return _new_box_autoadd_native_preference_store_1();
-  }
-
-  late final _new_box_autoadd_native_preference_store_1Ptr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>>(
-          'new_box_autoadd_native_preference_store_1');
-  late final _new_box_autoadd_native_preference_store_1 =
-      _new_box_autoadd_native_preference_store_1Ptr.asFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>();
-
   void store_dart_post_cobject(
     DartPostCObjectFnType ptr,
   ) {
@@ -379,6 +369,16 @@ class ApiRepositoryWire implements FlutterRustBridgeWireBase {
   late final _init_frb_dart_api_dlPtr =
       _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.Pointer<ffi.Void>)>>('init_frb_dart_api_dl');
   late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr.asFunction<int Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<wire_NativePreferenceStore> new_box_autoadd_native_preference_store_1() {
+    return _new_box_autoadd_native_preference_store_1();
+  }
+
+  late final _new_box_autoadd_native_preference_store_1Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>>(
+          'new_box_autoadd_native_preference_store_1');
+  late final _new_box_autoadd_native_preference_store_1 =
+      _new_box_autoadd_native_preference_store_1Ptr.asFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>();
 
   void wire_new__static_method__LocalDb(
     int port_,

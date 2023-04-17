@@ -92,7 +92,15 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                   track.artist,
                                   expandable: false,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  // FIXME: dialog to show all available tags
+                                  final router =
+                                      AnnixRouterDelegate.of(context);
+                                  router.to(
+                                    name: '/tag',
+                                    arguments: track.artist,
+                                  );
+                                },
                               ),
                               TextButton.icon(
                                 icon: const Icon(

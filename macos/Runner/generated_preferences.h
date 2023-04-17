@@ -89,6 +89,16 @@ struct wire_LocalDb *new_box_autoadd_local_db_0(void);
 
 void free_WireSyncReturn(WireSyncReturn ptr);
 
+void store_dart_post_cobject(DartPostCObjectFnType ptr);
+
+Dart_Handle get_dart_object(uintptr_t ptr);
+
+void drop_dart_object(uintptr_t ptr);
+
+uintptr_t new_dart_opaque(Dart_Handle handle);
+
+intptr_t init_frb_dart_api_dl(void *obj);
+
 struct wire_LocalStore *new_box_autoadd_local_store_2(void);
 
 static int64_t dummy_method_to_enforce_bundling_ApiPreferenceStore(void) {
