@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:simple_audio/simple_audio.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,12 @@ Future<void> main() async {
     FLog.error(text: 'Root isolate error', exception: error, stacktrace: stack);
     return true;
   };
+
+  await SimpleAudio.init(
+    useMediaController: false,
+    shouldNormalizeVolume: false,
+    dbusName: 'rs.anni.annix',
+  );
 
   if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
     doWhenWindowReady(() {

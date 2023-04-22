@@ -36,6 +36,7 @@ dependencies:
   xml: ^6.2.2
 
   audioplayers: ^3.0.1
+  simple_audio: ^1.5.2
   audio_service: ^0.18.9
   audio_service_platform_interface: ^0.1.0
   audio_session: ^0.1.13
