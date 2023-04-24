@@ -5,10 +5,6 @@ typedef struct _Dart_Handle* Dart_Handle;
 
 typedef struct DartCObject DartCObject;
 
-typedef int64_t DartPort;
-
-typedef bool (*DartPostCObjectFnType)(DartPort port_id, void *message);
-
 typedef struct wire_MutexDummy1Connection {
   const void *ptr;
 } wire_MutexDummy1Connection;
@@ -16,6 +12,10 @@ typedef struct wire_MutexDummy1Connection {
 typedef struct wire_NativePreferenceStore {
   struct wire_MutexDummy1Connection conn;
 } wire_NativePreferenceStore;
+
+typedef int64_t DartPort;
+
+typedef bool (*DartPostCObjectFnType)(DartPort port_id, void *message);
 
 typedef struct wire_uint_8_list {
   uint8_t *ptr;
@@ -49,16 +49,6 @@ typedef struct wire_MutexConnection {
 typedef struct wire_LocalStore {
   struct wire_MutexConnection conn;
 } wire_LocalStore;
-
-void store_dart_post_cobject(DartPostCObjectFnType ptr);
-
-Dart_Handle get_dart_object(uintptr_t ptr);
-
-void drop_dart_object(uintptr_t ptr);
-
-uintptr_t new_dart_opaque(Dart_Handle handle);
-
-intptr_t init_frb_dart_api_dl(void *obj);
 
 struct wire_NativePreferenceStore *new_box_autoadd_native_preference_store_1(void);
 

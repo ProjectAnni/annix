@@ -287,6 +287,37 @@ class ApiStoreWire implements FlutterRustBridgeWireBase {
   ApiStoreWire.fromLookup(ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName) lookup)
       : _lookup = lookup;
 
+  ffi.Pointer<wire_NativePreferenceStore> new_box_autoadd_native_preference_store_1() {
+    return _new_box_autoadd_native_preference_store_1();
+  }
+
+  late final _new_box_autoadd_native_preference_store_1Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>>(
+          'new_box_autoadd_native_preference_store_1');
+  late final _new_box_autoadd_native_preference_store_1 =
+      _new_box_autoadd_native_preference_store_1Ptr.asFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>();
+
+  ffi.Pointer<wire_LocalDb> new_box_autoadd_local_db_0() {
+    return _new_box_autoadd_local_db_0();
+  }
+
+  late final _new_box_autoadd_local_db_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_LocalDb> Function()>>('new_box_autoadd_local_db_0');
+  late final _new_box_autoadd_local_db_0 =
+      _new_box_autoadd_local_db_0Ptr.asFunction<ffi.Pointer<wire_LocalDb> Function()>();
+
+  void free_WireSyncReturn(
+    WireSyncReturn ptr,
+  ) {
+    return _free_WireSyncReturn(
+      ptr,
+    );
+  }
+
+  late final _free_WireSyncReturnPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(WireSyncReturn)>>('free_WireSyncReturn');
+  late final _free_WireSyncReturn = _free_WireSyncReturnPtr.asFunction<void Function(WireSyncReturn)>();
+
   void store_dart_post_cobject(
     DartPostCObjectFnType ptr,
   ) {
@@ -343,37 +374,6 @@ class ApiStoreWire implements FlutterRustBridgeWireBase {
   late final _init_frb_dart_api_dlPtr =
       _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.Pointer<ffi.Void>)>>('init_frb_dart_api_dl');
   late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr.asFunction<int Function(ffi.Pointer<ffi.Void>)>();
-
-  ffi.Pointer<wire_NativePreferenceStore> new_box_autoadd_native_preference_store_1() {
-    return _new_box_autoadd_native_preference_store_1();
-  }
-
-  late final _new_box_autoadd_native_preference_store_1Ptr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>>(
-          'new_box_autoadd_native_preference_store_1');
-  late final _new_box_autoadd_native_preference_store_1 =
-      _new_box_autoadd_native_preference_store_1Ptr.asFunction<ffi.Pointer<wire_NativePreferenceStore> Function()>();
-
-  ffi.Pointer<wire_LocalDb> new_box_autoadd_local_db_0() {
-    return _new_box_autoadd_local_db_0();
-  }
-
-  late final _new_box_autoadd_local_db_0Ptr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_LocalDb> Function()>>('new_box_autoadd_local_db_0');
-  late final _new_box_autoadd_local_db_0 =
-      _new_box_autoadd_local_db_0Ptr.asFunction<ffi.Pointer<wire_LocalDb> Function()>();
-
-  void free_WireSyncReturn(
-    WireSyncReturn ptr,
-  ) {
-    return _free_WireSyncReturn(
-      ptr,
-    );
-  }
-
-  late final _free_WireSyncReturnPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(WireSyncReturn)>>('free_WireSyncReturn');
-  late final _free_WireSyncReturn = _free_WireSyncReturnPtr.asFunction<void Function(WireSyncReturn)>();
 
   WireSyncReturn wire_new__static_method__LocalStore(
     ffi.Pointer<wire_uint_8_list> root,
