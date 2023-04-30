@@ -17,7 +17,7 @@ import 'package:collection/collection.dart';
 
 class AnnilService extends ChangeNotifier {
   final Ref ref;
-  final Dio _client = Dio();
+  final Dio client = Dio();
 
   List<LocalAnnilServer> servers = [];
   Map<int, String?> etags = {};
@@ -26,7 +26,7 @@ class AnnilService extends ChangeNotifier {
   AnnilService(this.ref) {
     final config = ref.read(settingsProvider);
     if (config.skipCertificateVerification.value) {
-      _client.httpClientAdapter = IOHttpClientAdapter(
+      client.httpClientAdapter = IOHttpClientAdapter(
         onHttpClientCreate: (final client) {
           client.badCertificateCallback = (final cert, final host, final port) => true;
           return client;
@@ -35,9 +35,9 @@ class AnnilService extends ChangeNotifier {
           return true;
         });
     }
-    
-    _client.interceptors.add(RetryInterceptor(
-      dio: _client,
+
+    client.interceptors.add(RetryInterceptor(
+      dio: client,
       logPrint: (final text) => FLog.error(text: text),
       retries: 3,
       retryDelays: const [
@@ -284,7 +284,7 @@ class AnnilService extends ChangeNotifier {
     final etag = etags[server.id];
 
     try {
-      final response = await _client.getUri(
+      final response = await client.getUri(
         Uri.parse('${server.url}/albums'),
         options: Options(
           responseType: ResponseType.json,
