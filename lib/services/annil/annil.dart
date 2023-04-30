@@ -6,6 +6,7 @@ import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/path.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
@@ -23,6 +24,18 @@ class AnnilService extends ChangeNotifier {
   List<String> albums = [];
 
   AnnilService(this.ref) {
+    final config = ref.read(settingsProvider);
+    if (config.skipCertificateVerification.value) {
+      _client.httpClientAdapter = IOHttpClientAdapter(
+        onHttpClientCreate: (final client) {
+          client.badCertificateCallback = (final cert, final host, final port) => true;
+          return client;
+        },
+        validateCertificate: (final cert, final host, final port) {
+          return true;
+        });
+    }
+    
     _client.interceptors.add(RetryInterceptor(
       dio: _client,
       logPrint: (final text) => FLog.error(text: text),
