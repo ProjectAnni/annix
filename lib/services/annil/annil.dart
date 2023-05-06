@@ -24,17 +24,12 @@ class AnnilService extends ChangeNotifier {
   List<String> albums = [];
 
   AnnilService(this.ref) {
-    final config = ref.read(settingsProvider);
-    if (config.skipCertificateVerification.value) {
-      client.httpClientAdapter = IOHttpClientAdapter(
+    client.httpClientAdapter = IOHttpClientAdapter(
         onHttpClientCreate: (final client) {
-          client.badCertificateCallback = (final cert, final host, final port) => true;
+          client.badCertificateCallback = (final cert, final host, final port) => ref.read(settingsProvider).skipCertificateVerification.value;
           return client;
         },
-        validateCertificate: (final cert, final host, final port) {
-          return true;
-        });
-    }
+        validateCertificate: (final cert, final host, final port) => true);
 
     client.interceptors.add(RetryInterceptor(
       dio: client,
