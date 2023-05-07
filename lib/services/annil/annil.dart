@@ -6,6 +6,7 @@ import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/path.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:drift/drift.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
@@ -16,15 +17,22 @@ import 'package:collection/collection.dart';
 
 class AnnilService extends ChangeNotifier {
   final Ref ref;
-  final Dio _client = Dio();
+  final Dio client = Dio();
 
   List<LocalAnnilServer> servers = [];
   Map<int, String?> etags = {};
   List<String> albums = [];
 
   AnnilService(this.ref) {
-    _client.interceptors.add(RetryInterceptor(
-      dio: _client,
+    client.httpClientAdapter = IOHttpClientAdapter(
+        onHttpClientCreate: (final client) {
+          client.badCertificateCallback = (final cert, final host, final port) => ref.read(settingsProvider).skipCertificateVerification.value;
+          return client;
+        },
+        validateCertificate: (final cert, final host, final port) => true);
+
+    client.interceptors.add(RetryInterceptor(
+      dio: client,
       logPrint: (final text) => FLog.error(text: text),
       retries: 3,
       retryDelays: const [
@@ -271,7 +279,7 @@ class AnnilService extends ChangeNotifier {
     final etag = etags[server.id];
 
     try {
-      final response = await _client.getUri(
+      final response = await client.getUri(
         Uri.parse('${server.url}/albums'),
         options: Options(
           responseType: ResponseType.json,

@@ -120,6 +120,7 @@ class AnnilAudioSource extends Source {
         url: url,
         savePath: path,
         data: TrackDownloadTaskData(info: track, quality: downloadQuality),
+        client: annil.client
       );
     };
   }
