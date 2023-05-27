@@ -43,6 +43,7 @@ jobs:
           cat ~/.gradle/gradle.properties
           
           # /usr/include/bits
+          sudo apt update -y
           sudo apt install libc6-dev-i386
           
           # Install rust targets
