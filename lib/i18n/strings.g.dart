@@ -1,9 +1,9 @@
 /// Generated file. Do not edit.
 ///
 /// Locales: 2
-/// Strings: 86 (43 per locale)
+/// Strings: 88 (44 per locale)
 ///
-/// Built on 2023-04-04 at 06:40 UTC
+/// Built on 2023-04-22 at 17:05 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -156,6 +156,7 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	String get my_favorite => 'My Favorite';
 	late final _StringsPlayingEn playing = _StringsPlayingEn._(_root);
 	late final _StringsPlaybackEn playback = _StringsPlaybackEn._(_root);
+	late final _StringsPlaylistEn playlist = _StringsPlaylistEn._(_root);
 	late final _StringsServerEn server = _StringsServerEn._(_root);
 	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
 	String get search => 'Search';
@@ -187,6 +188,16 @@ class _StringsPlaybackEn {
 	// Translations
 	String get play_all => 'Play All';
 	String get shuffle => 'Shuffle';
+}
+
+// Path: playlist
+class _StringsPlaylistEn {
+	_StringsPlaylistEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get edit => 'Edit';
 }
 
 // Path: server
@@ -266,6 +277,7 @@ class _StringsZhCn implements _StringsEn {
 	@override String get my_favorite => '我的收藏';
 	@override late final _StringsPlayingZhCn playing = _StringsPlayingZhCn._(_root);
 	@override late final _StringsPlaybackZhCn playback = _StringsPlaybackZhCn._(_root);
+	@override late final _StringsPlaylistZhCn playlist = _StringsPlaylistZhCn._(_root);
 	@override late final _StringsServerZhCn server = _StringsServerZhCn._(_root);
 	@override late final _StringsSettingsZhCn settings = _StringsSettingsZhCn._(_root);
 	@override String get search => '搜索';
@@ -297,6 +309,16 @@ class _StringsPlaybackZhCn implements _StringsPlaybackEn {
 	// Translations
 	@override String get play_all => '播放全部';
 	@override String get shuffle => '随机播放';
+}
+
+// Path: playlist
+class _StringsPlaylistZhCn implements _StringsPlaylistEn {
+	_StringsPlaylistZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get edit => '编辑';
 }
 
 // Path: server
@@ -360,6 +382,7 @@ extension on _StringsEn {
 			case 'playing.share': return 'Share';
 			case 'playback.play_all': return 'Play All';
 			case 'playback.shuffle': return 'Shuffle';
+			case 'playlist.edit': return 'Edit';
 			case 'server.server': return 'Server';
 			case 'server.login': return 'Login';
 			case 'server.logout': return 'Logout';
@@ -411,6 +434,7 @@ extension on _StringsZhCn {
 			case 'playing.share': return '分享';
 			case 'playback.play_all': return '播放全部';
 			case 'playback.shuffle': return '随机播放';
+			case 'playlist.edit': return '编辑';
 			case 'server.server': return '服务器';
 			case 'server.login': return '登录';
 			case 'server.logout': return '退出登录';

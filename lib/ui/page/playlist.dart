@@ -233,12 +233,13 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
         actions: [
           if (!_editMode)
             PopupMenuButton<_PlaylistAction>(
-              itemBuilder: (final context) => const [
-                PopupMenuItem(
-                  value: _PlaylistAction.edit,
-                  child: Text('Edit'),
-                ),
-                PopupMenuItem(
+              itemBuilder: (final context) => [
+                if (!_editMode)
+                  PopupMenuItem(
+                    value: _PlaylistAction.edit,
+                    child: Text(t.playlist.edit),
+                  ),
+                const PopupMenuItem(
                   value: _PlaylistAction.delete,
                   child: Text('Delete'),
                 ),
@@ -284,7 +285,8 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                   builder: (final context, final constraints) {
                     return Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: constraints.maxWidth / 6),
+                        horizontal: constraints.maxWidth / 6,
+                      ),
                       child: cover,
                     );
                   },

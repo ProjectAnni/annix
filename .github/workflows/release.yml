@@ -30,7 +30,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: stable
           cache: true
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
@@ -89,7 +89,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: stable
           cache: true
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Certificates
@@ -133,7 +133,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: stable
           cache: true
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
@@ -165,7 +165,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: stable
           cache: true
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
@@ -193,7 +193,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: stable
           cache: true
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
