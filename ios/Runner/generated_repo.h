@@ -22,16 +22,6 @@ typedef struct wire_uint_8_list {
   int32_t len;
 } wire_uint_8_list;
 
-typedef struct wire_uint_8_list {
-  uint8_t *ptr;
-  int32_t len;
-} wire_uint_8_list;
-
-typedef struct wire_uint_8_list {
-  uint8_t *ptr;
-  int32_t len;
-} wire_uint_8_list;
-
 typedef struct wire_MutexRepoDatabaseRead {
   const void *ptr;
 } wire_MutexRepoDatabaseRead;

@@ -7,7 +7,7 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    let dummy = dummy_method_to_enforce_bundling_ApiNetwork()
+    let dummy = dummy_method_to_enforce_bundling_ApiPreferenceStore()
     print(dummy)
 
     GeneratedPluginRegistrant.register(with: self)
