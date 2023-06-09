@@ -115,7 +115,7 @@ jobs:
       - name: Setup | Fix simple_audio
         run: |
           sa_version=1.5.5
-          sa_lib_url="https://github.com/erikas-taroza/simple_audio/blob/v${version}/ios/Frameworks/simple_audio.xcframework"
+          sa_lib_url="https://github.com/erikas-taroza/simple_audio/blob/v${sa_version}/ios/Frameworks/simple_audio.xcframework"
           cd ios/.symlinks/plugins/simple_audio/ios/Frameworks/simple_audio.xcframework
           mkdir ios-arm64
           mkdir ios-arm64_x86_64-simulator
