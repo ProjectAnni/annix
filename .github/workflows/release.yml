@@ -108,6 +108,10 @@ jobs:
           api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
       - name: Setup | Dependencies
         run: flutter pub get
+      - name: Build | iOS, but expect to fail
+        run: |
+          flutter clean
+          flutter build ios --release --verbose --build-number ${{ github.run_number }} || echo done
       - name: Setup | Fix simple_audio
         run: |
           sa_version=1.5.5
@@ -120,7 +124,6 @@ jobs:
           cd ../../../../../../
       - name: Build | iOS
         run: |
-          flutter clean
           flutter build ios --release --verbose --build-number ${{ github.run_number }}
           xcodebuild -workspace $PWD/ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive
           xcodebuild -exportArchive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive -exportOptionsPlist $PWD/ios/exportOptions.plist -exportPath $PWD/build/ios/iphoneos/Runner.ipa
