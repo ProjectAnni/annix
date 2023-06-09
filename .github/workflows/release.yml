@@ -133,6 +133,9 @@ jobs:
           name: annix-ios
           path: ./build/ios/iphoneos/Runner.ipa/*.ipa
           retention-days: 1
+      - name: On Failure | Debug
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
       - name: Post Setup | Delete keychain
         if: always()
         run: security delete-keychain "${{ env.KEYCHAIN }}".keychain
