@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:annix/app.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
@@ -36,11 +38,15 @@ Future<void> main() async {
     return true;
   };
 
-  await SimpleAudio.init(
-    useMediaController: false,
-    shouldNormalizeVolume: false,
-    dbusName: 'rs.anni.annix',
-  );
+  if (!Platform.isIOS) {
+    // currently, Future of SimpleAudio.init would never resolve
+    // so just skip ios for now
+    await SimpleAudio.init(
+      useMediaController: false,
+      shouldNormalizeVolume: false,
+      dbusName: 'rs.anni.annix',
+    );
+  }
 
   try {
     runApp(

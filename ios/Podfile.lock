@@ -11,19 +11,14 @@ PODS:
   - file_picker (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
-  - path_provider_ios (0.0.1):
+  - path_provider_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
   - ReachabilitySwift (5.0.0)
   - share_plus (0.0.1):
     - Flutter
-  - shared_preferences_ios (0.0.1):
+  - simple_audio (1.5.5):
     - Flutter
-  - sqflite (0.0.2):
-    - Flutter
-    - FMDB (>= 2.7.5)
   - sqlite3 (3.39.3):
     - sqlite3/common (= 3.39.3)
   - sqlite3/common (3.39.3)
@@ -49,16 +44,14 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
-  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
-  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - simple_audio (from `.symlinks/plugins/simple_audio/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
-    - FMDB
     - ReachabilitySwift
     - sqlite3
 
@@ -75,14 +68,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
-  path_provider_ios:
-    :path: ".symlinks/plugins/path_provider_ios/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
-  shared_preferences_ios:
-    :path: ".symlinks/plugins/shared_preferences_ios/ios"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
+  simple_audio:
+    :path: ".symlinks/plugins/simple_audio/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher_ios:
@@ -92,18 +83,16 @@ SPEC CHECKSUMS:
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
-  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  connectivity_plus: 07c49e96d7fc92bc9920617b83238c4d178b446a
   file_picker: 1d63c4949e05e386da864365f8c13e1e64787675
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
+  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
-  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
+  simple_audio: b04cedc1ba6aa86684300aa55f4a67fed89bac98
   sqlite3: 50117e9e063a9ef2b865f7bdf2f2601e5d368e9a
   sqlite3_flutter_libs: c6ab7f23670a98fef45a137159452004bc552168
-  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: 6171a515a08b5b286b8c8cf5e161c33e43535381
 

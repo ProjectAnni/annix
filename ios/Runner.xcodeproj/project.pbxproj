@@ -14,6 +14,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		DDF2F9DCBC938069101C6BAD /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56321345F875A946175CCBC /* Pods_Runner.framework */; };
+		F0EEB2D62A336F98004E9846 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0EEB2D32A336F94004E9846 /* AudioToolbox.framework */; };
 		F0FE9B432987E5E8006DEF0A /* libannix-native_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FE9B3E2987E540006DEF0A /* libannix-native_static.a */; };
 /* End PBXBuildFile section */
 
@@ -41,19 +42,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
@@ -73,6 +61,7 @@
 		C39A741CB394EE0A876AE4E1 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		D56321345F875A946175CCBC /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F027121827659079008E18C6 /* Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Release.plist"; sourceTree = "<group>"; };
+		F0EEB2D32A336F94004E9846 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "annix-native.xcodeproj"; path = "../../annix/annix-native.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +72,7 @@
 			files = (
 				F0FE9B432987E5E8006DEF0A /* libannix-native_static.a in Frameworks */,
 				DDF2F9DCBC938069101C6BAD /* Pods_Runner.framework in Frameworks */,
+				F0EEB2D62A336F98004E9846 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +140,7 @@
 		B0E44C7032A976189A87C2A8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F0EEB2D32A336F94004E9846 /* AudioToolbox.framework */,
 				D56321345F875A946175CCBC /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -176,7 +167,6 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				19E6797CC1809C006E0F4FD3 /* [CP] Embed Pods Frameworks */,
 			);
