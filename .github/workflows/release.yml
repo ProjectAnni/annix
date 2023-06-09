@@ -41,11 +41,11 @@ jobs:
           mkdir ~/.gradle
           echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
           cat ~/.gradle/gradle.properties
-          
+
           # /usr/include/bits
           sudo apt update -y
           sudo apt install libc6-dev-i386
-          
+
           # Install rust targets
           rustup update
           rustup target add \
@@ -108,6 +108,16 @@ jobs:
           api-private-key: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
       - name: Setup | Dependencies
         run: flutter pub get
+      - name: Setup | Fix simple_audio
+        run: |
+          sa_version=1.5.5
+          sa_lib_url="https://github.com/erikas-taroza/simple_audio/blob/v${version}/ios/Frameworks/simple_audio.xcframework"
+          cd ios/.symlinks/plugins/simple_audio/ios/Frameworks
+          mkdir ios-arm64
+          mkdir ios-arm64_x86_64-simulator
+          curl -L "${sa_lib_url}/ios-arm64/libsimple_audio.a?raw=true" -o ios-arm64/libsimple_audio.a
+          curl -L "${sa_lib_url}/ios-arm64_x86_64-simulator/libsimple_audio.a?raw=true" -o ios-arm64_x86_64-simulator/libsimple_audio.a
+          cd ../../../../../../
       - name: Build | iOS
         run: |
           flutter clean
@@ -215,7 +225,7 @@ jobs:
           retention-days: 1
 
   playstore:
-    needs: [ android ]
+    needs: [android]
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -239,7 +249,7 @@ jobs:
           track: internal
 
   testflight:
-    needs: [ iOS ]
+    needs: [iOS]
     runs-on: macos-12
     env:
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
@@ -268,7 +278,7 @@ jobs:
           app-store-connect publish --testflight --beta-group 'GitHub' --path './annix-ios/annix.ipa'
 
   publish:
-    needs: [ android, iOS, linux, macOS, windows ]
+    needs: [android, iOS, linux, macOS, windows]
     runs-on: ubuntu-20.04
     env:
       GH_REPO: ${{ github.repository }}
