@@ -141,7 +141,7 @@ class AnnixLayoutDesktop extends ConsumerWidget {
       },
     );
 
-    final root = Scaffold(body: slide);
+    final root = Scaffold(body: SafeArea(child: slide));
 
     return Navigator(
       pages: [MaterialPage(child: root)],

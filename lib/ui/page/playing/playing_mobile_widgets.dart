@@ -122,10 +122,13 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               onPressed: () {
                 final track = player.playing!.track;
                 final id = track.id;
+                final box = context.findRenderObject() as RenderBox?;
                 Share.shareXFiles(
                   [XFile(getCoverCachePath(id.albumId))],
                   text: '#NowPlaying ${track.title} - ${track.artist}',
                   subject: 'Now Playing',
+                  sharePositionOrigin:
+                      box!.localToGlobal(Offset.zero) & box.size,
                 );
               },
             ),
