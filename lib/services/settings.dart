@@ -72,6 +72,11 @@ class SettingsService {
             SearchTrackDisplayType.artist.index]);
     searchTrackDisplayType.addListener(saveChangedVariable(
         'annix_search_track_display_type', searchTrackDisplayType));
+
+    experimentalOpus =
+        ValueNotifier(preferences.getBool('annix_experimental_opus') ?? false);
+    experimentalOpus.addListener(
+        saveChangedVariable('annix_experimental_opus', experimentalOpus));
   }
 
   /// Download audio files using mobile network
@@ -113,6 +118,8 @@ class SettingsService {
   ///
   /// Default value: SearchTrackDisplayType.artist
   late ValueNotifier<SearchTrackDisplayType> searchTrackDisplayType;
+
+  late ValueNotifier<bool> experimentalOpus;
 
   Future<void> Function() saveChangedVariable<T>(
     final String key,

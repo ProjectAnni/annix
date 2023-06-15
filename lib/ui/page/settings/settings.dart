@@ -198,6 +198,21 @@ class SettingsScreen extends ConsumerWidget {
                   title: Text(t.settings.use_mobile_network),
                 ),
               ),
+              SettingsTileBuilder<bool>(
+                value: settings.experimentalOpus,
+                builder: (final context, final p, final _) =>
+                    SettingsTile.switchTile(
+                  onToggle: (final value) {
+                    settings.experimentalOpus.value = value;
+                  },
+                  initialValue: p,
+                  leading: const Icon(Icons.transform_outlined),
+                  title: const Text('Experimental: Opus support'),
+                  description: const Text(
+                    'Experimental feature flag to enable opus on supported Annil servers. Does not work on apple devices.',
+                  ),
+                ),
+              ),
             ],
           ),
           SettingsSection(

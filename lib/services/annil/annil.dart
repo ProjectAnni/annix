@@ -187,10 +187,11 @@ class AnnilService extends ChangeNotifier {
     required final PreferQuality quality,
   }) async {
     final servers = await _getActiveServerByAlbumId(track.albumId);
+    final settings = ref.read(settingsProvider);
     if (servers.isNotEmpty) {
       for (final server in servers) {
         if (etags[server.id] != null) {
-          return '${server.url}/${track.albumId}/${track.discId}/${track.trackId}?auth=${server.token}&quality=$quality';
+          return '${server.url}/${track.albumId}/${track.discId}/${track.trackId}?auth=${server.token}&quality=$quality&opus=${settings.experimentalOpus.value ? "true" : "false"}';
         }
       }
     }
