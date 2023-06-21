@@ -116,13 +116,26 @@ class AnnilAudioSource extends Source {
 
       final path = savePath ?? getAudioCachePath(track.id);
       return DownloadTask(
-        category: DownloadCategory.audio,
-        url: url,
-        savePath: path,
-        data: TrackDownloadTaskData(info: track, quality: downloadQuality),
-        client: annil.client
-      );
+          category: DownloadCategory.audio,
+          url: url,
+          savePath: path,
+          data: TrackDownloadTaskData(info: track, quality: downloadQuality),
+          client: annil.client);
     };
+  }
+
+  Future<int?> getDuration(
+      final Ref ref, final TrackInfoWithAlbum track) async {
+    final downloadQuality =
+        ref.read(settingsProvider).defaultAudioQuality.value;
+    final annil = ref.read(annilProvider);
+    final url =
+        await annil.getAudioUrl(track: track.id, quality: downloadQuality);
+    if (url == null) {
+      return null;
+    }
+    final response = await annil.client.head(url);
+    return int.parse(response.headers['x-duration-seconds']![0]);
   }
 
   Future<void> _preload(final Ref ref) async {
@@ -141,7 +154,14 @@ class AnnilAudioSource extends Source {
         _downloadTask?.addListener(_onDownloadProgress);
         final response = await task.start();
 
-        final duration = int.parse(response.headers['x-duration-seconds']![0]);
+        var duration = 0;
+
+        try {
+          duration = int.parse(response.headers['x-duration-seconds']![0]);
+        } catch (e) {
+          duration = (await getDuration(ref, track))!;
+        }
+
         // +1 to avoid duration exceeding
         PlaybackService.durationMap.update((final map) {
           map[id] = Duration(seconds: duration + 1);
