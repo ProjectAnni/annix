@@ -17,6 +17,9 @@ class RedirectInterceptor extends Interceptor {
         response.statusCode! >= 200 &&
         response.statusCode! < 300) {
       response.headers = headers!;
+      headers = null;
+    } else {
+      headers = null;
     }
 
     handler.next(response);
