@@ -2,26 +2,45 @@ import 'package:dio/dio.dart';
 
 // Writes headers of a redirect to subsquent responses.
 class RedirectInterceptor extends Interceptor {
-  Headers? headers;
+  Dio client;
+  Map<String, Headers> headers = {};
+
+  RedirectInterceptor(this.client);
 
   @override
   void onResponse(
     final Response response,
     final ResponseInterceptorHandler handler,
   ) {
-    if (headers == null &&
-        response.statusCode! >= 300 &&
-        response.statusCode! < 400) {
-      headers = response.headers;
-    } else if (headers != null &&
-        response.statusCode! >= 200 &&
-        response.statusCode! < 300) {
-      response.headers = headers!;
-      headers = null;
-    } else {
-      headers = null;
+    final url = response.requestOptions.extra['annil-dl-url'];
+    if (url != null && headers.containsKey(url)) {
+      final h = headers[url]!;
+      for (final key in ['X-Origin-Type', 'X-Origin-Size', 'X-Duration-Seconds', 'X-Audio-Quality']) {
+        response.headers.set(key, h[key]);
+      }
+      headers.remove(url);
     }
 
     handler.next(response);
+  }
+
+  @override
+  Future<dynamic> onError(
+    final DioException err,
+    final ErrorInterceptorHandler handler,
+  ) async {
+    if (err.type == DioExceptionType.badResponse && err.response!.isRedirect) {
+      final url = err.requestOptions.extra['annil-dl-url'];
+      if (url != null) {
+        headers.putIfAbsent(url, () => err.response!.headers);
+        final opt = err.requestOptions;
+        opt.followRedirects = true;
+        try {
+          await client.fetch(opt).then((final value) => handler.resolve(value));
+        } on DioException catch (e) {
+          super.onError(e, handler);
+        }
+      }
+    }
   }
 }

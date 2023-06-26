@@ -57,7 +57,7 @@ class DownloadTask extends ChangeNotifier {
       final response = await client.download(
         url,
         '$savePath.tmp',
-        options: Options(headers: headers),
+        options: Options(headers: headers, followRedirects: false, extra: { 'annil-dl-url': url }),
         onReceiveProgress: (final count, final total) {
           status = DownloadTaskStatus.downloading;
           progress =

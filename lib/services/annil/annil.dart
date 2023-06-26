@@ -45,7 +45,7 @@ class AnnilService extends ChangeNotifier {
       ],
     ));
 
-    client.interceptors.add(RedirectInterceptor());
+    client.interceptors.add(RedirectInterceptor(client));
 
     final db = ref.read(localDatabaseProvider);
     db.localAnnilCaches.select().get().then((final value) {
