@@ -5,6 +5,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/path.dart';
+import 'package:annix/utils/redirect_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:drift/drift.dart';
@@ -43,6 +44,8 @@ class AnnilService extends ChangeNotifier {
         Duration(seconds: 3),
       ],
     ));
+
+    client.interceptors.add(RedirectInterceptor(client));
 
     final db = ref.read(localDatabaseProvider);
     db.localAnnilCaches.select().get().then((final value) {
