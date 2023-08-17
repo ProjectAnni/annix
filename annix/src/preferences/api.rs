@@ -12,7 +12,8 @@ pub struct NativePreferenceStore {
 
 impl NativePreferenceStore {
     pub fn new(root: String) -> SyncReturn<NativePreferenceStore> {
-        let db_path = PathBuf::from(root).join("preference.db");
+        let db_path = PathBuf::from(&root).join("preference.db");
+        std::fs::create_dir_all(&root).unwrap();
         let conn = Connection::open(db_path).unwrap();
         conn.execute(
             r#"
