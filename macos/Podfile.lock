@@ -15,7 +15,7 @@ PODS:
   - ReachabilitySwift (5.0.0)
   - share_plus (0.0.1):
     - FlutterMacOS
-  - simple_audio (1.5.5):
+  - simple_audio (1.6.0):
     - FlutterMacOS
   - sqlite3 (3.39.3):
     - sqlite3/common (= 3.39.3)
@@ -83,7 +83,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   share_plus: 76dd39142738f7a68dd57b05093b5e8193f220f7
-  simple_audio: c457f2bd013bf6978b4dff4cb00d62d294af1c56
+  simple_audio: 2f1ee0b9d72946c06840227163746fd0de871cd1
   sqlite3: 50117e9e063a9ef2b865f7bdf2f2601e5d368e9a
   sqlite3_flutter_libs: cfe190df811dcc0a495dc7ab09d3cda5f92740d2
   url_launcher_macos: 5335912b679c073563f29d89d33d10d459f95451
