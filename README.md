@@ -20,6 +20,11 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 # Build apk
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
+
+# Build for iOS
+rustup target add aarch64-apple-ios x86_64-apple-ios
+rustup target add aarch64-apple-ios-sim
+flutter build ios --profile
 ```
 
 ## Distribution

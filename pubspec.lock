@@ -1132,10 +1132,10 @@ packages:
     dependency: "direct main"
     description:
       name: simple_audio
-      sha256: "837f27c84e0cfdd91e44011459a726e5e327151ebfb239381ccdcc11cada5228"
+      sha256: "97616c05b5d90d86b84d39b53144bef021655c0de7df3c2c0f12ddbb90441fbe"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.5"
+    version: "1.6.0"
   sky_engine:
     dependency: transitive
     description: flutter
