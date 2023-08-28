@@ -23,6 +23,7 @@ enum PlayerStatus {
         return PlayerStatus.paused;
       case PlayerState.stopped:
       case PlayerState.completed:
+      case PlayerState.disposed:
         return PlayerStatus.stopped;
     }
   }
