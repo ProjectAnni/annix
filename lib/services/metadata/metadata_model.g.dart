@@ -6,7 +6,7 @@ part of 'metadata_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Album _$AlbumFromJson(final Map<String, dynamic> json) => Album(
+Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
       albumId: json['album_id'] as String,
       title: json['title'] as String,
       edition: json['edition'] as String?,
@@ -14,13 +14,13 @@ Album _$AlbumFromJson(final Map<String, dynamic> json) => Album(
       artist: json['artist'] as String,
       type: $enumDecode(_$TrackTypeEnumMap, json['type']),
       date: ReleaseDate.fromJson(ReleaseDate.readValue(json, 'date') as String),
-      tags: (json['tags'] as List<dynamic>?)?.map((final e) => e as String).toList(),
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       discs: (json['discs'] as List<dynamic>)
-          .map((final e) => Disc.fromJson(e as Map<String, dynamic>))
+          .map((e) => Disc.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$AlbumToJson(final Album instance) => <String, dynamic>{
+Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'album_id': instance.albumId,
       'title': instance.title,
       'edition': instance.edition,
@@ -29,7 +29,7 @@ Map<String, dynamic> _$AlbumToJson(final Album instance) => <String, dynamic>{
       'type': _$TrackTypeEnumMap[instance.type]!,
       'date': instance.date.toJson(),
       'tags': instance.tags,
-      'discs': instance.discs.map((final e) => e.toJson()).toList(),
+      'discs': instance.discs.map((e) => e.toJson()).toList(),
     };
 
 const _$TrackTypeEnumMap = {
@@ -41,36 +41,36 @@ const _$TrackTypeEnumMap = {
   TrackType.vocal: 'vocal',
 };
 
-Disc _$DiscFromJson(final Map<String, dynamic> json) => Disc(
+Disc _$DiscFromJson(Map<String, dynamic> json) => Disc(
       title: json['title'] as String?,
       catalog: json['catalog'] as String,
       artist: json['artist'] as String?,
       type: $enumDecodeNullable(_$TrackTypeEnumMap, json['type']),
-      tags: (json['tags'] as List<dynamic>?)?.map((final e) => e as String).toList(),
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       tracks: (json['tracks'] as List<dynamic>)
-          .map((final e) => Track.fromJson(e as Map<String, dynamic>))
+          .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$DiscToJson(final Disc instance) => <String, dynamic>{
+Map<String, dynamic> _$DiscToJson(Disc instance) => <String, dynamic>{
       'catalog': instance.catalog,
       'tags': instance.tags,
-      'tracks': instance.tracks.map((final e) => e.toJson()).toList(),
+      'tracks': instance.tracks.map((e) => e.toJson()).toList(),
       'title': instance.title,
       'artist': instance.artist,
       'type': _$TrackTypeEnumMap[instance.type]!,
     };
 
-Track _$TrackFromJson(final Map<String, dynamic> json) => Track(
+Track _$TrackFromJson(Map<String, dynamic> json) => Track(
       title: json['title'] as String,
       artist: json['artist'] as String?,
       type: $enumDecodeNullable(_$TrackTypeEnumMap, json['type']),
       tags:
-          (json['tags'] as List<dynamic>?)?.map((final e) => e as String).toList() ??
+          (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
     );
 
-Map<String, dynamic> _$TrackToJson(final Track instance) => <String, dynamic>{
+Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'title': instance.title,
       'tags': instance.tags,
       'artist': instance.artist,

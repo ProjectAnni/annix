@@ -16,7 +16,7 @@ Desktop / Mobile client for Project Anni.
 export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d' ' -f1 | rev)/include"
 
 # [Optional] Build models
-flutter pub run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs
 
 # Build apk
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate

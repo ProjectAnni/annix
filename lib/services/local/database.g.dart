@@ -420,14 +420,25 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
 }
 
 class PlaylistData extends DataClass implements Insertable<PlaylistData> {
+  /// local properties
   final int id;
   final String name;
   final String? cover;
   final String? description;
+
+  /// remote properties
   final String? remoteId;
+
+  /// remote id (string), should be unique
   final String? owner;
+
+  /// owner id of the playlist
   final bool? public;
+
+  /// whether the playlist is public
   final int? lastModified;
+
+  /// last modified timestamp of remote playlist
   final bool hasItems;
   const PlaylistData(
       {required this.id,
@@ -1234,6 +1245,8 @@ class LocalFavoriteTrack extends DataClass
   final String albumId;
   final int discId;
   final int trackId;
+
+  /// some metadata
   final String? title;
   final String? artist;
   final String? albumTitle;
@@ -2507,10 +2520,16 @@ class PlaybackRecords extends Table
 
 class PlaybackRecord extends DataClass implements Insertable<PlaybackRecord> {
   final int id;
+
+  /// Played track
   final String albumId;
   final int discId;
   final int trackId;
+
+  /// Playback time
   final int at;
+
+  /// Whether this record is uploading to anniv server
   final bool locked;
   const PlaybackRecord(
       {required this.id,
@@ -2803,15 +2822,13 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         variables: [],
         readsFrom: {
           playbackRecords,
-        }).map((QueryRow row) {
-      return PlaybackRecordsToSubmitResult(
-        id: row.read<int>('id'),
-        albumId: row.read<String>('album_id'),
-        discId: row.read<int>('disc_id'),
-        trackId: row.read<int>('track_id'),
-        at: row.read<int>('at'),
-      );
-    });
+        }).map((QueryRow row) => PlaybackRecordsToSubmitResult(
+          id: row.read<int>('id'),
+          albumId: row.read<String>('album_id'),
+          discId: row.read<int>('disc_id'),
+          trackId: row.read<int>('track_id'),
+          at: row.read<int>('at'),
+        ));
   }
 
   Future<int> lockPlaybackRecords(List<int> var1) {

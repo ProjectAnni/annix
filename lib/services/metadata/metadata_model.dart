@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'metadata_model.g.dart';
 
-@JsonSerializable(createFactory: false)
+@JsonSerializable(createFactory: false, createToJson: false)
 class ReleaseDate {
   final int year;
   final int? month;
