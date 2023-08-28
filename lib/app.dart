@@ -3,7 +3,7 @@ import 'package:annix/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class AnnixApp extends ConsumerWidget {
   const AnnixApp({super.key});
@@ -41,14 +41,14 @@ class AnnixApp extends ConsumerWidget {
                 valueListenable: ref.read(settingsProvider).autoScaleUI,
                 builder: (final context, final value, final child) {
                   if (value) {
-                    return ResponsiveWrapper.builder(
-                      child,
-                      defaultScale: true,
+                    return ResponsiveBreakpoints.builder(
+                      child: child!,
                       breakpoints: const [
-                        ResponsiveBreakpoint.resize(600, name: MOBILE),
-                        ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                        ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
-                        ResponsiveBreakpoint.autoScale(2400, name: '4K'),
+                        Breakpoint(start: 0, end: 600, name: MOBILE),
+                        Breakpoint(start: 600, end: 800, name: TABLET),
+                        Breakpoint(start: 800, end: 1200, name: DESKTOP),
+                        Breakpoint(
+                            start: 1200, end: double.infinity, name: '4K'),
                       ],
                     );
                   } else {
