@@ -1,10 +1,12 @@
 pub use anni_repo::{db::RepoDatabaseRead, prelude::JsonAlbum};
 pub use flutter_rust_bridge::{RustOpaque, SyncReturn};
-use once_cell::sync::Lazy;
+pub use once_cell::sync::Lazy;
 pub use rusqlite::Connection;
 pub use uuid::Uuid;
 
-use std::sync::RwLock;
+pub use std::sync::Arc;
+pub use std::sync::{OnceLock, RwLock};
+use std::thread;
 pub use std::{path::PathBuf, sync::Mutex};
 
 pub enum NetworkStatus {
@@ -33,12 +35,8 @@ pub fn update_network_status(is_online: bool) {
 }
 
 /// Preferences
-use crate::dummy;
-
-dummy!(Dummy1);
-
 pub struct NativePreferenceStore {
-    pub conn: RustOpaque<Mutex<Dummy1<Connection>>>,
+    pub conn: RustOpaque<Mutex<Connection>>,
 }
 
 impl NativePreferenceStore {
@@ -57,7 +55,7 @@ CREATE TABLE IF NOT EXISTS preferences(
         )
         .unwrap();
 
-        let conn = RustOpaque::new(Mutex::new(Dummy1(conn)));
+        let conn = RustOpaque::new(Mutex::new(conn));
         SyncReturn(Self { conn })
     }
 
@@ -225,5 +223,128 @@ CREATE TABLE IF NOT EXISTS store(
                 rusqlite::params![category],
             )
             .unwrap();
+    }
+}
+
+// Audio
+pub use anni_playback::types::*;
+use flutter_rust_bridge::frb;
+use flutter_rust_bridge::StreamSink;
+
+pub use crate::player::player::Player;
+pub use crate::player::PlayerStateEvent;
+
+#[frb(mirror(ProgressState))]
+pub struct _ProgressState {
+    pub position: u64,
+    pub duration: u64,
+}
+
+fn update_progress_stream(progress: &StreamWrapper<ProgressState>, state: ProgressState) {
+    if let Some(lock) = progress.get() {
+        if let Some(stream) = &*lock.read().unwrap() {
+            stream.add(state);
+        }
+    }
+}
+
+fn update_player_state_stream(
+    player_state: &StreamWrapper<PlayerStateEvent>,
+    state: PlayerStateEvent,
+) {
+    if let Some(lock) = player_state.get() {
+        if let Some(stream) = &*lock.read().unwrap() {
+            stream.add(state);
+        }
+    }
+}
+
+pub type StreamWrapper<T> = Arc<OnceLock<RwLock<Option<StreamSink<T>>>>>;
+
+pub struct AnnixPlayer {
+    pub player: RustOpaque<Player>,
+    pub _state: RustOpaque<StreamWrapper<PlayerStateEvent>>,
+    pub _progress: RustOpaque<StreamWrapper<ProgressState>>,
+}
+
+impl AnnixPlayer {
+    pub fn new() -> SyncReturn<AnnixPlayer> {
+        let (player, receiver) = Player::new();
+        let progress = Arc::new(OnceLock::new());
+        let player_state = Arc::new(OnceLock::new());
+
+        thread::spawn({
+            let player_state = player_state.clone();
+            let progress = progress.clone();
+            move || loop {
+                if let Ok(event) = receiver.recv() {
+                    match event {
+                        PlayerEvent::Play => {
+                            update_player_state_stream(&player_state, PlayerStateEvent::Play)
+                        }
+                        PlayerEvent::Pause => {
+                            update_player_state_stream(&player_state, PlayerStateEvent::Pause)
+                        }
+                        PlayerEvent::Stop => {
+                            update_player_state_stream(&player_state, PlayerStateEvent::Stop)
+                        }
+                        PlayerEvent::PreloadPlayed => {
+                            // update_player_state_stream(&player_state, PlayerStateEvent::Stop)
+                        }
+                        PlayerEvent::Progress(state) => update_progress_stream(&progress, state),
+                    }
+                }
+            }
+        });
+
+        SyncReturn(Self {
+            player: RustOpaque::new(player),
+            _state: RustOpaque::new(player_state),
+            _progress: RustOpaque::new(progress),
+        })
+    }
+
+    pub fn play(&self) {
+        self.player.play();
+    }
+
+    pub fn pause(&self) {
+        self.player.pause();
+    }
+
+    pub fn open_file(&self, path: String) -> anyhow::Result<()> {
+        self.player.open_file(path, false)
+    }
+
+    pub fn set_volume(&self, volume: f32) {
+        self.player.set_volume(volume);
+    }
+
+    pub fn stop(&self) {
+        self.player.stop();
+    }
+
+    pub fn seek(&self, position: u64) {
+        self.player.seek(position);
+    }
+
+    pub fn is_playing(&self) -> SyncReturn<bool> {
+        SyncReturn(self.player.is_playing())
+    }
+
+    pub fn player_state_stream(&self, stream: StreamSink<PlayerStateEvent>) {
+        *self
+            ._state
+            .get_or_init(|| RwLock::new(None))
+            .write()
+            .unwrap() = Some(stream);
+    }
+
+    pub fn progress_stream(&self, stream: StreamSink<ProgressState>) {
+        *self
+            ._progress
+            .get_or_init(|| RwLock::new(None))
+            .write()
+            .unwrap() = Some(stream);
     }
 }

@@ -1,6 +1,7 @@
 {
     "recommendations": [
+        "dart-code.flutter",
         "rust-lang.rust-analyzer",
-        "dart-code.flutter"
+        "tamasfe.even-better-toml"
     ]
 }

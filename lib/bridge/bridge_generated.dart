@@ -286,17 +286,189 @@ class AnnixNativeImpl implements AnnixNative {
         argNames: ["that", "category"],
       );
 
+  AnnixPlayer newStaticMethodAnnixPlayer({dynamic hint}) {
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_new__static_method__AnnixPlayer(),
+      parseSuccessData: _wire2api_annix_player,
+      constMeta: kNewStaticMethodAnnixPlayerConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "new__static_method__AnnixPlayer",
+        argNames: [],
+      );
+
+  Future<void> playMethodAnnixPlayer({required AnnixPlayer that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_play__method__AnnixPlayer(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kPlayMethodAnnixPlayerConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kPlayMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "play__method__AnnixPlayer",
+        argNames: ["that"],
+      );
+
+  Future<void> pauseMethodAnnixPlayer({required AnnixPlayer that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_pause__method__AnnixPlayer(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kPauseMethodAnnixPlayerConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kPauseMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "pause__method__AnnixPlayer",
+        argNames: ["that"],
+      );
+
+  Future<void> openFileMethodAnnixPlayer({required AnnixPlayer that, required String path, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    var arg1 = _platform.api2wire_String(path);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_open_file__method__AnnixPlayer(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kOpenFileMethodAnnixPlayerConstMeta,
+      argValues: [that, path],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kOpenFileMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "open_file__method__AnnixPlayer",
+        argNames: ["that", "path"],
+      );
+
+  Future<void> setVolumeMethodAnnixPlayer({required AnnixPlayer that, required double volume, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    var arg1 = api2wire_f32(volume);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_set_volume__method__AnnixPlayer(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSetVolumeMethodAnnixPlayerConstMeta,
+      argValues: [that, volume],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSetVolumeMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "set_volume__method__AnnixPlayer",
+        argNames: ["that", "volume"],
+      );
+
+  Future<void> stopMethodAnnixPlayer({required AnnixPlayer that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_stop__method__AnnixPlayer(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kStopMethodAnnixPlayerConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kStopMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "stop__method__AnnixPlayer",
+        argNames: ["that"],
+      );
+
+  Future<void> seekMethodAnnixPlayer({required AnnixPlayer that, required int position, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    var arg1 = _platform.api2wire_u64(position);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_seek__method__AnnixPlayer(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSeekMethodAnnixPlayerConstMeta,
+      argValues: [that, position],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSeekMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "seek__method__AnnixPlayer",
+        argNames: ["that", "position"],
+      );
+
+  bool isPlayingMethodAnnixPlayer({required AnnixPlayer that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_is_playing__method__AnnixPlayer(arg0),
+      parseSuccessData: _wire2api_bool,
+      constMeta: kIsPlayingMethodAnnixPlayerConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kIsPlayingMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "is_playing__method__AnnixPlayer",
+        argNames: ["that"],
+      );
+
+  Stream<PlayerStateEvent> playerStateStreamMethodAnnixPlayer({required AnnixPlayer that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    return _platform.executeStream(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_player_state_stream__method__AnnixPlayer(port_, arg0),
+      parseSuccessData: _wire2api_player_state_event,
+      constMeta: kPlayerStateStreamMethodAnnixPlayerConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kPlayerStateStreamMethodAnnixPlayerConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "player_state_stream__method__AnnixPlayer",
+        argNames: ["that"],
+      );
+
+  Stream<ProgressState> progressStreamMethodAnnixPlayer({required AnnixPlayer that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_annix_player(that);
+    return _platform.executeStream(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_progress_stream__method__AnnixPlayer(port_, arg0),
+      parseSuccessData: _wire2api_progress_state,
+      constMeta: kProgressStreamMethodAnnixPlayerConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kProgressStreamMethodAnnixPlayerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "progress_stream__method__AnnixPlayer",
+        argNames: ["that"],
+      );
+
   DropFnType get dropOpaqueMutexConnection => _platform.inner.drop_opaque_MutexConnection;
   ShareFnType get shareOpaqueMutexConnection => _platform.inner.share_opaque_MutexConnection;
   OpaqueTypeFinalizer get MutexConnectionFinalizer => _platform.MutexConnectionFinalizer;
 
-  DropFnType get dropOpaqueMutexDummy1Connection => _platform.inner.drop_opaque_MutexDummy1Connection;
-  ShareFnType get shareOpaqueMutexDummy1Connection => _platform.inner.share_opaque_MutexDummy1Connection;
-  OpaqueTypeFinalizer get MutexDummy1ConnectionFinalizer => _platform.MutexDummy1ConnectionFinalizer;
-
   DropFnType get dropOpaqueMutexRepoDatabaseRead => _platform.inner.drop_opaque_MutexRepoDatabaseRead;
   ShareFnType get shareOpaqueMutexRepoDatabaseRead => _platform.inner.share_opaque_MutexRepoDatabaseRead;
   OpaqueTypeFinalizer get MutexRepoDatabaseReadFinalizer => _platform.MutexRepoDatabaseReadFinalizer;
+
+  DropFnType get dropOpaquePlayer => _platform.inner.drop_opaque_Player;
+  ShareFnType get shareOpaquePlayer => _platform.inner.share_opaque_Player;
+  OpaqueTypeFinalizer get PlayerFinalizer => _platform.PlayerFinalizer;
+
+  DropFnType get dropOpaqueStreamWrapperPlayerStateEvent => _platform.inner.drop_opaque_StreamWrapperPlayerStateEvent;
+  ShareFnType get shareOpaqueStreamWrapperPlayerStateEvent =>
+      _platform.inner.share_opaque_StreamWrapperPlayerStateEvent;
+  OpaqueTypeFinalizer get StreamWrapperPlayerStateEventFinalizer => _platform.StreamWrapperPlayerStateEventFinalizer;
+
+  DropFnType get dropOpaqueStreamWrapperProgressState => _platform.inner.drop_opaque_StreamWrapperProgressState;
+  ShareFnType get shareOpaqueStreamWrapperProgressState => _platform.inner.share_opaque_StreamWrapperProgressState;
+  OpaqueTypeFinalizer get StreamWrapperProgressStateFinalizer => _platform.StreamWrapperProgressStateFinalizer;
 
   void dispose() {
     _platform.dispose();
@@ -307,12 +479,20 @@ class AnnixNativeImpl implements AnnixNative {
     return MutexConnection.fromRaw(raw[0], raw[1], this);
   }
 
-  MutexDummy1Connection _wire2api_MutexDummy1Connection(dynamic raw) {
-    return MutexDummy1Connection.fromRaw(raw[0], raw[1], this);
-  }
-
   MutexRepoDatabaseRead _wire2api_MutexRepoDatabaseRead(dynamic raw) {
     return MutexRepoDatabaseRead.fromRaw(raw[0], raw[1], this);
+  }
+
+  Player _wire2api_Player(dynamic raw) {
+    return Player.fromRaw(raw[0], raw[1], this);
+  }
+
+  StreamWrapperPlayerStateEvent _wire2api_StreamWrapperPlayerStateEvent(dynamic raw) {
+    return StreamWrapperPlayerStateEvent.fromRaw(raw[0], raw[1], this);
+  }
+
+  StreamWrapperProgressState _wire2api_StreamWrapperProgressState(dynamic raw) {
+    return StreamWrapperProgressState.fromRaw(raw[0], raw[1], this);
   }
 
   String _wire2api_String(dynamic raw) {
@@ -328,8 +508,23 @@ class AnnixNativeImpl implements AnnixNative {
     return wire2apiUuids(bytes);
   }
 
+  AnnixPlayer _wire2api_annix_player(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return AnnixPlayer(
+      bridge: this,
+      player: _wire2api_Player(arr[0]),
+      state: _wire2api_StreamWrapperPlayerStateEvent(arr[1]),
+      progress: _wire2api_StreamWrapperProgressState(arr[2]),
+    );
+  }
+
   bool _wire2api_bool(dynamic raw) {
     return raw as bool;
+  }
+
+  int _wire2api_i32(dynamic raw) {
+    return raw as int;
   }
 
   List<TagItem> _wire2api_list_tag_item(dynamic raw) {
@@ -359,12 +554,25 @@ class AnnixNativeImpl implements AnnixNative {
     if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
     return NativePreferenceStore(
       bridge: this,
-      conn: _wire2api_MutexDummy1Connection(arr[0]),
+      conn: _wire2api_MutexConnection(arr[0]),
     );
   }
 
   String? _wire2api_opt_String(dynamic raw) {
     return raw == null ? null : _wire2api_String(raw);
+  }
+
+  PlayerStateEvent _wire2api_player_state_event(dynamic raw) {
+    return PlayerStateEvent.values[raw as int];
+  }
+
+  ProgressState _wire2api_progress_state(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ProgressState(
+      position: _wire2api_u64(arr[0]),
+      duration: _wire2api_u64(arr[1]),
+    );
   }
 
   TagItem _wire2api_tag_item(dynamic raw) {
@@ -374,6 +582,10 @@ class AnnixNativeImpl implements AnnixNative {
       name: _wire2api_String(arr[0]),
       children: _wire2api_StringList(arr[1]),
     );
+  }
+
+  int _wire2api_u64(dynamic raw) {
+    return castInt(raw);
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -393,6 +605,11 @@ class AnnixNativeImpl implements AnnixNative {
 
 @protected
 bool api2wire_bool(bool raw) {
+  return raw;
+}
+
+@protected
+double api2wire_f32(double raw) {
   return raw;
 }
 
@@ -426,16 +643,30 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
   }
 
   @protected
-  wire_MutexDummy1Connection api2wire_MutexDummy1Connection(MutexDummy1Connection raw) {
-    final ptr = inner.new_MutexDummy1Connection();
-    _api_fill_to_wire_MutexDummy1Connection(raw, ptr);
+  wire_MutexRepoDatabaseRead api2wire_MutexRepoDatabaseRead(MutexRepoDatabaseRead raw) {
+    final ptr = inner.new_MutexRepoDatabaseRead();
+    _api_fill_to_wire_MutexRepoDatabaseRead(raw, ptr);
     return ptr;
   }
 
   @protected
-  wire_MutexRepoDatabaseRead api2wire_MutexRepoDatabaseRead(MutexRepoDatabaseRead raw) {
-    final ptr = inner.new_MutexRepoDatabaseRead();
-    _api_fill_to_wire_MutexRepoDatabaseRead(raw, ptr);
+  wire_Player api2wire_Player(Player raw) {
+    final ptr = inner.new_Player();
+    _api_fill_to_wire_Player(raw, ptr);
+    return ptr;
+  }
+
+  @protected
+  wire_StreamWrapperPlayerStateEvent api2wire_StreamWrapperPlayerStateEvent(StreamWrapperPlayerStateEvent raw) {
+    final ptr = inner.new_StreamWrapperPlayerStateEvent();
+    _api_fill_to_wire_StreamWrapperPlayerStateEvent(raw, ptr);
+    return ptr;
+  }
+
+  @protected
+  wire_StreamWrapperProgressState api2wire_StreamWrapperProgressState(StreamWrapperProgressState raw) {
+    final ptr = inner.new_StreamWrapperProgressState();
+    _api_fill_to_wire_StreamWrapperProgressState(raw, ptr);
     return ptr;
   }
 
@@ -447,6 +678,13 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
   @protected
   ffi.Pointer<wire_uint_8_list> api2wire_Uuid(UuidValue raw) {
     return api2wire_uint_8_list(raw.toBytes());
+  }
+
+  @protected
+  ffi.Pointer<wire_AnnixPlayer> api2wire_box_autoadd_annix_player(AnnixPlayer raw) {
+    final ptr = inner.new_box_autoadd_annix_player_0();
+    _api_fill_to_wire_annix_player(raw, ptr.ref);
+    return ptr;
   }
 
   @protected
@@ -476,6 +714,11 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
   }
 
   @protected
+  int api2wire_u64(int raw) {
+    return raw;
+  }
+
+  @protected
   ffi.Pointer<wire_uint_8_list> api2wire_uint_8_list(Uint8List raw) {
     final ans = inner.new_uint_8_list_0(raw.length);
     ans.ref.ptr.asTypedList(raw.length).setAll(0, raw);
@@ -485,24 +728,49 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
 
   late final OpaqueTypeFinalizer _MutexConnectionFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexConnectionPtr);
   OpaqueTypeFinalizer get MutexConnectionFinalizer => _MutexConnectionFinalizer;
-  late final OpaqueTypeFinalizer _MutexDummy1ConnectionFinalizer =
-      OpaqueTypeFinalizer(inner._drop_opaque_MutexDummy1ConnectionPtr);
-  OpaqueTypeFinalizer get MutexDummy1ConnectionFinalizer => _MutexDummy1ConnectionFinalizer;
   late final OpaqueTypeFinalizer _MutexRepoDatabaseReadFinalizer =
       OpaqueTypeFinalizer(inner._drop_opaque_MutexRepoDatabaseReadPtr);
   OpaqueTypeFinalizer get MutexRepoDatabaseReadFinalizer => _MutexRepoDatabaseReadFinalizer;
+  late final OpaqueTypeFinalizer _PlayerFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_PlayerPtr);
+  OpaqueTypeFinalizer get PlayerFinalizer => _PlayerFinalizer;
+  late final OpaqueTypeFinalizer _StreamWrapperPlayerStateEventFinalizer =
+      OpaqueTypeFinalizer(inner._drop_opaque_StreamWrapperPlayerStateEventPtr);
+  OpaqueTypeFinalizer get StreamWrapperPlayerStateEventFinalizer => _StreamWrapperPlayerStateEventFinalizer;
+  late final OpaqueTypeFinalizer _StreamWrapperProgressStateFinalizer =
+      OpaqueTypeFinalizer(inner._drop_opaque_StreamWrapperProgressStatePtr);
+  OpaqueTypeFinalizer get StreamWrapperProgressStateFinalizer => _StreamWrapperProgressStateFinalizer;
 // Section: api_fill_to_wire
 
   void _api_fill_to_wire_MutexConnection(MutexConnection apiObj, wire_MutexConnection wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
   }
 
-  void _api_fill_to_wire_MutexDummy1Connection(MutexDummy1Connection apiObj, wire_MutexDummy1Connection wireObj) {
+  void _api_fill_to_wire_MutexRepoDatabaseRead(MutexRepoDatabaseRead apiObj, wire_MutexRepoDatabaseRead wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
   }
 
-  void _api_fill_to_wire_MutexRepoDatabaseRead(MutexRepoDatabaseRead apiObj, wire_MutexRepoDatabaseRead wireObj) {
+  void _api_fill_to_wire_Player(Player apiObj, wire_Player wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
+  }
+
+  void _api_fill_to_wire_StreamWrapperPlayerStateEvent(
+      StreamWrapperPlayerStateEvent apiObj, wire_StreamWrapperPlayerStateEvent wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
+
+  void _api_fill_to_wire_StreamWrapperProgressState(
+      StreamWrapperProgressState apiObj, wire_StreamWrapperProgressState wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
+
+  void _api_fill_to_wire_annix_player(AnnixPlayer apiObj, wire_AnnixPlayer wireObj) {
+    wireObj.player = api2wire_Player(apiObj.player);
+    wireObj._state = api2wire_StreamWrapperPlayerStateEvent(apiObj.state);
+    wireObj._progress = api2wire_StreamWrapperProgressState(apiObj.progress);
+  }
+
+  void _api_fill_to_wire_box_autoadd_annix_player(AnnixPlayer apiObj, ffi.Pointer<wire_AnnixPlayer> wireObj) {
+    _api_fill_to_wire_annix_player(apiObj, wireObj.ref);
   }
 
   void _api_fill_to_wire_box_autoadd_local_db(LocalDb apiObj, ffi.Pointer<wire_LocalDb> wireObj) {
@@ -527,7 +795,7 @@ class AnnixNativePlatform extends FlutterRustBridgeBase<AnnixNativeWire> {
   }
 
   void _api_fill_to_wire_native_preference_store(NativePreferenceStore apiObj, wire_NativePreferenceStore wireObj) {
-    wireObj.conn = api2wire_MutexDummy1Connection(apiObj.conn);
+    wireObj.conn = api2wire_MutexConnection(apiObj.conn);
   }
 }
 
@@ -873,6 +1141,164 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _wire_clear__method__LocalStore = _wire_clear__method__LocalStorePtr
       .asFunction<void Function(int, ffi.Pointer<wire_LocalStore>, ffi.Pointer<wire_uint_8_list>)>();
 
+  WireSyncReturn wire_new__static_method__AnnixPlayer() {
+    return _wire_new__static_method__AnnixPlayer();
+  }
+
+  late final _wire_new__static_method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<WireSyncReturn Function()>>('wire_new__static_method__AnnixPlayer');
+  late final _wire_new__static_method__AnnixPlayer =
+      _wire_new__static_method__AnnixPlayerPtr.asFunction<WireSyncReturn Function()>();
+
+  void wire_play__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+  ) {
+    return _wire_play__method__AnnixPlayer(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_play__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>)>>(
+          'wire_play__method__AnnixPlayer');
+  late final _wire_play__method__AnnixPlayer =
+      _wire_play__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>)>();
+
+  void wire_pause__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+  ) {
+    return _wire_pause__method__AnnixPlayer(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_pause__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>)>>(
+          'wire_pause__method__AnnixPlayer');
+  late final _wire_pause__method__AnnixPlayer =
+      _wire_pause__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>)>();
+
+  void wire_open_file__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+    ffi.Pointer<wire_uint_8_list> path,
+  ) {
+    return _wire_open_file__method__AnnixPlayer(
+      port_,
+      that,
+      path,
+    );
+  }
+
+  late final _wire_open_file__method__AnnixPlayerPtr = _lookup<
+          ffi
+          .NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>, ffi.Pointer<wire_uint_8_list>)>>(
+      'wire_open_file__method__AnnixPlayer');
+  late final _wire_open_file__method__AnnixPlayer = _wire_open_file__method__AnnixPlayerPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_set_volume__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+    double volume,
+  ) {
+    return _wire_set_volume__method__AnnixPlayer(
+      port_,
+      that,
+      volume,
+    );
+  }
+
+  late final _wire_set_volume__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>, ffi.Float)>>(
+          'wire_set_volume__method__AnnixPlayer');
+  late final _wire_set_volume__method__AnnixPlayer =
+      _wire_set_volume__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>, double)>();
+
+  void wire_stop__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+  ) {
+    return _wire_stop__method__AnnixPlayer(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_stop__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>)>>(
+          'wire_stop__method__AnnixPlayer');
+  late final _wire_stop__method__AnnixPlayer =
+      _wire_stop__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>)>();
+
+  void wire_seek__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+    int position,
+  ) {
+    return _wire_seek__method__AnnixPlayer(
+      port_,
+      that,
+      position,
+    );
+  }
+
+  late final _wire_seek__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>, ffi.Uint64)>>(
+          'wire_seek__method__AnnixPlayer');
+  late final _wire_seek__method__AnnixPlayer =
+      _wire_seek__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>, int)>();
+
+  WireSyncReturn wire_is_playing__method__AnnixPlayer(
+    ffi.Pointer<wire_AnnixPlayer> that,
+  ) {
+    return _wire_is_playing__method__AnnixPlayer(
+      that,
+    );
+  }
+
+  late final _wire_is_playing__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<WireSyncReturn Function(ffi.Pointer<wire_AnnixPlayer>)>>(
+          'wire_is_playing__method__AnnixPlayer');
+  late final _wire_is_playing__method__AnnixPlayer =
+      _wire_is_playing__method__AnnixPlayerPtr.asFunction<WireSyncReturn Function(ffi.Pointer<wire_AnnixPlayer>)>();
+
+  void wire_player_state_stream__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+  ) {
+    return _wire_player_state_stream__method__AnnixPlayer(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_player_state_stream__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>)>>(
+          'wire_player_state_stream__method__AnnixPlayer');
+  late final _wire_player_state_stream__method__AnnixPlayer =
+      _wire_player_state_stream__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>)>();
+
+  void wire_progress_stream__method__AnnixPlayer(
+    int port_,
+    ffi.Pointer<wire_AnnixPlayer> that,
+  ) {
+    return _wire_progress_stream__method__AnnixPlayer(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_progress_stream__method__AnnixPlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_AnnixPlayer>)>>(
+          'wire_progress_stream__method__AnnixPlayer');
+  late final _wire_progress_stream__method__AnnixPlayer =
+      _wire_progress_stream__method__AnnixPlayerPtr.asFunction<void Function(int, ffi.Pointer<wire_AnnixPlayer>)>();
+
   wire_MutexConnection new_MutexConnection() {
     return _new_MutexConnection();
   }
@@ -880,15 +1306,6 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _new_MutexConnectionPtr =
       _lookup<ffi.NativeFunction<wire_MutexConnection Function()>>('new_MutexConnection');
   late final _new_MutexConnection = _new_MutexConnectionPtr.asFunction<wire_MutexConnection Function()>();
-
-  wire_MutexDummy1Connection new_MutexDummy1Connection() {
-    return _new_MutexDummy1Connection();
-  }
-
-  late final _new_MutexDummy1ConnectionPtr =
-      _lookup<ffi.NativeFunction<wire_MutexDummy1Connection Function()>>('new_MutexDummy1Connection');
-  late final _new_MutexDummy1Connection =
-      _new_MutexDummy1ConnectionPtr.asFunction<wire_MutexDummy1Connection Function()>();
 
   wire_MutexRepoDatabaseRead new_MutexRepoDatabaseRead() {
     return _new_MutexRepoDatabaseRead();
@@ -898,6 +1315,40 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
       _lookup<ffi.NativeFunction<wire_MutexRepoDatabaseRead Function()>>('new_MutexRepoDatabaseRead');
   late final _new_MutexRepoDatabaseRead =
       _new_MutexRepoDatabaseReadPtr.asFunction<wire_MutexRepoDatabaseRead Function()>();
+
+  wire_Player new_Player() {
+    return _new_Player();
+  }
+
+  late final _new_PlayerPtr = _lookup<ffi.NativeFunction<wire_Player Function()>>('new_Player');
+  late final _new_Player = _new_PlayerPtr.asFunction<wire_Player Function()>();
+
+  wire_StreamWrapperPlayerStateEvent new_StreamWrapperPlayerStateEvent() {
+    return _new_StreamWrapperPlayerStateEvent();
+  }
+
+  late final _new_StreamWrapperPlayerStateEventPtr =
+      _lookup<ffi.NativeFunction<wire_StreamWrapperPlayerStateEvent Function()>>('new_StreamWrapperPlayerStateEvent');
+  late final _new_StreamWrapperPlayerStateEvent =
+      _new_StreamWrapperPlayerStateEventPtr.asFunction<wire_StreamWrapperPlayerStateEvent Function()>();
+
+  wire_StreamWrapperProgressState new_StreamWrapperProgressState() {
+    return _new_StreamWrapperProgressState();
+  }
+
+  late final _new_StreamWrapperProgressStatePtr =
+      _lookup<ffi.NativeFunction<wire_StreamWrapperProgressState Function()>>('new_StreamWrapperProgressState');
+  late final _new_StreamWrapperProgressState =
+      _new_StreamWrapperProgressStatePtr.asFunction<wire_StreamWrapperProgressState Function()>();
+
+  ffi.Pointer<wire_AnnixPlayer> new_box_autoadd_annix_player_0() {
+    return _new_box_autoadd_annix_player_0();
+  }
+
+  late final _new_box_autoadd_annix_player_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_AnnixPlayer> Function()>>('new_box_autoadd_annix_player_0');
+  late final _new_box_autoadd_annix_player_0 =
+      _new_box_autoadd_annix_player_0Ptr.asFunction<ffi.Pointer<wire_AnnixPlayer> Function()>();
 
   ffi.Pointer<wire_LocalDb> new_box_autoadd_local_db_0() {
     return _new_box_autoadd_local_db_0();
@@ -966,33 +1417,6 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _share_opaque_MutexConnection =
       _share_opaque_MutexConnectionPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
-  void drop_opaque_MutexDummy1Connection(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _drop_opaque_MutexDummy1Connection(
-      ptr,
-    );
-  }
-
-  late final _drop_opaque_MutexDummy1ConnectionPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_MutexDummy1Connection');
-  late final _drop_opaque_MutexDummy1Connection =
-      _drop_opaque_MutexDummy1ConnectionPtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
-
-  ffi.Pointer<ffi.Void> share_opaque_MutexDummy1Connection(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _share_opaque_MutexDummy1Connection(
-      ptr,
-    );
-  }
-
-  late final _share_opaque_MutexDummy1ConnectionPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>(
-          'share_opaque_MutexDummy1Connection');
-  late final _share_opaque_MutexDummy1Connection =
-      _share_opaque_MutexDummy1ConnectionPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
-
   void drop_opaque_MutexRepoDatabaseRead(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -1020,6 +1444,86 @@ class AnnixNativeWire implements FlutterRustBridgeWireBase {
   late final _share_opaque_MutexRepoDatabaseRead =
       _share_opaque_MutexRepoDatabaseReadPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
+  void drop_opaque_Player(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_Player(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_PlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_Player');
+  late final _drop_opaque_Player = _drop_opaque_PlayerPtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_Player(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_Player(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_PlayerPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_Player');
+  late final _share_opaque_Player =
+      _share_opaque_PlayerPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
+
+  void drop_opaque_StreamWrapperPlayerStateEvent(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_StreamWrapperPlayerStateEvent(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_StreamWrapperPlayerStateEventPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'drop_opaque_StreamWrapperPlayerStateEvent');
+  late final _drop_opaque_StreamWrapperPlayerStateEvent =
+      _drop_opaque_StreamWrapperPlayerStateEventPtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_StreamWrapperPlayerStateEvent(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_StreamWrapperPlayerStateEvent(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_StreamWrapperPlayerStateEventPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>(
+          'share_opaque_StreamWrapperPlayerStateEvent');
+  late final _share_opaque_StreamWrapperPlayerStateEvent = _share_opaque_StreamWrapperPlayerStateEventPtr
+      .asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
+
+  void drop_opaque_StreamWrapperProgressState(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_StreamWrapperProgressState(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_StreamWrapperProgressStatePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_StreamWrapperProgressState');
+  late final _drop_opaque_StreamWrapperProgressState =
+      _drop_opaque_StreamWrapperProgressStatePtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_StreamWrapperProgressState(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_StreamWrapperProgressState(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_StreamWrapperProgressStatePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>(
+          'share_opaque_StreamWrapperProgressState');
+  late final _share_opaque_StreamWrapperProgressState =
+      _share_opaque_StreamWrapperProgressStatePtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
+
   void free_WireSyncReturn(
     WireSyncReturn ptr,
   ) {
@@ -1042,12 +1546,12 @@ final class wire_uint_8_list extends ffi.Struct {
   external int len;
 }
 
-final class wire_MutexDummy1Connection extends ffi.Struct {
+final class wire_MutexConnection extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
 
 final class wire_NativePreferenceStore extends ffi.Struct {
-  external wire_MutexDummy1Connection conn;
+  external wire_MutexConnection conn;
 }
 
 final class wire_MutexRepoDatabaseRead extends ffi.Struct {
@@ -1058,12 +1562,28 @@ final class wire_LocalDb extends ffi.Struct {
   external wire_MutexRepoDatabaseRead repo;
 }
 
-final class wire_MutexConnection extends ffi.Struct {
+final class wire_LocalStore extends ffi.Struct {
+  external wire_MutexConnection conn;
+}
+
+final class wire_Player extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
 
-final class wire_LocalStore extends ffi.Struct {
-  external wire_MutexConnection conn;
+final class wire_StreamWrapperPlayerStateEvent extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
+}
+
+final class wire_StreamWrapperProgressState extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
+}
+
+final class wire_AnnixPlayer extends ffi.Struct {
+  external wire_Player player;
+
+  external wire_StreamWrapperPlayerStateEvent _state;
+
+  external wire_StreamWrapperProgressState _progress;
 }
 
 typedef DartPostCObjectFnType

@@ -12,7 +12,13 @@ once_cell = "1.17.1"
 rusqlite = { version = "0.28.0", features = ["bundled"] }
 
 anni-repo = { version = "0.3.2", features = ["db"] }
+anni-playback = { git = "https://github.com/ProjectAnni/anni" }
 uuid = "1"
+crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
+anyhow = "1.0.75"
 
 [build-dependencies]
 flutter_rust_bridge_codegen = { version = "1.81.0", features = ["uuid"] }
+
+[patches.crates-io]
+audiopus_sys = { git = "https://github.com/erikas-taroza/audiopus_sys" }

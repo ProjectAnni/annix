@@ -53,10 +53,10 @@ class AnnivClient {
       onResponse: (final response, final handler) {
         if (response.statusCode != 200) {
           // response status of anniv MUST be 200
-          return handler.reject(DioError(
+          return handler.reject(DioException(
             requestOptions: response.requestOptions,
             response: response,
-            type: DioErrorType.unknown,
+            type: DioExceptionType.unknown,
           ));
         } else if (response.requestOptions.responseType == ResponseType.json) {
           final resp = response.data as Map<String, dynamic>;
@@ -72,10 +72,10 @@ class AnnivClient {
               FLog.error(text: resp['message'].toString(), exception: error);
             }
             // business logic error code
-            handler.reject(DioError(
+            handler.reject(DioException(
               requestOptions: response.requestOptions,
               response: response,
-              type: DioErrorType.unknown,
+              type: DioExceptionType.unknown,
               error: error,
             ));
           } else {
@@ -327,7 +327,7 @@ class AnnivClient {
         'track_id': track.trackId,
       });
       return LyricResponse.fromJson(response.data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       // no available lyric found
       if (e.error is AnnivError) {
         final error = e.error as AnnivError;

@@ -33,8 +33,6 @@ dependencies:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
   xml: ^6.2.2
 
-  audioplayers: ^5.1.0
-  simple_audio: 1.6.0
   audio_service: ^0.18.11
   audio_service_platform_interface: ^0.1.1
   audio_session: ^0.1.16

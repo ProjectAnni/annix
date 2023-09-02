@@ -117,6 +117,76 @@ pub extern "C" fn wire_clear__method__LocalStore(
     wire_clear__method__LocalStore_impl(port_, that, category)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_new__static_method__AnnixPlayer() -> support::WireSyncReturn {
+    wire_new__static_method__AnnixPlayer_impl()
+}
+
+#[no_mangle]
+pub extern "C" fn wire_play__method__AnnixPlayer(port_: i64, that: *mut wire_AnnixPlayer) {
+    wire_play__method__AnnixPlayer_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_pause__method__AnnixPlayer(port_: i64, that: *mut wire_AnnixPlayer) {
+    wire_pause__method__AnnixPlayer_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_open_file__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+    path: *mut wire_uint_8_list,
+) {
+    wire_open_file__method__AnnixPlayer_impl(port_, that, path)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_set_volume__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+    volume: f32,
+) {
+    wire_set_volume__method__AnnixPlayer_impl(port_, that, volume)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_stop__method__AnnixPlayer(port_: i64, that: *mut wire_AnnixPlayer) {
+    wire_stop__method__AnnixPlayer_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_seek__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+    position: u64,
+) {
+    wire_seek__method__AnnixPlayer_impl(port_, that, position)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_is_playing__method__AnnixPlayer(
+    that: *mut wire_AnnixPlayer,
+) -> support::WireSyncReturn {
+    wire_is_playing__method__AnnixPlayer_impl(that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_player_state_stream__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+) {
+    wire_player_state_stream__method__AnnixPlayer_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_progress_stream__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+) {
+    wire_progress_stream__method__AnnixPlayer_impl(port_, that)
+}
+
 // Section: allocate functions
 
 #[no_mangle]
@@ -125,13 +195,28 @@ pub extern "C" fn new_MutexConnection() -> wire_MutexConnection {
 }
 
 #[no_mangle]
-pub extern "C" fn new_MutexDummy1Connection() -> wire_MutexDummy1Connection {
-    wire_MutexDummy1Connection::new_with_null_ptr()
+pub extern "C" fn new_MutexRepoDatabaseRead() -> wire_MutexRepoDatabaseRead {
+    wire_MutexRepoDatabaseRead::new_with_null_ptr()
 }
 
 #[no_mangle]
-pub extern "C" fn new_MutexRepoDatabaseRead() -> wire_MutexRepoDatabaseRead {
-    wire_MutexRepoDatabaseRead::new_with_null_ptr()
+pub extern "C" fn new_Player() -> wire_Player {
+    wire_Player::new_with_null_ptr()
+}
+
+#[no_mangle]
+pub extern "C" fn new_StreamWrapperPlayerStateEvent() -> wire_StreamWrapperPlayerStateEvent {
+    wire_StreamWrapperPlayerStateEvent::new_with_null_ptr()
+}
+
+#[no_mangle]
+pub extern "C" fn new_StreamWrapperProgressState() -> wire_StreamWrapperProgressState {
+    wire_StreamWrapperProgressState::new_with_null_ptr()
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_annix_player_0() -> *mut wire_AnnixPlayer {
+    support::new_leak_box_ptr(wire_AnnixPlayer::new_with_null_ptr())
 }
 
 #[no_mangle]
@@ -176,21 +261,6 @@ pub extern "C" fn share_opaque_MutexConnection(ptr: *const c_void) -> *const c_v
 }
 
 #[no_mangle]
-pub extern "C" fn drop_opaque_MutexDummy1Connection(ptr: *const c_void) {
-    unsafe {
-        Arc::<Mutex<Dummy1<Connection>>>::decrement_strong_count(ptr as _);
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn share_opaque_MutexDummy1Connection(ptr: *const c_void) -> *const c_void {
-    unsafe {
-        Arc::<Mutex<Dummy1<Connection>>>::increment_strong_count(ptr as _);
-        ptr
-    }
-}
-
-#[no_mangle]
 pub extern "C" fn drop_opaque_MutexRepoDatabaseRead(ptr: *const c_void) {
     unsafe {
         Arc::<Mutex<RepoDatabaseRead>>::decrement_strong_count(ptr as _);
@@ -205,6 +275,51 @@ pub extern "C" fn share_opaque_MutexRepoDatabaseRead(ptr: *const c_void) -> *con
     }
 }
 
+#[no_mangle]
+pub extern "C" fn drop_opaque_Player(ptr: *const c_void) {
+    unsafe {
+        Arc::<Player>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_Player(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Player>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn drop_opaque_StreamWrapperPlayerStateEvent(ptr: *const c_void) {
+    unsafe {
+        Arc::<StreamWrapper<PlayerStateEvent>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_StreamWrapperPlayerStateEvent(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<StreamWrapper<PlayerStateEvent>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn drop_opaque_StreamWrapperProgressState(ptr: *const c_void) {
+    unsafe {
+        Arc::<StreamWrapper<ProgressState>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_StreamWrapperProgressState(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<StreamWrapper<ProgressState>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
 // Section: impl Wire2Api
 
 impl Wire2Api<RustOpaque<Mutex<Connection>>> for wire_MutexConnection {
@@ -212,13 +327,23 @@ impl Wire2Api<RustOpaque<Mutex<Connection>>> for wire_MutexConnection {
         unsafe { support::opaque_from_dart(self.ptr as _) }
     }
 }
-impl Wire2Api<RustOpaque<Mutex<Dummy1<Connection>>>> for wire_MutexDummy1Connection {
-    fn wire2api(self) -> RustOpaque<Mutex<Dummy1<Connection>>> {
+impl Wire2Api<RustOpaque<Mutex<RepoDatabaseRead>>> for wire_MutexRepoDatabaseRead {
+    fn wire2api(self) -> RustOpaque<Mutex<RepoDatabaseRead>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
     }
 }
-impl Wire2Api<RustOpaque<Mutex<RepoDatabaseRead>>> for wire_MutexRepoDatabaseRead {
-    fn wire2api(self) -> RustOpaque<Mutex<RepoDatabaseRead>> {
+impl Wire2Api<RustOpaque<Player>> for wire_Player {
+    fn wire2api(self) -> RustOpaque<Player> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
+impl Wire2Api<RustOpaque<StreamWrapper<PlayerStateEvent>>> for wire_StreamWrapperPlayerStateEvent {
+    fn wire2api(self) -> RustOpaque<StreamWrapper<PlayerStateEvent>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
+impl Wire2Api<RustOpaque<StreamWrapper<ProgressState>>> for wire_StreamWrapperProgressState {
+    fn wire2api(self) -> RustOpaque<StreamWrapper<ProgressState>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
     }
 }
@@ -234,7 +359,22 @@ impl Wire2Api<uuid::Uuid> for *mut wire_uint_8_list {
         wire2api_uuid_ref(single.as_slice())
     }
 }
+impl Wire2Api<AnnixPlayer> for wire_AnnixPlayer {
+    fn wire2api(self) -> AnnixPlayer {
+        AnnixPlayer {
+            player: self.player.wire2api(),
+            _state: self._state.wire2api(),
+            _progress: self._progress.wire2api(),
+        }
+    }
+}
 
+impl Wire2Api<AnnixPlayer> for *mut wire_AnnixPlayer {
+    fn wire2api(self) -> AnnixPlayer {
+        let wrap = unsafe { support::box_from_leak_ptr(self) };
+        Wire2Api::<AnnixPlayer>::wire2api(*wrap).into()
+    }
+}
 impl Wire2Api<LocalDb> for *mut wire_LocalDb {
     fn wire2api(self) -> LocalDb {
         let wrap = unsafe { support::box_from_leak_ptr(self) };
@@ -294,14 +434,34 @@ pub struct wire_MutexConnection {
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_MutexDummy1Connection {
+pub struct wire_MutexRepoDatabaseRead {
     ptr: *const core::ffi::c_void,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_MutexRepoDatabaseRead {
+pub struct wire_Player {
     ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_StreamWrapperPlayerStateEvent {
+    ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_StreamWrapperProgressState {
+    ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_AnnixPlayer {
+    player: wire_Player,
+    _state: wire_StreamWrapperPlayerStateEvent,
+    _progress: wire_StreamWrapperProgressState,
 }
 
 #[repr(C)]
@@ -319,7 +479,7 @@ pub struct wire_LocalStore {
 #[repr(C)]
 #[derive(Clone)]
 pub struct wire_NativePreferenceStore {
-    conn: wire_MutexDummy1Connection,
+    conn: wire_MutexConnection,
 }
 
 #[repr(C)]
@@ -348,18 +508,48 @@ impl NewWithNullPtr for wire_MutexConnection {
         }
     }
 }
-impl NewWithNullPtr for wire_MutexDummy1Connection {
+impl NewWithNullPtr for wire_MutexRepoDatabaseRead {
     fn new_with_null_ptr() -> Self {
         Self {
             ptr: core::ptr::null(),
         }
     }
 }
-impl NewWithNullPtr for wire_MutexRepoDatabaseRead {
+impl NewWithNullPtr for wire_Player {
     fn new_with_null_ptr() -> Self {
         Self {
             ptr: core::ptr::null(),
         }
+    }
+}
+impl NewWithNullPtr for wire_StreamWrapperPlayerStateEvent {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
+        }
+    }
+}
+impl NewWithNullPtr for wire_StreamWrapperProgressState {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
+        }
+    }
+}
+
+impl NewWithNullPtr for wire_AnnixPlayer {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            player: wire_Player::new_with_null_ptr(),
+            _state: wire_StreamWrapperPlayerStateEvent::new_with_null_ptr(),
+            _progress: wire_StreamWrapperProgressState::new_with_null_ptr(),
+        }
+    }
+}
+
+impl Default for wire_AnnixPlayer {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
     }
 }
 
@@ -394,7 +584,7 @@ impl Default for wire_LocalStore {
 impl NewWithNullPtr for wire_NativePreferenceStore {
     fn new_with_null_ptr() -> Self {
         Self {
-            conn: wire_MutexDummy1Connection::new_with_null_ptr(),
+            conn: wire_MutexConnection::new_with_null_ptr(),
         }
     }
 }
