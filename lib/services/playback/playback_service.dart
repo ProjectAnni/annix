@@ -323,7 +323,7 @@ class PlaybackService extends ChangeNotifier {
     playing?.updatePosition(position);
 
     // then notify player
-    await PlaybackService.player.seek(position: position.inSeconds);
+    await PlaybackService.player.seek(position: position.inMilliseconds);
   }
 
   Future<void> remove(final int index) async {
