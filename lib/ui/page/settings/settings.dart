@@ -209,7 +209,7 @@ class SettingsScreen extends ConsumerWidget {
                   leading: const Icon(Icons.transform_outlined),
                   title: const Text('Experimental: Opus support'),
                   description: const Text(
-                    'Experimental feature flag to enable opus on supported Annil servers. Does not work on apple devices.',
+                    'Experimental feature flag to enable opus on supported Annil servers.',
                   ),
                 ),
               ),

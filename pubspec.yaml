@@ -96,7 +96,6 @@ flutter:
 
   assets:
     - assets/icon.png
-    - assets/silent.wav
 
 dependency_overrides:
   flutter_cache_manager:
