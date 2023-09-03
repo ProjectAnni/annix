@@ -113,14 +113,15 @@ class LyricSourcePetitLyrics extends LyricSource {
     final songs = document.findAllElements('song');
     return songs.map(
       (final song) {
-        final lyricType = int.parse(song.findElements('lyricsType').first.text);
-        final lyricData = song.findElements('lyricsData').first.text;
+        final lyricType =
+            int.parse(song.findElements('lyricsType').first.innerText);
+        final lyricData = song.findElements('lyricsData').first.innerText;
         return LyricSearchResponsePetitLyrics(
-          lyricId: int.parse(song.findElements('lyricsId').first.text),
+          lyricId: int.parse(song.findElements('lyricsId').first.innerText),
           lyricType: lyricType,
-          trackTitle: song.findElements('title').first.text,
-          albumTitle: song.findElements('album').first.text,
-          artistsName: [song.findElements('artist').first.text],
+          trackTitle: song.findElements('title').first.innerText,
+          albumTitle: song.findElements('album').first.innerText,
+          artistsName: [song.findElements('artist').first.innerText],
           lyricText:
               lyricType != 2 ? utf8.decode(base64Decode(lyricData)) : lyricData,
         );
@@ -168,7 +169,7 @@ class LyricSearchResponsePetitLyrics extends LyricSearchResponse {
 
       final songs = text.findAllElements('song');
       final lyricPlainText = utf8.decode(
-          base64Decode(songs.first.findElements('lyricsData').first.text));
+          base64Decode(songs.first.findElements('lyricsData').first.innerText));
       final encrypted = base64Decode(lyricText);
       return LyricResult(
         text: lyricPlainText,
@@ -270,9 +271,9 @@ class WsyLyricWord {
 
   factory WsyLyricWord.fromXml(final XmlElement word) {
     return WsyLyricWord(
-      text: word.getElement('wordstring')!.text,
-      startTime: int.parse(word.getElement('starttime')!.text),
-      endTime: int.parse(word.getElement('endtime')!.text),
+      text: word.getElement('wordstring')!.innerText,
+      startTime: int.parse(word.getElement('starttime')!.innerText),
+      endTime: int.parse(word.getElement('endtime')!.innerText),
     );
   }
 
