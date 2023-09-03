@@ -1,6 +1,6 @@
+import 'package:annix/bridge/native.dart';
 import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 enum LoopMode {
   off,
@@ -15,15 +15,13 @@ enum PlayerStatus {
   paused,
   stopped;
 
-  factory PlayerStatus.fromPlayingStatus(final PlayerState state) {
+  factory PlayerStatus.fromPlayingState(final PlayerStateEvent state) {
     switch (state) {
-      case PlayerState.playing:
+      case PlayerStateEvent.play:
         return PlayerStatus.playing;
-      case PlayerState.paused:
+      case PlayerStateEvent.pause:
         return PlayerStatus.paused;
-      case PlayerState.stopped:
-      case PlayerState.completed:
-      case PlayerState.disposed:
+      case PlayerStateEvent.stop:
         return PlayerStatus.stopped;
     }
   }

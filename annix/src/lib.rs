@@ -1,3 +1,4 @@
-mod api;
+pub mod api;
+pub mod player;
+
 mod bridge_generated;
-mod utils;

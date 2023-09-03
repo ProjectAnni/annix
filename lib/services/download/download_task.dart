@@ -57,7 +57,11 @@ class DownloadTask extends ChangeNotifier {
       final response = await client.download(
         url,
         '$savePath.tmp',
-        options: Options(headers: headers, followRedirects: false, extra: { 'annil-dl-url': url }),
+        options: Options(
+          headers: headers,
+          followRedirects: false,
+          extra: {'annil-dl-url': url},
+        ),
         onReceiveProgress: (final count, final total) {
           status = DownloadTaskStatus.downloading;
           progress =
@@ -80,8 +84,8 @@ class DownloadTask extends ChangeNotifier {
       status = DownloadTaskStatus.failed;
       notifyListeners();
 
-      if (e is DioError) {
-        if (e.type == DioErrorType.cancel) {
+      if (e is DioException) {
+        if (e.type == DioExceptionType.cancel) {
           throw DownloadCancelledError();
         }
       }

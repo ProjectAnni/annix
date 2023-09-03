@@ -74,17 +74,65 @@ abstract class AnnixNative {
 
   FlutterRustBridgeTaskConstMeta get kClearMethodLocalStoreConstMeta;
 
+  AnnixPlayer newStaticMethodAnnixPlayer({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodAnnixPlayerConstMeta;
+
+  Future<void> playMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kPlayMethodAnnixPlayerConstMeta;
+
+  Future<void> pauseMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kPauseMethodAnnixPlayerConstMeta;
+
+  Future<void> openFileMethodAnnixPlayer({required AnnixPlayer that, required String path, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kOpenFileMethodAnnixPlayerConstMeta;
+
+  Future<void> setVolumeMethodAnnixPlayer({required AnnixPlayer that, required double volume, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSetVolumeMethodAnnixPlayerConstMeta;
+
+  Future<void> stopMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kStopMethodAnnixPlayerConstMeta;
+
+  Future<void> seekMethodAnnixPlayer({required AnnixPlayer that, required int position, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSeekMethodAnnixPlayerConstMeta;
+
+  bool isPlayingMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kIsPlayingMethodAnnixPlayerConstMeta;
+
+  Stream<PlayerStateEvent> playerStateStreamMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kPlayerStateStreamMethodAnnixPlayerConstMeta;
+
+  Stream<ProgressState> progressStreamMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kProgressStreamMethodAnnixPlayerConstMeta;
+
   DropFnType get dropOpaqueMutexConnection;
   ShareFnType get shareOpaqueMutexConnection;
   OpaqueTypeFinalizer get MutexConnectionFinalizer;
 
-  DropFnType get dropOpaqueMutexDummy1Connection;
-  ShareFnType get shareOpaqueMutexDummy1Connection;
-  OpaqueTypeFinalizer get MutexDummy1ConnectionFinalizer;
-
   DropFnType get dropOpaqueMutexRepoDatabaseRead;
   ShareFnType get shareOpaqueMutexRepoDatabaseRead;
   OpaqueTypeFinalizer get MutexRepoDatabaseReadFinalizer;
+
+  DropFnType get dropOpaquePlayer;
+  ShareFnType get shareOpaquePlayer;
+  OpaqueTypeFinalizer get PlayerFinalizer;
+
+  DropFnType get dropOpaqueStreamWrapperPlayerStateEvent;
+  ShareFnType get shareOpaqueStreamWrapperPlayerStateEvent;
+  OpaqueTypeFinalizer get StreamWrapperPlayerStateEventFinalizer;
+
+  DropFnType get dropOpaqueStreamWrapperProgressState;
+  ShareFnType get shareOpaqueStreamWrapperProgressState;
+  OpaqueTypeFinalizer get StreamWrapperProgressStateFinalizer;
 }
 
 @sealed
@@ -102,20 +150,6 @@ class MutexConnection extends FrbOpaque {
 }
 
 @sealed
-class MutexDummy1Connection extends FrbOpaque {
-  final AnnixNative bridge;
-  MutexDummy1Connection.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
-  @override
-  DropFnType get dropFn => bridge.dropOpaqueMutexDummy1Connection;
-
-  @override
-  ShareFnType get shareFn => bridge.shareOpaqueMutexDummy1Connection;
-
-  @override
-  OpaqueTypeFinalizer get staticFinalizer => bridge.MutexDummy1ConnectionFinalizer;
-}
-
-@sealed
 class MutexRepoDatabaseRead extends FrbOpaque {
   final AnnixNative bridge;
   MutexRepoDatabaseRead.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
@@ -127,6 +161,104 @@ class MutexRepoDatabaseRead extends FrbOpaque {
 
   @override
   OpaqueTypeFinalizer get staticFinalizer => bridge.MutexRepoDatabaseReadFinalizer;
+}
+
+@sealed
+class Player extends FrbOpaque {
+  final AnnixNative bridge;
+  Player.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => bridge.dropOpaquePlayer;
+
+  @override
+  ShareFnType get shareFn => bridge.shareOpaquePlayer;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => bridge.PlayerFinalizer;
+}
+
+@sealed
+class StreamWrapperPlayerStateEvent extends FrbOpaque {
+  final AnnixNative bridge;
+  StreamWrapperPlayerStateEvent.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => bridge.dropOpaqueStreamWrapperPlayerStateEvent;
+
+  @override
+  ShareFnType get shareFn => bridge.shareOpaqueStreamWrapperPlayerStateEvent;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => bridge.StreamWrapperPlayerStateEventFinalizer;
+}
+
+@sealed
+class StreamWrapperProgressState extends FrbOpaque {
+  final AnnixNative bridge;
+  StreamWrapperProgressState.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => bridge.dropOpaqueStreamWrapperProgressState;
+
+  @override
+  ShareFnType get shareFn => bridge.shareOpaqueStreamWrapperProgressState;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => bridge.StreamWrapperProgressStateFinalizer;
+}
+
+class AnnixPlayer {
+  final AnnixNative bridge;
+  final Player player;
+  final StreamWrapperPlayerStateEvent state;
+  final StreamWrapperProgressState progress;
+
+  const AnnixPlayer({
+    required this.bridge,
+    required this.player,
+    required this.state,
+    required this.progress,
+  });
+
+  static AnnixPlayer newAnnixPlayer({required AnnixNative bridge, dynamic hint}) =>
+      bridge.newStaticMethodAnnixPlayer(hint: hint);
+
+  Future<void> play({dynamic hint}) => bridge.playMethodAnnixPlayer(
+        that: this,
+      );
+
+  Future<void> pause({dynamic hint}) => bridge.pauseMethodAnnixPlayer(
+        that: this,
+      );
+
+  Future<void> openFile({required String path, dynamic hint}) => bridge.openFileMethodAnnixPlayer(
+        that: this,
+        path: path,
+      );
+
+  Future<void> setVolume({required double volume, dynamic hint}) => bridge.setVolumeMethodAnnixPlayer(
+        that: this,
+        volume: volume,
+      );
+
+  Future<void> stop({dynamic hint}) => bridge.stopMethodAnnixPlayer(
+        that: this,
+      );
+
+  Future<void> seek({required int position, dynamic hint}) => bridge.seekMethodAnnixPlayer(
+        that: this,
+        position: position,
+      );
+
+  bool isPlaying({dynamic hint}) => bridge.isPlayingMethodAnnixPlayer(
+        that: this,
+      );
+
+  Stream<PlayerStateEvent> playerStateStream({dynamic hint}) => bridge.playerStateStreamMethodAnnixPlayer(
+        that: this,
+      );
+
+  Stream<ProgressState> progressStream({dynamic hint}) => bridge.progressStreamMethodAnnixPlayer(
+        that: this,
+      );
 }
 
 /// Repo
@@ -191,9 +323,10 @@ class LocalStore {
       );
 }
 
+/// Preferences
 class NativePreferenceStore {
   final AnnixNative bridge;
-  final MutexDummy1Connection conn;
+  final MutexConnection conn;
 
   const NativePreferenceStore({
     required this.bridge,
@@ -229,6 +362,27 @@ class NativePreferenceStore {
 enum NetworkStatus {
   online,
   offline,
+}
+
+enum PlayerStateEvent {
+  /// Started playing
+  play,
+
+  /// Paused
+  pause,
+
+  /// Stopped playing
+  stop,
+}
+
+class ProgressState {
+  final int position;
+  final int duration;
+
+  const ProgressState({
+    required this.position,
+    required this.duration,
+  });
 }
 
 class TagItem {

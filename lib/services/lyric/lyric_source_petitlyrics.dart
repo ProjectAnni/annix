@@ -17,8 +17,8 @@ class PetitLyricsClient {
 
   final Dio _client = Dio();
 
-  Future<XmlDocument> getLyric(final String title,
-      {final String? artist, final String? album, final int lyricType = 1, final int? lyricId}) async {
+  Future<XmlDocument> getLyric(String title,
+      {String? artist, String? album, int lyricType = 1, int? lyricId}) async {
     final data = await _client.post(
       'http://p0.petitlyrics.com/api/GetPetitLyricsData.php',
       data: {
@@ -36,7 +36,7 @@ class PetitLyricsClient {
     return XmlDocument.parse(data.data as String);
   }
 
-  Future<XmlDocument> getLyricById(final int lyricId, {final int lyricType = 1}) async {
+  Future<XmlDocument> getLyricById(int lyricId, {int lyricType = 1}) async {
     final data = await _client.post(
       'http://p0.petitlyrics.com/api/GetPetitLyricsData.php',
       data: {

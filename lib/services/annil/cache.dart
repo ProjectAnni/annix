@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/path.dart';
 import 'package:path/path.dart' as p;
@@ -9,7 +7,7 @@ String getAudioCachePath(final TrackIdentifier id) {
     audioCachePath(),
     id.albumId,
     /* extension is required on macOS for playback */
-    "${id.discId}_${id.trackId}${Platform.isIOS || Platform.isMacOS ? ".flac" : ""}",
+    '${id.discId}_${id.trackId}',
   );
 }
 

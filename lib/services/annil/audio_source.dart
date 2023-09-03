@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annix/bridge/native.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
@@ -8,7 +9,6 @@ import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,7 +16,7 @@ typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
 
 class AudioCancelledError extends Error {}
 
-class AnnilAudioSource extends Source {
+class AnnilAudioSource {
   final PreferQuality? quality;
   final TrackInfoWithAlbum track;
 
@@ -52,8 +52,7 @@ class AnnilAudioSource extends Source {
 
   String get id => track.id.toString();
 
-  @override
-  Future<void> setOnPlayer(final AudioPlayer player) async {
+  Future<void> setOnPlayer(final AnnixPlayer player) async {
     // when setOnPlayer was called, player expects to play current track
     // but user may change track before player is ready
     // so isCanceled is always false here, and may become true later
@@ -62,7 +61,7 @@ class AnnilAudioSource extends Source {
     final offlinePath = getAudioCachePath(track.id);
     final file = File(offlinePath);
     if (file.existsSync() && file.lengthSync() > 0) {
-      await player.setSourceDeviceFile(offlinePath);
+      await player.openFile(path: offlinePath);
     } else {
       // preload should be triggered before setOnPlayer
       assert(_preloadFuture != null);
@@ -83,7 +82,7 @@ class AnnilAudioSource extends Source {
       if (isCanceled) {
         throw AudioCancelledError();
       }
-      await player.setSourceDeviceFile(offlinePath);
+      await player.openFile(path: offlinePath);
     }
   }
 
@@ -120,7 +119,7 @@ class AnnilAudioSource extends Source {
         url: url,
         savePath: path,
         data: TrackDownloadTaskData(info: track, quality: downloadQuality),
-        client: annil.client
+        client: annil.client,
       );
     };
   }

@@ -264,11 +264,10 @@ class AnnilService extends ChangeNotifier {
           if (entry is! Directory) {
             return false;
           }
-          // return true if music file exists (any file with no extension, or flac extension)
-          return entry.listSync().any((final e) =>
-              e is File &&
-              (p.basename(e.path).endsWith('.flac') ||
-                  !p.basename(e.path).contains('.')));
+          // return true if music file exists (any file with no extension)
+          return entry
+              .listSync()
+              .any((final e) => e is File && !p.basename(e.path).contains('.'));
         })
         .map((final entry) => p.basename(entry.path))
         .toSet();
@@ -314,7 +313,7 @@ class AnnilService extends ChangeNotifier {
               ]));
         });
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response?.statusCode == 304) {
         FLog.trace(text: 'Annil cache HIT, etag: $etag');
       } else {

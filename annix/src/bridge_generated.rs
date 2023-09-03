@@ -20,6 +20,8 @@ use std::sync::Arc;
 
 // Section: imports
 
+use crate::player::PlayerStateEvent;
+
 // Section: wire functions
 
 fn wire_update_network_status_impl(
@@ -297,10 +299,187 @@ fn wire_clear__method__LocalStore_impl(
         },
     )
 }
+fn wire_new__static_method__AnnixPlayer_impl() -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "new__static_method__AnnixPlayer",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || Ok(AnnixPlayer::new()),
+    )
+}
+fn wire_play__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "play__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(AnnixPlayer::play(&api_that))
+        },
+    )
+}
+fn wire_pause__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "pause__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(AnnixPlayer::pause(&api_that))
+        },
+    )
+}
+fn wire_open_file__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+    path: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "open_file__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_path = path.wire2api();
+            move |task_callback| AnnixPlayer::open_file(&api_that, api_path)
+        },
+    )
+}
+fn wire_set_volume__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+    volume: impl Wire2Api<f32> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "set_volume__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_volume = volume.wire2api();
+            move |task_callback| Ok(AnnixPlayer::set_volume(&api_that, api_volume))
+        },
+    )
+}
+fn wire_stop__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "stop__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(AnnixPlayer::stop(&api_that))
+        },
+    )
+}
+fn wire_seek__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+    position: impl Wire2Api<u64> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "seek__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_position = position.wire2api();
+            move |task_callback| Ok(AnnixPlayer::seek(&api_that, api_position))
+        },
+    )
+}
+fn wire_is_playing__method__AnnixPlayer_impl(
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
+        WrapInfo {
+            debug_name: "is_playing__method__AnnixPlayer",
+            port: None,
+            mode: FfiCallMode::Sync,
+        },
+        move || {
+            let api_that = that.wire2api();
+            Ok(AnnixPlayer::is_playing(&api_that))
+        },
+    )
+}
+fn wire_player_state_stream__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "player_state_stream__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| {
+                Ok(AnnixPlayer::player_state_stream(
+                    &api_that,
+                    task_callback.stream_sink::<_, PlayerStateEvent>(),
+                ))
+            }
+        },
+    )
+}
+fn wire_progress_stream__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "progress_stream__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| {
+                Ok(AnnixPlayer::progress_stream(
+                    &api_that,
+                    task_callback.stream_sink::<_, mirror_ProgressState>(),
+                ))
+            }
+        },
+    )
+}
 // Section: wrapper structs
+
+#[derive(Clone)]
+pub struct mirror_ProgressState(ProgressState);
 
 // Section: static checks
 
+const _: fn() = || {
+    let ProgressState = None::<ProgressState>.unwrap();
+    let _: u64 = ProgressState.position;
+    let _: u64 = ProgressState.duration;
+};
 // Section: allocate functions
 
 // Section: related functions
@@ -326,6 +505,11 @@ impl Wire2Api<bool> for bool {
     }
 }
 
+impl Wire2Api<f32> for f32 {
+    fn wire2api(self) -> f32 {
+        self
+    }
+}
 impl Wire2Api<i32> for i32 {
     fn wire2api(self) -> i32 {
         self
@@ -342,6 +526,11 @@ impl Wire2Api<NetworkStatus> for i32 {
     }
 }
 
+impl Wire2Api<u64> for u64 {
+    fn wire2api(self) -> u64 {
+        self
+    }
+}
 impl Wire2Api<u8> for u8 {
     fn wire2api(self) -> u8 {
         self
@@ -349,6 +538,23 @@ impl Wire2Api<u8> for u8 {
 }
 
 // Section: impl IntoDart
+
+impl support::IntoDart for AnnixPlayer {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.player.into_dart(),
+            self._state.into_dart(),
+            self._progress.into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for AnnixPlayer {}
+impl rust2dart::IntoIntoDart<AnnixPlayer> for AnnixPlayer {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
 
 impl support::IntoDart for LocalDb {
     fn into_dart(self) -> support::DartAbi {
@@ -383,6 +589,39 @@ impl support::IntoDartExceptPrimitive for NativePreferenceStore {}
 impl rust2dart::IntoIntoDart<NativePreferenceStore> for NativePreferenceStore {
     fn into_into_dart(self) -> Self {
         self
+    }
+}
+
+impl support::IntoDart for PlayerStateEvent {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::Play => 0,
+            Self::Pause => 1,
+            Self::Stop => 2,
+        }
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for PlayerStateEvent {}
+impl rust2dart::IntoIntoDart<PlayerStateEvent> for PlayerStateEvent {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
+
+impl support::IntoDart for mirror_ProgressState {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.0.position.into_into_dart().into_dart(),
+            self.0.duration.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for mirror_ProgressState {}
+impl rust2dart::IntoIntoDart<mirror_ProgressState> for ProgressState {
+    fn into_into_dart(self) -> mirror_ProgressState {
+        mirror_ProgressState(self)
     }
 }
 
