@@ -90,7 +90,7 @@ jobs:
           retention-days: 1
 
   macOS:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v3

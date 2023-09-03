@@ -76,7 +76,7 @@ jobs:
           retention-days: 1
 
   iOS:
-    runs-on: macos-12
+    runs-on: macos-latest
     env:
       KEYCHAIN: job-${{ github.job }}-${{ github.run_id	}}-${{ github.run_number }}-${{ github.run_attempt }}
     steps:
@@ -156,7 +156,7 @@ jobs:
           retention-days: 1
 
   macOS:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v3
