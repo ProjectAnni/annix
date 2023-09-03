@@ -109,7 +109,7 @@ dependencies = [
 [[package]]
 name = "anni-playback"
 version = "0.1.0"
-source = "git+https://github.com/ProjectAnni/anni#8011c8d623d4b4fdbfb58a23e171543b3153a82b"
+source = "git+https://github.com/ProjectAnni/anni#e1c0e63e40edbcb173b3e31a9f4a1db5dbb6155a"
 dependencies = [
  "anyhow",
  "arrayvec",
@@ -201,8 +201,7 @@ dependencies = [
 [[package]]
 name = "audiopus"
 version = "0.3.0-rc.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab55eb0e56d7c6de3d59f544e5db122d7725ec33be6a276ee8241f3be6473955"
+source = "git+https://github.com/ProjectAnni/audiopus#f28d23f92e22d3f0ff7fdb706c50dae8ee660793"
 dependencies = [
  "audiopus_sys",
 ]
@@ -210,8 +209,7 @@ dependencies = [
 [[package]]
 name = "audiopus_sys"
 version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62314a1546a2064e033665d658e88c620a62904be945f8147e6b16c3db9f8651"
+source = "git+https://github.com/ProjectAnni/audiopus_sys#80542b524ecee73bc352c843358519186951cf0a"
 dependencies = [
  "cmake",
  "log",
