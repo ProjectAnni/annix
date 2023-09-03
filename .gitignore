@@ -44,7 +44,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/android/app/src/main/jniLibs
+/android/app/src/main/jniLibs/**/libannix_native.so
 
 keystore*
 
