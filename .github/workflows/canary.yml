@@ -104,6 +104,7 @@ jobs:
           cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
       - name: Setup | Dependencies
         run: |
+          rustup target add x86_64-apple-darwin aarch64-apple-darwin
           rustup update
           flutter pub get
       - name: Build | macOS
