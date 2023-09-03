@@ -15,6 +15,7 @@ anni-repo = { version = "0.3.2", features = ["db"] }
 uuid = "1"
 crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
 anyhow = "1.0.75"
+log = "0.4.20"
 
 anni-playback = { git = "https://github.com/ProjectAnni/anni" }
 

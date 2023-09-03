@@ -12,6 +12,7 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -83,11 +84,7 @@ class PlaybackService extends ChangeNotifier {
       }
     });
 
-    // PlaybackService.player.onPlayerComplete.listen((event) => next());
-
     PlaybackService.player.progressStream().listen((progress) {
-      print('${progress.position}/${progress.duration}');
-
       // Position
       playing?.updatePosition(Duration(milliseconds: progress.position));
 
@@ -179,10 +176,12 @@ class PlaybackService extends ChangeNotifier {
     if (trackPlayback) {
       // FIXME: track playback after 1/3 of the song is played
       // Notice: we should not await statistics
-      anniv.trackPlayback(
-        source.identifier,
-        DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      );
+      if (!kDebugMode) {
+        anniv.trackPlayback(
+          source.identifier,
+          DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        );
+      }
     }
 
     final toPlayId = source.id;
@@ -247,11 +246,12 @@ class PlaybackService extends ChangeNotifier {
 
   Future<void> stop([final bool setInactive = true]) async {
     playing?.updateDuration(Duration.zero);
-    await Future.wait([
-      if (setInactive)
+    if (setInactive) {
+      await Future.wait([
         AudioSession.instance.then((final i) => i.setActive(false)),
-      PlaybackService.player.stop(),
-    ]);
+        PlaybackService.player.stop(),
+      ]);
+    }
   }
 
   Future<void> previous() async {
