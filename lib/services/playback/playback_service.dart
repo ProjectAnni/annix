@@ -251,6 +251,10 @@ class PlaybackService extends ChangeNotifier {
         AudioSession.instance.then((final i) => i.setActive(false)),
         PlaybackService.player.stop(),
       ]);
+    } else {
+      await Future.wait([
+        PlaybackService.player.stop(),
+      ]);
     }
   }
 
