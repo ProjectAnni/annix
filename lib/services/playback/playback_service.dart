@@ -14,6 +14,7 @@ import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void playFullList({
@@ -229,9 +230,16 @@ class PlaybackService extends ChangeNotifier {
   Future<void> pause() async {
     FLog.trace(text: 'Pause playing');
     // deactivate audio session
-    if (!await AudioSession.instance.then((final e) => e.setActive(false))) {
+    try {
+      if (!await AudioSession.instance.then((final e) => e.setActive(false))) {
       // request denied
       return;
+    }
+    } on PlatformException catch (e) {
+      FLog.error(text: 'Error: $e');
+      if (e.code != '560030580') {
+        rethrow;
+      }
     }
     await PlaybackService.player.pause();
   }
