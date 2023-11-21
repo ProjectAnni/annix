@@ -7,11 +7,11 @@ edition = "2021"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
-flutter_rust_bridge = { version = "1.81.0", features = ["uuid"] }
+flutter_rust_bridge = { version = "=1.81", features = ["uuid"] }
 once_cell = "1.17.1"
 rusqlite = { version = "0.28.0", features = ["bundled"] }
 
-anni-repo = { version = "0.3.2", features = ["db"] }
+anni-repo = { git = "https://github.com/ProjectAnni/anni", features = ["db"]}
 uuid = "1"
 crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
 anyhow = "1.0.75"
@@ -22,4 +22,4 @@ cpal = { version = "0.15.2", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 
 [build-dependencies]
-flutter_rust_bridge_codegen = { version = "1.81.0", features = ["uuid"] }
+flutter_rust_bridge_codegen = { version = "=1.81", features = ["uuid"] }
