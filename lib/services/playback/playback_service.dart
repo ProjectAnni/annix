@@ -230,8 +230,8 @@ class PlaybackService extends ChangeNotifier {
     FLog.trace(text: 'Pause playing');
 
     await PlaybackService.player.pause();
-    await AudioSession.instance.then((final e) => e.setActive(false));
     // deactivate audio session
+    await AudioSession.instance.then((final e) => e.setActive(false));
   }
 
   Future<void> playOrPause() async {
