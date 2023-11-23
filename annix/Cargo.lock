@@ -101,8 +101,9 @@ checksum = "ec66320836265a59098af8343573a2160b12b8db033b6b879fa01fbcf95a50ed"
 
 [[package]]
 name = "anni-common"
-version = "0.1.3"
-source = "git+https://github.com/ProjectAnni/anni#bad3d402a0a8a62801106119eba4c67db163177e"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "60932756fb3930085b87d443a82677bfd8b934f8d6ef373a5f2e5b4f18f61947"
 dependencies = [
  "anni-artist",
  "byteorder",
@@ -140,8 +141,9 @@ dependencies = [
 
 [[package]]
 name = "anni-repo"
-version = "0.3.2"
-source = "git+https://github.com/ProjectAnni/anni#bad3d402a0a8a62801106119eba4c67db163177e"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0d76f32d2c9f30c0b756bf09776904170881369cd6b2bf664a21987f616cb1f"
 dependencies = [
  "anni-artist",
  "anni-common",

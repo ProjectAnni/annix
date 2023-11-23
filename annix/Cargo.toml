@@ -11,7 +11,7 @@ flutter_rust_bridge = { version = "=1.81", features = ["uuid"] }
 once_cell = "1.17.1"
 rusqlite = { version = "0.28.0", features = ["bundled"] }
 
-anni-repo = { git = "https://github.com/ProjectAnni/anni", features = ["db"]}
+anni-repo = { version = "0.4.1", features = ["db"]}
 uuid = "1"
 crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
 anyhow = "1.0.75"
