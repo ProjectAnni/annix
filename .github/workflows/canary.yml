@@ -150,6 +150,39 @@ jobs:
           path: |
             ./annix-win64.zip
           retention-days: 1
+    
+  iOS:
+    runs-on: macos-latest
+    env:
+      KEYCHAIN: job-${{ github.job }}-${{ github.run_id	}}-${{ github.run_number }}-${{ github.run_attempt }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup | Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+      - name: Setup | Dependencies
+        run: |
+          rustup target add x86_64-apple-darwin aarch64-apple-darwin
+          rustup update
+          flutter pub get
+      - name: Build | iOS
+        run: |
+          flutter build ios --no-codesign --verbose --build-number ${{ github.run_number }}
+          cp -r build/ios/iphoneos Payload
+          zip -r annix-ios.zip Payload
+          mv annix-ios.zip annix-ios.ipa
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: annix-ios
+          path: ./annix-ios.ipa
+          retention-days: 1
 
   publish:
     if: ${{ github.ref == 'refs/heads/master' }}
