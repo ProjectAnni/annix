@@ -3,6 +3,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
@@ -132,26 +133,22 @@ class AnnivCard extends ConsumerWidget {
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Annil
-class AnnilListTile extends StatelessWidget {
+class AnnilListTile extends ConsumerWidget {
   final LocalAnnilServer annil;
   final bool enabled;
 
   const AnnilListTile({super.key, required this.annil, required this.enabled});
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     return ListTile(
       title: Text(annil.name),
       leading: const Icon(Icons.library_music_outlined),
       selected: true,
       enabled: enabled,
+      
       onTap: () {
-        // FIXME: edit annil
-        // Get.generalDialog(
-        //   pageBuilder: (context, animation, secondaryAnimation) {
-        //     return Container();
-        //   },
-        // );
+        ref.read(routerProvider).to(name: 'server_detail', arguments: annil);
       },
     );
   }
@@ -242,4 +239,20 @@ class ServerView extends StatelessWidget {
       ),
     );
   }
+}
+
+class ServerDetail extends ConsumerWidget {
+  final LocalAnnilServer server;
+
+  const ServerDetail({required this.server, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final db = ref.read(localDatabaseProvider);
+    final qurey = db.localAnnilAlbums.select()..where((tbl) => tbl.annilId.equals(server.id));
+    final albumFuture = qurey.get().then((albums) => albums.map((album) => album.albumId).toList());
+
+    return FutureBuilder(future: albumFuture, builder: (final context, final album) => AlbumWall(albumIds: (album.data ?? <String>[])));
+  }
+
 }
