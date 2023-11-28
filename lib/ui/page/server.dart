@@ -146,7 +146,6 @@ class AnnilListTile extends ConsumerWidget {
       leading: const Icon(Icons.library_music_outlined),
       selected: true,
       enabled: enabled,
-      
       onTap: () {
         ref.read(routerProvider).to(name: 'server_detail', arguments: annil);
       },
@@ -249,10 +248,18 @@ class ServerDetail extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final db = ref.read(localDatabaseProvider);
-    final qurey = db.localAnnilAlbums.select()..where((tbl) => tbl.annilId.equals(server.id));
-    final albumFuture = qurey.get().then((albums) => albums.map((album) => album.albumId).toList());
+    final qurey = db.localAnnilAlbums.select()
+      ..where((tbl) => tbl.annilId.equals(server.id));
+    final albumFuture = qurey
+        .get()
+        .then((albums) => albums.map((album) => album.albumId).toList());
 
-    return FutureBuilder(future: albumFuture, builder: (final context, final album) => AlbumWall(albumIds: (album.data ?? <String>[])));
+    return Scaffold(
+      appBar: AppBar(title: Text(server.name)),
+      body: FutureBuilder(
+          future: albumFuture,
+          builder: (final context, final album) =>
+              AlbumWall(albumIds: (album.data ?? <String>[]))),
+    );
   }
-
 }
