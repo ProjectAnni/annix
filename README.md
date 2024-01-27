@@ -19,6 +19,12 @@ export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d'
 dart run build_runner build --delete-conflicting-outputs
 
 # Build apk
+cargo install cargo-ndk
+rustup target add \
+    aarch64-linux-android \
+    armv7-linux-androideabi \
+    x86_64-linux-android \
+    i686-linux-android
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 
 # Build for iOS
