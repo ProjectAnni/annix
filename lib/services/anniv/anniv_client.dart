@@ -198,6 +198,7 @@ class AnnivClient {
     final response =
         await _client.get('/api/meta/album', queryParameters: {'id[]': albums});
     final Map<String, dynamic> responseAlbums = response.data;
+    responseAlbums.removeWhere((final _, final value) => value == null);
     return responseAlbums
         .map((final key, final value) =>
             MapEntry(key, value as Map<String, dynamic>))
