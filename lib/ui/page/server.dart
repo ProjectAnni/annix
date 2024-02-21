@@ -147,7 +147,7 @@ class AnnilListTile extends ConsumerWidget {
       selected: true,
       enabled: enabled,
       onTap: () {
-        ref.read(routerProvider).to(name: 'server_detail', arguments: annil);
+        ref.read(routerProvider).to(name: '/server_detail', arguments: annil);
       },
     );
   }

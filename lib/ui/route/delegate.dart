@@ -212,7 +212,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/server':
         child = const ServerView();
         break;
-      case 'server_detail':
+      case '/server_detail':
         child = ServerDetail(server: routeSettings.arguments as db.LocalAnnilServer);
         break;
       case '/favorite':
