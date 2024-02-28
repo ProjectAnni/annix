@@ -36,9 +36,9 @@ typedef struct wire_LocalStore {
   struct wire_MutexConnection conn;
 } wire_LocalStore;
 
-typedef struct wire_Player {
+typedef struct wire_AnniPlayer {
   const void *ptr;
-} wire_Player;
+} wire_AnniPlayer;
 
 typedef struct wire_StreamWrapperPlayerStateEvent {
   const void *ptr;
@@ -49,7 +49,7 @@ typedef struct wire_StreamWrapperProgressState {
 } wire_StreamWrapperProgressState;
 
 typedef struct wire_AnnixPlayer {
-  struct wire_Player player;
+  struct wire_AnniPlayer player;
   struct wire_StreamWrapperPlayerStateEvent _state;
   struct wire_StreamWrapperProgressState _progress;
 } wire_AnnixPlayer;
@@ -139,11 +139,11 @@ void wire_player_state_stream__method__AnnixPlayer(int64_t port_, struct wire_An
 
 void wire_progress_stream__method__AnnixPlayer(int64_t port_, struct wire_AnnixPlayer *that);
 
+struct wire_AnniPlayer new_AnniPlayer(void);
+
 struct wire_MutexConnection new_MutexConnection(void);
 
 struct wire_MutexRepoDatabaseRead new_MutexRepoDatabaseRead(void);
-
-struct wire_Player new_Player(void);
 
 struct wire_StreamWrapperPlayerStateEvent new_StreamWrapperPlayerStateEvent(void);
 
@@ -159,6 +159,10 @@ struct wire_NativePreferenceStore *new_box_autoadd_native_preference_store_0(voi
 
 struct wire_uint_8_list *new_uint_8_list_0(int32_t len);
 
+void drop_opaque_AnniPlayer(const void *ptr);
+
+const void *share_opaque_AnniPlayer(const void *ptr);
+
 void drop_opaque_MutexConnection(const void *ptr);
 
 const void *share_opaque_MutexConnection(const void *ptr);
@@ -166,10 +170,6 @@ const void *share_opaque_MutexConnection(const void *ptr);
 void drop_opaque_MutexRepoDatabaseRead(const void *ptr);
 
 const void *share_opaque_MutexRepoDatabaseRead(const void *ptr);
-
-void drop_opaque_Player(const void *ptr);
-
-const void *share_opaque_Player(const void *ptr);
 
 void drop_opaque_StreamWrapperPlayerStateEvent(const void *ptr);
 
@@ -208,9 +208,9 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_is_playing__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_player_state_stream__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_progress_stream__method__AnnixPlayer);
+    dummy_var ^= ((int64_t) (void*) new_AnniPlayer);
     dummy_var ^= ((int64_t) (void*) new_MutexConnection);
     dummy_var ^= ((int64_t) (void*) new_MutexRepoDatabaseRead);
-    dummy_var ^= ((int64_t) (void*) new_Player);
     dummy_var ^= ((int64_t) (void*) new_StreamWrapperPlayerStateEvent);
     dummy_var ^= ((int64_t) (void*) new_StreamWrapperProgressState);
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_annix_player_0);
@@ -218,12 +218,12 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_local_store_0);
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_native_preference_store_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
+    dummy_var ^= ((int64_t) (void*) drop_opaque_AnniPlayer);
+    dummy_var ^= ((int64_t) (void*) share_opaque_AnniPlayer);
     dummy_var ^= ((int64_t) (void*) drop_opaque_MutexConnection);
     dummy_var ^= ((int64_t) (void*) share_opaque_MutexConnection);
     dummy_var ^= ((int64_t) (void*) drop_opaque_MutexRepoDatabaseRead);
     dummy_var ^= ((int64_t) (void*) share_opaque_MutexRepoDatabaseRead);
-    dummy_var ^= ((int64_t) (void*) drop_opaque_Player);
-    dummy_var ^= ((int64_t) (void*) share_opaque_Player);
     dummy_var ^= ((int64_t) (void*) drop_opaque_StreamWrapperPlayerStateEvent);
     dummy_var ^= ((int64_t) (void*) share_opaque_StreamWrapperPlayerStateEvent);
     dummy_var ^= ((int64_t) (void*) drop_opaque_StreamWrapperProgressState);

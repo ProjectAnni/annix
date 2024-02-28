@@ -228,11 +228,13 @@ CREATE TABLE IF NOT EXISTS store(
 
 // Audio
 pub use anni_playback::types::*;
-use flutter_rust_bridge::frb;
 use flutter_rust_bridge::StreamSink;
+use flutter_rust_bridge::frb;
 
-pub use crate::player::player::Player;
+// pub use crate::player::player::Player;
 pub use crate::player::PlayerStateEvent;
+pub use anni_player::AnniPlayer;
+use anni_player::TypedPriorityProvider;
 
 #[frb(mirror(ProgressState))]
 pub struct _ProgressState {
@@ -261,15 +263,17 @@ fn update_player_state_stream(
 
 pub type StreamWrapper<T> = Arc<OnceLock<RwLock<Option<StreamSink<T>>>>>;
 
+// impl DartSafe for AnniPlayerWrapper {}
+
 pub struct AnnixPlayer {
-    pub player: RustOpaque<Player>,
+    pub player: RustOpaque<AnniPlayer>,
     pub _state: RustOpaque<StreamWrapper<PlayerStateEvent>>,
     pub _progress: RustOpaque<StreamWrapper<ProgressState>>,
 }
 
 impl AnnixPlayer {
     pub fn new() -> SyncReturn<AnnixPlayer> {
-        let (player, receiver) = Player::new();
+        let (player, receiver) = AnniPlayer::new(TypedPriorityProvider::new(vec![]), "./cache".into());
         let progress = Arc::new(OnceLock::new());
         let player_state = Arc::new(OnceLock::new());
 
@@ -313,7 +317,7 @@ impl AnnixPlayer {
     }
 
     pub fn open_file(&self, path: String) -> anyhow::Result<()> {
-        self.player.open_file(path, false)
+        self.player.open_file(path)
     }
 
     pub fn set_volume(&self, volume: f32) {
@@ -329,7 +333,7 @@ impl AnnixPlayer {
     }
 
     pub fn is_playing(&self) -> SyncReturn<bool> {
-        SyncReturn(self.player.is_playing())
+        SyncReturn(self.player.player.is_playing())
     }
 
     pub fn player_state_stream(&self, stream: StreamSink<PlayerStateEvent>) {
