@@ -74,7 +74,7 @@ abstract class AnnixNative {
 
   FlutterRustBridgeTaskConstMeta get kClearMethodLocalStoreConstMeta;
 
-  AnnixPlayer newStaticMethodAnnixPlayer({dynamic hint});
+  AnnixPlayer newStaticMethodAnnixPlayer({required String cachePath, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodAnnixPlayerConstMeta;
 
@@ -89,6 +89,10 @@ abstract class AnnixNative {
   Future<void> openFileMethodAnnixPlayer({required AnnixPlayer that, required String path, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kOpenFileMethodAnnixPlayerConstMeta;
+
+  Future<void> openMethodAnnixPlayer({required AnnixPlayer that, required String identifier, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kOpenMethodAnnixPlayerConstMeta;
 
   Future<void> setVolumeMethodAnnixPlayer({required AnnixPlayer that, required double volume, dynamic hint});
 
@@ -106,6 +110,15 @@ abstract class AnnixNative {
 
   FlutterRustBridgeTaskConstMeta get kIsPlayingMethodAnnixPlayerConstMeta;
 
+  Future<void> addProviderMethodAnnixPlayer(
+      {required AnnixPlayer that, required String url, required String auth, required int priority, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kAddProviderMethodAnnixPlayerConstMeta;
+
+  Future<void> clearProviderMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kClearProviderMethodAnnixPlayerConstMeta;
+
   Stream<PlayerStateEvent> playerStateStreamMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kPlayerStateStreamMethodAnnixPlayerConstMeta;
@@ -113,6 +126,10 @@ abstract class AnnixNative {
   Stream<ProgressState> progressStreamMethodAnnixPlayer({required AnnixPlayer that, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kProgressStreamMethodAnnixPlayerConstMeta;
+
+  DropFnType get dropOpaqueAnniPlayer;
+  ShareFnType get shareOpaqueAnniPlayer;
+  OpaqueTypeFinalizer get AnniPlayerFinalizer;
 
   DropFnType get dropOpaqueMutexConnection;
   ShareFnType get shareOpaqueMutexConnection;
@@ -122,10 +139,6 @@ abstract class AnnixNative {
   ShareFnType get shareOpaqueMutexRepoDatabaseRead;
   OpaqueTypeFinalizer get MutexRepoDatabaseReadFinalizer;
 
-  DropFnType get dropOpaquePlayer;
-  ShareFnType get shareOpaquePlayer;
-  OpaqueTypeFinalizer get PlayerFinalizer;
-
   DropFnType get dropOpaqueStreamWrapperPlayerStateEvent;
   ShareFnType get shareOpaqueStreamWrapperPlayerStateEvent;
   OpaqueTypeFinalizer get StreamWrapperPlayerStateEventFinalizer;
@@ -133,6 +146,20 @@ abstract class AnnixNative {
   DropFnType get dropOpaqueStreamWrapperProgressState;
   ShareFnType get shareOpaqueStreamWrapperProgressState;
   OpaqueTypeFinalizer get StreamWrapperProgressStateFinalizer;
+}
+
+@sealed
+class AnniPlayer extends FrbOpaque {
+  final AnnixNative bridge;
+  AnniPlayer.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => bridge.dropOpaqueAnniPlayer;
+
+  @override
+  ShareFnType get shareFn => bridge.shareOpaqueAnniPlayer;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => bridge.AnniPlayerFinalizer;
 }
 
 @sealed
@@ -161,20 +188,6 @@ class MutexRepoDatabaseRead extends FrbOpaque {
 
   @override
   OpaqueTypeFinalizer get staticFinalizer => bridge.MutexRepoDatabaseReadFinalizer;
-}
-
-@sealed
-class Player extends FrbOpaque {
-  final AnnixNative bridge;
-  Player.fromRaw(int ptr, int size, this.bridge) : super.unsafe(ptr, size);
-  @override
-  DropFnType get dropFn => bridge.dropOpaquePlayer;
-
-  @override
-  ShareFnType get shareFn => bridge.shareOpaquePlayer;
-
-  @override
-  OpaqueTypeFinalizer get staticFinalizer => bridge.PlayerFinalizer;
 }
 
 @sealed
@@ -207,7 +220,7 @@ class StreamWrapperProgressState extends FrbOpaque {
 
 class AnnixPlayer {
   final AnnixNative bridge;
-  final Player player;
+  final AnniPlayer player;
   final StreamWrapperPlayerStateEvent state;
   final StreamWrapperProgressState progress;
 
@@ -218,8 +231,8 @@ class AnnixPlayer {
     required this.progress,
   });
 
-  static AnnixPlayer newAnnixPlayer({required AnnixNative bridge, dynamic hint}) =>
-      bridge.newStaticMethodAnnixPlayer(hint: hint);
+  static AnnixPlayer newAnnixPlayer({required AnnixNative bridge, required String cachePath, dynamic hint}) =>
+      bridge.newStaticMethodAnnixPlayer(cachePath: cachePath, hint: hint);
 
   Future<void> play({dynamic hint}) => bridge.playMethodAnnixPlayer(
         that: this,
@@ -232,6 +245,11 @@ class AnnixPlayer {
   Future<void> openFile({required String path, dynamic hint}) => bridge.openFileMethodAnnixPlayer(
         that: this,
         path: path,
+      );
+
+  Future<void> open({required String identifier, dynamic hint}) => bridge.openMethodAnnixPlayer(
+        that: this,
+        identifier: identifier,
       );
 
   Future<void> setVolume({required double volume, dynamic hint}) => bridge.setVolumeMethodAnnixPlayer(
@@ -249,6 +267,18 @@ class AnnixPlayer {
       );
 
   bool isPlaying({dynamic hint}) => bridge.isPlayingMethodAnnixPlayer(
+        that: this,
+      );
+
+  Future<void> addProvider({required String url, required String auth, required int priority, dynamic hint}) =>
+      bridge.addProviderMethodAnnixPlayer(
+        that: this,
+        url: url,
+        auth: auth,
+        priority: priority,
+      );
+
+  Future<void> clearProvider({dynamic hint}) => bridge.clearProviderMethodAnnixPlayer(
         that: this,
       );
 
