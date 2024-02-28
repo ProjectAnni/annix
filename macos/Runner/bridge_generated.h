@@ -113,7 +113,7 @@ void wire_clear__method__LocalStore(int64_t port_,
                                     struct wire_LocalStore *that,
                                     struct wire_uint_8_list *category);
 
-WireSyncReturn wire_new__static_method__AnnixPlayer(void);
+WireSyncReturn wire_new__static_method__AnnixPlayer(struct wire_uint_8_list *cache_path);
 
 void wire_play__method__AnnixPlayer(int64_t port_, struct wire_AnnixPlayer *that);
 
@@ -122,6 +122,10 @@ void wire_pause__method__AnnixPlayer(int64_t port_, struct wire_AnnixPlayer *tha
 void wire_open_file__method__AnnixPlayer(int64_t port_,
                                          struct wire_AnnixPlayer *that,
                                          struct wire_uint_8_list *path);
+
+void wire_open__method__AnnixPlayer(int64_t port_,
+                                    struct wire_AnnixPlayer *that,
+                                    struct wire_uint_8_list *identifier);
 
 void wire_set_volume__method__AnnixPlayer(int64_t port_,
                                           struct wire_AnnixPlayer *that,
@@ -134,6 +138,14 @@ void wire_seek__method__AnnixPlayer(int64_t port_,
                                     uint64_t position);
 
 WireSyncReturn wire_is_playing__method__AnnixPlayer(struct wire_AnnixPlayer *that);
+
+void wire_add_provider__method__AnnixPlayer(int64_t port_,
+                                            struct wire_AnnixPlayer *that,
+                                            struct wire_uint_8_list *url,
+                                            struct wire_uint_8_list *auth,
+                                            int32_t priority);
+
+void wire_clear_provider__method__AnnixPlayer(int64_t port_, struct wire_AnnixPlayer *that);
 
 void wire_player_state_stream__method__AnnixPlayer(int64_t port_, struct wire_AnnixPlayer *that);
 
@@ -202,10 +214,13 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_play__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_pause__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_open_file__method__AnnixPlayer);
+    dummy_var ^= ((int64_t) (void*) wire_open__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_set_volume__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_stop__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_seek__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_is_playing__method__AnnixPlayer);
+    dummy_var ^= ((int64_t) (void*) wire_add_provider__method__AnnixPlayer);
+    dummy_var ^= ((int64_t) (void*) wire_clear_provider__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_player_state_stream__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) wire_progress_stream__method__AnnixPlayer);
     dummy_var ^= ((int64_t) (void*) new_AnniPlayer);

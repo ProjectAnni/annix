@@ -16,9 +16,10 @@ uuid = "1"
 crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
 anyhow = "1.0.75"
 log = "0.4.20"
+env_logger = "0.11"
 
 anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "a91695e" }
-anni-player = { git = "https://github.com/snylonue/anni-player", rev = "2afcc8c" }
+anni-player = { git = "https://github.com/snylonue/anni-player", rev = "9edc57a" }
 
 [build-dependencies]
 flutter_rust_bridge_codegen = { version = "=1.81", features = ["uuid"] }

@@ -299,14 +299,19 @@ fn wire_clear__method__LocalStore_impl(
         },
     )
 }
-fn wire_new__static_method__AnnixPlayer_impl() -> support::WireSyncReturn {
+fn wire_new__static_method__AnnixPlayer_impl(
+    cache_path: impl Wire2Api<String> + UnwindSafe,
+) -> support::WireSyncReturn {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
         WrapInfo {
             debug_name: "new__static_method__AnnixPlayer",
             port: None,
             mode: FfiCallMode::Sync,
         },
-        move || Ok(AnnixPlayer::new()),
+        move || {
+            let api_cache_path = cache_path.wire2api();
+            Ok(AnnixPlayer::new(api_cache_path))
+        },
     )
 }
 fn wire_play__method__AnnixPlayer_impl(
@@ -356,6 +361,24 @@ fn wire_open_file__method__AnnixPlayer_impl(
             let api_that = that.wire2api();
             let api_path = path.wire2api();
             move |task_callback| AnnixPlayer::open_file(&api_that, api_path)
+        },
+    )
+}
+fn wire_open__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+    identifier: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "open__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_identifier = identifier.wire2api();
+            move |task_callback| AnnixPlayer::open(&api_that, api_identifier)
         },
     )
 }
@@ -423,6 +446,51 @@ fn wire_is_playing__method__AnnixPlayer_impl(
         move || {
             let api_that = that.wire2api();
             Ok(AnnixPlayer::is_playing(&api_that))
+        },
+    )
+}
+fn wire_add_provider__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+    url: impl Wire2Api<String> + UnwindSafe,
+    auth: impl Wire2Api<String> + UnwindSafe,
+    priority: impl Wire2Api<i32> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "add_provider__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_url = url.wire2api();
+            let api_auth = auth.wire2api();
+            let api_priority = priority.wire2api();
+            move |task_callback| {
+                Ok(AnnixPlayer::add_provider(
+                    &api_that,
+                    api_url,
+                    api_auth,
+                    api_priority,
+                ))
+            }
+        },
+    )
+}
+fn wire_clear_provider__method__AnnixPlayer_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<AnnixPlayer> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "clear_provider__method__AnnixPlayer",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(AnnixPlayer::clear_provider(&api_that))
         },
     )
 }

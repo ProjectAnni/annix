@@ -228,13 +228,15 @@ CREATE TABLE IF NOT EXISTS store(
 
 // Audio
 pub use anni_playback::types::*;
-use flutter_rust_bridge::StreamSink;
 use flutter_rust_bridge::frb;
+use flutter_rust_bridge::StreamSink;
 
 // pub use crate::player::player::Player;
 pub use crate::player::PlayerStateEvent;
 pub use anni_player::AnniPlayer;
 use anni_player::TypedPriorityProvider;
+#[cfg(target_os = "windows")]
+use once_cell::sync::OnceCell;
 
 #[frb(mirror(ProgressState))]
 pub struct _ProgressState {
@@ -263,7 +265,8 @@ fn update_player_state_stream(
 
 pub type StreamWrapper<T> = Arc<OnceLock<RwLock<Option<StreamSink<T>>>>>;
 
-// impl DartSafe for AnniPlayerWrapper {}
+#[cfg(target_os = "windows")]
+static LOGGER_INIT: OnceCell<()> = OnceCell::new();
 
 pub struct AnnixPlayer {
     pub player: RustOpaque<AnniPlayer>,
@@ -272,8 +275,12 @@ pub struct AnnixPlayer {
 }
 
 impl AnnixPlayer {
-    pub fn new() -> SyncReturn<AnnixPlayer> {
-        let (player, receiver) = AnniPlayer::new(TypedPriorityProvider::new(vec![]), "./cache".into());
+    pub fn new(cache_path: String) -> SyncReturn<AnnixPlayer> {
+        #[cfg(target_os = "windows")]
+        LOGGER_INIT.get_or_init(|| env_logger::init());
+
+        let (player, receiver) =
+            AnniPlayer::new(TypedPriorityProvider::new(vec![]), cache_path.into());
         let progress = Arc::new(OnceLock::new());
         let player_state = Arc::new(OnceLock::new());
 
@@ -320,6 +327,10 @@ impl AnnixPlayer {
         self.player.open_file(path)
     }
 
+    pub fn open(&self, identifier: String) -> anyhow::Result<()> {
+        self.player.open(identifier.parse()?)
+    }
+
     pub fn set_volume(&self, volume: f32) {
         self.player.set_volume(volume);
     }
@@ -334,6 +345,14 @@ impl AnnixPlayer {
 
     pub fn is_playing(&self) -> SyncReturn<bool> {
         SyncReturn(self.player.player.is_playing())
+    }
+
+    pub fn add_provider(&self, url: String, auth: String, priority: i32) {
+        self.player.add_provider(url, auth, priority);
+    }
+
+    pub fn clear_provider(&self) {
+        self.player.clear_provider();
     }
 
     pub fn player_state_stream(&self, stream: StreamSink<PlayerStateEvent>) {

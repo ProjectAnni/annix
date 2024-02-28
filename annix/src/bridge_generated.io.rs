@@ -118,8 +118,10 @@ pub extern "C" fn wire_clear__method__LocalStore(
 }
 
 #[no_mangle]
-pub extern "C" fn wire_new__static_method__AnnixPlayer() -> support::WireSyncReturn {
-    wire_new__static_method__AnnixPlayer_impl()
+pub extern "C" fn wire_new__static_method__AnnixPlayer(
+    cache_path: *mut wire_uint_8_list,
+) -> support::WireSyncReturn {
+    wire_new__static_method__AnnixPlayer_impl(cache_path)
 }
 
 #[no_mangle]
@@ -139,6 +141,15 @@ pub extern "C" fn wire_open_file__method__AnnixPlayer(
     path: *mut wire_uint_8_list,
 ) {
     wire_open_file__method__AnnixPlayer_impl(port_, that, path)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_open__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+    identifier: *mut wire_uint_8_list,
+) {
+    wire_open__method__AnnixPlayer_impl(port_, that, identifier)
 }
 
 #[no_mangle]
@@ -169,6 +180,25 @@ pub extern "C" fn wire_is_playing__method__AnnixPlayer(
     that: *mut wire_AnnixPlayer,
 ) -> support::WireSyncReturn {
     wire_is_playing__method__AnnixPlayer_impl(that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_add_provider__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+    url: *mut wire_uint_8_list,
+    auth: *mut wire_uint_8_list,
+    priority: i32,
+) {
+    wire_add_provider__method__AnnixPlayer_impl(port_, that, url, auth, priority)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_clear_provider__method__AnnixPlayer(
+    port_: i64,
+    that: *mut wire_AnnixPlayer,
+) {
+    wire_clear_provider__method__AnnixPlayer_impl(port_, that)
 }
 
 #[no_mangle]
