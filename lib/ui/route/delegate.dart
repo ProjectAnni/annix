@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/services/local/database.dart' as db;
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/layout/layout_desktop.dart';
@@ -210,6 +211,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         break;
       case '/server':
         child = const ServerView();
+        break;
+      case '/server_detail':
+        child = ServerDetail(server: routeSettings.arguments as db.LocalAnnilServer);
         break;
       case '/favorite':
         child = const FavoritePage();
