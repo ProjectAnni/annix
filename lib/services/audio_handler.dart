@@ -53,6 +53,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
       // interruption
       session.interruptionEventStream.listen((final event) {
         if (event.begin) {
+          FLog.info(text: 'handling interruption beginning ${event.type}');
           switch (event.type) {
             case AudioInterruptionType.duck:
               // TODO
@@ -64,6 +65,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
               break;
           }
         } else {
+          FLog.info(text: 'handling interruption end ${event.type}');
           switch (event.type) {
             case AudioInterruptionType.duck:
               // TODO
