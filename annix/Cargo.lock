@@ -123,7 +123,7 @@ dependencies = [
 [[package]]
 name = "anni-playback"
 version = "0.1.0"
-source = "git+https://github.com/ProjectAnni/anni#6a439c3434e80ed810c8728312fb975d4a3cd39c"
+source = "git+https://github.com/ProjectAnni/anni#e920688237143dbd5b6a14aa67738670a0e872f4"
 dependencies = [
  "anyhow",
  "arrayvec",
@@ -131,8 +131,8 @@ dependencies = [
  "cpal",
  "crossbeam",
  "ebur128",
- "lazy_static",
  "log",
+ "once_cell",
  "rangemap",
  "reqwest",
  "rubato",
