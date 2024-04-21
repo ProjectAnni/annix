@@ -23,6 +23,42 @@ class AnnivLoginPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(t.server.login_to_anniv),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check),
+            onPressed: () async {
+              final anniv = ref.read(annivProvider);
+
+              var url = serverUrlController.text;
+              var email = emailController.text;
+              final password = passwordController.text;
+              final delegate = AnnixRouterDelegate.of(context);
+              if (url.isEmpty) {
+                _showSnackBar(context, 'Please enter a valid URL');
+              } else if (email.isEmpty || !email.contains('@')) {
+                _showSnackBar(context, 'Please enter a valid email');
+              } else if (password.isEmpty) {
+                _showSnackBar(context, 'Please enter a password');
+              } else {
+                email = email.trim();
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  url = 'https://$url';
+                }
+                try {
+                  showLoadingDialog(context);
+                  await anniv.login(url, email, password);
+                  // pop login page
+                  await delegate.popRoute();
+                } catch (e) {
+                  _showSnackBar(context, e.toString());
+                } finally {
+                  // hide loading dialog
+                  await delegate.popRoute();
+                }
+              }
+            },
+          )
+        ],
       ),
       body: AutofillGroup(
         child: Column(
@@ -71,41 +107,6 @@ class AnnivLoginPage extends HookConsumerWidget {
         ),
       ),
       resizeToAvoidBottomInset: false,
-      floatingActionButton: FloatingActionButton(
-        isExtended: true,
-        child: const Icon(Icons.check),
-        onPressed: () async {
-          final anniv = ref.read(annivProvider);
-
-          var url = serverUrlController.text;
-          var email = emailController.text;
-          final password = passwordController.text;
-          final delegate = AnnixRouterDelegate.of(context);
-          if (url.isEmpty) {
-            _showSnackBar(context, 'Please enter a valid URL');
-          } else if (email.isEmpty || !email.contains('@')) {
-            _showSnackBar(context, 'Please enter a valid email');
-          } else if (password.isEmpty) {
-            _showSnackBar(context, 'Please enter a password');
-          } else {
-            email = email.trim();
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-              url = 'https://$url';
-            }
-            try {
-              showLoadingDialog(context);
-              await anniv.login(url, email, password);
-              // pop login page
-              await delegate.popRoute();
-            } catch (e) {
-              _showSnackBar(context, e.toString());
-            } finally {
-              // hide loading dialog
-              await delegate.popRoute();
-            }
-          }
-        },
-      ),
     );
   }
 }
