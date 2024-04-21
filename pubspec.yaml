@@ -33,9 +33,9 @@ dependencies:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
   xml: ^6.2.2
 
-  audio_service: ^0.18.11
+  audio_service: ^0.18.13
   audio_service_platform_interface: ^0.1.1
-  audio_session: ^0.1.16
+  audio_session: ^0.1.19
   anni_mpris_service: ^0.1.0
 
   slang: ^3.15.0
@@ -50,7 +50,7 @@ dependencies:
   flutter_linkify: ^6.0.0
 
   we_slide: ^2.4.0
-  animations: ^2.0.5
+  animations: ^2.0.11
   crypto: ^3.0.3
 
   json_serializable: ^6.7.1

@@ -19,5 +19,5 @@ anyhow = "1.0.75"
 log = "0.4.20"
 
 anni-playback = { git = "https://github.com/ProjectAnni/anni" }
-cpal = { version = "0.15.2", features = ["oboe-shared-stdcxx"] }
+cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
