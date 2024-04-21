@@ -166,21 +166,6 @@ class SettingsScreen extends ConsumerWidget {
                   },
                 ),
               ),
-              if (context.isMobileOrPortrait)
-                SettingsTileBuilder<bool>(
-                  value: settings.mobileShowArtistInBottomPlayer,
-                  builder: (final context, final p, final _) =>
-                      SettingsTile.switchTile(
-                    onToggle: (final value) {
-                      settings.mobileShowArtistInBottomPlayer.value = value;
-                    },
-                    initialValue: p,
-                    leading: const Icon(Icons.person_outline),
-                    title: Text(t.settings.show_artist_in_bottom_player),
-                    description:
-                        Text(t.settings.show_artist_in_bottom_player_desc),
-                  ),
-                ),
             ],
           ),
           SettingsSection(

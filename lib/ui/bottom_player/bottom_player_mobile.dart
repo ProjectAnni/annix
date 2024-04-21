@@ -50,20 +50,9 @@ class MobileBottomPlayer extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       softWrap: false,
                     ),
-                    ValueListenableBuilder<bool>(
-                      valueListenable: ref
-                          .read(settingsProvider)
-                          .mobileShowArtistInBottomPlayer,
-                      builder: (final context, final showArtist, final _) {
-                        if (showArtist) {
-                          return ArtistText(
-                            playing?.track.artist ?? '',
-                            style: context.textTheme.bodySmall,
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
+                    ArtistText(
+                      playing?.track.artist ?? '',
+                      style: context.textTheme.bodySmall,
                     ),
                   ],
                 );

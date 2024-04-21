@@ -42,13 +42,6 @@ class SettingsService {
     autoScaleUI
         .addListener(saveChangedVariable('annix_auto_scale_ui', autoScaleUI));
 
-    mobileShowArtistInBottomPlayer = ValueNotifier(
-        preferences.getBool('annix_mobile_show_artist_in_bottom_player') ??
-            false);
-    mobileShowArtistInBottomPlayer.addListener(saveChangedVariable(
-        'annix_mobile_show_artist_in_bottom_player',
-        mobileShowArtistInBottomPlayer));
-
     defaultAudioQuality = ValueNotifier(PreferQuality.values[
         preferences.getInt('annix_default_audio_quality') ??
             PreferQuality.medium.index]);
@@ -93,11 +86,6 @@ class SettingsService {
   ///
   /// Default value: false
   late ValueNotifier<bool> autoScaleUI;
-
-  /// [Mobile] Whether to display track artist in bottom player
-  ///
-  /// Default value: false
-  late ValueNotifier<bool> mobileShowArtistInBottomPlayer;
 
   /// Default audio quality
   ///

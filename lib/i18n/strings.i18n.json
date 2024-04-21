@@ -42,8 +42,6 @@
     "clear_lyric_cache_desc": "Delete all lyric cache.",
     "clear_database": "Clear database",
     "clear_database_desc": "Delete main database. You need to restart the app.",
-    "show_artist_in_bottom_player": "Show artist in bottom player",
-    "show_artist_in_bottom_player_desc": "Mobile only",
     "custom_font_path": "Custom Font Path",
     "custom_font_not_specified": "Not specified"
   },
