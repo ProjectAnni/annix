@@ -37,11 +37,6 @@ jobs:
         run: flutter pub get
       - name: Setup | Android NDK
         run: |
-          # Apply to gradle
-          mkdir ~/.gradle
-          echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
-          cat ~/.gradle/gradle.properties
-
           # /usr/include/bits
           sudo apt update -y
           sudo apt install libc6-dev-i386
@@ -51,10 +46,10 @@ jobs:
           rustup update
 
           # Install cargo-ndk
-          cargo install cargo-ndk
-          cd annix
-          cargo ndk -o ../android/app/src/main/jniLibs build
-          cd ..
+          # cargo install cargo-ndk
+          # cd annix
+          # cargo ndk -o ../android/app/src/main/jniLibs build
+          # cd ..
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks

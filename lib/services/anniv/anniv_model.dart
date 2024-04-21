@@ -311,8 +311,10 @@ class PlaylistInfo {
   factory PlaylistInfo.fromJson(final Map<String, dynamic> json) =>
       _$PlaylistInfoFromJson(json);
 
-  PlaylistCompanion toCompanion(
-      {final Value<int> id = const Value.absent(), final bool hasItems = false}) {
+  PlaylistCompanion toCompanion({
+    final Value<int> id = const Value.absent(),
+    final bool hasItems = false,
+  }) {
     return PlaylistCompanion(
       id: id,
       name: Value(name),
@@ -465,7 +467,8 @@ class AnnivPlaylistItemDummyTrack extends AnnivPlaylistItem {
 
   AnnivPlaylistItemDummyTrack({super.description, required this.info});
 
-  factory AnnivPlaylistItemDummyTrack.fromJson(final Map<String, dynamic> json) =>
+  factory AnnivPlaylistItemDummyTrack.fromJson(
+          final Map<String, dynamic> json) =>
       AnnivPlaylistItemDummyTrack(
         info: RequiredTrackInfo.fromJson(json['info']),
         description: json['description'],

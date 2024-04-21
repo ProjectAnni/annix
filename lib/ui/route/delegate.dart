@@ -23,10 +23,12 @@ import 'package:annix/utils/anni_weslide_controller.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
   final slideController = AnniWeSlideController(initial: false);
+  final panelController = PanelController();
 
   final Ref ref;
   final List<AnnixPage> _pages = [];
@@ -213,7 +215,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const ServerView();
         break;
       case '/server_detail':
-        child = ServerDetail(server: routeSettings.arguments as db.LocalAnnilServer);
+        child = ServerDetail(
+          server: routeSettings.arguments as db.LocalAnnilServer,
+        );
         break;
       case '/favorite':
         child = const FavoritePage();

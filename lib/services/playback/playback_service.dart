@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:annix/bridge/native.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/annil.dart';
@@ -9,6 +8,7 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/native/api/player.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
@@ -41,7 +41,7 @@ void playFullList({
 }
 
 class PlaybackService extends ChangeNotifier {
-  static final AnnixPlayer player = api.newStaticMethodAnnixPlayer();
+  static final AnnixPlayer player = AnnixPlayer();
 
   // TODO: cache this map
   static final PropertyValueNotifier<Map<String, Duration>> durationMap =

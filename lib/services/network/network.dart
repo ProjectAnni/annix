@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:annix/bridge/native.dart';
 import 'package:annix/providers.dart';
+import 'package:annix/native/api/network.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -63,7 +63,7 @@ class NetworkService extends ChangeNotifier {
 
   /// Update network status both in NetworkService and
   void updateAndNotify() {
-    api.updateNetworkStatus(isOnline: isOnline);
+    updateNetworkStatus(isOnline: isOnline);
     notifyListeners();
   }
 

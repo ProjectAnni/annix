@@ -14,8 +14,6 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		DDF2F9DCBC938069101C6BAD /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56321345F875A946175CCBC /* Pods_Runner.framework */; };
-		F0EEB2D62A336F98004E9846 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0EEB2D32A336F94004E9846 /* AudioToolbox.framework */; };
-		F0FE9B432987E5E8006DEF0A /* libannix-native_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FE9B3E2987E540006DEF0A /* libannix-native_static.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,13 +30,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = CA602D7A814EDCBC4C003A35;
 			remoteInfo = "annix-native-cdylib";
-		};
-		F0FE9B412987E5AD006DEF0A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F0FE9B382987E540006DEF0A /* annix-native.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = CA6018290BF017539D7B083D;
-			remoteInfo = "annix-native-staticlib";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -70,9 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0FE9B432987E5E8006DEF0A /* libannix-native_static.a in Frameworks */,
 				DDF2F9DCBC938069101C6BAD /* Pods_Runner.framework in Frameworks */,
-				F0EEB2D62A336F98004E9846 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,7 +162,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				F0FE9B422987E5AD006DEF0A /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -186,7 +174,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
@@ -335,14 +323,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		F0FE9B422987E5AD006DEF0A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "annix-native-staticlib";
-			targetProxy = F0FE9B412987E5AD006DEF0A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -427,7 +407,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = H3YL6JN625;
+				DEVELOPMENT_TEAM = 248LMB9PMJ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-$(CONFIGURATION).plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Annix;
@@ -572,7 +552,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = H3YL6JN625;
+				DEVELOPMENT_TEAM = 248LMB9PMJ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-$(CONFIGURATION).plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Annix;

@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -22,10 +22,10 @@ dependencies:
   riverpod_annotation: ^2.1.4
   connectivity_plus: ^4.0.2
 
-  dio: ^5.3.2
+  dio: ^5.4.3+1
   dio_cookie_manager: ^2.1.4
-  dio_smart_retry: ^5.0.0
-  http: ^1.1.0
+  dio_smart_retry: ^6.0.0
+  http: ^1.2.1
   cookie_jar: ^3.0.1
 
   netease_music_api:
@@ -33,9 +33,9 @@ dependencies:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
   xml: ^6.2.2
 
-  audio_service: ^0.18.11
+  audio_service: ^0.18.13
   audio_service_platform_interface: ^0.1.1
-  audio_session: ^0.1.16
+  audio_session: ^0.1.19
   anni_mpris_service: ^0.1.0
 
   slang: ^3.15.0
@@ -50,7 +50,8 @@ dependencies:
   flutter_linkify: ^6.0.0
 
   we_slide: ^2.4.0
-  animations: ^2.0.5
+  sliding_up_panel2: ^3.3.0+1
+  animations: ^2.0.11
   crypto: ^3.0.3
 
   json_serializable: ^6.7.1
@@ -74,9 +75,11 @@ dependencies:
 
   file: ^7.0.0
   ffi: ^2.1.0
-  flutter_rust_bridge: 1.82.6
+  flutter_rust_bridge: 2.0.0-dev.32
   freezed_annotation: ^2.3.2
   meta: ^1.8.0
+  rust_lib_annix:
+    path: rust_builder
 
 dev_dependencies:
   flutter_lints: ^2.0.2

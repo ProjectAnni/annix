@@ -24,24 +24,19 @@ jobs:
         run: flutter pub get
       - name: Setup | Android NDK
         run: |
-          # Apply to gradle
-          mkdir -p ~/.gradle
-          echo "ANDROID_NDK=${ANDROID_NDK_ROOT}" >> ~/.gradle/gradle.properties
-          cat ~/.gradle/gradle.properties
-
           # /usr/include/bits
           sudo apt update -y
           sudo apt install libc6-dev-i386
-          
+
           # Install rust targets
           rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
           rustup update
 
           # Install cargo-ndk
-          cargo install cargo-ndk
-          cd annix
-          cargo ndk -o ../android/app/src/main/jniLibs build
-          cd ..
+          # cargo install cargo-ndk
+          # cd annix
+          # cargo ndk -o ../android/app/src/main/jniLibs build
+          # cd ..
       - name: Setup | Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > keystore.jks
@@ -150,7 +145,7 @@ jobs:
           path: |
             ./annix-win64.zip
           retention-days: 1
-    
+
   iOS:
     runs-on: macos-latest
     env:
@@ -186,7 +181,7 @@ jobs:
 
   publish:
     if: ${{ github.ref == 'refs/heads/master' }}
-    needs: [ android, linux, macOS, windows, iOS ]
+    needs: [android, linux, macOS, windows, iOS]
     runs-on: ubuntu-20.04
     env:
       GH_REPO: ${{ github.repository }}

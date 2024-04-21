@@ -107,8 +107,3 @@ There are two release branches: `canary` and `nightly`.
       - [ ] Upload lyric to Anniv
     - [x] Search
       - [ ] Search with tags
-
-## Thanks
-
-- [WeSlide - MIT License](https://github.com/luciano-work/we_slide): We're using a modified version
-  of this package to implement the main player UI on mobile.
