@@ -67,7 +67,7 @@ class SettingsService {
         'annix_search_track_display_type', searchTrackDisplayType));
 
     experimentalOpus =
-        ValueNotifier(preferences.getBool('annix_experimental_opus') ?? false);
+        ValueNotifier(preferences.getBool('annix_experimental_opus') ?? true);
     experimentalOpus.addListener(
         saveChangedVariable('annix_experimental_opus', experimentalOpus));
   }
