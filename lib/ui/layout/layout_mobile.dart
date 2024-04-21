@@ -69,7 +69,12 @@ class AnnixLayoutMobile extends HookConsumerWidget {
                       },
                     );
                   },
-                  collapsed: const MobileBottomPlayer(),
+                  collapsed: GestureDetector(
+                    child: const MobileBottomPlayer(),
+                    onTap: () {
+                      router.panelController.open();
+                    },
+                  ),
                   minHeight: MobileBottomPlayer.height,
                   maxHeight: panelMaxSize,
                   onPanelSlide: (pos) => positionState.value = pos,
