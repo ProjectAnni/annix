@@ -32,6 +32,13 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 android {
     compileSdkVersion 33
 
+    def ndkPath = System.getenv("ANDROID_NDK")
+    if (ndkPath == null) {
+        ndkPath = "/tmp/25.2.9519653"
+    }
+    def ndkVersionGot = new File(ndkPath).getName()
+    ndkVersion ndkVersionGot
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
