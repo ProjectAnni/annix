@@ -109,6 +109,9 @@ class AndroidEnvironment {
       throw Exception('Failed to find ar for $target in $toolchainPath');
     }
 
+    final toolchainValue =
+        path.join(ndkPath, 'build/cmake/android.toolchain.cmake');
+
     final targetArg = '--target=${target.rust}$minSdkVersion';
 
     final ccKey = 'CC_${target.rust}';
@@ -163,6 +166,7 @@ class AndroidEnvironment {
       '_CARGOKIT_NDK_LINK_TARGET': targetArg,
       '_CARGOKIT_NDK_LINK_CLANG': ccValue,
       'CARGOKIT_TOOL_TEMP_DIR': toolTempDir,
+      'CMAKE_TOOLCHAIN_FILE': toolchainValue,
     };
   }
 

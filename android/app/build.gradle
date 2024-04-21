@@ -30,14 +30,13 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
 
-    def ndkPath = System.getenv("ANDROID_NDK")
-    if (ndkPath == null) {
-        ndkPath = "/tmp/25.2.9519653"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-    def ndkVersionGot = new File(ndkPath).getName()
-    ndkVersion ndkVersionGot
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -45,8 +44,8 @@ android {
 
     defaultConfig {
         applicationId "rs.anni.annix"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
