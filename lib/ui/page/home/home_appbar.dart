@@ -29,20 +29,12 @@ class HomeAppBar extends ConsumerWidget {
       );
     }
 
-    final child = SearchBar(
-      hintText: 'Search...',
-      trailing: [
-        IconButton(
-          icon: CircleAvatar(
-            child: Text(info!.user.nickname.substring(0, 1)),
-          ),
-          onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/server');
-          },
-        )
-      ],
-      onTap: () {
-        AnnixRouterDelegate.of(context).to(name: '/search');
+    final child = IconButton(
+      icon: CircleAvatar(
+        child: Text(info!.user.nickname.substring(0, 1)),
+      ),
+      onPressed: () {
+        AnnixRouterDelegate.of(context).to(name: '/server');
       },
     );
 
