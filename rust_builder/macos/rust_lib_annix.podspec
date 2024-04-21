@@ -40,6 +40,6 @@ A new Flutter FFI plugin project.
     'DEFINES_MODULE' => 'YES',
     # Flutter.framework does not contain a i386 slice.
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386',
-    'OTHER_LDFLAGS' => '-force_load ${BUILT_PRODUCTS_DIR}/librust_lib_annix.a -lc++ -framework AudioToolbox -framework IOKit -framework CoreAudio -framework OpenAL',
+    'OTHER_LDFLAGS' => '-force_load ${BUILT_PRODUCTS_DIR}/librust_lib_annix.a -lc++ -framework AudioToolbox -framework IOKit -framework CoreAudio -framework OpenAL -framework SystemConfiguration',
   }
 end
