@@ -5,7 +5,7 @@ Desktop / Mobile client for Project Anni.
 ## Features
 
 - Cross-platform player designed for Project Anni
-    - Tested on Linux(Manjaro KDE), macOS, Windows, Android and iOS(iPad mini5)
+    - Tested on Linux(Manjaro KDE), macOS, Windows, Android and iOS.
 - Control through MPRIS on Linux
 - Portable mode (create a file named `portable.enable`)
 
@@ -19,17 +19,9 @@ export CPATH="$(clang -v 2>&1 | grep "Selected GCC installation" | rev | cut -d'
 dart run build_runner build --delete-conflicting-outputs
 
 # Build apk
-cargo install cargo-ndk
-rustup target add \
-    aarch64-linux-android \
-    armv7-linux-androideabi \
-    x86_64-linux-android \
-    i686-linux-android
 flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 
 # Build for iOS
-rustup target add aarch64-apple-ios x86_64-apple-ios
-rustup target add aarch64-apple-ios-sim
 flutter build ios --profile
 ```
 
