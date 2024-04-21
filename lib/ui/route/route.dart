@@ -1,7 +1,10 @@
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class AnnixRoute extends PageRouteBuilder {
   final bool disableAppBarDismissal;
+  final PageTransitionsBuilder _applePageTransition =
+      const CupertinoPageTransitionsBuilder();
 
   AnnixRoute({
     this.disableAppBarDismissal = false,
@@ -26,6 +29,22 @@ class AnnixRoute extends PageRouteBuilder {
       return false;
     } else {
       return super.canPop;
+    }
+  }
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (context.isApple) {
+      return _applePageTransition.buildTransitions(
+          this, context, animation, secondaryAnimation, child);
+    } else {
+      return super
+          .buildTransitions(context, animation, secondaryAnimation, child);
     }
   }
 }

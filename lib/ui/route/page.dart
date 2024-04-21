@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:annix/ui/route/route.dart';
 import 'package:annix/utils/context_extension.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 typedef AnnixRoutePageBuilder = Widget Function(
   BuildContext context,
@@ -19,6 +19,20 @@ Widget fadeThroughTransitionBuilder(
   return FadeThroughTransition(
     animation: animation,
     secondaryAnimation: secondaryAnimation,
+    child: child,
+  );
+}
+
+Widget cupertinoTransitionBuilder(
+  final BuildContext context,
+  final Animation<double> animation,
+  final Animation<double> secondaryAnimation,
+  final Widget child,
+) {
+  return CupertinoPageTransition(
+    primaryRouteAnimation: animation,
+    secondaryRouteAnimation: secondaryAnimation,
+    linearTransition: false,
     child: child,
   );
 }
@@ -75,7 +89,9 @@ class AnnixPage extends Page {
         return (pageBuilder ??
             (context.isDesktopOrLandscape
                 ? fadeTransitionBuilder
-                : fadeThroughTransitionBuilder))(
+                : context.isApple
+                    ? cupertinoTransitionBuilder
+                    : fadeThroughTransitionBuilder))(
           context,
           animation,
           secondaryAnimation,
