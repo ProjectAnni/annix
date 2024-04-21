@@ -39,7 +39,7 @@ class AnnixRoute extends PageRouteBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    if (context.isApple) {
+    if (context.isApple && canPop) {
       return _applePageTransition.buildTransitions(
           this, context, animation, secondaryAnimation, child);
     } else {
