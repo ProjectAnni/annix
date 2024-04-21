@@ -75,7 +75,8 @@ class SettingsLogView extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<List<Log>>(
-        future: FLog.getAllLogs().then((final value) => value.reversed.toList()),
+        future:
+            FLog.getAllLogs().then((final value) => value.reversed.toList()),
         builder: (final context, final snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(

@@ -66,7 +66,8 @@ class LyricSearchResponseNetease extends LyricSearchResponse {
   String get title => song.name ?? 'No title';
 
   @override
-  List<String> get artists => song.artists?.map((final e) => e.name!).toList() ?? [];
+  List<String> get artists =>
+      song.artists?.map((final e) => e.name!).toList() ?? [];
 
   @override
   Future<String?> get album => Future.value(song.album?.name);

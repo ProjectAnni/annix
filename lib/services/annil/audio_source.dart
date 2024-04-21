@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:annix/bridge/native.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
@@ -9,6 +8,7 @@ import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/native/api/player.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

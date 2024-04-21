@@ -5,9 +5,12 @@ import 'package:annix/services/path.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:annix/native/frb_generated.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {
+  await RustLib.init();
+
   WidgetsFlutterBinding.ensureInitialized();
   FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
 

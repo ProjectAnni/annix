@@ -213,7 +213,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const ServerView();
         break;
       case '/server_detail':
-        child = ServerDetail(server: routeSettings.arguments as db.LocalAnnilServer);
+        child = ServerDetail(
+          server: routeSettings.arguments as db.LocalAnnilServer,
+        );
         break;
       case '/favorite':
         child = const FavoritePage();

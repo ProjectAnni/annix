@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -74,9 +74,11 @@ dependencies:
 
   file: ^7.0.0
   ffi: ^2.1.0
-  flutter_rust_bridge: 1.82.6
+  flutter_rust_bridge: 2.0.0-dev.32
   freezed_annotation: ^2.3.2
   meta: ^1.8.0
+  rust_lib_annix:
+    path: rust_builder
 
 dev_dependencies:
   flutter_lints: ^2.0.2
