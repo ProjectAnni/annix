@@ -4,7 +4,6 @@ import 'package:annix/services/annil/cache.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
-import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -51,32 +50,6 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                 },
               );
             }
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.queue_music_rounded),
-          onPressed: () {
-            showModalBottomSheet(
-              useRootNavigator: true,
-              context: context,
-              isScrollControlled: true,
-              clipBehavior: Clip.antiAlias,
-              builder: (final context) {
-                return DraggableScrollableSheet(
-                  expand: false,
-                  builder: (final context, final scrollController) {
-                    return Column(
-                      children: [
-                        const DragHandle(),
-                        Expanded(
-                          child: PlayingQueue(controller: scrollController),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            );
           },
         ),
         MenuAnchor(
@@ -147,11 +120,14 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final playing = ref.watch(playingProvider);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           playing?.track.title ?? '',
-          style: context.textTheme.titleLarge?.copyWith(height: 1.5),
+          style: context.textTheme.titleLarge?.copyWith(
+            height: 1.5,
+            fontWeight: FontWeight.w600,
+          ),
           overflow: TextOverflow.ellipsis,
         ),
         ArtistText(
@@ -192,7 +168,7 @@ class PlayingScreenMobileControl extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const FavoriteButton(),
+            const LoopModeButton(),
             IconButton(
               icon: const Icon(Icons.skip_previous),
               iconSize: 32,
@@ -204,7 +180,32 @@ class PlayingScreenMobileControl extends ConsumerWidget {
               iconSize: 32,
               onPressed: player.next,
             ),
-            const LoopModeButton(),
+            IconButton(
+              icon: const Icon(Icons.queue_music_rounded),
+              onPressed: () {
+                showModalBottomSheet(
+                  useRootNavigator: true,
+                  context: context,
+                  isScrollControlled: true,
+                  clipBehavior: Clip.antiAlias,
+                  builder: (final context) {
+                    return DraggableScrollableSheet(
+                      expand: false,
+                      builder: (final context, final scrollController) {
+                        return Column(
+                          children: [
+                            const DragHandle(),
+                            Expanded(
+                              child: PlayingQueue(controller: scrollController),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
       ],

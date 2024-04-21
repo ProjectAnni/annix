@@ -1,7 +1,10 @@
 import 'package:annix/ui/page/playing/playing_mobile_widgets.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+
+import 'dart:math' as math;
 
 class PlayingScreenMobile extends StatefulWidget {
   const PlayingScreenMobile({super.key});
@@ -15,15 +18,24 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
 
   Widget _mainPlayingWidget() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         MusicCoverOrLyric(
           showLyric: showLyric,
           fillColor: context.colorScheme.secondaryContainer,
         ),
-        const PlayingScreenMobileTrackInfo(),
-        const PlayingScreenMobileControl(),
-        const SizedBox(),
+        const Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: PlayingScreenMobileTrackInfo()),
+                FavoriteButton(),
+              ],
+            ),
+            SizedBox(height: 32),
+            PlayingScreenMobileControl(),
+          ],
+        )
       ],
     );
   }
@@ -33,13 +45,16 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.keyboard_arrow_down),
+          icon: Transform.rotate(
+            angle: -math.pi / 2,
+            child: const Icon(Icons.arrow_back_ios_new),
+          ),
           onPressed: () {
             AnnixRouterDelegate.of(context).panelController.close();
           },
         ),
         backgroundColor: context.colorScheme.secondaryContainer,
-        title: const Text(''),
+        // title: const Text(''),
       ),
       body: Container(
         color: context.colorScheme.secondaryContainer,
