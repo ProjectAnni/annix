@@ -34,8 +34,9 @@ class _PlayingScreenMobileState extends State<PlayingScreenMobile> {
             ),
             SizedBox(height: 32),
             PlayingScreenMobileControl(),
+            SizedBox(height: 32),
           ],
-        )
+        ),
       ],
     );
   }
