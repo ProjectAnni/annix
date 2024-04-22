@@ -29,13 +29,17 @@ class HomeAppBar extends ConsumerWidget {
       );
     }
 
-    final child = IconButton(
-      icon: CircleAvatar(
-        child: Text(info!.user.nickname.substring(0, 1)),
-      ),
-      onPressed: () {
-        AnnixRouterDelegate.of(context).to(name: '/server');
-      },
+    final child = Row(
+      children: [
+        IconButton(
+          icon: CircleAvatar(
+            child: Text(info!.user.nickname.substring(0, 1)),
+          ),
+          onPressed: () {
+            AnnixRouterDelegate.of(context).to(name: '/server');
+          },
+        ),
+      ],
     );
 
     return SafeArea(
