@@ -11,20 +11,16 @@ import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class FavoritePage extends ConsumerStatefulWidget {
+class FavoritePage extends HookConsumerWidget {
   const FavoritePage({super.key});
 
   @override
-  ConsumerState<FavoritePage> createState() => _FavoritePageState();
-}
+  Widget build(BuildContext context, final WidgetRef ref) {
+    final selectedTab = useState(0);
 
-class _FavoritePageState extends ConsumerState<FavoritePage> {
-  bool showTracks = true;
-
-  @override
-  Widget build(final BuildContext context) {
     return Material(
       child: NestedScrollView(
         headerSliverBuilder: (final context, final innerBoxIsScrolled) {
@@ -58,12 +54,10 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                         value: false,
                       ),
                     ],
-                    selected: {showTracks},
+                    selected: {selectedTab.value == 0},
                     showSelectedIcon: false,
                     onSelectionChanged: (final value) {
-                      setState(() {
-                        showTracks = value.first;
-                      });
+                      selectedTab.value = value.first ? 0 : 1;
                     },
                   ),
                 ),
@@ -73,7 +67,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                   icon: const Icon(Icons.refresh),
                   onPressed: () {
                     final anniv = ref.read(annivProvider);
-                    if (showTracks) {
+                    if (selectedTab.value == 0) {
                       anniv.syncFavoriteTrack();
                     } else {
                       anniv.syncFavoriteAlbum();
@@ -85,7 +79,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
           ];
         },
         body: FadeIndexedStack(
-          index: showTracks ? 0 : 1,
+          index: selectedTab.value,
           duration: context.isDesktop
               ? const Duration(milliseconds: 150)
               : const Duration(milliseconds: 300),
@@ -99,47 +93,51 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
   }
 
   Widget _favoriteTracks() {
-    final annil = ref.read(annilProvider);
-    final player = ref.read(playbackProvider);
-    final favoriteTracks = ref.watch(favoriteTracksProvider);
-    final favorites = favoriteTracks.value ?? [];
-    final reversedFavorite = favorites.reversed;
+    return Consumer(
+      builder: (context, ref, child) {
+        final annil = ref.read(annilProvider);
+        final player = ref.read(playbackProvider);
+        final favoriteTracks = ref.watch(favoriteTracksProvider);
+        final favorites = favoriteTracks.value ?? [];
+        final reversedFavorite = favorites.reversed;
 
-    return ListView.builder(
-      primary: false,
-      itemCount: reversedFavorite.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (final context, final index) {
-        final favorite = reversedFavorite.elementAt(index);
-        return ListTile(
-          leading: CoverCard(
-            child: MusicCover.fromAlbum(
-              albumId: favorite.albumId,
-              fit: BoxFit.cover,
-            ),
-          ),
-          title: Text(
-            favorite.title ?? '--',
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: ArtistText(
-            favorite.artist ?? '--',
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: Text('${index + 1}'),
-          enabled: annil.isTrackAvailable(
-            TrackIdentifier(
-              albumId: favorite.albumId,
-              discId: favorite.discId,
-              trackId: favorite.trackId,
-            ),
-          ),
-          onTap: () async {
-            final tracks = getTracks(favorites);
-            playFullList(
-              player: player,
-              tracks: tracks,
-              initialIndex: index,
+        return ListView.builder(
+          primary: false,
+          itemCount: reversedFavorite.length,
+          padding: EdgeInsets.zero,
+          itemBuilder: (final context, final index) {
+            final favorite = reversedFavorite.elementAt(index);
+            return ListTile(
+              leading: CoverCard(
+                child: MusicCover.fromAlbum(
+                  albumId: favorite.albumId,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              title: Text(
+                favorite.title ?? '--',
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: ArtistText(
+                favorite.artist ?? '--',
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Text('${index + 1}'),
+              enabled: annil.isTrackAvailable(
+                TrackIdentifier(
+                  albumId: favorite.albumId,
+                  discId: favorite.discId,
+                  trackId: favorite.trackId,
+                ),
+              ),
+              onTap: () async {
+                final tracks = getTracks(ref, favorites);
+                playFullList(
+                  player: player,
+                  tracks: tracks,
+                  initialIndex: index,
+                );
+              },
             );
           },
         );
@@ -148,15 +146,21 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
   }
 
   Widget _favoriteAlbums() {
-    final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
-    final favorites = favoriteAlbums.value ?? [];
-    final reversedFavorite =
-        favorites.reversed.map((final e) => e.albumId).toList();
-
-    return AlbumWall(albumIds: reversedFavorite);
+    return Consumer(
+      builder: (context, ref, child) {
+        final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
+        final favorites = favoriteAlbums.value ?? [];
+        final reversedFavorite =
+            favorites.reversed.map((final e) => e.albumId).toList();
+        return AlbumWall(albumIds: reversedFavorite);
+      },
+    );
   }
 
-  List<AnnilAudioSource> getTracks(final List<LocalFavoriteTrack> favorites) {
+  List<AnnilAudioSource> getTracks(
+    WidgetRef ref,
+    final List<LocalFavoriteTrack> favorites,
+  ) {
     final annil = ref.read(annilProvider);
 
     return favorites.reversed
