@@ -33,7 +33,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.0.0-dev.32";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -247829632;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1027124093;
 
 // Section: executor
 
@@ -105,6 +105,84 @@ fn wire_update_network_status_impl(
         },
     )
 }
+fn wire_AnnixPlayer_add_provider_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AnnixPlayer_add_provider",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::rust_async::RwLock<AnnixPlayer>,
+            >>::sse_decode(&mut deserializer);
+            let api_url = <String>::sse_decode(&mut deserializer);
+            let api_auth = <String>::sse_decode(&mut deserializer);
+            let api_priority = <i32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    let api_that = api_that.rust_auto_opaque_decode_ref();
+                    Result::<_, ()>::Ok(crate::api::player::AnnixPlayer::add_provider(
+                        &api_that,
+                        api_url,
+                        api_auth,
+                        api_priority,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_AnnixPlayer_clear_provider_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AnnixPlayer_clear_provider",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::rust_async::RwLock<AnnixPlayer>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    let api_that = api_that.rust_auto_opaque_decode_ref();
+                    Result::<_, ()>::Ok(crate::api::player::AnnixPlayer::clear_provider(&api_that))
+                })())
+            }
+        },
+    )
+}
 fn wire_AnnixPlayer_is_playing_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -158,10 +236,47 @@ fn wire_AnnixPlayer_new_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_cache_path = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::player::AnnixPlayer::new())
+                Result::<_, ()>::Ok(crate::api::player::AnnixPlayer::new(api_cache_path))
             })())
+        },
+    )
+}
+fn wire_AnnixPlayer_open_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AnnixPlayer_open",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::rust_async::RwLock<AnnixPlayer>,
+            >>::sse_decode(&mut deserializer);
+            let api_identifier = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    let api_that = api_that.rust_auto_opaque_decode_ref();
+                    crate::api::player::AnnixPlayer::open(&api_that, api_identifier)
+                })())
+            }
         },
     )
 }
@@ -387,6 +502,42 @@ fn wire_AnnixPlayer_seek_impl(
                         &api_that,
                         api_position,
                     ))
+                })())
+            }
+        },
+    )
+}
+fn wire_AnnixPlayer_set_track_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AnnixPlayer_set_track",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::rust_async::RwLock<AnnixPlayer>,
+            >>::sse_decode(&mut deserializer);
+            let api_identifier = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    let api_that = api_that.rust_auto_opaque_decode_ref();
+                    crate::api::player::AnnixPlayer::set_track(&api_that, api_identifier)
                 })())
             }
         },
@@ -1191,21 +1342,25 @@ fn pde_ffi_dispatcher_primary_impl(
     match func_id {
         2 => wire_network_status_is_online_impl(port, ptr, rust_vec_len, data_len),
         1 => wire_update_network_status_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_AnnixPlayer_add_provider_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_AnnixPlayer_clear_provider_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_AnnixPlayer_open_impl(port, ptr, rust_vec_len, data_len),
         6 => wire_AnnixPlayer_open_file_impl(port, ptr, rust_vec_len, data_len),
         5 => wire_AnnixPlayer_pause_impl(port, ptr, rust_vec_len, data_len),
         4 => wire_AnnixPlayer_play_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_AnnixPlayer_player_state_stream_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_AnnixPlayer_progress_stream_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_AnnixPlayer_seek_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_AnnixPlayer_set_volume_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_local_db_get_albums_by_tag_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_local_db_new_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_local_store_clear_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_local_store_get_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_local_store_insert_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_AnnixPlayer_player_state_stream_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_AnnixPlayer_progress_stream_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_AnnixPlayer_seek_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_AnnixPlayer_set_track_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_AnnixPlayer_set_volume_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_local_db_get_albums_by_tag_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_local_db_new_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_local_store_clear_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_local_store_get_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_local_store_insert_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1218,14 +1373,14 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        10 => wire_AnnixPlayer_is_playing_impl(ptr, rust_vec_len, data_len),
+        12 => wire_AnnixPlayer_is_playing_impl(ptr, rust_vec_len, data_len),
         3 => wire_AnnixPlayer_new_impl(ptr, rust_vec_len, data_len),
-        22 => wire_local_store_new_impl(ptr, rust_vec_len, data_len),
-        14 => wire_native_preference_store_get_impl(ptr, rust_vec_len, data_len),
-        13 => wire_native_preference_store_new_impl(ptr, rust_vec_len, data_len),
-        16 => wire_native_preference_store_remove_impl(ptr, rust_vec_len, data_len),
-        17 => wire_native_preference_store_remove_prefix_impl(ptr, rust_vec_len, data_len),
-        15 => wire_native_preference_store_set_impl(ptr, rust_vec_len, data_len),
+        26 => wire_local_store_new_impl(ptr, rust_vec_len, data_len),
+        18 => wire_native_preference_store_get_impl(ptr, rust_vec_len, data_len),
+        17 => wire_native_preference_store_new_impl(ptr, rust_vec_len, data_len),
+        20 => wire_native_preference_store_remove_impl(ptr, rust_vec_len, data_len),
+        21 => wire_native_preference_store_remove_prefix_impl(ptr, rust_vec_len, data_len),
+        19 => wire_native_preference_store_set_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
