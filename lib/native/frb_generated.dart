@@ -88,7 +88,10 @@ abstract class RustLibApi extends BaseApi {
   AnnixPlayer annixPlayerNew({required String cachePath, dynamic hint});
 
   Future<void> annixPlayerOpen(
-      {required AnnixPlayer that, required String identifier, dynamic hint});
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality,
+      dynamic hint});
 
   Future<void> annixPlayerOpenFile(
       {required AnnixPlayer that, required String path, dynamic hint});
@@ -107,7 +110,10 @@ abstract class RustLibApi extends BaseApi {
       {required AnnixPlayer that, required int position, dynamic hint});
 
   Future<void> annixPlayerSetTrack(
-      {required AnnixPlayer that, required String identifier, dynamic hint});
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality,
+      dynamic hint});
 
   Future<void> annixPlayerSetVolume(
       {required AnnixPlayer that, required double volume, dynamic hint});
@@ -364,13 +370,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> annixPlayerOpen(
-      {required AnnixPlayer that, required String identifier, dynamic hint}) {
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality,
+      dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockAnnixPlayer(
             that, serializer);
         sse_encode_String(identifier, serializer);
+        sse_encode_audio_quality(quality, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 7, port: port_);
       },
@@ -379,7 +389,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kAnnixPlayerOpenConstMeta,
-      argValues: [that, identifier],
+      argValues: [that, identifier, quality],
       apiImpl: this,
       hint: hint,
     ));
@@ -387,7 +397,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kAnnixPlayerOpenConstMeta => const TaskConstMeta(
         debugName: "AnnixPlayer_open",
-        argNames: ["that", "identifier"],
+        argNames: ["that", "identifier", "quality"],
       );
 
   @override
@@ -561,13 +571,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> annixPlayerSetTrack(
-      {required AnnixPlayer that, required String identifier, dynamic hint}) {
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality,
+      dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockAnnixPlayer(
             that, serializer);
         sse_encode_String(identifier, serializer);
+        sse_encode_audio_quality(quality, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 8, port: port_);
       },
@@ -576,7 +590,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kAnnixPlayerSetTrackConstMeta,
-      argValues: [that, identifier],
+      argValues: [that, identifier, quality],
       apiImpl: this,
       hint: hint,
     ));
@@ -584,7 +598,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kAnnixPlayerSetTrackConstMeta => const TaskConstMeta(
         debugName: "AnnixPlayer_set_track",
-        argNames: ["that", "identifier"],
+        argNames: ["that", "identifier", "quality"],
       );
 
   @override
@@ -1099,6 +1113,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AudioQuality dco_decode_audio_quality(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AudioQuality.values[raw as int];
+  }
+
+  @protected
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
@@ -1341,6 +1361,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return UuidValue.fromByteList(inner);
+  }
+
+  @protected
+  AudioQuality sse_decode_audio_quality(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return AudioQuality.values[inner];
   }
 
   @protected
@@ -1588,6 +1615,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_Uuid(UuidValue self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(self.toBytes(), serializer);
+  }
+
+  @protected
+  void sse_encode_audio_quality(AudioQuality self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected

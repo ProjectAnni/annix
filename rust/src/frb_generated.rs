@@ -270,11 +270,12 @@ fn wire_AnnixPlayer_open_impl(
                 flutter_rust_bridge::for_generated::rust_async::RwLock<AnnixPlayer>,
             >>::sse_decode(&mut deserializer);
             let api_identifier = <String>::sse_decode(&mut deserializer);
+            let api_quality = <crate::api::player::AudioQuality>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
                     let api_that = api_that.rust_auto_opaque_decode_ref();
-                    crate::api::player::AnnixPlayer::open(&api_that, api_identifier)
+                    crate::api::player::AnnixPlayer::open(&api_that, api_identifier, api_quality)
                 })())
             }
         },
@@ -533,11 +534,16 @@ fn wire_AnnixPlayer_set_track_impl(
                 flutter_rust_bridge::for_generated::rust_async::RwLock<AnnixPlayer>,
             >>::sse_decode(&mut deserializer);
             let api_identifier = <String>::sse_decode(&mut deserializer);
+            let api_quality = <crate::api::player::AudioQuality>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
                     let api_that = api_that.rust_auto_opaque_decode_ref();
-                    crate::api::player::AnnixPlayer::set_track(&api_that, api_identifier)
+                    crate::api::player::AnnixPlayer::set_track(
+                        &api_that,
+                        api_identifier,
+                        api_quality,
+                    )
                 })())
             }
         },
@@ -1152,6 +1158,20 @@ impl SseDecode for uuid::Uuid {
     }
 }
 
+impl SseDecode for crate::api::player::AudioQuality {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::player::AudioQuality::Low,
+            1 => crate::api::player::AudioQuality::Medium,
+            2 => crate::api::player::AudioQuality::High,
+            3 => crate::api::player::AudioQuality::Lossless,
+            _ => unreachable!("Invalid variant for AudioQuality: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1403,6 +1423,28 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<AnnixPlayer>> for AnnixPlayer 
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::player::AudioQuality> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            crate::api::player::AudioQuality::Low => 0.into_dart(),
+            crate::api::player::AudioQuality::Medium => 1.into_dart(),
+            crate::api::player::AudioQuality::High => 2.into_dart(),
+            crate::api::player::AudioQuality::Lossless => 3.into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<crate::api::player::AudioQuality>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::player::AudioQuality>>
+    for crate::api::player::AudioQuality
+{
+    fn into_into_dart(self) -> FrbWrapper<crate::api::player::AudioQuality> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::simple::LocalDb {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [self.repo.into_into_dart().into_dart()].into_dart()
@@ -1606,6 +1648,24 @@ impl SseEncode for uuid::Uuid {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.as_bytes().to_vec(), serializer);
+    }
+}
+
+impl SseEncode for crate::api::player::AudioQuality {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::player::AudioQuality::Low => 0,
+                crate::api::player::AudioQuality::Medium => 1,
+                crate::api::player::AudioQuality::High => 2,
+                crate::api::player::AudioQuality::Lossless => 3,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 

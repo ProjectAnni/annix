@@ -10,6 +10,7 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
+import 'package:annix/services/settings.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
@@ -39,6 +40,19 @@ void playFullList({
     trackList,
     initialIndex: initialIndex,
   );
+}
+
+AudioQuality fromQuality(PreferQuality q) {
+  switch (q) {
+    case PreferQuality.low:
+      return AudioQuality.low;
+    case PreferQuality.medium:
+      return AudioQuality.medium;
+    case PreferQuality.high:
+      return AudioQuality.high;
+    case PreferQuality.lossless:
+      return AudioQuality.lossless;
+  }
 }
 
 class PlaybackService extends ChangeNotifier {
@@ -193,8 +207,11 @@ class PlaybackService extends ChangeNotifier {
         );
       }
     }
-    await PlaybackService.player
-        .setTrack(identifier: source.identifier.toString());
+
+    final settings = ref.read(settingsProvider);
+    await PlaybackService.player.setTrack(
+        identifier: source.identifier.toString(),
+        quality: fromQuality(settings.defaultAudioQuality.value));
 
     if (setSourceOnly) {
       loadedAndPaused = true;

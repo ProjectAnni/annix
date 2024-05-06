@@ -41,9 +41,12 @@ class AnnixPlayer extends RustOpaque {
   factory AnnixPlayer({required String cachePath, dynamic hint}) =>
       RustLib.instance.api.annixPlayerNew(cachePath: cachePath, hint: hint);
 
-  Future<void> open({required String identifier, dynamic hint}) =>
-      RustLib.instance.api
-          .annixPlayerOpen(that: this, identifier: identifier, hint: hint);
+  Future<void> open(
+          {required String identifier,
+          required AudioQuality quality,
+          dynamic hint}) =>
+      RustLib.instance.api.annixPlayerOpen(
+          that: this, identifier: identifier, quality: quality, hint: hint);
 
   Future<void> openFile({required String path, dynamic hint}) =>
       RustLib.instance.api
@@ -65,9 +68,12 @@ class AnnixPlayer extends RustOpaque {
       RustLib.instance.api
           .annixPlayerSeek(that: this, position: position, hint: hint);
 
-  Future<void> setTrack({required String identifier, dynamic hint}) =>
-      RustLib.instance.api
-          .annixPlayerSetTrack(that: this, identifier: identifier, hint: hint);
+  Future<void> setTrack(
+          {required String identifier,
+          required AudioQuality quality,
+          dynamic hint}) =>
+      RustLib.instance.api.annixPlayerSetTrack(
+          that: this, identifier: identifier, quality: quality, hint: hint);
 
   Future<void> setVolume({required double volume, dynamic hint}) =>
       RustLib.instance.api
@@ -75,6 +81,14 @@ class AnnixPlayer extends RustOpaque {
 
   Future<void> stop({dynamic hint}) =>
       RustLib.instance.api.annixPlayerStop(that: this, hint: hint);
+}
+
+enum AudioQuality {
+  low,
+  medium,
+  high,
+  lossless,
+  ;
 }
 
 enum PlayerStateEvent {

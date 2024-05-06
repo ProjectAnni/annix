@@ -20,7 +20,7 @@ log = "0.4.20"
 env_logger = "0.11"
 
 anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "9207e60" }
-anni-player = { git = "https://github.com/snylonue/anni-player", rev = "4218e2c" }
+anni-player = { git = "https://github.com/snylonue/anni-player", rev = "d1d6fe6" }
 cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 
