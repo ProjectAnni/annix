@@ -24,11 +24,29 @@ class AnnixPlayer extends RustOpaque {
         RustLib.instance.api.rust_arc_decrement_strong_count_AnnixPlayerPtr,
   );
 
+  Future<void> addProvider(
+          {required String url,
+          required String auth,
+          required int priority,
+          dynamic hint}) =>
+      RustLib.instance.api.annixPlayerAddProvider(
+          that: this, url: url, auth: auth, priority: priority, hint: hint);
+
+  Future<void> clearProvider({dynamic hint}) =>
+      RustLib.instance.api.annixPlayerClearProvider(that: this, hint: hint);
+
   bool isPlaying({dynamic hint}) =>
       RustLib.instance.api.annixPlayerIsPlaying(that: this, hint: hint);
 
-  factory AnnixPlayer({dynamic hint}) =>
-      RustLib.instance.api.annixPlayerNew(hint: hint);
+  factory AnnixPlayer({required String cachePath, dynamic hint}) =>
+      RustLib.instance.api.annixPlayerNew(cachePath: cachePath, hint: hint);
+
+  Future<void> open(
+          {required String identifier,
+          required AudioQuality quality,
+          dynamic hint}) =>
+      RustLib.instance.api.annixPlayerOpen(
+          that: this, identifier: identifier, quality: quality, hint: hint);
 
   Future<void> openFile({required String path, dynamic hint}) =>
       RustLib.instance.api
@@ -50,12 +68,27 @@ class AnnixPlayer extends RustOpaque {
       RustLib.instance.api
           .annixPlayerSeek(that: this, position: position, hint: hint);
 
+  Future<void> setTrack(
+          {required String identifier,
+          required AudioQuality quality,
+          dynamic hint}) =>
+      RustLib.instance.api.annixPlayerSetTrack(
+          that: this, identifier: identifier, quality: quality, hint: hint);
+
   Future<void> setVolume({required double volume, dynamic hint}) =>
       RustLib.instance.api
           .annixPlayerSetVolume(that: this, volume: volume, hint: hint);
 
   Future<void> stop({dynamic hint}) =>
       RustLib.instance.api.annixPlayerStop(that: this, hint: hint);
+}
+
+enum AudioQuality {
+  low,
+  medium,
+  high,
+  lossless,
+  ;
 }
 
 enum PlayerStateEvent {

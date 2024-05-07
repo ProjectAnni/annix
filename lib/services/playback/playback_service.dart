@@ -7,8 +7,10 @@ import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
+import 'package:annix/services/settings.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
@@ -40,8 +42,21 @@ void playFullList({
   );
 }
 
+AudioQuality fromQuality(PreferQuality q) {
+  switch (q) {
+    case PreferQuality.low:
+      return AudioQuality.low;
+    case PreferQuality.medium:
+      return AudioQuality.medium;
+    case PreferQuality.high:
+      return AudioQuality.high;
+    case PreferQuality.lossless:
+      return AudioQuality.lossless;
+  }
+}
+
 class PlaybackService extends ChangeNotifier {
-  static final AnnixPlayer player = AnnixPlayer();
+  static final AnnixPlayer player = AnnixPlayer(cachePath: playerCachePath());
 
   // TODO: cache this map
   static final PropertyValueNotifier<Map<String, Duration>> durationMap =
@@ -128,6 +143,16 @@ class PlaybackService extends ChangeNotifier {
 
     WidgetsBinding.instance.addPostFrameCallback((final _) =>
         play(reload: true, setSourceOnly: true, trackPlayback: false));
+
+    final db = ref.read(localDatabaseProvider);
+    final annilServersStream = db.sortedAnnilServers().watch();
+    annilServersStream.listen((servers) {
+      PlaybackService.player.clearProvider();
+      for (final server in servers) {
+        PlaybackService.player.addProvider(
+            url: server.url, auth: server.token, priority: server.priority);
+      }
+    });
   }
 
   Future<void> play({
@@ -166,7 +191,6 @@ class PlaybackService extends ChangeNotifier {
       await stop();
       return;
     }
-    final currentIndex = playingIndex!;
 
     // stop previous playback
     FLog.trace(text: 'Start playing');
@@ -184,46 +208,20 @@ class PlaybackService extends ChangeNotifier {
       }
     }
 
-    final toPlayId = source.id;
-    if (!source.preloaded) {
-      // current track is not preloaded, buffering
-      playerStatus = PlayerStatus.buffering;
-      notifyListeners();
+    final settings = ref.read(settingsProvider);
+    await PlaybackService.player.setTrack(
+        identifier: source.identifier.toString(),
+        quality: fromQuality(settings.defaultAudioQuality.value));
+
+    if (setSourceOnly) {
+      loadedAndPaused = true;
+      playerStatus = PlayerStatus.paused;
+    } else {
+      await PlaybackService.player.play();
+      playerStatus = PlayerStatus.playing;
     }
 
-    // preload the next track
-    if (queue.length > currentIndex + 1) {
-      queue[currentIndex + 1].preload(ref);
-    }
-
-    try {
-      source.preload(ref);
-      // wait for audio file to download and play it
-      source.setOnPlayer(PlaybackService.player);
-      if (setSourceOnly) {
-        loadedAndPaused = true;
-      } else {
-        await PlaybackService.player.play();
-      }
-    } catch (e) {
-      if (e is AudioCancelledError) {
-        return;
-      }
-
-      // TODO: tell user why paused
-      FLog.error(text: 'Failed to play', exception: e);
-      await pause();
-    }
-
-    // when playback starts, set state to playing
-    if (playing.id == toPlayId && playerStatus == PlayerStatus.buffering) {
-      if (setSourceOnly) {
-        playerStatus = PlayerStatus.paused;
-      } else {
-        playerStatus = PlayerStatus.playing;
-      }
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   Future<void> pause() async {

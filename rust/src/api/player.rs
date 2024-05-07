@@ -1,13 +1,15 @@
+pub use anni_player::provider::AudioQuality;
+
 use std::{
-    sync::{Arc, OnceLock, RwLock},
+    sync::{Arc, Once, OnceLock, RwLock},
     thread,
 };
 
 use anni_playback::types::PlayerEvent;
+use anni_player::{AnniPlayer, TypedPriorityProvider};
 use flutter_rust_bridge::{frb, RustOpaqueNom};
 
 use crate::frb_generated::StreamSink;
-use crate::player::player::Player;
 
 pub enum PlayerStateEvent {
     /// Started playing
@@ -46,17 +48,29 @@ fn update_player_state_stream(
 
 pub type StreamWrapper<T> = Arc<OnceLock<RwLock<Option<StreamSink<T>>>>>;
 
+#[frb(mirror(AudioQuality))]
+pub enum _AudioQuality {
+    Low,
+    Medium,
+    High,
+    Lossless,
+}
+
 #[frb(opaque)]
 pub struct AnnixPlayer {
-    player: Player,
+    player: AnniPlayer,
     _state: StreamWrapper<PlayerStateEvent>,
     _progress: RustOpaqueNom<StreamWrapper<ProgressState>>,
 }
 
 impl AnnixPlayer {
     #[frb(sync)]
-    pub fn new() -> AnnixPlayer {
-        let (player, receiver) = Player::new();
+    pub fn new(cache_path: String) -> AnnixPlayer {
+        static LOGGER: Once = Once::new();
+
+        LOGGER.call_once(|| env_logger::init());
+
+        let (player, receiver) = AnniPlayer::new(TypedPriorityProvider::new(vec![]), cache_path.into());
         let progress = Arc::new(OnceLock::new());
         let player_state = Arc::new(OnceLock::new());
 
@@ -106,7 +120,15 @@ impl AnnixPlayer {
     }
 
     pub fn open_file(&self, path: String) -> anyhow::Result<()> {
-        self.player.open_file(path, false)
+        self.player.open_file(path)
+    }
+
+    pub fn open(&self, identifier: String, quality: AudioQuality) -> anyhow::Result<()> {
+        self.player.open(identifier.parse()?, quality)
+    }
+
+    pub fn set_track(&self, identifier: String, quality: AudioQuality) -> anyhow::Result<()> {
+        self.player.load(identifier.parse()?, quality)
     }
 
     pub fn set_volume(&self, volume: f32) {
@@ -123,7 +145,15 @@ impl AnnixPlayer {
 
     #[frb(sync)]
     pub fn is_playing(&self) -> bool {
-        self.player.is_playing()
+        self.player.player.is_playing()
+    }
+
+    pub fn add_provider(&self, url: String, auth: String, priority: i32) {
+        self.player.add_provider(url, auth, priority);
+    }
+
+    pub fn clear_provider(&self) {
+        self.player.clear_provider();
     }
 
     pub fn player_state_stream(&self, stream: StreamSink<PlayerStateEvent>) {
