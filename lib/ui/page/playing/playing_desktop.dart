@@ -1,6 +1,5 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -94,8 +93,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                 ),
                                 onPressed: () {
                                   // FIXME: dialog to show all available tags
-                                  final router =
-                                      AnnixRouterDelegate.of(context);
+                                  final router = ref.read(routerProvider);
                                   router.to(
                                     name: '/tag',
                                     arguments: track.artist,
@@ -113,8 +111,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 onPressed: () async {
-                                  final router =
-                                      AnnixRouterDelegate.of(context);
+                                  final router = ref.read(routerProvider);
                                   router.to(
                                     name: '/album',
                                     arguments: track.id.albumId,

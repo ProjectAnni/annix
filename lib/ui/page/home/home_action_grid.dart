@@ -1,6 +1,5 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/loading.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -27,7 +26,7 @@ class HomeActionGrid extends ConsumerWidget {
           icon: const Icon(Icons.favorite_outline),
           title: t.my_favorite,
           onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/favorite');
+            ref.read(routerProvider).to(name: '/favorite');
           },
         ),
         HomeActionButton(
@@ -46,14 +45,14 @@ class HomeActionGrid extends ConsumerWidget {
           icon: const Icon(Icons.history),
           title: t.recent_played,
           onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/history');
+            ref.read(routerProvider).to(name: '/history');
           },
         ),
         HomeActionButton(
           icon: const Icon(Icons.download),
           title: t.download,
           onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/downloading');
+            ref.read(routerProvider).to(name: '/downloading');
           },
         ),
       ],

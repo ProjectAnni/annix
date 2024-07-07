@@ -1,6 +1,5 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/loading.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -32,7 +31,7 @@ class AnnivLoginPage extends HookConsumerWidget {
               var url = serverUrlController.text;
               var email = emailController.text;
               final password = passwordController.text;
-              final delegate = AnnixRouterDelegate.of(context);
+              final delegate = ref.read(routerProvider);
               if (url.isEmpty) {
                 _showSnackBar(context, 'Please enter a valid URL');
               } else if (email.isEmpty || !email.contains('@')) {

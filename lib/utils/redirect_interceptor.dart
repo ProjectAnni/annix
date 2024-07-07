@@ -31,10 +31,10 @@ class RedirectInterceptor extends Interceptor {
 
   @override
   Future<dynamic> onError(
-    final DioError err,
+    final DioException err,
     final ErrorInterceptorHandler handler,
   ) async {
-    if (err.type == DioErrorType.badResponse && err.response!.isRedirect) {
+    if (err.type == DioExceptionType.badResponse && err.response!.isRedirect) {
       final url = err.requestOptions.extra['annil-dl-url'];
       if (url != null) {
         headers.putIfAbsent(url, () => err.response!.headers);
@@ -42,7 +42,7 @@ class RedirectInterceptor extends Interceptor {
         opt.followRedirects = true;
         try {
           await client.fetch(opt).then((final value) => handler.resolve(value));
-        } on DioError catch (e) {
+        } on DioException catch (e) {
           super.onError(e, handler);
         }
       }
