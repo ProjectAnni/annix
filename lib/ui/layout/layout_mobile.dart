@@ -42,8 +42,6 @@ class AnnixLayoutMobile extends HookConsumerWidget {
         builder: (final context, final ref, final child) {
           final isQueueEmpty =
               ref.watch(playbackProvider.select((final p) => p.queue.isEmpty));
-          final isPlaying = ref
-              .watch(playbackProvider.select((final p) => p.playing != null));
           final showMiniPlayer = !isQueueEmpty;
           return Stack(
             children: [
