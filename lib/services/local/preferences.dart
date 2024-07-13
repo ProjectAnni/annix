@@ -11,7 +11,7 @@ class PreferencesStore {
       : _store = NativePreferenceStore(root: PathService.dataRoot);
 
   T? get<T>(final String key) {
-    final data = _store.get(key: key);
+    final data = _store.get_(key: key);
     if (data == null) {
       return null;
     }
@@ -20,7 +20,7 @@ class PreferencesStore {
   }
 
   void set<T>(final String key, final T value) {
-    _store.set(key: key, value: jsonEncode(value));
+    _store.set_(key: key, value: jsonEncode(value));
   }
 
   void remove(final String key) {

@@ -38,7 +38,7 @@ class AnnixStoreCategory {
       return _cache[key];
     }
 
-    final value = await _store._database.get(category: _category, key: key);
+    final value = await _store._database.get_(category: _category, key: key);
     if (value == null) {
       return null;
     }
