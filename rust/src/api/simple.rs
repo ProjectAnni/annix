@@ -1,5 +1,6 @@
 pub use anni_repo::{db::RepoDatabaseRead, prelude::JsonAlbum};
 use flutter_rust_bridge::frb;
+use material_colors::image::{FilterType, ImageReader};
 pub use once_cell::sync::Lazy;
 pub use rusqlite::Connection;
 pub use uuid::Uuid;
@@ -201,4 +202,21 @@ CREATE TABLE IF NOT EXISTS store(
             )
             .unwrap();
     }
+}
+
+/// Color
+#[frb(sync)]
+pub fn get_theme_color(path: String) -> u32 {
+    let mut data = ImageReader::open(path).expect("failed to read image");
+    data.resize(128, 128, FilterType::Nearest);
+    let color = ImageReader::extract_color(&data);
+
+    // alpha: ((value >> 24) & 0xFF) as u8,
+    // red: ((value >> 16) & 0xFF) as u8,
+    // green: ((value >> 8) & 0xFF) as u8,
+    // blue: ((value) & 0xFF) as u8,
+    (color.alpha as u32) << 24
+        | (color.red as u32) << 16
+        | (color.green as u32) << 8
+        | (color.blue as u32)
 }

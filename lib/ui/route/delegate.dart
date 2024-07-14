@@ -197,9 +197,13 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/album':
         if (routeSettings.arguments is String) {
           // albumId
-          child = LazyAlbumPage(albumId: routeSettings.arguments as String);
+          final albumId = routeSettings.arguments as String;
+          child = LazyAlbumPage(albumId: albumId);
+          ref.read(themeProvider).pushTemporaryTheme(albumId);
         } else {
-          child = AlbumPage(album: routeSettings.arguments as Album);
+          final album = routeSettings.arguments as Album;
+          child = AlbumPage(album: album);
+          ref.read(themeProvider).pushTemporaryTheme(album.albumId);
         }
         break;
       case '/tag':

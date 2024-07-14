@@ -33,26 +33,52 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
   /// Reorder map, generated
   List<int>? _reorder;
 
-  Widget? _cover({final bool card = true}) {
+  @override
+  void initState() {
+    super.initState();
+
+    // TODO: move to route delegate
+    final coverIdentifier = this.coverIdentifier();
+    if (coverIdentifier != null) {
+      final cover = DiscIdentifier.fromIdentifier(coverIdentifier);
+      ref.read(themeProvider).pushTemporaryTheme(cover.albumId);
+    }
+  }
+
+  String? coverIdentifier() {
     String? coverIdentifier = widget.playlist.intro.cover;
+
     if (coverIdentifier == null ||
         coverIdentifier == '' ||
         coverIdentifier.startsWith('/')) {
       coverIdentifier = widget.playlist.firstAvailableCover();
+    }
+    return coverIdentifier;
+  }
+
+  Widget? _cover({final bool card = true}) {
+    String? oldCoverIdentifier = widget.playlist.intro.cover;
+
+    if (oldCoverIdentifier == null ||
+        oldCoverIdentifier == '' ||
+        oldCoverIdentifier.startsWith('/')) {
+      oldCoverIdentifier = widget.playlist.firstAvailableCover();
 
       final anniv = ref.read(annivProvider);
-      if (coverIdentifier != null &&
+      if (oldCoverIdentifier != null &&
           widget.playlist.intro.remoteId != null &&
           anniv.client != null) {
         anniv.client?.updatePlaylistInfo(
           playlistId: widget.playlist.intro.remoteId!,
           info: PatchedPlaylistInfo(
             // FIXME: do not use disc id
-            cover: DiscIdentifier(albumId: coverIdentifier, discId: 1),
+            cover: DiscIdentifier(albumId: oldCoverIdentifier, discId: 1),
           ),
         );
       }
     }
+
+    final coverIdentifier = this.coverIdentifier();
 
     if (coverIdentifier == null) {
       return null;
@@ -61,14 +87,6 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
       final child = MusicCover.fromAlbum(
         albumId: cover.albumId,
         discId: cover.discId,
-        onImage: (final provider) async {
-          if (loading) {
-            loading = false;
-            ref
-                .read(themeProvider)
-                .setTemporaryImageProvider(cover.albumId, provider);
-          }
-        },
       );
       if (!card) return child;
 

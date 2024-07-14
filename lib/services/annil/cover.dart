@@ -34,8 +34,9 @@ class _CoverReverseProxy {
   final Ref ref;
   final downloadingMap = {};
 
-  Future<File?> getCoverImage(final CoverItem cover) async {
+  Future<File?> getCoverImage({required String albumId, int? discId}) async {
     final annil = ref.read(annilProvider);
+    final cover = CoverItem(albumId: albumId, discId: discId);
 
     if (downloadingMap.containsKey(cover.key)) {
       await downloadingMap[cover.key];
@@ -43,6 +44,7 @@ class _CoverReverseProxy {
 
     final coverImagePath = getCoverCachePath(cover.albumId, cover.discId);
     final file = File(coverImagePath);
+
     if (!await file.exists()) {
       final uri =
           await annil.getCoverUrl(albumId: cover.albumId, discId: cover.discId);
@@ -62,11 +64,15 @@ class _CoverReverseProxy {
         // create folder
         await file.parent.create(recursive: true);
 
-        // response stream to UInt8List
-        final data = response.data;
-        if (data != null) {
-          await file.writeAsBytes(data);
-          downloadingMap.remove(cover.key);
+        try {
+          // response stream to UInt8List
+          final data = response.data;
+          if (data != null) {
+            await file.writeAsBytes(data);
+            downloadingMap.remove(cover.key);
+          }
+        } catch (e) {
+          await file.delete();
         }
       }
     }

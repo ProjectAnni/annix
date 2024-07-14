@@ -104,12 +104,6 @@ class AlbumPage extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    onImage(final ImageProvider provider) async {
-      ref
-          .read(themeProvider)
-          .setTemporaryImageProvider(album.albumId, provider);
-    }
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -127,10 +121,7 @@ class AlbumPage extends ConsumerWidget {
                     return Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: constraints.maxWidth / 6),
-                      child: MusicCover.fromAlbum(
-                        albumId: album.albumId,
-                        onImage: onImage,
-                      ),
+                      child: MusicCover.fromAlbum(albumId: album.albumId),
                     );
                   },
                 ),
@@ -159,10 +150,7 @@ class AlbumPage extends ConsumerWidget {
                     if (context.isDesktopOrLandscape)
                       SizedBox(
                         height: 240,
-                        child: MusicCover.fromAlbum(
-                          albumId: album.albumId,
-                          onImage: onImage,
-                        ),
+                        child: MusicCover.fromAlbum(albumId: album.albumId),
                       ),
                     const SizedBox(width: 8),
                     Expanded(
