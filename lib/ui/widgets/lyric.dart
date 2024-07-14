@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 extension on LyricAlign {
   TextAlign get textAlign {
@@ -163,12 +164,14 @@ class _LyricView extends StatelessWidget {
             final player = ref.watch(playbackProvider);
             final position =
                 ref.watch(playingProvider.select((final p) => p?.position));
-            return LyricsReader(
-              model: lyric!.lyric.model,
-              lyricUi: ui,
-              position: position?.inMilliseconds ?? 0,
-              playing: player.playerStatus == PlayerStatus.playing,
-              emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
+            return IgnoreDraggableWidget(
+              child: LyricsReader(
+                model: lyric!.lyric.model,
+                lyricUi: ui,
+                position: position?.inMilliseconds ?? 0,
+                playing: player.playerStatus == PlayerStatus.playing,
+                emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
+              ),
             );
           },
         );
