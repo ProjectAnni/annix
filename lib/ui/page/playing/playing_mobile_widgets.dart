@@ -80,6 +80,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               onPressed: () {
                 // hide playing page
                 ref.read(routerProvider).slideController.hide();
+                ref.read(routerProvider).panelController.close();
                 // jump to album page
                 delegate.to(
                   name: '/album',
