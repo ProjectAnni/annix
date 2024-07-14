@@ -199,7 +199,7 @@ class PlaybackService extends ChangeNotifier {
     try {
       source.preload(ref);
       // wait for audio file to download and play it
-      source.setOnPlayer(PlaybackService.player);
+      await source.setOnPlayer(PlaybackService.player);
       if (setSourceOnly) {
         loadedAndPaused = true;
       } else {
@@ -368,6 +368,7 @@ class PlaybackService extends ChangeNotifier {
     final playing = this.playing;
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index || reload) {
+      await player.pause();
       playing?.dispose();
       this.playing = PlayingTrack(queue[index], ref);
     }
