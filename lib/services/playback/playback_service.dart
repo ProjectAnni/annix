@@ -256,13 +256,13 @@ class PlaybackService extends ChangeNotifier {
         case LoopMode.off:
           // to the next song / stop
           if (currentIndex > 0) {
-            setPlayingIndex(currentIndex - 1);
+            await setPlayingIndex(currentIndex - 1);
             await play(reload: true);
           }
           break;
         case LoopMode.all:
           // to the previous song / last song
-          setPlayingIndex((currentIndex > 0 ? currentIndex : queue.length) - 1);
+          await setPlayingIndex((currentIndex > 0 ? currentIndex : queue.length) - 1);
           await play(reload: true);
           break;
         case LoopMode.one:
@@ -272,7 +272,7 @@ class PlaybackService extends ChangeNotifier {
           break;
         case LoopMode.random:
           // to a random song
-          setPlayingIndex(rng.nextInt(queue.length));
+          await setPlayingIndex(rng.nextInt(queue.length));
           await play(reload: true);
           break;
       }
@@ -286,7 +286,7 @@ class PlaybackService extends ChangeNotifier {
         case LoopMode.off:
           // to the next song / stop
           if (currentIndex < queue.length - 1) {
-            setPlayingIndex(currentIndex + 1);
+            await setPlayingIndex(currentIndex + 1);
             await play(reload: true);
           } else {
             await stop();
@@ -294,7 +294,7 @@ class PlaybackService extends ChangeNotifier {
           break;
         case LoopMode.all:
           // to the next song / first song
-          setPlayingIndex((currentIndex + 1) % queue.length);
+          await setPlayingIndex((currentIndex + 1) % queue.length);
           await play(reload: true);
           break;
         case LoopMode.one:
@@ -304,7 +304,7 @@ class PlaybackService extends ChangeNotifier {
           break;
         case LoopMode.random:
           // to a random song
-          setPlayingIndex(rng.nextInt(queue.length));
+          await setPlayingIndex(rng.nextInt(queue.length));
           await play(reload: true);
           break;
       }
@@ -331,7 +331,7 @@ class PlaybackService extends ChangeNotifier {
 
     queue.removeAt(index);
     if (removeCurrentPlayingTrack) {
-      setPlayingIndex(index, notify: false);
+      await setPlayingIndex(index, notify: false);
       await play(reload: true);
     }
     notifyListeners();
@@ -343,7 +343,7 @@ class PlaybackService extends ChangeNotifier {
       final to = index % queue.length;
       if (to != playingIndex) {
         // index changed, set new audio source
-        setPlayingIndex(to);
+        await setPlayingIndex(to);
         await play(reload: true);
       } else {
         // index not changed, seek to start
@@ -380,7 +380,7 @@ class PlaybackService extends ChangeNotifier {
     queue = songs;
     // 2. set playing index
     if (songs.isNotEmpty) {
-      setPlayingIndex(initialIndex % songs.length, reload: true, notify: false);
+      await setPlayingIndex(initialIndex % songs.length, reload: true, notify: false);
     } else {
       playing?.dispose();
       playing = null;
