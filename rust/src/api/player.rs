@@ -1,7 +1,7 @@
 pub use anni_player::provider::AudioQuality;
 
 use std::{
-    sync::{Arc, Once, OnceLock, RwLock},
+    sync::{Arc, Once, OnceLock},
     thread,
 };
 

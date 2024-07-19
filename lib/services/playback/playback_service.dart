@@ -10,7 +10,6 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
-import 'package:annix/services/settings.dart';
 import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
