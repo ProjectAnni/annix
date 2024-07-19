@@ -200,7 +200,7 @@ dependencies = [
 [[package]]
 name = "anni-player"
 version = "0.1.0"
-source = "git+https://github.com/snylonue/anni-player?rev=d1d6fe6#d1d6fe6ba190c4845eb5f8a525390d34011fc950"
+source = "git+https://github.com/snylonue/anni-player?rev=466a434#466a43494519b85ef45f878739e8f46fb8c06f86"
 dependencies = [
  "anni-playback",
  "anni-provider",

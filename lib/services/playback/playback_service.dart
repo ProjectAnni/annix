@@ -55,7 +55,7 @@ AudioQuality fromQuality(PreferQuality q) {
 }
 
 class PlaybackService extends ChangeNotifier {
-  static final AnnixPlayer player = AnnixPlayer(cachePath: playerCachePath());
+  static final AnnixPlayer player = AnnixPlayer(cachePath: audioCachePath());
 
   // TODO: cache this map
   static final PropertyValueNotifier<Map<String, Duration>> durationMap =
