@@ -7,7 +7,7 @@ use std::{
 
 use anni_playback::types::PlayerEvent;
 use anni_player::{AnniPlayer, TypedPriorityProvider};
-use flutter_rust_bridge::{frb, RustOpaqueNom};
+use flutter_rust_bridge::frb;
 
 use crate::frb_generated::StreamSink;
 
@@ -21,15 +21,13 @@ pub enum PlayerStateEvent {
 }
 
 pub struct ProgressState {
-    pub position: u64,
-    pub duration: u64,
+    pub position: u32,
+    pub duration: u32,
 }
 
 fn update_progress_stream(progress: &StreamWrapper<ProgressState>, state: ProgressState) {
-    if let Some(lock) = progress.get() {
-        if let Some(stream) = &*lock.read().unwrap() {
-            let _ = stream.add(state);
-        }
+    if let Some(stream) = progress.get() {
+        let _ = stream.add(state);
     }
 }
 
@@ -38,15 +36,11 @@ fn update_player_state_stream(
     state: PlayerStateEvent,
 ) {
     if let Some(stream) = player_state.get() {
-        if let Some(stream) = &*stream.read().unwrap() {
-            let _ = stream.add(state);
-        }
+        let _ = stream.add(state);
     }
 }
 
-// type StreamWrapper<T> = Arc<OnceLock<RwLock<Option<StreamSink<T>>>>>;
-
-pub type StreamWrapper<T> = Arc<OnceLock<RwLock<Option<StreamSink<T>>>>>;
+pub type StreamWrapper<T> = Arc<OnceLock<StreamSink<T>>>;
 
 #[frb(mirror(AudioQuality))]
 pub enum _AudioQuality {
@@ -60,7 +54,7 @@ pub enum _AudioQuality {
 pub struct AnnixPlayer {
     player: AnniPlayer,
     _state: StreamWrapper<PlayerStateEvent>,
-    _progress: RustOpaqueNom<StreamWrapper<ProgressState>>,
+    _progress: StreamWrapper<ProgressState>,
 }
 
 impl AnnixPlayer {
@@ -95,8 +89,8 @@ impl AnnixPlayer {
                         PlayerEvent::Progress(state) => update_progress_stream(
                             &progress,
                             ProgressState {
-                                position: state.position,
-                                duration: state.duration,
+                                position: state.position as u32,
+                                duration: state.duration as u32,
                             },
                         ),
                     }
@@ -107,7 +101,7 @@ impl AnnixPlayer {
         Self {
             player,
             _state: player_state,
-            _progress: RustOpaqueNom::new(progress),
+            _progress: progress,
         }
     }
 
@@ -139,8 +133,8 @@ impl AnnixPlayer {
         self.player.stop();
     }
 
-    pub fn seek(&self, position: u64) {
-        self.player.seek(position);
+    pub fn seek(&self, position: u32) {
+        self.player.seek(position as u64);
     }
 
     #[frb(sync)]
@@ -157,18 +151,10 @@ impl AnnixPlayer {
     }
 
     pub fn player_state_stream(&self, stream: StreamSink<PlayerStateEvent>) {
-        *self
-            ._state
-            .get_or_init(|| RwLock::new(None))
-            .write()
-            .unwrap() = Some(stream);
+        self._state.get_or_init(move || stream);
     }
 
     pub fn progress_stream(&self, stream: StreamSink<ProgressState>) {
-        *self
-            ._progress
-            .get_or_init(|| RwLock::new(None))
-            .write()
-            .unwrap() = Some(stream);
+        self._progress.get_or_init(move || stream);
     }
 }

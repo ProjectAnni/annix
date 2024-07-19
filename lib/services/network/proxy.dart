@@ -6,6 +6,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
 
+/// This proxy is only used for serving cover images for system notification.
 class AnnixProxy {
   final Ref ref;
 
@@ -19,7 +20,7 @@ class AnnixProxy {
 
     app.get('/cover/<albumId>',
         (final Request request, final String albumId) async {
-      final image = await coverProxy.getCoverImage(CoverItem(albumId: albumId));
+      final image = await coverProxy.getCoverImage(albumId: albumId);
       if (image != null) {
         return Response.ok(image.openRead(), headers: {
           'Content-Type': 'image/jpg',

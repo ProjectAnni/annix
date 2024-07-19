@@ -23,7 +23,7 @@ class HomeAppBar extends ConsumerWidget {
         child: TextButton(
           child: Text(t.server.login),
           onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/login');
+            ref.read(routerProvider).to(name: '/login');
           },
         ),
       );
@@ -36,7 +36,7 @@ class HomeAppBar extends ConsumerWidget {
             child: Text(info!.user.nickname.substring(0, 1)),
           ),
           onPressed: () {
-            AnnixRouterDelegate.of(context).to(name: '/server');
+            ref.read(routerProvider).to(name: '/server');
           },
         ),
       ],

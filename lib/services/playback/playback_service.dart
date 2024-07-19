@@ -366,6 +366,7 @@ class PlaybackService extends ChangeNotifier {
     final playing = this.playing;
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index || reload) {
+      await player.pause();
       playing?.dispose();
       this.playing = PlayingTrack(queue[index], ref);
     }

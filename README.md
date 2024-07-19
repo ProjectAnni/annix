@@ -9,6 +9,12 @@ Desktop / Mobile client for Project Anni.
 - Control through MPRIS on Linux
 - Portable mode (create a file named `portable.enable`)
 
+## Development
+
+```bash
+flutter_rust_bridge_codegen generate --watch
+```
+
 ## Build
 
 ```bash

@@ -25,7 +25,7 @@ class SqliteMetadataSource extends MetadataSource {
   }
 
   Future<Album?> _getAlbum(final String albumId) async {
-    final album = await database.getAlbum(albumId: UuidValue(albumId));
+    final album = await database.getAlbum(albumId: UuidValue.raw(albumId));
     if (album == null) {
       return null;
     } else {

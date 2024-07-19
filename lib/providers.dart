@@ -20,7 +20,7 @@ part 'providers.g.dart';
 
 final localeProvider =
     StreamProvider((final ref) => LocaleSettings.getLocaleStream());
-final themeProvider = ChangeNotifierProvider((final ref) => AnnixTheme());
+final themeProvider = ChangeNotifierProvider((final ref) => AnnixTheme(ref));
 final networkProvider =
     ChangeNotifierProvider((final ref) => NetworkService(ref));
 final isOnlineProvider =

@@ -1,6 +1,5 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -30,7 +29,7 @@ class AlbumGrid extends ConsumerWidget {
     void toAlbum(final BuildContext context) {
       metadataFuture.then((final album) {
         if (album != null) {
-          AnnixRouterDelegate.of(context).to(name: '/album', arguments: album);
+          ref.read(routerProvider).to(name: '/album', arguments: album);
         }
       });
     }

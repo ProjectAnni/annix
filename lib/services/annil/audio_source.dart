@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:annix/providers.dart';
+import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/annil.dart';
@@ -9,7 +10,6 @@ import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
-import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
@@ -153,9 +153,8 @@ class AnnilAudioSource {
   }
 
   Future<void> _preloadCover(final Ref ref) async {
-    final proxy = ref.read(proxyProvider);
-    final image = proxy.coverUrl(track.id.albumId, track.id.discId);
-    Dio().get(image);
+    final proxy = ref.read(coverProxyProvider);
+    proxy.getCoverImage(albumId: track.id.albumId, discId: track.id.discId);
   }
 
   void cancel() {

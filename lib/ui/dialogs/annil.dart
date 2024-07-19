@@ -1,4 +1,4 @@
-import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/providers.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -74,7 +74,7 @@ class AnnilDialog extends HookConsumerWidget {
         TextButton(
           style: TextButton.styleFrom(textStyle: context.textTheme.labelLarge),
           child: const Text('Cancel'),
-          onPressed: () => AnnixRouterDelegate.of(context).popRoute(),
+          onPressed: () => ref.read(routerProvider).popRoute(),
         ),
         TextButton(
           style: TextButton.styleFrom(textStyle: context.textTheme.labelLarge),
@@ -82,7 +82,7 @@ class AnnilDialog extends HookConsumerWidget {
               ? const Text('Add')
               : const Text('Update'),
           onPressed: () {
-            AnnixRouterDelegate.of(context).popRoute();
+            ref.read(routerProvider).popRoute();
             onSubmit(
               serverNameController.text,
               serverUrlController.text,

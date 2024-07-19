@@ -28,18 +28,12 @@ class PlayingMusicCover extends ConsumerWidget {
       child = const DummyMusicCover();
     } else {
       // is playing
+      ref.read(themeProvider).setImageProvider(playingId.albumId);
       child = MusicCover.fromAlbum(
         key: ValueKey(playingId.albumId),
         albumId: playingId.albumId,
         fit: fit,
         filterQuality: filterQuality,
-        onImage: (final provider) async {
-          final scheme =
-              await ColorScheme.fromImageProvider(provider: provider);
-          final darkScheme = await ColorScheme.fromImageProvider(
-              provider: provider, brightness: Brightness.dark);
-          ref.read(themeProvider).setScheme(scheme, darkScheme);
-        },
       );
 
       if (animated) {
@@ -75,8 +69,6 @@ class MusicCover extends ConsumerWidget {
   final double? width;
   final double? height;
 
-  final void Function(ImageProvider)? onImage;
-
   factory MusicCover.fromAlbum({
     required final String albumId,
     final int? discId,
@@ -84,7 +76,6 @@ class MusicCover extends ConsumerWidget {
     final BoxFit? fit,
     final FilterQuality filterQuality = FilterQuality.low,
     final String? tag,
-    final void Function(ImageProvider)? onImage,
     final double? width,
     final double? height,
   }) {
@@ -95,7 +86,6 @@ class MusicCover extends ConsumerWidget {
       fit: fit,
       filterQuality: filterQuality,
       tag: tag,
-      onImage: onImage,
       width: width,
       height: height,
     );
@@ -108,7 +98,6 @@ class MusicCover extends ConsumerWidget {
     this.fit,
     required this.filterQuality,
     this.tag,
-    this.onImage,
     this.width,
     this.height,
   });
@@ -134,8 +123,6 @@ class MusicCover extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final image = ExtendedNetworkImageProvider(
         ref.read(proxyProvider).coverUrl(albumId, discId));
-
-    onImage?.call(image);
 
     return ExtendedImage(
       image: image,

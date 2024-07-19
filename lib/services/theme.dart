@@ -1,10 +1,16 @@
+import 'package:annix/native/api/simple.dart';
+import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/font.dart';
+import 'package:annix/ui/route/page.dart';
+import 'package:annix/ui/route/route.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnixTheme extends ChangeNotifier {
+  final Ref ref;
   final _cache = {};
 
-  AnnixTheme()
+  AnnixTheme(this.ref)
       : _primaryColor = Colors.indigo,
         _primaryScheme = ColorScheme.fromSeed(seedColor: Colors.indigo),
         _primaryDarkScheme = ColorScheme.fromSeed(
@@ -37,24 +43,57 @@ class AnnixTheme extends ChangeNotifier {
   ThemeMode _themeMode;
   ThemeMode get themeMode => _themeMode;
 
-  void setTemporaryImageProvider(
-      final String albumId, final ImageProvider provider) async {
+  final List<String> _themeStack = [];
+  String? get activeTemporaryTheme {
+    if (_themeStack.isEmpty) {
+      return null;
+    }
+    return _themeStack.last;
+  }
+
+  void pushTemporaryTheme(final String albumId) async {
     if (!_cache.containsKey(albumId)) {
-      _cache[albumId] = {};
-      final scheme = await ColorScheme.fromImageProvider(provider: provider);
-      final darkScheme = await ColorScheme.fromImageProvider(
-          provider: provider, brightness: Brightness.dark);
-      _cache[albumId]!['scheme'] = scheme;
-      _cache[albumId]!['darkScheme'] = darkScheme;
+      _cache[albumId] = _getSchemeFromCover(albumId);
     }
 
-    if (_temporaryPrimaryScheme != _cache[albumId]['scheme'] ||
-        _temporaryPrimaryDarkScheme != _cache[albumId]['darkScheme']) {
+    _themeStack.add(albumId);
+    final [scheme, darkScheme] = await _cache[albumId];
+    if (activeTemporaryTheme == albumId && _temporaryPrimaryScheme != scheme ||
+        _temporaryPrimaryDarkScheme != darkScheme) {
       WidgetsBinding.instance.addPostFrameCallback((final _) {
-        _setTemporaryScheme(
-            _cache[albumId]!['scheme'], _cache[albumId]!['darkScheme']);
+        _setTemporaryScheme(scheme, darkScheme);
       });
     }
+  }
+
+  void popTemporaryTheme() {
+    if (_temporaryPrimaryColor != null) {
+      final oldTemporaryPrimaryColor = _temporaryPrimaryColor;
+      _temporaryPrimaryColor = null;
+      _temporaryPrimaryScheme = null;
+      _temporaryPrimaryDarkScheme = null;
+      _themeStack.clear();
+
+      if (oldTemporaryPrimaryColor != _primaryColor) {
+        notifyListeners();
+      }
+    }
+  }
+
+  void setImageProvider(String albumId) async {
+    final [scheme, darkScheme] = await _getSchemeFromCover(albumId);
+    _setScheme(scheme, darkScheme);
+  }
+
+  Future<List<ColorScheme>> _getSchemeFromCover(String albumId) async {
+    final proxy = ref.read(coverProxyProvider);
+    final image = await proxy.getCoverImage(albumId: albumId);
+    final seed = getThemeColor(path: image!.path);
+    final scheme = ColorScheme.fromSeed(seedColor: Color(seed));
+    final darkScheme = ColorScheme.fromSeed(
+        seedColor: Color(seed), brightness: Brightness.dark);
+
+    return [scheme, darkScheme];
   }
 
   void _setTemporaryScheme(
@@ -65,20 +104,7 @@ class AnnixTheme extends ChangeNotifier {
     notifyListeners();
   }
 
-  void revokeTemporaryScheme() {
-    if (_temporaryPrimaryColor != null) {
-      final oldTemporaryPrimaryColor = _temporaryPrimaryColor;
-      _temporaryPrimaryColor = null;
-      _temporaryPrimaryScheme = null;
-      _temporaryPrimaryDarkScheme = null;
-
-      if (oldTemporaryPrimaryColor != _primaryColor) {
-        notifyListeners();
-      }
-    }
-  }
-
-  void setScheme(final ColorScheme scheme, final ColorScheme darkScheme) {
+  void _setScheme(final ColorScheme scheme, final ColorScheme darkScheme) {
     _primaryColor = scheme.primary;
     _primaryScheme = scheme;
     _primaryDarkScheme = darkScheme;
@@ -103,9 +129,20 @@ class ThemePopObserver extends NavigatorObserver {
   ThemePopObserver(this.theme);
 
   @override
+  void didPush(Route route, Route? previousRoute) {
+    // TODO: implement didPush
+    super.didPush(route, previousRoute);
+  }
+
+  @override
   didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
-    WidgetsBinding.instance.addPostFrameCallback((final _) {
-      theme.revokeTemporaryScheme();
-    });
+    if (route is AnnixRoute && route.settings is AnnixPage) {
+      // if this route had pushed a theme, them pop it
+      if (['/album', '/playlist'].contains(route.settings.name)) {
+        WidgetsBinding.instance.addPostFrameCallback((final _) {
+          theme.popTemporaryTheme();
+        });
+      }
+    }
   }
 }

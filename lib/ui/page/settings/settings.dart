@@ -13,7 +13,7 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:annix/services/local/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:settings_ui/settings_ui.dart';
+import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -54,15 +54,17 @@ class SettingsScreen extends ConsumerWidget {
         AppBar(
           title: Text(t.settings.settings),
           centerTitle: true,
+          forceMaterialTransparency: true,
         ),
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(
-          settingsListBackground: context.colorScheme.background,
+          settingsListBackground: context.colorScheme.surface,
         ),
         darkTheme: SettingsThemeData(
-          settingsListBackground: context.colorScheme.background,
+          settingsListBackground: context.colorScheme.surface,
         ),
+        platform: DevicePlatform.android,
         sections: [
           SettingsSection(
             title: const Text('Common'),

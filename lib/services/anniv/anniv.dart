@@ -63,7 +63,7 @@ class AnnivService extends ChangeNotifier {
         info = SiteUserInfo(site: site, user: user);
         await _saveInfo();
       } catch (e) {
-        if (e is DioError && e.error is AnnivError) {
+        if (e is DioException && e.error is AnnivError) {
           final error = e.error as AnnivError;
           if (error.status == 902002) {
             // unauthorized, logout
