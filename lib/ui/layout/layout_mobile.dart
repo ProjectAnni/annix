@@ -17,6 +17,7 @@ class AnnixLayoutMobile extends HookConsumerWidget {
 
   static const pages = <String>[
     '/home',
+    '/tags',
     '/search',
     '/settings',
   ];
@@ -102,6 +103,10 @@ class AnnixLayoutMobile extends HookConsumerWidget {
               NavigationDestination(
                 icon: const Icon(Icons.casino_outlined),
                 label: t.home,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.local_offer_outlined),
+                label: t.category,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.search),
