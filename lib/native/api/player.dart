@@ -10,9 +10,18 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>
 abstract class AnnixPlayer implements RustOpaqueInterface {
+  Future<void> addProvider(
+      {required String url, required String auth, required int priority});
+
+  Future<void> clearProvider();
+
   bool isPlaying();
 
-  factory AnnixPlayer() => RustLib.instance.api.crateApiPlayerAnnixPlayerNew();
+  factory AnnixPlayer({required String cachePath}) =>
+      RustLib.instance.api.crateApiPlayerAnnixPlayerNew(cachePath: cachePath);
+
+  Future<void> open(
+      {required String identifier, required AudioQuality quality});
 
   Future<void> openFile({required String path});
 
@@ -26,9 +35,20 @@ abstract class AnnixPlayer implements RustOpaqueInterface {
 
   Future<void> seek({required int position});
 
+  Future<void> setTrack(
+      {required String identifier, required AudioQuality quality});
+
   Future<void> setVolume({required double volume});
 
   Future<void> stop();
+}
+
+enum AudioQuality {
+  low,
+  medium,
+  high,
+  lossless,
+  ;
 }
 
 enum PlayerStateEvent {
