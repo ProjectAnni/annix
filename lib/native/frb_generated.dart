@@ -59,7 +59,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.1.0';
 
   @override
-  int get rustContentHash => -2003164833;
+  int get rustContentHash => -1883214556;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -75,9 +75,23 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiNetworkUpdateNetworkStatus({required bool isOnline});
 
+  Future<void> crateApiPlayerAnnixPlayerAddProvider(
+      {required AnnixPlayer that,
+      required String url,
+      required String auth,
+      required int priority});
+
+  Future<void> crateApiPlayerAnnixPlayerClearProvider(
+      {required AnnixPlayer that});
+
   bool crateApiPlayerAnnixPlayerIsPlaying({required AnnixPlayer that});
 
-  AnnixPlayer crateApiPlayerAnnixPlayerNew();
+  AnnixPlayer crateApiPlayerAnnixPlayerNew({required String cachePath});
+
+  Future<void> crateApiPlayerAnnixPlayerOpen(
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality});
 
   Future<void> crateApiPlayerAnnixPlayerOpenFile(
       {required AnnixPlayer that, required String path});
@@ -94,6 +108,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiPlayerAnnixPlayerSeek(
       {required AnnixPlayer that, required int position});
+
+  Future<void> crateApiPlayerAnnixPlayerSetTrack(
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality});
 
   Future<void> crateApiPlayerAnnixPlayerSetVolume(
       {required AnnixPlayer that, required double volume});
@@ -232,13 +251,73 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiPlayerAnnixPlayerAddProvider(
+      {required AnnixPlayer that,
+      required String url,
+      required String auth,
+      required int priority}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+            that, serializer);
+        sse_encode_String(url, serializer);
+        sse_encode_String(auth, serializer);
+        sse_encode_i_32(priority, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiPlayerAnnixPlayerAddProviderConstMeta,
+      argValues: [that, url, auth, priority],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiPlayerAnnixPlayerAddProviderConstMeta =>
+      const TaskConstMeta(
+        debugName: "AnnixPlayer_add_provider",
+        argNames: ["that", "url", "auth", "priority"],
+      );
+
+  @override
+  Future<void> crateApiPlayerAnnixPlayerClearProvider(
+      {required AnnixPlayer that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiPlayerAnnixPlayerClearProviderConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiPlayerAnnixPlayerClearProviderConstMeta =>
+      const TaskConstMeta(
+        debugName: "AnnixPlayer_clear_provider",
+        argNames: ["that"],
+      );
+
+  @override
   bool crateApiPlayerAnnixPlayerIsPlaying({required AnnixPlayer that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
             that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -257,11 +336,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  AnnixPlayer crateApiPlayerAnnixPlayerNew() {
+  AnnixPlayer crateApiPlayerAnnixPlayerNew({required String cachePath}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        sse_encode_String(cachePath, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -269,7 +349,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiPlayerAnnixPlayerNewConstMeta,
-      argValues: [],
+      argValues: [cachePath],
       apiImpl: this,
     ));
   }
@@ -277,7 +357,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiPlayerAnnixPlayerNewConstMeta =>
       const TaskConstMeta(
         debugName: "AnnixPlayer_new",
-        argNames: [],
+        argNames: ["cachePath"],
+      );
+
+  @override
+  Future<void> crateApiPlayerAnnixPlayerOpen(
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+            that, serializer);
+        sse_encode_String(identifier, serializer);
+        sse_encode_audio_quality(quality, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiPlayerAnnixPlayerOpenConstMeta,
+      argValues: [that, identifier, quality],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiPlayerAnnixPlayerOpenConstMeta =>
+      const TaskConstMeta(
+        debugName: "AnnixPlayer_open",
+        argNames: ["that", "identifier", "quality"],
       );
 
   @override
@@ -290,7 +401,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -316,7 +427,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -342,7 +453,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -371,7 +482,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_StreamSink_player_state_event_Sse(stream, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -401,7 +512,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_StreamSink_progress_state_Sse(stream, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 12, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -430,7 +541,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_u_32(position, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -449,6 +560,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiPlayerAnnixPlayerSetTrack(
+      {required AnnixPlayer that,
+      required String identifier,
+      required AudioQuality quality}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+            that, serializer);
+        sse_encode_String(identifier, serializer);
+        sse_encode_audio_quality(quality, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiPlayerAnnixPlayerSetTrackConstMeta,
+      argValues: [that, identifier, quality],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiPlayerAnnixPlayerSetTrackConstMeta =>
+      const TaskConstMeta(
+        debugName: "AnnixPlayer_set_track",
+        argNames: ["that", "identifier", "quality"],
+      );
+
+  @override
   Future<void> crateApiPlayerAnnixPlayerSetVolume(
       {required AnnixPlayer that, required double volume}) {
     return handler.executeNormal(NormalTask(
@@ -458,7 +600,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_f_32(volume, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 15, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -484,7 +626,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 16, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -508,7 +650,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(path, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_32,
@@ -535,7 +677,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_local_db(that, serializer);
         sse_encode_Uuid(albumId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_String,
@@ -563,7 +705,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(tag, serializer);
         sse_encode_bool(recursive, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 19, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_Uuid,
@@ -588,7 +730,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_local_db(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_tag_item,
@@ -613,7 +755,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_local_db,
@@ -639,7 +781,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_local_store(that, serializer);
         sse_encode_opt_String(category, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -669,7 +811,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(category, serializer);
         sse_encode_String(key, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_String,
@@ -701,7 +843,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(key, serializer);
         sse_encode_String(value, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -725,7 +867,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(root, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_local_store,
@@ -751,7 +893,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_native_preference_store(that, serializer);
         sse_encode_String(key, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_String,
@@ -776,7 +918,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(root, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_native_preference_store,
@@ -802,7 +944,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_native_preference_store(that, serializer);
         sse_encode_String(key, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -828,7 +970,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_native_preference_store(that, serializer);
         sse_encode_String(prefix, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -857,7 +999,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_native_preference_store(that, serializer);
         sse_encode_String(key, serializer);
         sse_encode_String(value, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -966,6 +1108,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   UuidValue dco_decode_Uuid(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return UuidValue.fromByteList(dco_decode_list_prim_u_8_strict(raw));
+  }
+
+  @protected
+  AudioQuality dco_decode_audio_quality(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AudioQuality.values[raw as int];
   }
 
   @protected
@@ -1211,6 +1359,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return UuidValue.fromByteList(inner);
+  }
+
+  @protected
+  AudioQuality sse_decode_audio_quality(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return AudioQuality.values[inner];
   }
 
   @protected
@@ -1471,6 +1626,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_audio_quality(AudioQuality self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
@@ -1642,9 +1803,24 @@ class AnnixPlayerImpl extends RustOpaque implements AnnixPlayer {
         RustLib.instance.api.rust_arc_decrement_strong_count_AnnixPlayerPtr,
   );
 
+  Future<void> addProvider(
+          {required String url, required String auth, required int priority}) =>
+      RustLib.instance.api.crateApiPlayerAnnixPlayerAddProvider(
+          that: this, url: url, auth: auth, priority: priority);
+
+  Future<void> clearProvider() =>
+      RustLib.instance.api.crateApiPlayerAnnixPlayerClearProvider(
+        that: this,
+      );
+
   bool isPlaying() => RustLib.instance.api.crateApiPlayerAnnixPlayerIsPlaying(
         that: this,
       );
+
+  Future<void> open(
+          {required String identifier, required AudioQuality quality}) =>
+      RustLib.instance.api.crateApiPlayerAnnixPlayerOpen(
+          that: this, identifier: identifier, quality: quality);
 
   Future<void> openFile({required String path}) => RustLib.instance.api
       .crateApiPlayerAnnixPlayerOpenFile(that: this, path: path);
@@ -1669,6 +1845,11 @@ class AnnixPlayerImpl extends RustOpaque implements AnnixPlayer {
 
   Future<void> seek({required int position}) => RustLib.instance.api
       .crateApiPlayerAnnixPlayerSeek(that: this, position: position);
+
+  Future<void> setTrack(
+          {required String identifier, required AudioQuality quality}) =>
+      RustLib.instance.api.crateApiPlayerAnnixPlayerSetTrack(
+          that: this, identifier: identifier, quality: quality);
 
   Future<void> setVolume({required double volume}) => RustLib.instance.api
       .crateApiPlayerAnnixPlayerSetVolume(that: this, volume: volume);
