@@ -1,5 +1,4 @@
 import 'package:annix/providers.dart';
-import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -34,14 +33,10 @@ class PlaylistView extends ConsumerWidget {
               playlist.name,
               overflow: TextOverflow.ellipsis,
             ),
-            onTap: () async {
-              final delegate = ref.read(routerProvider);
-              final list = await Playlist.load(
-                id: playlist.id,
-                db: ref.read(localDatabaseProvider),
-                anniv: ref.read(annivProvider),
-              );
-              delegate.to(name: '/playlist', arguments: list);
+            onTap: () {
+              ref
+                  .read(routerProvider)
+                  .to(name: '/playlist', arguments: playlist.id);
             },
           );
         },

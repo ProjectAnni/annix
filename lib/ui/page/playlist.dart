@@ -2,7 +2,9 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -15,6 +17,29 @@ enum _PlaylistAction {
   delete,
 }
 
+final playlistFamily = FutureProvider.family<Playlist, int>((ref, playlistId) {
+  final db = ref.read(localDatabaseProvider);
+  final anniv = ref.read(annivProvider);
+  return Playlist.load(id: playlistId, db: db, anniv: anniv);
+});
+
+class LoadingPlaylistPage extends ConsumerWidget {
+  final int playlistId;
+
+  const LoadingPlaylistPage({super.key, required this.playlistId});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final playlist = ref.watch(playlistFamily(playlistId));
+
+    return playlist.when(
+      data: (playlist) => PlaylistPage(playlist: playlist),
+      error: (a, b) => const Text('Error'),
+      loading: () => const ShimmerPlaylistPage(),
+    );
+  }
+}
+
 class PlaylistPage extends ConsumerStatefulWidget {
   final Playlist playlist;
 
@@ -25,8 +50,6 @@ class PlaylistPage extends ConsumerStatefulWidget {
 }
 
 class _PlaylistPageState extends ConsumerState<PlaylistPage> {
-  bool loading = true;
-
   /// Flag to control whether playlist is in edit mode
   bool _editMode = false;
 
@@ -112,39 +135,6 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
       initialIndex: index,
       shuffle: shuffle,
     );
-  }
-
-  Widget _playButtons(final BuildContext context,
-      {final bool stretch = false}) {
-    return LayoutBuilder(builder: (final context, final constraints) {
-      double? maxWidth;
-      if (stretch && constraints.maxWidth != double.infinity) {
-        maxWidth = constraints.maxWidth / 2.2;
-      }
-
-      return ButtonBar(
-        layoutBehavior: ButtonBarLayoutBehavior.constrained,
-        alignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: maxWidth,
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.play_arrow),
-              label: Text(t.playback.play_all),
-              onPressed: () => _onPlay(),
-            ),
-          ),
-          SizedBox(
-            width: maxWidth,
-            child: FilledButton.icon(
-              icon: const Icon(Icons.shuffle),
-              label: Text(t.playback.shuffle),
-              onPressed: () => _onPlay(shuffle: true),
-            ),
-          ),
-        ],
-      );
-    });
   }
 
   Widget _buildTrackList() {
@@ -353,7 +343,11 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
               ),
             ),
             SliverToBoxAdapter(
-              child: _playButtons(context, stretch: context.isMobileOrPortrait),
+              child: PlayShuffleButtonGroup(
+                stretch: context.isMobileOrPortrait,
+                onPlay: () => _onPlay(),
+                onShufflePlay: () => _onPlay(shuffle: true),
+              ),
             ),
             _buildTrackList(),
           ],
