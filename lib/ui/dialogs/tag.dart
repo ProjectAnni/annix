@@ -17,7 +17,7 @@ Future<TagEntry?> showTagListDialog(final BuildContext context) async {
         child: Scaffold(
           appBar: AppBar(),
           body: TagList(
-            onSelected: (final tag) {
+            onSelected: (final ref, final tag) {
               result = tag;
               Navigator.of(context).pop();
             },

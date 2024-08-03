@@ -7,7 +7,6 @@ import 'package:annix/services/settings.dart';
 import 'package:annix/ui/dialogs/enum_select.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/prefer_quality.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/services/local/cache.dart';
@@ -105,7 +104,7 @@ class SettingsScreen extends ConsumerWidget {
                     SettingsTile.switchTile(
                   onToggle: (final value) {
                     settings.autoScaleUI.value = value;
-                    AnnixRouterDelegate.of(context).popRoute();
+                    ref.read(routerProvider).popRoute();
                   },
                   initialValue: p,
                   leading: const Icon(Icons.smart_screen_outlined),
@@ -211,7 +210,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(t.settings.view_logs),
                 description: Text(t.settings.view_logs_desc),
                 onPressed: (final context) {
-                  AnnixRouterDelegate.of(context).to(name: '/settings/log');
+                  ref.read(routerProvider).to(name: '/settings/log');
                 },
               ),
               // remove local database
@@ -245,10 +244,9 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(t.settings.clear_metadata_cache),
                 description: Text(t.settings.clear_metadata_cache_desc),
                 onPressed: (final context) async {
-                  final delegate = AnnixRouterDelegate.of(context);
                   showLoadingDialog(context);
                   await AnnixStore().clear('album');
-                  delegate.popRoute();
+                  ref.read(routerProvider).popRoute();
                 },
               ),
               // clear local lyric cache

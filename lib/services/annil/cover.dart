@@ -2,7 +2,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'dart:io' show File;
+import 'dart:io' show File, HttpClient;
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -21,10 +21,11 @@ class CoverItem {
 class _CoverReverseProxy {
   _CoverReverseProxy(this.ref) {
     client.httpClientAdapter = IOHttpClientAdapter(
-        onHttpClientCreate: (final client) {
-          final skip = ref.read(settingsProvider).skipCertificateVerification;
+        createHttpClient: () {
+          final client = HttpClient();
           client.badCertificateCallback =
-              (final cert, final host, final port) => skip.value;
+              (final cert, final host, final port) =>
+                  ref.read(settingsProvider).skipCertificateVerification.value;
           return client;
         },
         validateCertificate: (final cert, final host, final port) => true);

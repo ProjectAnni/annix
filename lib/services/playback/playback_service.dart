@@ -10,7 +10,6 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
-import 'package:annix/ui/widgets/utils/property_value_notifier.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
@@ -56,10 +55,6 @@ AudioQuality fromQuality(PreferQuality q) {
 
 class PlaybackService extends ChangeNotifier {
   static final AnnixPlayer player = AnnixPlayer(cachePath: audioCachePath());
-
-  // TODO: cache this map
-  static final PropertyValueNotifier<Map<String, Duration>> durationMap =
-      PropertyValueNotifier({});
 
   final Ref ref;
 
@@ -107,17 +102,6 @@ class PlaybackService extends ChangeNotifier {
         playing?.updateDuration(Duration(milliseconds: progress.duration));
       }
     });
-
-    // Duration
-    PlaybackService.durationMap.addListener(() {
-      final id = playing?.id;
-      if (id != null) {
-        final duration = durationMap.value[id];
-        if (duration != null) {
-          playing?.updateDuration(duration);
-        }
-      }
-    });
   }
 
   _load() {
@@ -149,7 +133,10 @@ class PlaybackService extends ChangeNotifier {
       PlaybackService.player.clearProvider();
       for (final server in servers) {
         PlaybackService.player.addProvider(
-            url: server.url, auth: server.token, priority: server.priority);
+          url: server.url,
+          auth: server.token,
+          priority: server.priority,
+        );
       }
     });
   }
@@ -209,8 +196,9 @@ class PlaybackService extends ChangeNotifier {
 
     final settings = ref.read(settingsProvider);
     await PlaybackService.player.setTrack(
-        identifier: source.identifier.toString(),
-        quality: fromQuality(settings.defaultAudioQuality.value));
+      identifier: source.identifier.toString(),
+      quality: fromQuality(settings.defaultAudioQuality.value),
+    );
 
     if (setSourceOnly) {
       loadedAndPaused = true;
@@ -262,7 +250,8 @@ class PlaybackService extends ChangeNotifier {
           break;
         case LoopMode.all:
           // to the previous song / last song
-          await setPlayingIndex((currentIndex > 0 ? currentIndex : queue.length) - 1);
+          await setPlayingIndex(
+              (currentIndex > 0 ? currentIndex : queue.length) - 1);
           await play(reload: true);
           break;
         case LoopMode.one:
@@ -380,7 +369,8 @@ class PlaybackService extends ChangeNotifier {
     queue = songs;
     // 2. set playing index
     if (songs.isNotEmpty) {
-      await setPlayingIndex(initialIndex % songs.length, reload: true, notify: false);
+      await setPlayingIndex(initialIndex % songs.length,
+          reload: true, notify: false);
     } else {
       playing?.dispose();
       playing = null;

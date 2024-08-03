@@ -1,7 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -9,7 +8,7 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class TagList extends ConsumerWidget {
-  final Function(TagEntry) onSelected;
+  final Function(WidgetRef, TagEntry) onSelected;
 
   const TagList({super.key, required this.onSelected});
 
@@ -51,7 +50,7 @@ class TagList extends ConsumerWidget {
                                   leading:
                                       const Icon(Icons.local_offer_outlined),
                                   title: Text(e.name),
-                                  onTap: () => onSelected(e),
+                                  onTap: () => onSelected(ref, e),
                                 ),
                               )
                               .toList(),
@@ -87,11 +86,8 @@ class TagListView extends StatelessWidget {
         ),
       ),
       body: TagList(
-        onSelected: (final tag) {
-          AnnixRouterDelegate.of(context).to(
-            name: '/tag',
-            arguments: tag.name,
-          );
+        onSelected: (final ref, final tag) {
+          ref.read(routerProvider).to(name: '/tag', arguments: tag.name);
         },
       ),
     );

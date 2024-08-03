@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:annix/providers.dart';
-import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:annix/services/playback/playback.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
@@ -23,7 +19,6 @@ class AnnilAudioSource {
       DownloadState(const DownloadProgress(current: 0));
 
   bool isCanceled = false;
-  Future<void>? _preloadFuture;
   DownloadTask? _downloadTask;
 
   TrackIdentifier get identifier => track.id;
@@ -85,16 +80,6 @@ class AnnilAudioSource {
   //   }
   // }
 
-  void preload(final Ref ref) {
-    if (_preloadFuture != null) {
-      return;
-    }
-
-    _preloadFuture = _preload(ref);
-    // preload cover without await
-    _preloadCover(ref);
-  }
-
   bool preloaded = false;
 
   static DownloadTaskCallback spawnDownloadTask({
@@ -121,39 +106,6 @@ class AnnilAudioSource {
         client: annil.client,
       );
     };
-  }
-
-  Future<void> _preload(final Ref ref) async {
-    final savePath = getAudioCachePath(track.id);
-    final file = File(savePath);
-    if (!file.existsSync() || file.lengthSync() == 0) {
-      final taskCallback = spawnDownloadTask(
-        track: track,
-        savePath: savePath,
-      );
-      final task = await taskCallback(ref);
-      if (task != null) {
-        await file.parent.create(recursive: true);
-        ref.read(downloadManagerProvider).add(task);
-        _downloadTask = task;
-        _downloadTask?.addListener(_onDownloadProgress);
-        final response = await task.start();
-
-        final duration = int.parse(response.headers['x-duration-seconds']![0]);
-        // +1 to avoid duration exceeding
-        PlaybackService.durationMap.update((final map) {
-          map[id] = Duration(seconds: duration + 1);
-        });
-      } else {
-        throw UnsupportedError('No available annil server found');
-      }
-    }
-    preloaded = true;
-  }
-
-  Future<void> _preloadCover(final Ref ref) async {
-    final proxy = ref.read(coverProxyProvider);
-    proxy.getCoverImage(albumId: track.id.albumId, discId: track.id.discId);
   }
 
   void cancel() {

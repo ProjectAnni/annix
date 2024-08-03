@@ -121,12 +121,12 @@ class AnnivCard extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final annivInfo = ref.watch(annivProvider.select((final v) => v.info));
+    final annivInfo = ref.watch(annivProvider);
 
     return Card(
-      child: annivInfo == null
+      child: annivInfo.info == null
           ? beforeLogin(context)
-          : afterLogin(context, ref, annivInfo),
+          : afterLogin(context, ref, annivInfo.info!),
     );
   }
 }
