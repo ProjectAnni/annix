@@ -148,7 +148,7 @@ dependencies = [
 [[package]]
 name = "anni-playback"
 version = "0.1.0"
-source = "git+https://github.com/ProjectAnni/anni#679347014b3772e13339a25c063924dca7559a7a"
+source = "git+https://github.com/ProjectAnni/anni#12e82a6dad8bc1d66217e3027b7fcef6051b4c63"
 dependencies = [
  "anyhow",
  "arrayvec",
@@ -161,14 +161,14 @@ dependencies = [
  "rangemap",
  "reqwest",
  "rubato",
- "symphonia 0.5.2",
- "symphonia-core 0.5.2",
+ "symphonia",
+ "symphonia-core",
 ]
 
 [[package]]
 name = "anni-player"
 version = "0.1.0"
-source = "git+https://github.com/ProjectAnni/anni-player#9aa04cf1aa5815b63427b848b02ddb4355fcf6dc"
+source = "git+https://github.com/ProjectAnni/anni-player#2ebdff8d88b8a1dd874e9a99dee2962d9bd78895"
 dependencies = [
  "anni-playback",
  "anni-provider",
@@ -177,7 +177,7 @@ dependencies = [
  "log",
  "once_cell",
  "reqwest",
- "symphonia 0.5.4",
+ "symphonia",
  "uuid",
 ]
 
@@ -2445,40 +2445,16 @@ checksum = "fe895eb47f22e2ddd4dabc02bce419d2e643c8e3b585c78158b349195bc24d82"
 
 [[package]]
 name = "symphonia"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "lazy_static",
- "symphonia-bundle-flac 0.5.2",
- "symphonia-codec-aac 0.5.2",
- "symphonia-core 0.5.2",
- "symphonia-format-ogg 0.5.2",
- "symphonia-metadata 0.5.2",
-]
-
-[[package]]
-name = "symphonia"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "815c942ae7ee74737bb00f965fa5b5a2ac2ce7b6c01c0cc169bbeaf7abd5f5a9"
 dependencies = [
  "lazy_static",
- "symphonia-bundle-flac 0.5.4",
- "symphonia-codec-aac 0.5.4",
- "symphonia-core 0.5.4",
- "symphonia-format-ogg 0.5.4",
- "symphonia-metadata 0.5.4",
-]
-
-[[package]]
-name = "symphonia-bundle-flac"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "log",
- "symphonia-core 0.5.2",
- "symphonia-metadata 0.5.2",
- "symphonia-utils-xiph 0.5.2",
+ "symphonia-bundle-flac",
+ "symphonia-codec-aac",
+ "symphonia-core",
+ "symphonia-format-ogg",
+ "symphonia-metadata",
 ]
 
 [[package]]
@@ -2488,19 +2464,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72e34f34298a7308d4397a6c7fbf5b84c5d491231ce3dd379707ba673ab3bd97"
 dependencies = [
  "log",
- "symphonia-core 0.5.4",
- "symphonia-metadata 0.5.4",
- "symphonia-utils-xiph 0.5.4",
-]
-
-[[package]]
-name = "symphonia-codec-aac"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "lazy_static",
- "log",
- "symphonia-core 0.5.2",
+ "symphonia-core",
+ "symphonia-metadata",
+ "symphonia-utils-xiph",
 ]
 
 [[package]]
@@ -2511,19 +2477,7 @@ checksum = "cdbf25b545ad0d3ee3e891ea643ad115aff4ca92f6aec472086b957a58522f70"
 dependencies = [
  "lazy_static",
  "log",
- "symphonia-core 0.5.4",
-]
-
-[[package]]
-name = "symphonia-core"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "arrayvec",
- "bitflags 1.3.2",
- "bytemuck",
- "lazy_static",
- "log",
+ "symphonia-core",
 ]
 
 [[package]]
@@ -2541,36 +2495,14 @@ dependencies = [
 
 [[package]]
 name = "symphonia-format-ogg"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "log",
- "symphonia-core 0.5.2",
- "symphonia-metadata 0.5.2",
- "symphonia-utils-xiph 0.5.2",
-]
-
-[[package]]
-name = "symphonia-format-ogg"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ada3505789516bcf00fc1157c67729eded428b455c27ca370e41f4d785bfa931"
 dependencies = [
  "log",
- "symphonia-core 0.5.4",
- "symphonia-metadata 0.5.4",
- "symphonia-utils-xiph 0.5.4",
-]
-
-[[package]]
-name = "symphonia-metadata"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "encoding_rs",
- "lazy_static",
- "log",
- "symphonia-core 0.5.2",
+ "symphonia-core",
+ "symphonia-metadata",
+ "symphonia-utils-xiph",
 ]
 
 [[package]]
@@ -2582,16 +2514,7 @@ dependencies = [
  "encoding_rs",
  "lazy_static",
  "log",
- "symphonia-core 0.5.4",
-]
-
-[[package]]
-name = "symphonia-utils-xiph"
-version = "0.5.2"
-source = "git+https://github.com/erikas-taroza/Symphonia?branch=mp4-opus-improvements#bb1314974788c1f0b74e7876fa644bf070a23e37"
-dependencies = [
- "symphonia-core 0.5.2",
- "symphonia-metadata 0.5.2",
+ "symphonia-core",
 ]
 
 [[package]]
@@ -2600,8 +2523,8 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "484472580fa49991afda5f6550ece662237b00c6f562c7d9638d1b086ed010fe"
 dependencies = [
- "symphonia-core 0.5.4",
- "symphonia-metadata 0.5.4",
+ "symphonia-core",
+ "symphonia-metadata",
 ]
 
 [[package]]
