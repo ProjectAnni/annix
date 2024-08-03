@@ -20,11 +20,6 @@ abstract class AnnixPlayer implements RustOpaqueInterface {
   factory AnnixPlayer({required String cachePath}) =>
       RustLib.instance.api.crateApiPlayerAnnixPlayerNew(cachePath: cachePath);
 
-  Future<void> open(
-      {required String identifier, required AudioQuality quality});
-
-  Future<void> openFile({required String path});
-
   Future<void> pause();
 
   Future<void> play();

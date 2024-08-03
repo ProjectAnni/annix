@@ -9,7 +9,6 @@ import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:annix/native/api/player.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
@@ -52,39 +51,39 @@ class AnnilAudioSource {
 
   String get id => track.id.toString();
 
-  Future<void> setOnPlayer(final AnnixPlayer player) async {
-    // when setOnPlayer was called, player expects to play current track
-    // but user may change track before player is ready
-    // so isCanceled is always false here, and may become true later
-    isCanceled = false;
+  // Future<void> setOnPlayer(final AnnixPlayer player) async {
+  //   // when setOnPlayer was called, player expects to play current track
+  //   // but user may change track before player is ready
+  //   // so isCanceled is always false here, and may become true later
+  //   isCanceled = false;
 
-    final offlinePath = getAudioCachePath(track.id);
-    final file = File(offlinePath);
-    if (file.existsSync() && file.lengthSync() > 0) {
-      await player.openFile(path: offlinePath);
-    } else {
-      // preload should be triggered before setOnPlayer
-      assert(_preloadFuture != null);
-      try {
-        await _preloadFuture;
-      } catch (e) {
-        // set _preloadFuture to null, allowing retry
-        _preloadFuture = null;
-        _downloadTask = null;
+  //   final offlinePath = getAudioCachePath(track.id);
+  //   final file = File(offlinePath);
+  //   if (file.existsSync() && file.lengthSync() > 0) {
+  //     await player.openFile(path: offlinePath);
+  //   } else {
+  //     // preload should be triggered before setOnPlayer
+  //     assert(_preloadFuture != null);
+  //     try {
+  //       await _preloadFuture;
+  //     } catch (e) {
+  //       // set _preloadFuture to null, allowing retry
+  //       _preloadFuture = null;
+  //       _downloadTask = null;
 
-        if (e is DownloadCancelledError) {
-          throw AudioCancelledError();
-        } else {
-          rethrow;
-        }
-      }
-      // check whether user has changed track for playback
-      if (isCanceled) {
-        throw AudioCancelledError();
-      }
-      await player.openFile(path: offlinePath);
-    }
-  }
+  //       if (e is DownloadCancelledError) {
+  //         throw AudioCancelledError();
+  //       } else {
+  //         rethrow;
+  //       }
+  //     }
+  //     // check whether user has changed track for playback
+  //     if (isCanceled) {
+  //       throw AudioCancelledError();
+  //     }
+  //     await player.openFile(path: offlinePath);
+  //   }
+  // }
 
   void preload(final Ref ref) {
     if (_preloadFuture != null) {

@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.1.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1883214556;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1427512375;
 
 // Section: executor
 
@@ -303,116 +303,6 @@ fn wire__crate__api__player__AnnixPlayer_new_impl(
                     Result::<_, ()>::Ok(crate::api::player::AnnixPlayer::new(api_cache_path))?;
                 Ok(output_ok)
             })())
-        },
-    )
-}
-fn wire__crate__api__player__AnnixPlayer_open_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "AnnixPlayer_open",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>,
-            >>::sse_decode(&mut deserializer);
-            let api_identifier = <String>::sse_decode(&mut deserializer);
-            let api_quality = <crate::api::player::AudioQuality>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
-                        let mut api_that_guard = None;
-                        let decode_indices_ =
-                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
-                            );
-                        for i in decode_indices_ {
-                            match i {
-                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
-                                _ => unreachable!(),
-                            }
-                        }
-                        let api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::player::AnnixPlayer::open(
-                            &*api_that_guard,
-                            api_identifier,
-                            api_quality,
-                        )?;
-                        Ok(output_ok)
-                    })(),
-                )
-            }
-        },
-    )
-}
-fn wire__crate__api__player__AnnixPlayer_open_file_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "AnnixPlayer_open_file",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>,
-            >>::sse_decode(&mut deserializer);
-            let api_path = <String>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
-                        let mut api_that_guard = None;
-                        let decode_indices_ =
-                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
-                            );
-                        for i in decode_indices_ {
-                            match i {
-                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
-                                _ => unreachable!(),
-                            }
-                        }
-                        let api_that_guard = api_that_guard.unwrap();
-                        let output_ok =
-                            crate::api::player::AnnixPlayer::open_file(&*api_that_guard, api_path)?;
-                        Ok(output_ok)
-                    })(),
-                )
-            }
         },
     )
 }
@@ -1654,44 +1544,40 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__player__AnnixPlayer_open_impl(port, ptr, rust_vec_len, data_len),
-        8 => {
-            wire__crate__api__player__AnnixPlayer_open_file_impl(port, ptr, rust_vec_len, data_len)
-        }
-        9 => wire__crate__api__player__AnnixPlayer_pause_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire__crate__api__player__AnnixPlayer_play_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire__crate__api__player__AnnixPlayer_player_state_stream_impl(
+        7 => wire__crate__api__player__AnnixPlayer_pause_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__player__AnnixPlayer_play_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire__crate__api__player__AnnixPlayer_player_state_stream_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__player__AnnixPlayer_progress_stream_impl(
+        10 => wire__crate__api__player__AnnixPlayer_progress_stream_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__player__AnnixPlayer_seek_impl(port, ptr, rust_vec_len, data_len),
-        14 => {
+        11 => wire__crate__api__player__AnnixPlayer_seek_impl(port, ptr, rust_vec_len, data_len),
+        12 => {
             wire__crate__api__player__AnnixPlayer_set_track_impl(port, ptr, rust_vec_len, data_len)
         }
-        15 => {
+        13 => {
             wire__crate__api__player__AnnixPlayer_set_volume_impl(port, ptr, rust_vec_len, data_len)
         }
-        16 => wire__crate__api__player__AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__simple__local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__simple__local_db_get_albums_by_tag_impl(
+        14 => wire__crate__api__player__AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__simple__local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__simple__local_db_get_albums_by_tag_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__simple__local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__simple__local_db_new_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__simple__local_store_clear_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__simple__local_store_get_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__simple__local_store_insert_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__simple__local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__simple__local_db_new_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__simple__local_store_clear_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__simple__local_store_get_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__simple__local_store_insert_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1706,25 +1592,25 @@ fn pde_ffi_dispatcher_sync_impl(
     match func_id {
         5 => wire__crate__api__player__AnnixPlayer_is_playing_impl(ptr, rust_vec_len, data_len),
         6 => wire__crate__api__player__AnnixPlayer_new_impl(ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__simple__get_theme_color_impl(ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__simple__local_store_new_impl(ptr, rust_vec_len, data_len),
-        26 => {
+        15 => wire__crate__api__simple__get_theme_color_impl(ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__simple__local_store_new_impl(ptr, rust_vec_len, data_len),
+        24 => {
             wire__crate__api__simple__native_preference_store_get_impl(ptr, rust_vec_len, data_len)
         }
-        27 => {
+        25 => {
             wire__crate__api__simple__native_preference_store_new_impl(ptr, rust_vec_len, data_len)
         }
-        28 => wire__crate__api__simple__native_preference_store_remove_impl(
+        26 => wire__crate__api__simple__native_preference_store_remove_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__simple__native_preference_store_remove_prefix_impl(
+        27 => wire__crate__api__simple__native_preference_store_remove_prefix_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => {
+        28 => {
             wire__crate__api__simple__native_preference_store_set_impl(ptr, rust_vec_len, data_len)
         }
         _ => unreachable!(),

@@ -64,7 +64,8 @@ impl AnnixPlayer {
 
         LOGGER.call_once(|| env_logger::init());
 
-        let (player, receiver) = AnniPlayer::new(TypedPriorityProvider::new(vec![]), cache_path.into());
+        let (player, receiver) =
+            AnniPlayer::new(TypedPriorityProvider::new(vec![]), cache_path.into());
         let progress = Arc::new(OnceLock::new());
         let player_state = Arc::new(OnceLock::new());
 
@@ -111,14 +112,6 @@ impl AnnixPlayer {
 
     pub fn pause(&self) {
         self.player.pause();
-    }
-
-    pub fn open_file(&self, path: String) -> anyhow::Result<()> {
-        self.player.open_file(path)
-    }
-
-    pub fn open(&self, identifier: String, quality: AudioQuality) -> anyhow::Result<()> {
-        self.player.open(identifier.parse()?, quality)
     }
 
     pub fn set_track(&self, identifier: String, quality: AudioQuality) -> anyhow::Result<()> {
