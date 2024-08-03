@@ -26,13 +26,14 @@ class AnnilService extends ChangeNotifier {
 
   AnnilService(this.ref) {
     client.httpClientAdapter = IOHttpClientAdapter(
-        onHttpClientCreate: (final client) {
-          final skip = ref.read(settingsProvider).skipCertificateVerification;
-          client.badCertificateCallback =
-              (final cert, final host, final port) => skip.value;
-          return client;
-        },
-        validateCertificate: (final cert, final host, final port) => true);
+      createHttpClient: () {
+        final client = HttpClient();
+        client.badCertificateCallback = (final cert, final host, final port) =>
+            ref.read(settingsProvider).skipCertificateVerification.value;
+        return client;
+      },
+      validateCertificate: (final cert, final host, final port) => true,
+    );
 
     client.interceptors.add(RetryInterceptor(
       dio: client,

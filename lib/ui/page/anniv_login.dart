@@ -49,7 +49,9 @@ class AnnivLoginPage extends HookConsumerWidget {
                   // pop login page
                   await delegate.popRoute();
                 } catch (e) {
-                  _showSnackBar(context, e.toString());
+                  if (context.mounted) {
+                    _showSnackBar(context, e.toString());
+                  }
                 } finally {
                   // hide loading dialog
                   await delegate.popRoute();
