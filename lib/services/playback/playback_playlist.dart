@@ -11,14 +11,23 @@ class Playlist {
 
   const Playlist({required this.intro, required this.items});
 
-  static Future<Playlist> load({
-    required final int id,
+  static Future<Playlist> loadRemote({
+    required final PlaylistInfo info,
     required final LocalDatabase db,
     required final AnnivService anniv,
   }) async {
-    final intro = await (db.playlist.select()
-          ..where((final tbl) => tbl.id.equals(id)))
-        .getSingle();
+    // 1. try to get row from remote id
+    PlaylistData? intro = await (db.playlist.select()
+          ..where((final tbl) => tbl.remoteId.equals(info.id)))
+        .getSingleOrNull();
+    if (intro == null) {
+      // 2. cache playlist from info
+      await db.playlist.insertOne(info.toCompanion());
+      // 3. get row again
+      intro = await (db.playlist.select()
+            ..where((final tbl) => tbl.remoteId.equals(info.id)))
+          .getSingle();
+    }
 
     final items = await anniv.getPlaylistItems(intro);
     if (items == null) {

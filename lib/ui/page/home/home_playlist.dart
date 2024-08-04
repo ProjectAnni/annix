@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,10 +14,9 @@ class PlaylistView extends ConsumerWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (final context, final index) {
-          final playlist = playlists[index];
+          final playlist = PlaylistInfo.fromData(playlists[index]);
 
-          final albumId =
-              playlist.cover == null ? null : playlist.cover!.split('/')[0];
+          final albumId = playlist.cover?.albumId;
 
           return ListTile(
             contentPadding: const EdgeInsets.symmetric(
@@ -36,7 +36,7 @@ class PlaylistView extends ConsumerWidget {
             onTap: () {
               ref
                   .read(routerProvider)
-                  .to(name: '/playlist', arguments: playlist.id);
+                  .to(name: '/playlist', arguments: playlist);
             },
           );
         },

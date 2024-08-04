@@ -37,8 +37,14 @@ final audioServiceProvider =
 // db
 @Riverpod(keepAlive: true)
 LocalDatabase localDatabase(final LocalDatabaseRef ref) => LocalDatabase();
-final playlistProvider = StreamProvider(
-    (final ref) => ref.read(localDatabaseProvider).playlist.select().watch());
+final playlistProvider = StreamProvider((final ref) {
+  final info = ref.watch(annivProvider.select((final p) => p.info));
+  final db = ref.read(localDatabaseProvider);
+  final playlist = db.playlist.select()
+    ..where((tbl) => tbl.owner
+        .equals(info?.user.userId ?? '__ANNIV_PLACEHOLDER_SHOULD_NOT_EXIST__'));
+  return playlist.watch();
+});
 final favoriteTracksProvider = StreamProvider((final ref) =>
     ref.read(localDatabaseProvider).localFavoriteTracks.select().watch());
 final favoriteAlbumsProvider = StreamProvider((final ref) =>

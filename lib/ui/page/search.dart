@@ -194,22 +194,22 @@ class _SearchResultWidget extends HookConsumerWidget {
               ),
               ListView.builder(
                 itemBuilder: (final context, final index) {
-                  final item = result.value!.playlists![index];
-                  final coverAlbumId = item.cover?.albumId;
+                  final playlistInfo = result.value!.playlists![index];
+                  final coverAlbumId = playlistInfo.cover?.albumId;
                   return ListTile(
                     leading: coverAlbumId != null
                         ? MusicCover.fromAlbum(albumId: coverAlbumId)
                         : const DummyMusicCover(),
                     title: Text(
-                      item.name,
+                      playlistInfo.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    subtitle: Text(item.owner),
+                    subtitle: Text(playlistInfo.owner),
                     onTap: () async {
-                      // TODO: get playlist and save
-                      // final delegate = AnnixRouterDelegate.of(context);
-                      // delegate.to(name: '/playlist', arguments: item.id);
+                      ref
+                          .read(routerProvider)
+                          .to(name: '/playlist', arguments: playlistInfo);
                     },
                   );
                 },

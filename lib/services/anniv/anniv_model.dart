@@ -311,6 +311,21 @@ class PlaylistInfo {
   factory PlaylistInfo.fromJson(final Map<String, dynamic> json) =>
       _$PlaylistInfoFromJson(json);
 
+  factory PlaylistInfo.fromData(PlaylistData data) {
+    // TODO: throw if it is a local playlist
+    return PlaylistInfo(
+      id: data.remoteId!,
+      name: data.name,
+      description: data.description,
+      owner: data.owner!,
+      isPublic: data.public!,
+      cover: data.cover != null
+          ? DiscIdentifier.fromIdentifier(data.cover!)
+          : null,
+      lastModified: data.lastModified!,
+    );
+  }
+
   PlaylistCompanion toCompanion({
     final Value<int> id = const Value.absent(),
     final bool hasItems = false,

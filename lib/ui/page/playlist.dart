@@ -17,20 +17,21 @@ enum _PlaylistAction {
   delete,
 }
 
-final playlistFamily = FutureProvider.family<Playlist, int>((ref, playlistId) {
+final playlistFamily =
+    FutureProvider.family<Playlist, PlaylistInfo>((ref, playlistInfo) {
   final db = ref.read(localDatabaseProvider);
   final anniv = ref.read(annivProvider);
-  return Playlist.load(id: playlistId, db: db, anniv: anniv);
+  return Playlist.loadRemote(info: playlistInfo, db: db, anniv: anniv);
 });
 
 class LoadingPlaylistPage extends ConsumerWidget {
-  final int playlistId;
+  final PlaylistInfo playlistInfo;
 
-  const LoadingPlaylistPage({super.key, required this.playlistId});
+  const LoadingPlaylistPage({super.key, required this.playlistInfo});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final playlist = ref.watch(playlistFamily(playlistId));
+    final playlist = ref.watch(playlistFamily(playlistInfo));
 
     return playlist.when(
       data: (playlist) => PlaylistPage(playlist: playlist),

@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart' as db;
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/layout/layout_desktop.dart';
@@ -226,7 +227,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         child = const FavoritePage();
         break;
       case '/playlist':
-        child = LoadingPlaylistPage(playlistId: routeSettings.arguments as int);
+        child = LoadingPlaylistPage(
+            playlistInfo: routeSettings.arguments as PlaylistInfo);
         break;
       case '/search':
         child = const SearchPage();

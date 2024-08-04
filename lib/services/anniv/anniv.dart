@@ -89,7 +89,8 @@ class AnnivService extends ChangeNotifier {
         syncFavoriteTrack(),
         syncFavoriteAlbum(),
         // reload playlist list
-        client.getPlaylistByUserId().then(syncPlaylist),
+        client.getPlaylistByUserId().then((playlists) =>
+            syncPlaylist(userId: info!.user.userId, playlists: playlists)),
       ]);
     }
   }
@@ -107,6 +108,7 @@ class AnnivService extends ChangeNotifier {
 
   Future<void> logout() async {
     final annil = ref.read(annilProvider);
+    final oldInfo = info;
 
     // 1. clear anniv info
     info = null;
@@ -124,7 +126,9 @@ class AnnivService extends ChangeNotifier {
 
     // 5. clear favorites and remote playlists
     await _syncFavoriteTrack([]);
-    await syncPlaylist([]);
+    if (oldInfo != null) {
+      await syncPlaylist(userId: oldInfo.user.userId, playlists: []);
+    }
   }
 
   void _loadInfo() {
@@ -298,11 +302,14 @@ class AnnivService extends ChangeNotifier {
   }
 
   //////////////////////////////// Playlist ///////////////////////////////
-  Future<void> syncPlaylist(final List<PlaylistInfo> list) async {
+  Future<void> syncPlaylist(
+      {required String userId, required List<PlaylistInfo> playlists}) async {
     final db = ref.read(localDatabaseProvider);
-    final map = Map.fromEntries(list.map((final e) => MapEntry(e.id, e)));
+    final map = Map.fromEntries(playlists.map((final e) => MapEntry(e.id, e)));
 
-    await db.playlist.select().asyncMap((final playlist) async {
+    final currentUserId = info!.user.userId;
+
+    await db.playlistByOwner(currentUserId).asyncMap((final playlist) async {
       final isRemote = playlist.remoteId != null;
       if (isRemote) {
         final remote = map[playlist.remoteId];
