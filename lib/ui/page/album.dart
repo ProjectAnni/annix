@@ -4,27 +4,35 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/ui/widgets/utils/display_or_lazy_screen.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LazyAlbumPage extends ConsumerWidget {
+final albumFamily = FutureProvider.family<Album, String>((ref, albumId) {
+  final metadata = ref.read(metadataProvider);
+  return metadata.getAlbum(albumId: albumId).then(
+    (final album) {
+      if (album == null) throw 'Album not found';
+      return album;
+    },
+  );
+});
+
+class LoadingAlbumPage extends ConsumerWidget {
   final String albumId;
 
-  const LazyAlbumPage({required this.albumId, super.key});
+  const LoadingAlbumPage({super.key, required this.albumId});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    return DisplayOrLazyLoadScreen<Album>(
-      future: ref.read(metadataProvider).getAlbum(albumId: albumId).then(
-        (final album) {
-          if (album == null) throw 'Album not found';
-          return album;
-        },
-      ),
-      builder: (final album) => AlbumPage(album: album),
+    final playlist = ref.watch(albumFamily(albumId));
+
+    return playlist.when(
+      data: (album) => AlbumPage(album: album),
+      error: (error, stacktrace) => const Text('Error'),
+      loading: () => const ShimmerPlaylistPage(),
     );
   }
 }

@@ -198,7 +198,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
         if (routeSettings.arguments is String) {
           // albumId
           final albumId = routeSettings.arguments as String;
-          child = LazyAlbumPage(albumId: albumId);
+          child = LoadingAlbumPage(albumId: albumId);
           ref.read(themeProvider).pushTemporaryTheme(albumId);
         } else {
           final album = routeSettings.arguments as Album;
