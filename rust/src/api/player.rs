@@ -1,4 +1,4 @@
-pub use anni_player::provider::AudioQuality;
+pub use anni_playback::player::AudioQuality;
 
 use std::{
     sync::{Arc, Once, OnceLock},
@@ -6,7 +6,7 @@ use std::{
 };
 
 use anni_playback::types::PlayerEvent;
-use anni_player::{AnniPlayer, TypedPriorityProvider};
+use anni_playback::player::{AnniPlayer, TypedPriorityProvider};
 use flutter_rust_bridge::frb;
 
 use crate::frb_generated::StreamSink;
@@ -115,7 +115,7 @@ impl AnnixPlayer {
     }
 
     pub fn set_track(&self, identifier: String, quality: AudioQuality) -> anyhow::Result<()> {
-        self.player.load(identifier.parse()?, quality)
+        self.player.open(identifier.parse()?, quality)
     }
 
     pub fn set_volume(&self, volume: f32) {
@@ -132,7 +132,7 @@ impl AnnixPlayer {
 
     #[frb(sync)]
     pub fn is_playing(&self) -> bool {
-        self.player.player.is_playing()
+        self.player.controls.is_playing()
     }
 
     pub fn add_provider(&self, url: String, auth: String, priority: i32) {
