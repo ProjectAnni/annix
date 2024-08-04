@@ -2755,6 +2755,14 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         }).asyncMap(playlistItem.mapFromRow);
   }
 
+  Selectable<PlaylistData> playlistByOwner(String? var1) {
+    return customSelect('SELECT * FROM playlist WHERE owner = ?1', variables: [
+      Variable<String>(var1)
+    ], readsFrom: {
+      playlist,
+    }).asyncMap(playlist.mapFromRow);
+  }
+
   Selectable<bool> isTrackFavorite(String var1, int var2, int var3) {
     return customSelect(
         'SELECT EXISTS (SELECT 1 AS _c1 FROM local_favorite_tracks WHERE album_id = ?1 AND disc_id = ?2 AND track_id = ?3) AS _c0',

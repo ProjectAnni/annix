@@ -109,6 +109,7 @@ CREATE TABLE playback_records (
 ----------------------------------------------------------------------
 -- queries:
 playlistItems: SELECT * FROM playlist_item WHERE playlist_id = ? ORDER BY "order";
+playlistByOwner: SELECT * FROM playlist WHERE owner = ?;
 
 isTrackFavorite: SELECT EXISTS (SELECT 1 FROM local_favorite_tracks WHERE album_id = ? AND disc_id = ? AND track_id = ?);
 isAlbumFavorite: SELECT EXISTS (SELECT 1 FROM local_favorite_albums WHERE album_id = ?);
