@@ -8,7 +8,7 @@
   "my_favorite": "我的收藏",
   "playing": {
     "is_playing": "正在播放",
-    "view_albums": "查看专辑",
+    "view_album": "查看专辑",
     "share": "分享"
   },
   "playback": {

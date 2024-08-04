@@ -6,7 +6,7 @@
 /// Locales: 2
 /// Strings: 86 (43 per locale)
 ///
-/// Built on 2024-08-04 at 02:15 UTC
+/// Built on 2024-08-04 at 03:15 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -178,7 +178,7 @@ class _StringsPlayingEn {
 
 	// Translations
 	String get is_playing => 'Playing';
-	String get view_albums => 'View Albums';
+	String get view_album => 'View Album';
 	String get share => 'Share';
 }
 
@@ -297,7 +297,7 @@ class _StringsPlayingZhCn implements _StringsPlayingEn {
 
 	// Translations
 	@override String get is_playing => '正在播放';
-	@override String get view_albums => '查看专辑';
+	@override String get view_album => '查看专辑';
 	@override String get share => '分享';
 }
 
@@ -379,7 +379,7 @@ extension on _StringsEn {
 			case 'shuffle_mode': return 'Shuffle Mode';
 			case 'my_favorite': return 'My Favorite';
 			case 'playing.is_playing': return 'Playing';
-			case 'playing.view_albums': return 'View Albums';
+			case 'playing.view_album': return 'View Album';
 			case 'playing.share': return 'Share';
 			case 'playback.play_all': return 'Play All';
 			case 'playback.shuffle': return 'Shuffle';
@@ -429,7 +429,7 @@ extension on _StringsZhCn {
 			case 'shuffle_mode': return '随机模式';
 			case 'my_favorite': return '我的收藏';
 			case 'playing.is_playing': return '正在播放';
-			case 'playing.view_albums': return '查看专辑';
+			case 'playing.view_album': return '查看专辑';
 			case 'playing.share': return '分享';
 			case 'playback.play_all': return '播放全部';
 			case 'playback.shuffle': return '随机播放';

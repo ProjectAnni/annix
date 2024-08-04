@@ -76,16 +76,16 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
           menuChildren: [
             MenuItemButton(
               leadingIcon: const Icon(Icons.album_outlined),
-              child: Text(t.playing.view_albums),
-              onPressed: () {
-                // hide playing page
-                ref.read(routerProvider).slideController.hide();
-                ref.read(routerProvider).panelController.close();
+              child: Text(t.playing.view_album),
+              onPressed: () async {
                 // jump to album page
                 delegate.to(
                   name: '/album',
                   arguments: player.playing!.track.id.albumId,
                 );
+                // hide playing page after navigation
+                ref.read(routerProvider).slideController.hide();
+                ref.read(routerProvider).panelController.close();
               },
             ),
             // const Divider(height: 1),
