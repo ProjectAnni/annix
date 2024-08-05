@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 86 (43 per locale)
+/// Strings: 84 (42 per locale)
 ///
-/// Built on 2024-08-04 at 03:15 UTC
+/// Built on 2024-08-05 at 02:56 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -229,7 +229,6 @@ class _StringsSettingsEn {
 	String get settings => 'Settings';
 	String get skip_cert => 'Skip SSL Certificate Verification';
 	String get default_audio_quality => 'Default Audio Quality';
-	String get auto_scale_ui => 'Auto scale UI';
 	String get blur_playing_page => 'Blur playing page';
 	String get use_mobile_network => 'Play under mobile network';
 	String get view_logs => 'Logs';
@@ -348,7 +347,6 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 	@override String get settings => '设置';
 	@override String get skip_cert => '忽略证书验证';
 	@override String get default_audio_quality => '默认音质';
-	@override String get auto_scale_ui => '自动 UI 缩放';
 	@override String get blur_playing_page => '播放界面使用模糊背景';
 	@override String get use_mobile_network => '使用移动网络播放';
 	@override String get view_logs => '应用日志';
@@ -394,7 +392,6 @@ extension on _StringsEn {
 			case 'settings.settings': return 'Settings';
 			case 'settings.skip_cert': return 'Skip SSL Certificate Verification';
 			case 'settings.default_audio_quality': return 'Default Audio Quality';
-			case 'settings.auto_scale_ui': return 'Auto scale UI';
 			case 'settings.blur_playing_page': return 'Blur playing page';
 			case 'settings.use_mobile_network': return 'Play under mobile network';
 			case 'settings.view_logs': return 'Logs';
@@ -444,7 +441,6 @@ extension on _StringsZhCn {
 			case 'settings.settings': return '设置';
 			case 'settings.skip_cert': return '忽略证书验证';
 			case 'settings.default_audio_quality': return '默认音质';
-			case 'settings.auto_scale_ui': return '自动 UI 缩放';
 			case 'settings.blur_playing_page': return '播放界面使用模糊背景';
 			case 'settings.use_mobile_network': return '使用移动网络播放';
 			case 'settings.view_logs': return '应用日志';

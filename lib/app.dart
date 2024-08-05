@@ -3,7 +3,6 @@ import 'package:annix/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 class AnnixApp extends ConsumerWidget {
   const AnnixApp({super.key});
@@ -31,36 +30,6 @@ class AnnixApp extends ConsumerWidget {
 
       // routes
       routerDelegate: delegate,
-
-      // scale
-      builder: (final context, final child) {
-        return Overlay(
-          initialEntries: [
-            OverlayEntry(
-              builder: (final context) => ValueListenableBuilder<bool>(
-                valueListenable: ref.read(settingsProvider).autoScaleUI,
-                builder: (final context, final value, final child) {
-                  if (value) {
-                    return ResponsiveBreakpoints.builder(
-                      child: child!,
-                      breakpoints: const [
-                        Breakpoint(start: 0, end: 600, name: MOBILE),
-                        Breakpoint(start: 600, end: 800, name: TABLET),
-                        Breakpoint(start: 800, end: 1200, name: DESKTOP),
-                        Breakpoint(
-                            start: 1200, end: double.infinity, name: '4K'),
-                      ],
-                    );
-                  } else {
-                    return child!;
-                  }
-                },
-                child: child,
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }

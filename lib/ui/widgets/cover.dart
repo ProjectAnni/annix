@@ -121,8 +121,11 @@ class MusicCover extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final image = ExtendedNetworkImageProvider(
-        ref.read(proxyProvider).coverUrl(albumId, discId));
+    final image = ExtendedResizeImage.resizeIfNeeded(
+      provider: ExtendedNetworkImageProvider(
+          ref.read(proxyProvider).coverUrl(albumId, discId)),
+      compressionRatio: 0.5,
+    );
 
     return ExtendedImage(
       image: image,

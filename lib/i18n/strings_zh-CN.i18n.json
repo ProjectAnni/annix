@@ -31,7 +31,6 @@
     "settings": "设置",
     "skip_cert": "忽略证书验证",
     "default_audio_quality": "默认音质",
-    "auto_scale_ui": "自动 UI 缩放",
     "blur_playing_page": "播放界面使用模糊背景",
     "use_mobile_network": "使用移动网络播放",
     "view_logs": "应用日志",

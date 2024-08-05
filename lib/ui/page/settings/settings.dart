@@ -98,19 +98,6 @@ class SettingsScreen extends ConsumerWidget {
           SettingsSection(
             title: const Text('UI'),
             tiles: [
-              SettingsTileBuilder<bool>(
-                value: settings.autoScaleUI,
-                builder: (final context, final p, final _) =>
-                    SettingsTile.switchTile(
-                  onToggle: (final value) {
-                    settings.autoScaleUI.value = value;
-                    ref.read(routerProvider).popRoute();
-                  },
-                  initialValue: p,
-                  leading: const Icon(Icons.smart_screen_outlined),
-                  title: Text(t.settings.auto_scale_ui),
-                ),
-              ),
               if (context.isMobileOrPortrait)
                 SettingsTileBuilder<bool>(
                   value: settings.blurPlayingPage,

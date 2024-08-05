@@ -202,6 +202,8 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                 child: MusicCover.fromAlbum(
                   albumId: item.info.id.albumId,
                   fit: BoxFit.cover,
+                  width: 100,
+                  height: 100,
                 ),
               ),
             ],

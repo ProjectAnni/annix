@@ -37,11 +37,6 @@ class SettingsService {
     skipCertificateVerification.addListener(saveChangedVariable(
         'annix_skip_certificate_verification', skipCertificateVerification));
 
-    autoScaleUI =
-        ValueNotifier(preferences.getBool('annix_auto_scale_ui') ?? false);
-    autoScaleUI
-        .addListener(saveChangedVariable('annix_auto_scale_ui', autoScaleUI));
-
     defaultAudioQuality = ValueNotifier(PreferQuality.values[
         preferences.getInt('annix_default_audio_quality') ??
             PreferQuality.medium.index]);
