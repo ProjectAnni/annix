@@ -48,6 +48,11 @@ class PlaybackHistoryPage extends ConsumerWidget {
           });
         }),
         builder: (final context, final snapshot) {
+          if (snapshot.error != null) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
           if (snapshot.hasData && snapshot.data != null) {
             final data = snapshot.data!;
             return ListView(

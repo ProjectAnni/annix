@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
@@ -20,7 +22,14 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
     final client = anniv.client;
 
     if (ref.read(isOnlineProvider) && client != null) {
-      return await client.getAlbumMetadata(albums);
+      // group albums by 100 entries
+      final result = <String, Album>{};
+      for (var i = 0; i < albums.length; i += 100) {
+        final sub = albums.sublist(i, min(i + 100, albums.length));
+        final got = await client.getAlbumMetadata(sub);
+        result.addAll(got);
+      }
+      return result;
     } else {
       return {};
     }
