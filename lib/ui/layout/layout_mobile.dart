@@ -37,6 +37,14 @@ class AnnixLayoutMobile extends HookConsumerWidget {
     final bottomNavHeight = 80.0 + MediaQuery.of(context).padding.bottom;
     final currentHeight = bottomNavHeight * (1 - positionState.value);
 
+    final panel = ValueListenableBuilder(
+      valueListenable: ref.read(settingsProvider).blurPlayingPage,
+      builder: (final context, final bool blur, final child) {
+        return blur
+            ? const PlayingScreenMobileBlur()
+            : const PlayingScreenMobile();
+      },
+    );
     final root = Scaffold(
       body: Consumer(
         builder: (final context, final ref, final child) {
@@ -53,19 +61,10 @@ class AnnixLayoutMobile extends HookConsumerWidget {
                 SlidingUpPanel(
                   controller: router.panelController,
                   renderPanelSheet: false,
-                  backdropEnabled: true,
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                   panelBuilder: () {
-                    return ValueListenableBuilder(
-                      valueListenable:
-                          ref.read(settingsProvider).blurPlayingPage,
-                      builder: (final context, final bool blur, final child) {
-                        return blur
-                            ? const PlayingScreenMobileBlur()
-                            : const PlayingScreenMobile();
-                      },
-                    );
+                    return panel;
                   },
                   collapsed: GestureDetector(
                     child: const MobileBottomPlayer(),
