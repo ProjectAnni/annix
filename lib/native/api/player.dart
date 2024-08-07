@@ -8,6 +8,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `update_player_state_stream`, `update_progress_stream`
 
+void initLogger({required String path}) =>
+    RustLib.instance.api.crateApiPlayerInitLogger(path: path);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>
 abstract class AnnixPlayer implements RustOpaqueInterface {
   Future<void> addProvider(
