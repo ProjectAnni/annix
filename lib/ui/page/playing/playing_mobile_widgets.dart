@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:annix/providers.dart';
+import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
@@ -72,6 +73,13 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
             );
           },
           menuChildren: [
+            MenuItemButton(
+              leadingIcon: const Icon(Icons.playlist_add),
+              child: Text(t.track.add_to_playlist),
+              onPressed: () {
+                showPlaylistDialog(context, ref, player.playing!.track.id);
+              },
+            ),
             MenuItemButton(
               leadingIcon: const Icon(Icons.album_outlined),
               child: Text(t.playing.view_album),
