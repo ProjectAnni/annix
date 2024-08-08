@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.1.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1427512375;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -678822201;
 
 // Section: executor
 
@@ -733,6 +733,38 @@ fn wire__crate__api__player__AnnixPlayer_stop_impl(
                     Ok(output_ok)
                 })())
             }
+        },
+    )
+}
+fn wire__crate__api__player__init_logger_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "init_logger",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Result::<_, ()>::Ok({
+                    crate::api::player::init_logger(api_path);
+                })?;
+                Ok(output_ok)
+            })())
         },
     )
 }
@@ -1566,18 +1598,18 @@ fn pde_ffi_dispatcher_primary_impl(
             wire__crate__api__player__AnnixPlayer_set_volume_impl(port, ptr, rust_vec_len, data_len)
         }
         14 => wire__crate__api__player__AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__simple__local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__simple__local_db_get_albums_by_tag_impl(
+        17 => wire__crate__api__simple__local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__simple__local_db_get_albums_by_tag_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__simple__local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__simple__local_db_new_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__simple__local_store_clear_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__simple__local_store_get_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__simple__local_store_insert_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__simple__local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__simple__local_db_new_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__simple__local_store_clear_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__simple__local_store_get_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__simple__local_store_insert_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1592,25 +1624,26 @@ fn pde_ffi_dispatcher_sync_impl(
     match func_id {
         5 => wire__crate__api__player__AnnixPlayer_is_playing_impl(ptr, rust_vec_len, data_len),
         6 => wire__crate__api__player__AnnixPlayer_new_impl(ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__simple__get_theme_color_impl(ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__simple__local_store_new_impl(ptr, rust_vec_len, data_len),
-        24 => {
+        15 => wire__crate__api__player__init_logger_impl(ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__simple__get_theme_color_impl(ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__simple__local_store_new_impl(ptr, rust_vec_len, data_len),
+        25 => {
             wire__crate__api__simple__native_preference_store_get_impl(ptr, rust_vec_len, data_len)
         }
-        25 => {
+        26 => {
             wire__crate__api__simple__native_preference_store_new_impl(ptr, rust_vec_len, data_len)
         }
-        26 => wire__crate__api__simple__native_preference_store_remove_impl(
+        27 => wire__crate__api__simple__native_preference_store_remove_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => wire__crate__api__simple__native_preference_store_remove_prefix_impl(
+        28 => wire__crate__api__simple__native_preference_store_remove_prefix_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => {
+        29 => {
             wire__crate__api__simple__native_preference_store_set_impl(ptr, rust_vec_len, data_len)
         }
         _ => unreachable!(),
@@ -2118,3 +2151,71 @@ mod io {
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;
+
+/// cbindgen:ignore
+#[cfg(target_family = "wasm")]
+mod web {
+    // This file is automatically generated, so please do not edit it.
+    // Generated by `flutter_rust_bridge`@ 2.1.0.
+
+    // Section: imports
+
+    use super::*;
+    use crate::api::player::*;
+    use crate::api::simple::*;
+    use flutter_rust_bridge::for_generated::byteorder::{
+        NativeEndian, ReadBytesExt, WriteBytesExt,
+    };
+    use flutter_rust_bridge::for_generated::wasm_bindgen;
+    use flutter_rust_bridge::for_generated::wasm_bindgen::prelude::*;
+    use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
+    use flutter_rust_bridge::{Handler, IntoIntoDart};
+
+    // Section: boilerplate
+
+    flutter_rust_bridge::frb_generated_boilerplate_web!();
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_MutexConnection(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<Mutex<Connection>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_MutexConnection(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<Mutex<Connection>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<Mutex<RepoDatabaseRead>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<Mutex<RepoDatabaseRead>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>::decrement_strong_count(ptr as _);
+    }
+}
+#[cfg(target_family = "wasm")]
+pub use web::*;

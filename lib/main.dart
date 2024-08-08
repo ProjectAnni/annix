@@ -6,6 +6,7 @@ import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/native/frb_generated.dart';
+import 'package:annix/native/api/player.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {
@@ -37,6 +38,8 @@ Future<void> main() async {
     FLog.error(text: 'Root isolate error', exception: error, stacktrace: stack);
     return true;
   };
+
+  initLogger(path: logPath());
 
   try {
     runApp(

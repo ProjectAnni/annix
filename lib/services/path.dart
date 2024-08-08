@@ -42,3 +42,4 @@ class PathService {
 String localDbPath() => p.join(PathService.dataRoot, 'local.db');
 String audioCachePath() => p.join(PathService.storageRoot, 'audio');
 String coverCachePath() => p.join(PathService.storageRoot, 'cover');
+String logPath() => p.join(PathService.dataRoot, 'log.db');
