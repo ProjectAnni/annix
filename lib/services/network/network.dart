@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:annix/providers.dart';
 import 'package:annix/native/api/network.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -22,42 +20,46 @@ class NetworkService extends ChangeNotifier {
     ref.read(settingsProvider).useMobileNetwork.addListener(notifyListeners);
   }
 
-  void _updateState(final ConnectivityResult result) {
-    switch (result) {
-      // wireless or wired
-      case ConnectivityResult.wifi:
-      case ConnectivityResult.ethernet:
-        isConnected = true;
+  void _updateState(final List<ConnectivityResult> connectivityResult) {
+    if (connectivityResult.contains(ConnectivityResult.mobile)) {
+      // Mobile network available.
+      isConnected = true;
+      isMobileNetwork = true;
+    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      // Wi-fi is available.
+      // Note for Android:
+      // When both mobile and Wi-Fi are turned on system will return Wi-Fi only as active network type
+      isConnected = true;
+      isMobileNetwork = false;
+    } else if (connectivityResult.contains(ConnectivityResult.ethernet)) {
+      // Ethernet connection available.
+      isConnected = true;
+      isMobileNetwork = false;
+    } else if (connectivityResult.contains(ConnectivityResult.bluetooth)) {
+      // Bluetooth connection available.
+      isConnected = true;
+      isMobileNetwork = true;
+    } else if (connectivityResult.contains(ConnectivityResult.vpn) ||
+        connectivityResult.contains(ConnectivityResult.other)) {
+      // Vpn connection active.
+      // Note for iOS and macOS:
+      // There is no separate network interface type for [vpn].
+      // It returns [other] on any device (also simulator)
+      // Connected to a network which is not in the above mentioned networks.
+      _canVisitInternet().then((final value) {
+        // keep `isMobileNetwork` property and set isConnected
         isMobileNetwork = false;
-        break;
-      // mobile network, need to save traffic
-      case ConnectivityResult.mobile:
-      case ConnectivityResult.bluetooth:
-        isConnected = true;
-        isMobileNetwork = true;
-        break;
-      default:
-        // no network or vpn
-        if (Platform.isIOS ||
-            Platform.isMacOS ||
-            result == ConnectivityResult.vpn) {
-          // on apple devices, VPN connection may result in ConnectivityResult.none
-          // so add an polyfill to check internet accessibility
-          // https://github.com/fluttercommunity/plus_plugins/issues/857
-          _canVisitInternet().then((final value) {
-            // keep `isMobileNetwork` property and set isConnected
-            isConnected = value;
-            updateAndNotify();
-          });
-          // early return, do not notify listeners here
-          return;
-        }
-
-        // not vpn, ConnectivityResult.none
-        isConnected = false;
-        isMobileNetwork = false;
-        break;
+        isConnected = value;
+        updateAndNotify();
+      });
+      // early return, do not notify listeners here
+      return;
+    } else if (connectivityResult.contains(ConnectivityResult.none)) {
+      // No available network types
+      isConnected = false;
+      isMobileNetwork = false;
     }
+
     updateAndNotify();
   }
 

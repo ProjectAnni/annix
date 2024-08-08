@@ -21,7 +21,7 @@ dependencies:
   flutter_hooks: ^0.20.0
   hooks_riverpod: ^2.3.10
   riverpod_annotation: ^2.1.4
-  connectivity_plus: ^4.0.2
+  connectivity_plus: ^6.0.4
 
   shimmer: ^3.0.0
 
@@ -34,21 +34,21 @@ dependencies:
   netease_music_api:
     git:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
-  xml: ^6.2.2
+  xml: ^6.5.0
 
-  audio_service: ^0.18.13
+  audio_service: ^0.18.15
   audio_service_platform_interface: ^0.1.1
-  audio_session: ^0.1.19
+  audio_session: ^0.1.21
   anni_mpris_service: ^0.1.0
 
   slang: ^3.15.0
   slang_flutter: ^3.15.0
 
-  audio_video_progress_bar: ^2.0.0
+  audio_video_progress_bar: ^2.0.3
   extended_image: ^8.1.0
   flutter_lyric: ^2.0.4+6
   flutter_settings_ui: ^3.0.0
-  cupertino_icons: ^1.0.5
+  cupertino_icons: ^1.0.8
   flutter_staggered_grid_view: ^0.7.0
   flutter_linkify: ^6.0.0
 
@@ -63,7 +63,7 @@ dependencies:
   drift: ^2.11.1
   sqlite3_flutter_libs: 0.5.10
 
-  uuid: ^4.3.3
+  uuid: ^4.4.2
 
   file_picker: ^5.3.4
   url_launcher: ^6.1.12
@@ -76,9 +76,9 @@ dependencies:
   share_plus: ^7.0.1
 
   file: ^7.0.0
-  ffi: ^2.1.0
+  ffi: ^2.1.2
   flutter_rust_bridge: 2.1.0
-  freezed_annotation: ^2.3.2
+  freezed_annotation: ^2.4.4
   meta: ^1.8.0
   rust_lib_annix:
     path: rust_builder
