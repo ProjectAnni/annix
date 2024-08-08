@@ -397,7 +397,7 @@ enum PlaylistItemType {
   }
 
   factory PlaylistItemType.fromInstance(final AnnivPlaylistItem item) {
-    if (item is AnnivPlaylistItemTrack) {
+    if (item is AnnivPlaylistItemTrack || item is AnnivPlaylistItemPlainTrack) {
       return PlaylistItemType.normal;
     } else if (item is AnnivPlaylistItemDummyTrack) {
       return PlaylistItemType.dummy;
@@ -473,6 +473,23 @@ class AnnivPlaylistItemTrack extends AnnivPlaylistItem {
   Map<String, dynamic> toJson() {
     final json = super.toJson();
     json['info'] = info.toJson();
+    return json;
+  }
+}
+
+class AnnivPlaylistPlainItem extends AnnivPlaylistItem {
+  AnnivPlaylistPlainItem({super.description});
+}
+
+class AnnivPlaylistItemPlainTrack extends AnnivPlaylistPlainItem {
+  final TrackIdentifier track;
+
+  AnnivPlaylistItemPlainTrack({super.description, required this.track});
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json['info'] = track.toJson();
     return json;
   }
 }

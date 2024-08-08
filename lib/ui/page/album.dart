@@ -2,6 +2,7 @@ import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
@@ -219,11 +220,14 @@ class TrackListTile extends ConsumerWidget {
             expand: false,
             builder: (final context, final scrollController) {
               return ListView(
+                controller: scrollController,
                 children: [
                   ListTile(
                     title: Text(t.track.add_to_playlist),
                     leading: const Icon(Icons.playlist_add),
-                    onTap: () {},
+                    onTap: () {
+                      showPlaylistDialog(context, ref, track.id);
+                    },
                   ),
                   ListTile(
                     title: Text(t.track.share),

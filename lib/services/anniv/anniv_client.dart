@@ -320,6 +320,19 @@ class AnnivClient {
     return Playlist.fromJson(response.data);
   }
 
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E4%BF%AE%E6%94%B9%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<Playlist> appendPlaylistItem({
+    required final String playlistId,
+    required final List<AnnivPlaylistPlainItem> items,
+  }) async {
+    final response = await _client.patch('/api/playlist', data: {
+      'id': playlistId,
+      'command': 'append',
+      'payload': items.map((final e) => e.toJson()).toList(),
+    });
+    return Playlist.fromJson(response.data);
+  }
+
   Future<LyricResponse?> getLyric(final TrackIdentifier track) async {
     try {
       final response = await _client.get('/api/lyric', queryParameters: {

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:annix/providers.dart';
-import 'package:annix/services/local/database.dart';
+import 'package:annix/services/local/database.dart' hide Playlist;
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
@@ -341,21 +341,27 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<List<AnnivPlaylistItem>?> getPlaylistItems(
-      final PlaylistData playlist) async {
+  Future<List<AnnivPlaylistItem>?> getPlaylistItems(final PlaylistData playlist,
+      {bool force = false, Playlist? remote}) async {
     final db = ref.read(localDatabaseProvider);
-    if (!playlist.hasItems) {
+    if (force) {
+      // clear all items
+      await db.playlistItem
+          .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
+    }
+
+    if (!playlist.hasItems || force) {
       // remote playlist without track items
       // try to fetch items
       if (client == null) return null;
 
       try {
-        final remote = await client!.getPlaylistDetail(playlist.remoteId!);
+        remote ??= await client!.getPlaylistDetail(playlist.remoteId!);
 
         // update tracks
         await db.batch((final batch) => batch.insertAll(
               db.playlistItem,
-              remote.items
+              remote!.items
                   .asMap()
                   .entries
                   .map((final e) => e.value
@@ -374,6 +380,48 @@ class AnnivService extends ChangeNotifier {
 
     final items = await db.playlistItems(playlist.id).get();
     return items.map((final e) => AnnivPlaylistItem.fromDatabase(e)).toList();
+  }
+
+  Future<void> appendTrackToPlaylist(
+      final PlaylistInfo playlist, final TrackIdentifier track) async {
+    final newPlaylist = await client?.appendPlaylistItem(
+      playlistId: playlist.id,
+      items: [AnnivPlaylistItemPlainTrack(track: track)],
+    );
+    if (newPlaylist != null) {
+      final db = ref.read(localDatabaseProvider);
+      final playlist = db.playlist.select()
+        ..where((final tbl) => tbl.remoteId.equals(newPlaylist.intro.id));
+      final table = await playlist.getSingleOrNull();
+      int? tableId = table?.id;
+      if (table == null) {
+        // playlist does not on local, should not exist, but just insert it
+        await db.playlist.insertOne(newPlaylist.intro.toCompanion());
+        final table = await playlist.getSingle();
+        tableId = table.id;
+      }
+
+      await db.transaction(() async {
+        // clear items
+        await db.playlistItem
+            .deleteWhere((final tbl) => tbl.playlistId.equals(tableId!));
+
+        // update tracks
+        await db.batch((final batch) => batch.insertAll(
+              db.playlistItem,
+              newPlaylist.items
+                  .asMap()
+                  .entries
+                  .map((final e) =>
+                      e.value.toCompanion(playlistId: tableId!, order: e.key))
+                  .toList(),
+            ));
+
+        // update modified playlist
+        await db.playlist.update().replace(
+            newPlaylist.intro.toCompanion(id: Value(tableId!), hasItems: true));
+      });
+    }
   }
 
   ////////////////////////////// Statistics //////////////////////////////
