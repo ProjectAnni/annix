@@ -27,11 +27,7 @@ class AlbumGrid extends ConsumerWidget {
     final metadataFuture = metadata.getAlbum(albumId: albumId);
 
     void toAlbum(final BuildContext context) {
-      metadataFuture.then((final album) {
-        if (album != null) {
-          ref.read(routerProvider).to(name: '/album', arguments: album);
-        }
-      });
+      ref.read(routerProvider).to(name: '/album', arguments: albumId);
     }
 
     final child = Column(

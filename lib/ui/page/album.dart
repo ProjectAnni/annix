@@ -7,6 +7,7 @@ import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -56,26 +57,35 @@ class AlbumPage extends ConsumerWidget {
   }
 
   Widget _buildTrackList(final BuildContext context) {
-    final List<Widget> list = [];
+    final needDiscId = album.discs.length > 1;
+    final totalTracks = album.discs.fold<int>(
+        needDiscId ? album.discs.length : 0,
+        (sum, disc) => sum + disc.tracks.length);
+    final prefixSumList = createPrefixSum(album.discs
+        .map((e) => e.tracks.length + (needDiscId ? 1 : 0))
+        .toList());
 
-    bool needDiscId = false;
-    if (album.discs.length > 1) {
-      needDiscId = true;
-    }
-
-    int trackIndex = 0;
-    int discId = 1;
-    for (final disc in album.discs) {
-      if (needDiscId) {
-        list.add(DiscTitleListTile(title: disc.title, index: discId));
-      }
-
-      list.addAll(disc.tracks.map(
-          (final track) => TrackListTile(track: track, index: trackIndex++)));
-      discId++;
-    }
-
-    return SliverList(delegate: SliverChildListDelegate(list));
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        childCount: totalTracks,
+        (context, index) {
+          final [discNumber, trackNumber] =
+              findDiscAndTrack(prefixSumList, index);
+          if (needDiscId && trackNumber == 0) {
+            return DiscTitleListTile(
+              title: album.discs[discNumber].title,
+              index: discNumber + 1,
+            );
+          } else {
+            return TrackListTile(
+              track: album.discs[discNumber]
+                  .tracks[needDiscId ? trackNumber - 1 : trackNumber],
+              index: index,
+            );
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -194,7 +204,7 @@ class TrackListTile extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final annil = ref.read(annilProvider);
+    final annil = ref.watch(annilProvider);
 
     return ListTile(
       leading: Text('${track.id.trackId}'),
@@ -219,4 +229,19 @@ class TrackListTile extends ConsumerWidget {
       // selected: TODO: indicate playing track,
     );
   }
+}
+
+List<int> createPrefixSum(List<int> arr) {
+  final prefixSum = List<int>.filled(arr.length, 0);
+  prefixSum[0] = arr[0];
+  for (int i = 1; i < arr.length; i++) {
+    prefixSum[i] = prefixSum[i - 1] + arr[i];
+  }
+  return prefixSum;
+}
+
+List<int> findDiscAndTrack(List<int> prefixSum, int n) {
+  final index = lowerBound(prefixSum, n + 1);
+  final trackNumber = index == 0 ? n : n - prefixSum[index - 1];
+  return [index, trackNumber];
 }
