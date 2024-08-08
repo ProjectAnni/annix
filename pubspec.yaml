@@ -13,22 +13,22 @@ dependencies:
     sdk: flutter
 
   path: ^1.8.2
-  path_provider: ^2.1.0
+  path_provider: ^2.1.4
   collection: ^1.18.0
   f_logs:
     git:
       url: https://github.com/ProjectAnni/Flogs
-  flutter_hooks: ^0.20.0
+  flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.3.10
   riverpod_annotation: ^2.1.4
   connectivity_plus: ^6.0.4
 
   shimmer: ^3.0.0
 
-  dio: ^5.4.3+1
+  dio: ^5.5.0+1
   dio_cookie_manager: ^2.1.4
   dio_smart_retry: ^6.0.0
-  http: ^1.2.1
+  http: ^1.2.2
   cookie_jar: ^3.0.1
 
   netease_music_api:
@@ -45,7 +45,7 @@ dependencies:
   slang_flutter: ^3.15.0
 
   audio_video_progress_bar: ^2.0.3
-  extended_image: ^8.1.0
+  extended_image: ^8.2.1
   flutter_lyric: ^2.0.4+6
   flutter_settings_ui: ^3.0.0
   cupertino_icons: ^1.0.8
@@ -73,7 +73,7 @@ dependencies:
   shelf_router: ^1.1.4
 
   pool: ^1.5.1
-  share_plus: ^7.0.1
+  share_plus: ^10.0.0
 
   file: ^7.0.0
   ffi: ^2.1.2
