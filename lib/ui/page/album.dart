@@ -3,11 +3,11 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
+import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final albumFamily = FutureProvider.family<Album, String>((ref, albumId) {
@@ -53,38 +53,6 @@ class AlbumPage extends ConsumerWidget {
       initialIndex: index,
       shuffle: shuffle,
     );
-  }
-
-  Widget _playButtons(final WidgetRef ref, {final bool stretch = false}) {
-    return LayoutBuilder(builder: (final context, final constraints) {
-      double? maxWidth;
-      if (stretch && constraints.maxWidth != double.infinity) {
-        maxWidth = constraints.maxWidth / 2.2;
-      }
-
-      return ButtonBar(
-        layoutBehavior: ButtonBarLayoutBehavior.constrained,
-        alignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: maxWidth,
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.play_arrow),
-              label: Text(t.playback.play_all),
-              onPressed: () => _onPlay(ref),
-            ),
-          ),
-          SizedBox(
-            width: maxWidth,
-            child: FilledButton.icon(
-              icon: const Icon(Icons.shuffle),
-              label: Text(t.playback.shuffle),
-              onPressed: () => _onPlay(ref, shuffle: true),
-            ),
-          ),
-        ],
-      );
-    });
   }
 
   Widget _buildTrackList(final BuildContext context) {
@@ -182,7 +150,11 @@ class AlbumPage extends ConsumerWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: _playButtons(ref, stretch: context.isMobileOrPortrait),
+              child: PlayShuffleButtonGroup(
+                stretch: context.isMobileOrPortrait,
+                onPlay: () => _onPlay(ref),
+                onShufflePlay: () => _onPlay(ref, shuffle: true),
+              ),
             ),
             _buildTrackList(context),
           ],
