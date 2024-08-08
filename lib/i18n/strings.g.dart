@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 84 (42 per locale)
+/// Strings: 90 (45 per locale)
 ///
-/// Built on 2024-08-05 at 02:56 UTC
+/// Built on 2024-08-08 at 15:26 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -24,8 +24,8 @@ const AppLocale _baseLocale = AppLocale.en;
 /// - LocaleSettings.setLocale(AppLocale.en) // set locale
 /// - Locale locale = AppLocale.en.flutterLocale // get flutter locale from enum
 /// - if (LocaleSettings.currentLocale == AppLocale.en) // locale check
-enum AppLocale with BaseAppLocale<AppLocale, _StringsEn> {
-	en(languageCode: 'en', build: _StringsEn.build),
+enum AppLocale with BaseAppLocale<AppLocale, Translations> {
+	en(languageCode: 'en', build: Translations.build),
 	zhCn(languageCode: 'zh', countryCode: 'CN', build: _StringsZhCn.build);
 
 	const AppLocale({required this.languageCode, this.scriptCode, this.countryCode, required this.build}); // ignore: unused_element
@@ -33,10 +33,10 @@ enum AppLocale with BaseAppLocale<AppLocale, _StringsEn> {
 	@override final String languageCode;
 	@override final String? scriptCode;
 	@override final String? countryCode;
-	@override final TranslationBuilder<AppLocale, _StringsEn> build;
+	@override final TranslationBuilder<AppLocale, Translations> build;
 
 	/// Gets current instance managed by [LocaleSettings].
-	_StringsEn get translations => LocaleSettings.instance.translationMap[this]!;
+	Translations get translations => LocaleSettings.instance.translationMap[this]!;
 }
 
 /// Method A: Simple
@@ -48,7 +48,7 @@ enum AppLocale with BaseAppLocale<AppLocale, _StringsEn> {
 /// Usage:
 /// String a = t.someKey.anotherKey;
 /// String b = t['someKey.anotherKey']; // Only for edge cases!
-_StringsEn get t => LocaleSettings.instance.currentTranslations;
+Translations get t => LocaleSettings.instance.currentTranslations;
 
 /// Method B: Advanced
 ///
@@ -65,17 +65,10 @@ _StringsEn get t => LocaleSettings.instance.currentTranslations;
 /// final t = Translations.of(context); // Get t variable.
 /// String a = t.someKey.anotherKey; // Use t variable.
 /// String b = t['someKey.anotherKey']; // Only for edge cases!
-class Translations {
-	Translations._(); // no constructor
-
-	static _StringsEn of(BuildContext context) => InheritedLocaleData.of<AppLocale, _StringsEn>(context).translations;
-}
-
-/// The provider for method B
-class TranslationProvider extends BaseTranslationProvider<AppLocale, _StringsEn> {
+class TranslationProvider extends BaseTranslationProvider<AppLocale, Translations> {
 	TranslationProvider({required super.child}) : super(settings: LocaleSettings.instance);
 
-	static InheritedLocaleData<AppLocale, _StringsEn> of(BuildContext context) => InheritedLocaleData.of<AppLocale, _StringsEn>(context);
+	static InheritedLocaleData<AppLocale, Translations> of(BuildContext context) => InheritedLocaleData.of<AppLocale, Translations>(context);
 }
 
 /// Method B shorthand via [BuildContext] extension method.
@@ -84,11 +77,11 @@ class TranslationProvider extends BaseTranslationProvider<AppLocale, _StringsEn>
 /// Usage (e.g. in a widget's build method):
 /// context.t.someKey.anotherKey
 extension BuildContextTranslationsExtension on BuildContext {
-	_StringsEn get t => TranslationProvider.of(this).translations;
+	Translations get t => TranslationProvider.of(this).translations;
 }
 
 /// Manages all translation instances and the current locale
-class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
+class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, Translations> {
 	LocaleSettings._() : super(utils: AppLocaleUtils.instance);
 
 	static final instance = LocaleSettings._();
@@ -110,7 +103,7 @@ class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, _StringsEn> {
 }
 
 /// Provides utility functions without any side effects.
-class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, _StringsEn> {
+class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, Translations> {
 	AppLocaleUtils._() : super(baseLocale: _baseLocale, locales: AppLocale.values);
 
 	static final instance = AppLocaleUtils._();
@@ -126,11 +119,16 @@ class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, _StringsEn> {
 // translations
 
 // Path: <root>
-class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
+class Translations implements BaseTranslations<AppLocale, Translations> {
+	/// Returns the current translations of the given [context].
+	///
+	/// Usage:
+	/// final t = Translations.of(context);
+	static Translations of(BuildContext context) => InheritedLocaleData.of<AppLocale, Translations>(context).translations;
 
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
-	_StringsEn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
+	Translations.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
 		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
 		  $meta = TranslationMetadata(
 		    locale: AppLocale.en,
@@ -142,12 +140,12 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	}
 
 	/// Metadata for the translations of <en>.
-	@override final TranslationMetadata<AppLocale, _StringsEn> $meta;
+	@override final TranslationMetadata<AppLocale, Translations> $meta;
 
 	/// Access flat map
 	dynamic operator[](String key) => $meta.getTranslation(key);
 
-	late final _StringsEn _root = this; // ignore: unused_field
+	late final Translations _root = this; // ignore: unused_field
 
 	// Translations
 	String get progress => 'Progress';
@@ -163,7 +161,8 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	late final _StringsServerEn server = _StringsServerEn._(_root);
 	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
 	String get search => 'Search';
-	String get track => 'Track';
+	late final _StringsTrackEn track = _StringsTrackEn._(_root);
+	String get tracks => 'Tracks';
 	String get recent_played => 'Recently played';
 	String get no_lyric_found => 'No lyric found';
 	String get download => 'Download';
@@ -174,19 +173,18 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 class _StringsPlayingEn {
 	_StringsPlayingEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
 	String get is_playing => 'Playing';
 	String get view_album => 'View Album';
-	String get share => 'Share';
 }
 
 // Path: playback
 class _StringsPlaybackEn {
 	_StringsPlaybackEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
 	String get play_all => 'Play All';
@@ -197,7 +195,7 @@ class _StringsPlaybackEn {
 class _StringsPlaylistEn {
 	_StringsPlaylistEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
 	String get edit => 'Edit';
@@ -207,7 +205,7 @@ class _StringsPlaylistEn {
 class _StringsServerEn {
 	_StringsServerEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
 	String get server => 'Server';
@@ -223,7 +221,7 @@ class _StringsServerEn {
 class _StringsSettingsEn {
 	_StringsSettingsEn._(this._root);
 
-	final _StringsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
 	String get settings => 'Settings';
@@ -239,13 +237,26 @@ class _StringsSettingsEn {
 	String get clear_lyric_cache_desc => 'Delete all lyric cache.';
 	String get clear_database => 'Clear database';
 	String get clear_database_desc => 'Delete main database. You need to restart the app.';
+	String get show_artist_in_bottom_player => 'Show artist in mini player';
+	String get show_artist_in_bottom_player_desc => 'Only works on mobile devices.';
 	String get custom_font_path => 'Custom Font Path';
 	String get custom_font_not_specified => 'Not specified';
 }
 
-// Path: <root>
-class _StringsZhCn implements _StringsEn {
+// Path: track
+class _StringsTrackEn {
+	_StringsTrackEn._(this._root);
 
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get add_to_playlist => 'Add to playlist';
+	String get add_to_queue => 'Add to queue';
+	String get share => 'Share track';
+}
+
+// Path: <root>
+class _StringsZhCn implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	_StringsZhCn.build({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
@@ -260,7 +271,7 @@ class _StringsZhCn implements _StringsEn {
 	}
 
 	/// Metadata for the translations of <zh-CN>.
-	@override final TranslationMetadata<AppLocale, _StringsEn> $meta;
+	@override final TranslationMetadata<AppLocale, Translations> $meta;
 
 	/// Access flat map
 	@override dynamic operator[](String key) => $meta.getTranslation(key);
@@ -281,7 +292,8 @@ class _StringsZhCn implements _StringsEn {
 	@override late final _StringsServerZhCn server = _StringsServerZhCn._(_root);
 	@override late final _StringsSettingsZhCn settings = _StringsSettingsZhCn._(_root);
 	@override String get search => '搜索';
-	@override String get track => '单曲';
+	@override late final _StringsTrackZhCn track = _StringsTrackZhCn._(_root);
+	@override String get tracks => '单曲';
 	@override String get recent_played => '最近播放';
 	@override String get no_lyric_found => '未找到歌词';
 	@override String get download => '下载';
@@ -297,7 +309,6 @@ class _StringsPlayingZhCn implements _StringsPlayingEn {
 	// Translations
 	@override String get is_playing => '正在播放';
 	@override String get view_album => '查看专辑';
-	@override String get share => '分享';
 }
 
 // Path: playback
@@ -363,10 +374,22 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 	@override String get custom_font_not_specified => '默认字体';
 }
 
+// Path: track
+class _StringsTrackZhCn implements _StringsTrackEn {
+	_StringsTrackZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get add_to_playlist => '保存到播放列表';
+	@override String get add_to_queue => '添加到待播列表';
+	@override String get share => '分享歌曲';
+}
+
 /// Flat map(s) containing all translations.
 /// Only for edge cases! For simple maps, use the map function of this library.
 
-extension on _StringsEn {
+extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
 			case 'progress': return 'Progress';
@@ -378,7 +401,6 @@ extension on _StringsEn {
 			case 'my_favorite': return 'My Favorite';
 			case 'playing.is_playing': return 'Playing';
 			case 'playing.view_album': return 'View Album';
-			case 'playing.share': return 'Share';
 			case 'playback.play_all': return 'Play All';
 			case 'playback.shuffle': return 'Shuffle';
 			case 'playlist.edit': return 'Edit';
@@ -402,10 +424,15 @@ extension on _StringsEn {
 			case 'settings.clear_lyric_cache_desc': return 'Delete all lyric cache.';
 			case 'settings.clear_database': return 'Clear database';
 			case 'settings.clear_database_desc': return 'Delete main database. You need to restart the app.';
+			case 'settings.show_artist_in_bottom_player': return 'Show artist in mini player';
+			case 'settings.show_artist_in_bottom_player_desc': return 'Only works on mobile devices.';
 			case 'settings.custom_font_path': return 'Custom Font Path';
 			case 'settings.custom_font_not_specified': return 'Not specified';
 			case 'search': return 'Search';
-			case 'track': return 'Track';
+			case 'track.add_to_playlist': return 'Add to playlist';
+			case 'track.add_to_queue': return 'Add to queue';
+			case 'track.share': return 'Share track';
+			case 'tracks': return 'Tracks';
 			case 'recent_played': return 'Recently played';
 			case 'no_lyric_found': return 'No lyric found';
 			case 'download': return 'Download';
@@ -427,7 +454,6 @@ extension on _StringsZhCn {
 			case 'my_favorite': return '我的收藏';
 			case 'playing.is_playing': return '正在播放';
 			case 'playing.view_album': return '查看专辑';
-			case 'playing.share': return '分享';
 			case 'playback.play_all': return '播放全部';
 			case 'playback.shuffle': return '随机播放';
 			case 'playlist.edit': return '编辑';
@@ -456,7 +482,10 @@ extension on _StringsZhCn {
 			case 'settings.custom_font_path': return '自定义字体路径';
 			case 'settings.custom_font_not_specified': return '默认字体';
 			case 'search': return '搜索';
-			case 'track': return '单曲';
+			case 'track.add_to_playlist': return '保存到播放列表';
+			case 'track.add_to_queue': return '添加到待播列表';
+			case 'track.share': return '分享歌曲';
+			case 'tracks': return '单曲';
 			case 'recent_played': return '最近播放';
 			case 'no_lyric_found': return '未找到歌词';
 			case 'download': return '下载';

@@ -41,8 +41,8 @@ dependencies:
   audio_session: ^0.1.21
   anni_mpris_service: ^0.1.0
 
-  slang: ^3.15.0
-  slang_flutter: ^3.15.0
+  slang: ^3.31.1
+  slang_flutter: ^3.31.0
 
   audio_video_progress_bar: ^2.0.3
   extended_image: ^8.2.1
@@ -90,7 +90,7 @@ dev_dependencies:
   drift_dev: ^2.11.1
   build_runner: ^2.4.6
   custom_lint: ^0.5.2
-  slang_build_runner: ^3.23.0
+  slang_build_runner: ^3.31.0
   ffigen: ^9.0.0
   freezed: ^2.3.2
   riverpod_generator: ^2.3.1

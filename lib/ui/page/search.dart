@@ -105,7 +105,7 @@ class _SearchResultWidget extends HookConsumerWidget {
                 avatar: categoryState.value == 0
                     ? null
                     : const Icon(Icons.music_note),
-                label: Text(t.track),
+                label: Text(t.tracks),
                 onSelected: (selected) {
                   if (selected) {
                     categoryState.value = 0;

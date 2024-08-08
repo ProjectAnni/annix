@@ -8,8 +8,7 @@
   "my_favorite": "My Favorite",
   "playing": {
     "is_playing": "Playing",
-    "view_album": "View Album",
-    "share": "Share"
+    "view_album": "View Album"
   },
   "playback": {
     "play_all": "Play All",
@@ -41,11 +40,18 @@
     "clear_lyric_cache_desc": "Delete all lyric cache.",
     "clear_database": "Clear database",
     "clear_database_desc": "Delete main database. You need to restart the app.",
+    "show_artist_in_bottom_player": "Show artist in mini player",
+    "show_artist_in_bottom_player_desc": "Only works on mobile devices.",
     "custom_font_path": "Custom Font Path",
     "custom_font_not_specified": "Not specified"
   },
   "search": "Search",
-  "track": "Track",
+  "track": {
+    "add_to_playlist": "Add to playlist",
+    "add_to_queue": "Add to queue",
+    "share": "Share track"
+  },
+  "tracks": "Tracks",
   "recent_played": "Recently played",
   "no_lyric_found": "No lyric found",
   "download": "Download",

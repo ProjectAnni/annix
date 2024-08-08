@@ -45,7 +45,7 @@ class FavoritePage extends HookConsumerWidget {
                     segments: [
                       ButtonSegment(
                         icon: const Icon(Icons.music_note),
-                        label: Text(t.track),
+                        label: Text(t.tracks),
                         value: true,
                       ),
                       ButtonSegment(

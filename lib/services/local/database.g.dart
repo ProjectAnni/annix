@@ -37,9 +37,10 @@ class AnnivUser extends Table with TableInfo<AnnivUser, AnnivUserData> {
   @override
   List<GeneratedColumn> get $columns => [id, userId, nickname, avatar];
   @override
-  String get aliasedName => _alias ?? 'anniv_user';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'anniv_user';
+  String get actualTableName => $name;
+  static const String $name = 'anniv_user';
   @override
   VerificationContext validateIntegrity(Insertable<AnnivUserData> instance,
       {bool isInserting = false}) {
@@ -329,9 +330,10 @@ class Playlist extends Table with TableInfo<Playlist, PlaylistData> {
         hasItems
       ];
   @override
-  String get aliasedName => _alias ?? 'playlist';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'playlist';
+  String get actualTableName => $name;
+  static const String $name = 'playlist';
   @override
   VerificationContext validateIntegrity(Insertable<PlaylistData> instance,
       {bool isInserting = false}) {
@@ -775,9 +777,10 @@ class PlaylistItem extends Table
   List<GeneratedColumn> get $columns =>
       [id, playlistId, type, description, info, remoteId, order];
   @override
-  String get aliasedName => _alias ?? 'playlist_item';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'playlist_item';
+  String get actualTableName => $name;
+  static const String $name = 'playlist_item';
   @override
   VerificationContext validateIntegrity(Insertable<PlaylistItemData> instance,
       {bool isInserting = false}) {
@@ -1155,9 +1158,10 @@ class LocalFavoriteTracks extends Table
   List<GeneratedColumn> get $columns =>
       [id, albumId, discId, trackId, title, artist, albumTitle, type];
   @override
-  String get aliasedName => _alias ?? 'local_favorite_tracks';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'local_favorite_tracks';
+  String get actualTableName => $name;
+  static const String $name = 'local_favorite_tracks';
   @override
   VerificationContext validateIntegrity(Insertable<LocalFavoriteTrack> instance,
       {bool isInserting = false}) {
@@ -1520,9 +1524,10 @@ class LocalFavoriteAlbums extends Table
   @override
   List<GeneratedColumn> get $columns => [id, albumId];
   @override
-  String get aliasedName => _alias ?? 'local_favorite_albums';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'local_favorite_albums';
+  String get actualTableName => $name;
+  static const String $name = 'local_favorite_albums';
   @override
   VerificationContext validateIntegrity(Insertable<LocalFavoriteAlbum> instance,
       {bool isInserting = false}) {
@@ -1722,9 +1727,10 @@ class LocalAnnilServers extends Table
   List<GeneratedColumn> get $columns =>
       [id, remoteId, name, url, token, priority];
   @override
-  String get aliasedName => _alias ?? 'local_annil_servers';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'local_annil_servers';
+  String get actualTableName => $name;
+  static const String $name = 'local_annil_servers';
   @override
   VerificationContext validateIntegrity(Insertable<LocalAnnilServer> instance,
       {bool isInserting = false}) {
@@ -2024,9 +2030,10 @@ class LocalAnnilCaches extends Table
   @override
   List<GeneratedColumn> get $columns => [annilId, etag];
   @override
-  String get aliasedName => _alias ?? 'local_annil_caches';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'local_annil_caches';
+  String get actualTableName => $name;
+  static const String $name = 'local_annil_caches';
   @override
   VerificationContext validateIntegrity(Insertable<LocalAnnilCache> instance,
       {bool isInserting = false}) {
@@ -2212,9 +2219,10 @@ class LocalAnnilAlbums extends Table
   @override
   List<GeneratedColumn> get $columns => [id, annilId, albumId];
   @override
-  String get aliasedName => _alias ?? 'local_annil_albums';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'local_annil_albums';
+  String get actualTableName => $name;
+  static const String $name = 'local_annil_albums';
   @override
   VerificationContext validateIntegrity(Insertable<LocalAnnilAlbum> instance,
       {bool isInserting = false}) {
@@ -2445,9 +2453,10 @@ class PlaybackRecords extends Table
   List<GeneratedColumn> get $columns =>
       [id, albumId, discId, trackId, at, locked];
   @override
-  String get aliasedName => _alias ?? 'playback_records';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'playback_records';
+  String get actualTableName => $name;
+  static const String $name = 'playback_records';
   @override
   VerificationContext validateIntegrity(Insertable<PlaybackRecord> instance,
       {bool isInserting = false}) {

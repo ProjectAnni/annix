@@ -1,3 +1,4 @@
+import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
@@ -7,6 +8,7 @@ import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
+import 'package:annix/utils/share.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -205,16 +207,53 @@ class TrackListTile extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final annil = ref.watch(annilProvider);
+    showMoreMenu() {
+      showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        isScrollControlled: true,
+        clipBehavior: Clip.antiAlias,
+        showDragHandle: true,
+        builder: (final context) {
+          return DraggableScrollableSheet(
+            expand: false,
+            builder: (final context, final scrollController) {
+              return ListView(
+                children: [
+                  ListTile(
+                    title: Text(t.track.add_to_playlist),
+                    leading: const Icon(Icons.playlist_add),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Text(t.track.share),
+                    leading: const Icon(Icons.share),
+                    onTap: () {
+                      final box = context.findRenderObject() as RenderBox?;
+                      shareTrack(
+                          track, box!.localToGlobal(Offset.zero) & box.size);
+                    },
+                  )
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
 
     return ListTile(
       leading: Text('${track.id.trackId}'),
-      // dense: true,
       title: Text(
         track.title,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
       subtitle: ArtistText(track.artist),
+      trailing: IconButton(
+        icon: const Icon(Icons.more_horiz),
+        onPressed: showMoreMenu,
+      ),
       enabled: annil.isTrackAvailable(track.id),
       minLeadingWidth: 12,
       onTap: () async {
@@ -226,6 +265,7 @@ class TrackListTile extends ConsumerWidget {
           initialIndex: index,
         );
       },
+      onLongPress: showMoreMenu,
       // selected: TODO: indicate playing track,
     );
   }

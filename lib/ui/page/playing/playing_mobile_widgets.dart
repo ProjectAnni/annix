@@ -1,21 +1,19 @@
 import 'package:animations/animations.dart';
 import 'package:annix/providers.dart';
-import 'package:annix/services/annil/cache.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/ui/widgets/drag_handle.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/utils/context_extension.dart';
+import 'package:annix/utils/share.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:annix/i18n/strings.g.dart';
 
 class PlayingScreenMobileBottomBar extends ConsumerWidget {
@@ -91,18 +89,12 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
             // const Divider(height: 1),
             MenuItemButton(
               leadingIcon: const Icon(Icons.share_outlined),
-              child: Text(t.playing.share),
+              child: Text(t.track.share),
               onPressed: () {
                 final track = player.playing!.track;
-                final id = track.id;
                 final box = context.findRenderObject() as RenderBox?;
-                Share.shareXFiles(
-                  [XFile(getCoverCachePath(id.albumId))],
-                  text: '#NowPlaying ${track.title} - ${track.artist}',
-                  subject: 'Now Playing',
-                  sharePositionOrigin:
-                      box!.localToGlobal(Offset.zero) & box.size,
-                );
+                shareNowPlayingTrack(
+                    track, box!.localToGlobal(Offset.zero) & box.size);
               },
             ),
           ],
@@ -187,19 +179,13 @@ class PlayingScreenMobileControl extends ConsumerWidget {
                   useRootNavigator: true,
                   context: context,
                   isScrollControlled: true,
+                  showDragHandle: true,
                   clipBehavior: Clip.antiAlias,
                   builder: (final context) {
                     return DraggableScrollableSheet(
                       expand: false,
                       builder: (final context, final scrollController) {
-                        return Column(
-                          children: [
-                            const DragHandle(),
-                            Expanded(
-                              child: PlayingQueue(controller: scrollController),
-                            ),
-                          ],
-                        );
+                        return PlayingQueue(controller: scrollController);
                       },
                     );
                   },
