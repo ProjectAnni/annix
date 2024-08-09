@@ -61,7 +61,7 @@ dependencies:
   json_annotation: ^4.8.1
 
   drift: ^2.11.1
-  sqlite3_flutter_libs: 0.5.10
+  sqlite3_flutter_libs: 0.5.24
 
   uuid: ^4.4.2
 
