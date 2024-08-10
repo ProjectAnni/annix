@@ -19,7 +19,7 @@ anyhow = "1.0.75"
 log = "0.4.20"
 env_logger = "0.11"
 
-anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "024625e2d49b71d41742c32d7e452e48a1e7d29a" }
+anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "616ccbca7e5f7df4c039b103248136c7d32ffe46" }
 cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 material-colors = { version = "0.3.3", features = ["image"] }
