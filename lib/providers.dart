@@ -42,7 +42,10 @@ final playlistProvider = StreamProvider((final ref) {
   final db = ref.read(localDatabaseProvider);
   final playlist = db.playlist.select()
     ..where((tbl) => tbl.owner
-        .equals(info?.user.userId ?? '__ANNIV_PLACEHOLDER_SHOULD_NOT_EXIST__'));
+        .equals(info?.user.userId ?? '__ANNIV_PLACEHOLDER_SHOULD_NOT_EXIST__'))
+    ..orderBy([
+      (u) => OrderingTerm(expression: u.lastModified, mode: OrderingMode.desc)
+    ]);
   return playlist.watch();
 });
 final favoriteTracksProvider = StreamProvider((final ref) =>
