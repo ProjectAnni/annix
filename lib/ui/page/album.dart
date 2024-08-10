@@ -95,9 +95,7 @@ class AlbumPage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          FavoriteAlbumButton(albumId: album.albumId),
-        ],
+        actions: const [],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -143,18 +141,24 @@ class AlbumPage extends ConsumerWidget {
                       ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            album.title,
-                            style: context.textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                album.title,
+                                style: context.textTheme.headlineSmall
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              ArtistText(
+                                album.artist,
+                                style: context.textTheme.bodyLarge,
+                              ),
+                            ],
                           ),
-                          ArtistText(
-                            album.artist,
-                            style: context.textTheme.bodyLarge,
-                          ),
+                          FavoriteAlbumButton(albumId: album.albumId),
                         ],
                       ),
                     )
@@ -247,7 +251,15 @@ class TrackListTile extends ConsumerWidget {
     }
 
     return ListTile(
-      leading: Text('${track.id.trackId}'),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      leading: Container(
+        width: 24,
+        alignment: Alignment.center,
+        child: Text(
+          '${track.id.trackId}',
+          style: context.textTheme.labelLarge,
+        ),
+      ),
       title: Text(
         track.title,
         overflow: TextOverflow.ellipsis,
