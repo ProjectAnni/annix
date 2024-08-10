@@ -72,14 +72,14 @@ There are two release branches: `canary` and `nightly`.
         - [ ] Edit playlist
             - [x] Append
             - [x] Remove
-            - [ ] Reorder
+            - [x] Reorder
             - [ ] Replace
     - [ ] Favorite
         - [x] Add favorite
         - [x] Remove favorite
         - [x] Favorite list
-        - [ ] Add favorite album
-        - [ ] Remove favorite album
+        - [x] Add favorite album
+        - [x] Remove favorite album
         - [ ] Favorite album list
     - [ ] Credentials
         - [x] Get credentials

@@ -96,7 +96,9 @@ class AlbumPage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [],
+        actions: [
+          FavoriteAlbumButton(albumId: album.albumId),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -142,27 +144,21 @@ class AlbumPage extends ConsumerWidget {
                       ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                album.title,
-                                style: context.textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                              ArtistText(
-                                album.artist,
-                                style: context.textTheme.bodyLarge,
-                              ),
-                            ],
+                          Text(
+                            album.title,
+                            style: context.textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
-                          FavoriteAlbumButton(albumId: album.albumId),
+                          ArtistText(
+                            album.artist,
+                            style: context.textTheme.bodyLarge,
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
