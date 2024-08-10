@@ -27,6 +27,7 @@ class AnnilCard extends ConsumerWidget {
     showLoadingDialog(context);
     await provider.updateAlbums(annil);
     await delegate.popRoute();
+    ref.invalidate(annilCacheFamily);
   }
 
   @override

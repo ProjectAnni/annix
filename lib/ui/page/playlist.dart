@@ -292,7 +292,8 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                         Navigator.of(context, rootNavigator: true).pop();
                       }
 
-                      // TODO: update current playlist
+                      // refresh
+                      ref.invalidate(playlistFamily);
                     },
                   ),
                 ListTile(

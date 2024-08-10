@@ -1,5 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/ui/page/playlist.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -55,6 +56,8 @@ Future<void> showPlaylistDialog(
                       if (context.mounted) {
                         Navigator.of(context, rootNavigator: true).pop();
                       }
+                      // refresh playlist family
+                      ref.invalidate(playlistFamily);
                     },
                   );
                 },
