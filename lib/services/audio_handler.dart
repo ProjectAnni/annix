@@ -70,12 +70,11 @@ class AnnixAudioHandler extends BaseAudioHandler {
               // TODO
               break;
             case AudioInterruptionType.pause:
+            case AudioInterruptionType.unknown:
               if (pausedByInterrupt) {
                 pausedByInterrupt = false;
                 service.play();
               }
-              break;
-            case AudioInterruptionType.unknown:
               break;
           }
         }
