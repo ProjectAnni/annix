@@ -45,13 +45,13 @@ class MobileBottomPlayer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      playing?.track.title ?? '',
+                      playing.source?.track.title ?? '',
                       style: context.textTheme.titleSmall,
                       overflow: TextOverflow.ellipsis,
                       softWrap: false,
                     ),
                     ArtistText(
-                      playing?.track.artist ?? '',
+                      playing.source?.track.artist ?? '',
                       style: context.textTheme.bodySmall,
                     ),
                   ],
@@ -65,7 +65,7 @@ class MobileBottomPlayer extends StatelessWidget {
               builder: (final context, final ref, final child) {
                 final double? progress =
                     ref.watch(playingProvider.select((final playing) {
-                  if (playing == null) {
+                  if (playing.source == null) {
                     return null;
                   }
 

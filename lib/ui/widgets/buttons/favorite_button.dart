@@ -8,11 +8,9 @@ class FavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final anniv = ref.read(annivProvider);
-
     final favoriteTracks = ref.watch(favoriteTracksProvider);
     final playingTrack =
-        ref.watch(playingProvider.select((final p) => p?.track));
+        ref.watch(playingProvider.select((final p) => p.source?.track));
 
     final favorites = favoriteTracks.value ?? [];
     return IconButton(
@@ -29,6 +27,7 @@ class FavoriteButton extends ConsumerWidget {
       selectedIcon: const Icon(Icons.favorite_outlined),
       onPressed: () async {
         if (playingTrack != null) {
+          final anniv = ref.read(annivProvider);
           anniv.toggleFavoriteTrack(playingTrack);
         }
       },

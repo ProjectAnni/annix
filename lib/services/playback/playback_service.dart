@@ -65,9 +65,15 @@ class PlaybackService extends ChangeNotifier {
   // Playing queue
   List<AnnilAudioSource> queue = [];
 
-  int? get playingIndex =>
-      playing != null ? queue.indexOf(playing!.source) : null;
-  PlayingTrack? playing;
+  int? get playingIndex {
+    final source = playing.source;
+    if (source != null) {
+      return queue.indexOf(source);
+    }
+    return null;
+  }
+
+  final PlayingTrack playing;
 
   final rng = Random();
 
@@ -81,7 +87,9 @@ class PlaybackService extends ChangeNotifier {
   // is switched, or at the time when the first 'resume' action was produced.
   bool loadedAndPaused = false;
 
-  PlaybackService(this.ref) : anniv = ref.read(annivProvider) {
+  PlaybackService(this.ref)
+      : anniv = ref.read(annivProvider),
+        playing = PlayingTrack(ref) {
     _load();
 
     PlaybackService.player.playerStateStream().listen((state) {
@@ -95,11 +103,11 @@ class PlaybackService extends ChangeNotifier {
 
     PlaybackService.player.progressStream().listen((progress) {
       // Position
-      playing?.updatePosition(Duration(milliseconds: progress.position));
+      playing.updatePosition(Duration(milliseconds: progress.position));
 
       // Duration
       if (progress.duration > 0) {
-        playing?.updateDuration(Duration(milliseconds: progress.duration));
+        playing.updateDuration(Duration(milliseconds: progress.duration));
       }
     });
   }
@@ -161,7 +169,7 @@ class PlaybackService extends ChangeNotifier {
       if (loadedAndPaused) {
         loadedAndPaused = false;
 
-        final source = this.playing?.source;
+        final source = this.playing.source;
         if (source != null) {
           anniv.trackPlayback(
             source.identifier,
@@ -173,7 +181,8 @@ class PlaybackService extends ChangeNotifier {
     }
 
     final playing = this.playing;
-    if (playing == null) {
+    final source = playing.source;
+    if (source == null) {
       await stop();
       return;
     }
@@ -182,7 +191,6 @@ class PlaybackService extends ChangeNotifier {
     FLog.trace(text: 'Start playing');
     await stop(false);
 
-    final source = playing.source;
     if (trackPlayback) {
       // FIXME: track playback after 1/3 of the song is played
       // Notice: we should not await statistics
@@ -228,7 +236,6 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> stop([final bool setInactive = true]) async {
-    playing?.updateDuration(Duration.zero);
     if (setInactive) {
       await Future.wait([
         AudioSession.instance.then((final i) => i.setActive(false)),
@@ -304,7 +311,7 @@ class PlaybackService extends ChangeNotifier {
     FLog.trace(text: 'Seek to position $position');
 
     // seek first for ui update
-    playing?.updatePosition(position);
+    playing.updatePosition(position);
 
     // then notify player
     await PlaybackService.player.seek(position: position.inMilliseconds);
@@ -355,8 +362,7 @@ class PlaybackService extends ChangeNotifier {
     final nowPlayingIndex = playingIndex;
     if (nowPlayingIndex != index || reload) {
       await player.pause();
-      playing?.dispose();
-      this.playing = PlayingTrack(queue[index], ref);
+      playing.setSource(queue[index]);
     }
 
     ref.read(preferencesProvider).set('player.playingIndex', index);
@@ -372,8 +378,7 @@ class PlaybackService extends ChangeNotifier {
       await setPlayingIndex(initialIndex % songs.length,
           reload: true, notify: false);
     } else {
-      playing?.dispose();
-      playing = null;
+      playing.setSource(null);
     }
 
     ref.read(preferencesProvider).set('player.queue',

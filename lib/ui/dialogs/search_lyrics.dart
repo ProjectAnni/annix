@@ -161,8 +161,9 @@ class _SearchLyricsDialogState extends ConsumerState<SearchLyricsDialog> {
                         ),
                         onTap: () {
                           final player = ref.read(playbackProvider);
+                          // TODO: check whether current playing track is the same as the one being searched
                           result.lyric.then((final lyric) {
-                            player.playing?.updateLyric(TrackLyric(
+                            player.playing.updateLyric(TrackLyric(
                               lyric: lyric,
                               type: widget.track.type,
                             ));

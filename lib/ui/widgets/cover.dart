@@ -20,7 +20,7 @@ class PlayingMusicCover extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final playingId =
-        ref.watch(playingProvider.select((final v) => v?.identifier));
+        ref.watch(playingProvider.select((final v) => v.source?.identifier));
     Widget child;
 
     if (playingId == null) {

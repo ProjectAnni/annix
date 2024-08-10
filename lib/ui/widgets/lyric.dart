@@ -108,7 +108,7 @@ class LyricView extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final lyric = ref.watch(playingProvider.select((final p) => p?.lyric));
+    final lyric = ref.watch(playingProvider.select((final p) => p.lyric));
     return _LyricView(
       lyric: lyric,
       lyricAlign: alignment,
@@ -163,12 +163,12 @@ class _LyricView extends StatelessWidget {
           builder: (final iconColor, final ref, final child) {
             final player = ref.watch(playbackProvider);
             final position =
-                ref.watch(playingProvider.select((final p) => p?.position));
+                ref.watch(playingProvider.select((final p) => p.position));
             return IgnoreDraggableWidget(
               child: LyricsReader(
                 model: lyric!.lyric.model,
                 lyricUi: ui,
-                position: position?.inMilliseconds ?? 0,
+                position: position.inMilliseconds,
                 playing: player.playerStatus == PlayerStatus.playing,
                 emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
               ),

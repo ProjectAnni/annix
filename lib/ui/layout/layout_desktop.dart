@@ -126,8 +126,8 @@ class AnnixLayoutDesktop extends ConsumerWidget {
           footerHeight: DesktopBottomPlayer.height,
           footer: DesktopBottomPlayer(
             onClick: () {
-              final isPlaying = ref.read(
-                  playbackProvider.select((final p) => p.playing != null));
+              final isPlaying =
+                  ref.read(playbackProvider).playing.source != null;
               if (isPlaying) {
                 if (router.slideController.isOpened) {
                   router.slideController.hide();

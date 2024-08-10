@@ -8,7 +8,6 @@ class VolumeController extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final player = ref.read(playbackProvider);
     final volume = ref.watch(playbackProvider.select((final p) => p.volume));
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -20,6 +19,7 @@ class VolumeController extends ConsumerWidget {
           selectedIcon: const Icon(Icons.volume_off_outlined),
           isSelected: volume == 0,
           onPressed: () {
+            final player = ref.read(playbackProvider);
             player.setVolume(0);
           },
         ),
@@ -27,7 +27,7 @@ class VolumeController extends ConsumerWidget {
         SizedBox(
           width: 100,
           child: ProgressBar(
-            progress: Duration(seconds: (player.volume * 100).toInt()),
+            progress: Duration(seconds: (volume * 100).toInt()),
             total: const Duration(seconds: 100),
             timeLabelLocation: TimeLabelLocation.none,
             barHeight: 4,
@@ -35,10 +35,12 @@ class VolumeController extends ConsumerWidget {
             thumbRadius: 8,
             onDragUpdate: (final position) {
               final volume = position.timeStamp.inSeconds;
+              final player = ref.read(playbackProvider);
               player.setVolume(volume.toDouble() / 100);
             },
             onSeek: (final position) {
               final volume = position.inSeconds;
+              final player = ref.read(playbackProvider);
               player.setVolume(volume.toDouble() / 100);
             },
           ),

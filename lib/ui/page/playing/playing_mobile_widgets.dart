@@ -38,7 +38,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
             },
           ),
           onLongPress: () {
-            final playing = player.playing?.track;
+            final playing = player.playing.source?.track;
             if (playing != null) {
               showDialog(
                 context: context,
@@ -77,7 +77,8 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               leadingIcon: const Icon(Icons.playlist_add),
               child: Text(t.track.add_to_playlist),
               onPressed: () {
-                showPlaylistDialog(context, ref, player.playing!.track.id);
+                showPlaylistDialog(
+                    context, ref, player.playing.source!.identifier);
               },
             ),
             MenuItemButton(
@@ -87,7 +88,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                 // jump to album page
                 delegate.to(
                   name: '/album',
-                  arguments: player.playing!.track.id.albumId,
+                  arguments: player.playing.source!.identifier.albumId,
                 );
                 // hide playing page after navigation
                 ref.read(routerProvider).slideController.hide();
@@ -99,7 +100,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               leadingIcon: const Icon(Icons.share_outlined),
               child: Text(t.track.share),
               onPressed: () {
-                final track = player.playing!.track;
+                final track = player.playing.source!.track;
                 final box = context.findRenderObject() as RenderBox?;
                 shareNowPlayingTrack(
                     track, box!.localToGlobal(Offset.zero) & box.size);
@@ -123,7 +124,7 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          playing?.track.title ?? '',
+          playing.source?.track.title ?? '',
           style: context.textTheme.titleLarge?.copyWith(
             height: 1.5,
             fontWeight: FontWeight.w600,
@@ -131,7 +132,7 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
           overflow: TextOverflow.ellipsis,
         ),
         ArtistText(
-          playing?.track.artist ?? '',
+          playing.source?.track.artist ?? '',
           style: context.textTheme.titleMedium,
           overflow: TextOverflow.ellipsis,
         )
@@ -154,8 +155,8 @@ class PlayingScreenMobileControl extends ConsumerWidget {
             final playing = ref.watch(playingProvider);
 
             return ProgressBar(
-              progress: playing?.position ?? Duration.zero,
-              total: playing?.duration ?? Duration.zero,
+              progress: playing.position,
+              total: playing.duration,
               onSeek: (final position) {
                 player.seek(position);
               },

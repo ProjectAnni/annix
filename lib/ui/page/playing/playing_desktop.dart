@@ -55,8 +55,8 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                     children: [
                       Consumer(
                         builder: (final context, final ref, final child) {
-                          final track = ref.watch(
-                              playingProvider.select((final p) => p?.track));
+                          final track = ref.watch(playingProvider
+                              .select((final p) => p.source?.track));
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SelectableText(
@@ -72,8 +72,8 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                       const SizedBox(height: 4),
                       Consumer(
                         builder: (final context, final ref, final child) {
-                          final track = ref.watch(
-                              playingProvider.select((final p) => p?.track));
+                          final track = ref.watch(playingProvider
+                              .select((final p) => p.source?.track));
                           if (track == null) {
                             return const SizedBox.shrink();
                           }
@@ -174,7 +174,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                             icon: const Icon(Icons.lyrics_outlined),
                             onPressed: () {
                               final player = ref.read(playbackProvider);
-                              final playing = player.playing?.track;
+                              final playing = player.playing.source?.track;
                               if (playing != null) {
                                 showDialog(
                                   context: context,

@@ -17,7 +17,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
   final Ref ref;
 
   final PlaybackService player;
-  PlayingTrack? playing;
 
   final AnnivService anniv;
   final LocalDatabase database;
@@ -135,7 +134,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> fastForward() async {
-    final track = player.playing?.track;
+    final track = player.playing.source?.track;
     if (track != null) {
       await anniv.toggleFavoriteTrack(track);
     }
@@ -146,16 +145,11 @@ class AnnixAudioHandler extends BaseAudioHandler {
       _favorites = favorites;
     }
 
-    if (playing != player.playing) {
-      playing = player.playing;
-      playing?.addListener(_updatePlaybackState);
-    }
-
     final isPlaying = player.playerStatus == PlayerStatus.playing;
-    final isFavorite = player.playing != null &&
+    final isFavorite = player.playing.source?.track != null &&
         _favorites.any(
           (final f) =>
-              player.playing!.track.id ==
+              player.playing.source?.identifier ==
               TrackIdentifier(
                 albumId: f.albumId,
                 discId: f.discId,
@@ -204,7 +198,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         PlayerStatus.buffering: AudioProcessingState.buffering,
       }[player.playerStatus]!,
       playing: isPlaying,
-      updatePosition: player.playing?.position ?? Duration.zero,
+      updatePosition: player.playing.position,
     );
     if (playbackState.value != playState) {
       try {
@@ -219,20 +213,20 @@ class AnnixAudioHandler extends BaseAudioHandler {
       }
     }
 
-    if (playing != null &&
-        (mediaItem.value?.id != playing?.id ||
-            mediaItem.value?.duration !=
-                (player.playing?.duration ?? Duration.zero))) {
+    final source = player.playing.source;
+    if (source != null &&
+        (mediaItem.value?.id != source.id ||
+            mediaItem.value?.duration != player.playing.duration)) {
       final proxy = ref.read(proxyProvider);
       mediaItem.add(MediaItem(
-        id: playing!.id,
-        title: playing!.track.title,
-        album: playing!.track.albumTitle,
-        artist: playing!.track.artist,
-        duration: player.playing?.duration ?? Duration.zero,
+        id: source.id,
+        title: source.track.title,
+        album: source.track.albumTitle,
+        artist: source.track.artist,
+        duration: player.playing.duration,
         artUri: proxy.coverUri(
-          playing!.identifier.albumId,
-          playing!.identifier.discId,
+          source.identifier.albumId,
+          source.identifier.discId,
         ),
       ));
     }
@@ -354,9 +348,9 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onSeek(final int offset) async {
-    if (player.playing != null) {
+    if (player.playing.source != null) {
       await player
-          .seek(player.playing!.position + Duration(milliseconds: offset));
+          .seek(player.playing.position + Duration(milliseconds: offset));
     }
   }
 

@@ -19,12 +19,14 @@ anyhow = "1.0.75"
 log = "0.4.20"
 env_logger = "0.11"
 
-anni-playback = { git = "https://github.com/ProjectAnni/anni" }
+anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "024625e2d49b71d41742c32d7e452e48a1e7d29a" }
 cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 material-colors = { version = "0.3.3", features = ["image"] }
 
-db_logger = { git = "https://github.com/ProjectAnni/db_logger.git", branch = "upgrade-sqlx", default-features = false, features = [ "sqlite" ] }
+db_logger = { git = "https://github.com/ProjectAnni/db_logger.git", branch = "upgrade-sqlx", default-features = false, features = [
+    "sqlite",
+] }
 tokio = { version = "1.39.2", features = ["rt-multi-thread"] }
 
 [patch.crates-io]

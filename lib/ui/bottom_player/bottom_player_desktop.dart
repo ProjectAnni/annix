@@ -51,7 +51,7 @@ class DesktopBottomPlayer extends ConsumerWidget {
   Widget _cover(final PlaybackService player) {
     return GestureDetector(
       onTap: () {
-        if (player.playing != null) {
+        if (player.playing.source != null) {
           onClick();
         }
       },
@@ -72,19 +72,19 @@ class DesktopBottomPlayer extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              playing?.track.title ?? 'Not playing',
+              playing.source?.track.title ?? 'Not playing',
               style: context.textTheme.titleMedium?.apply(fontWeightDelta: 2),
               overflow: TextOverflow.ellipsis,
             ),
             ArtistText(
-              playing?.track.artist ?? '',
+              playing.source?.track.artist ?? '',
               style: context.textTheme.labelSmall,
             ),
             const SizedBox(height: 8),
             RepaintBoundary(
               child: ProgressBar(
-                progress: playing?.position ?? Duration.zero,
-                total: playing?.duration ?? Duration.zero,
+                progress: playing.position,
+                total: playing.duration,
                 onSeek: player.seek,
                 barHeight: 3.0,
                 thumbRadius: 6,
