@@ -46,6 +46,8 @@ class RedirectInterceptor extends Interceptor {
           super.onError(e, handler);
         }
       }
+    } else {
+      super.onError(err, handler);
     }
   }
 }
