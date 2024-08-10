@@ -102,8 +102,11 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               onPressed: () {
                 final track = player.playing.source!.track;
                 final box = context.findRenderObject() as RenderBox?;
-                shareNowPlayingTrack(
-                    track, box!.localToGlobal(Offset.zero) & box.size);
+                shareTrackInfo(
+                  track,
+                  box!.localToGlobal(Offset.zero) & box.size,
+                  nowPlaying: true,
+                );
               },
             ),
           ],

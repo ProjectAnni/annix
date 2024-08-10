@@ -51,7 +51,7 @@ class AnnilDetailPage extends ConsumerWidget {
         error: (error, stacktrace) => const Text('Error'),
         loading: () => Scaffold(
           appBar: AppBar(),
-          body:const Center(child:  CircularProgressIndicator()),
+          body: const Center(child: CircularProgressIndicator()),
         ),
       ),
     );

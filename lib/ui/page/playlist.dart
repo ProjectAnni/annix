@@ -1,11 +1,13 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
+import 'package:annix/utils/share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -226,9 +228,72 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                 )
             ],
           ),
-          trailing: const Icon(Icons.more_vert),
+          trailing: IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () => showMoreMenu(item),
+          ),
           enabled: annil.isTrackAvailable(item.info.id),
           onTap: () => _onPlay(index: index),
+          onLongPress: () => showMoreMenu(item),
+        );
+      },
+    );
+  }
+
+  showMoreMenu(AnnivPlaylistItemTrack track) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      isScrollControlled: true,
+      clipBehavior: Clip.antiAlias,
+      showDragHandle: true,
+      builder: (final context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (final context, final scrollController) {
+            return ListView(
+              controller: scrollController,
+              children: [
+                ListTile(
+                  title: Text(t.playing.view_album),
+                  leading: const Icon(Icons.album_outlined),
+                  onTap: () {
+                    // hide the previous dialog
+                    Navigator.of(context, rootNavigator: true).pop();
+
+                    final delegate = ref.read(routerProvider);
+                    // jump to album page
+                    delegate.to(
+                      name: '/album',
+                      arguments: track.info.id.albumId,
+                    );
+                    // hide playing page after navigation
+                    delegate.slideController.hide();
+                    delegate.panelController.close();
+                  },
+                ),
+                ListTile(
+                  title: Text(t.track.add_to_playlist),
+                  leading: const Icon(Icons.playlist_add),
+                  onTap: () {
+                    showPlaylistDialog(context, ref, track.info.id);
+                  },
+                ),
+                ListTile(
+                  title: Text(t.track.share),
+                  leading: const Icon(Icons.share),
+                  onTap: () {
+                    final box = context.findRenderObject() as RenderBox?;
+                    shareTrackInfo(
+                      track.info,
+                      box!.localToGlobal(Offset.zero) & box.size,
+                      nowPlaying: false,
+                    );
+                  },
+                )
+              ],
+            );
+          },
         );
       },
     );

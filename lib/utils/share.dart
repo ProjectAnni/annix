@@ -14,12 +14,14 @@ void shareTrack(Track track, Rect? sharePositionOrigin) {
   );
 }
 
-void shareNowPlayingTrack(TrackInfoWithAlbum track, Rect? sharePositionOrigin) {
+void shareTrackInfo(TrackInfoWithAlbum track, Rect? sharePositionOrigin,
+    {required bool nowPlaying}) {
   final id = track.id;
   Share.shareXFiles(
     [XFile(getCoverCachePath(id.albumId))],
-    text: '#NowPlaying ${track.title} - ${track.artist}',
-    subject: 'Now Playing',
+    text:
+        '${nowPlaying ? '#NowPlaying ' : ''}${track.title} - ${track.artist}\n#ProjectAnni #Annix',
+    subject: nowPlaying ? 'Now Playing' : 'Annix',
     sharePositionOrigin: sharePositionOrigin,
   );
 }
