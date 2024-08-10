@@ -15,7 +15,11 @@
     "shuffle": "随机播放"
   },
   "playlist": {
-    "edit": "编辑"
+    "edit": "编辑",
+    "title": "标题",
+    "description": "描述",
+    "create_new": "创建新播放列表",
+    "created": "播放列表已创建"
   },
   "server": {
     "server": "服务器",

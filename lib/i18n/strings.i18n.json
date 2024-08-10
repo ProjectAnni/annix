@@ -15,7 +15,11 @@
     "shuffle": "Shuffle"
   },
   "playlist": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "title": "Title",
+    "description": "Description",
+    "create_new": "Create New Playlist",
+    "created": "Playlist created"
   },
   "server": {
     "server": "Server",

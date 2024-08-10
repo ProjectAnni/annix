@@ -295,7 +295,7 @@ class AnnivClient {
     required final String description,
     final bool public = true,
     final DiscIdentifier? cover,
-    final List<AnnivPlaylistItem> items = const [],
+    final List<AnnivPlaylistPlainItem> items = const [],
   }) async {
     final response = await _client.put('/api/playlist', data: {
       'name': name,

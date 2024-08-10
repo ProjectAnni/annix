@@ -341,6 +341,25 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
+  Future<void> createPlaylist({
+    required final String name,
+    required final String description,
+    final bool public = true,
+    final DiscIdentifier? cover,
+    final List<AnnivPlaylistPlainItem> items = const [],
+  }) async {
+    final newPlaylist = await client?.createPlaylist(
+      name: name,
+      description: description,
+      public: public,
+      cover: cover,
+      items: items,
+    );
+    if (newPlaylist != null) {
+      _updatePlaylistInDatabase(newPlaylist);
+    }
+  }
+
   Future<List<AnnivPlaylistItem>?> getPlaylistItems(final PlaylistData playlist,
       {bool force = false, Playlist? remote}) async {
     final db = ref.read(localDatabaseProvider);
@@ -382,16 +401,16 @@ class AnnivService extends ChangeNotifier {
     return items.map((final e) => AnnivPlaylistItem.fromDatabase(e)).toList();
   }
 
-  Future<void> _updatePlaylistInDatabase(final Playlist newPlaylist) async {
+  Future<String> _updatePlaylistInDatabase(final Playlist newPlaylist) async {
     final db = ref.read(localDatabaseProvider);
     final playlist = db.playlist.select()
       ..where((final tbl) => tbl.remoteId.equals(newPlaylist.intro.id));
-    final table = await playlist.getSingleOrNull();
+    PlaylistData? table = await playlist.getSingleOrNull();
     int? tableId = table?.id;
     if (table == null) {
       // playlist does not on local, should not exist, but just insert it
       await db.playlist.insertOne(newPlaylist.intro.toCompanion());
-      final table = await playlist.getSingle();
+      table = await playlist.getSingle();
       tableId = table.id;
     }
 
@@ -415,6 +434,8 @@ class AnnivService extends ChangeNotifier {
       await db.playlist.update().replace(
           newPlaylist.intro.toCompanion(id: Value(tableId!), hasItems: true));
     });
+
+    return table.remoteId!;
   }
 
   Future<void> appendTrackToPlaylist(

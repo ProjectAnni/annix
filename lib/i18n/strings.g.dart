@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 92 (46 per locale)
+/// Strings: 100 (50 per locale)
 ///
-/// Built on 2024-08-10 at 16:02 UTC
+/// Built on 2024-08-10 at 17:19 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -199,6 +199,10 @@ class _StringsPlaylistEn {
 
 	// Translations
 	String get edit => 'Edit';
+	String get title => 'Title';
+	String get description => 'Description';
+	String get create_new => 'Create New Playlist';
+	String get created => 'Playlist created';
 }
 
 // Path: server
@@ -331,6 +335,10 @@ class _StringsPlaylistZhCn implements _StringsPlaylistEn {
 
 	// Translations
 	@override String get edit => '编辑';
+	@override String get title => '标题';
+	@override String get description => '描述';
+	@override String get create_new => '创建新播放列表';
+	@override String get created => '播放列表已创建';
 }
 
 // Path: server
@@ -406,6 +414,10 @@ extension on Translations {
 			case 'playback.play_all': return 'Play All';
 			case 'playback.shuffle': return 'Shuffle';
 			case 'playlist.edit': return 'Edit';
+			case 'playlist.title': return 'Title';
+			case 'playlist.description': return 'Description';
+			case 'playlist.create_new': return 'Create New Playlist';
+			case 'playlist.created': return 'Playlist created';
 			case 'server.server': return 'Server';
 			case 'server.login': return 'Login';
 			case 'server.logout': return 'Logout';
@@ -460,6 +472,10 @@ extension on _StringsZhCn {
 			case 'playback.play_all': return '播放全部';
 			case 'playback.shuffle': return '随机播放';
 			case 'playlist.edit': return '编辑';
+			case 'playlist.title': return '标题';
+			case 'playlist.description': return '描述';
+			case 'playlist.create_new': return '创建新播放列表';
+			case 'playlist.created': return '播放列表已创建';
 			case 'server.server': return '服务器';
 			case 'server.login': return '登录';
 			case 'server.logout': return '退出登录';
