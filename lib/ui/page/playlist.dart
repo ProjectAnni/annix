@@ -9,6 +9,7 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -187,19 +188,14 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _editMode
-                  ? ReorderableDragStartListener(
-                      index: index,
-                      child: const Icon(Icons.drag_handle),
-                    )
-                  : Container(
-                      width: 24,
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${index + 1}',
-                        style: context.textTheme.labelLarge,
-                      ),
-                    ),
+              Container(
+                width: 24,
+                alignment: Alignment.center,
+                child: Text(
+                  _editMode ? '' : '${index + 1}',
+                  style: context.textTheme.labelLarge,
+                ),
+              ),
               const SizedBox(width: 8),
               CoverCard(
                 child: MusicCover.fromAlbum(
@@ -229,13 +225,18 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                 )
             ],
           ),
-          trailing: IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => showMoreMenu(item),
-          ),
+          trailing: _editMode
+              ? ReorderableDragStartListener(
+                  index: index,
+                  child: const Icon(Icons.drag_handle),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  onPressed: () => showMoreMenu(item),
+                ),
           enabled: annil.isTrackAvailable(item.info.id),
-          onTap: () => _onPlay(index: index),
-          onLongPress: () => showMoreMenu(item),
+          onTap: _editMode ? null : () => _onPlay(index: index),
+          onLongPress: _editMode ? null : () => showMoreMenu(item),
         );
       },
     );
@@ -366,9 +367,22 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
           if (_editMode)
             IconButton(
               icon: const Icon(Icons.check),
-              onPressed: () {
-                // TODO: save edited result to server, keep _reorder on success, or set it to null
+              onPressed: () async {
+                final tracks = widget.playlist.items;
+                final newTracks = tracks.mapIndexed((final i, final element) {
+                  final index = _reorder != null ? _reorder![i] : i;
+                  return tracks[index].id!;
+                }).toList();
+
+                final anniv = ref.read(annivProvider);
+                await anniv.reorderItemsInPlaylist(
+                  PlaylistInfo.fromData(widget.playlist.intro),
+                  newTracks,
+                );
+
                 setState(() {
+                  ref.invalidate(playlistFamily);
+                  _reorder = null;
                   _editMode = false;
                 });
               },
