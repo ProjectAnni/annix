@@ -248,18 +248,23 @@ class ServerDetail extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final db = ref.read(localDatabaseProvider);
-    final qurey = db.localAnnilAlbums.select()
+    final query = db.localAnnilAlbums.select()
       ..where((tbl) => tbl.annilId.equals(server.id));
-    final albumFuture = qurey
+    final albumFuture = query
         .get()
         .then((albums) => albums.map((album) => album.albumId).toList());
 
     return Scaffold(
       appBar: AppBar(title: Text(server.name)),
-      body: FutureBuilder(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: FutureBuilder(
           future: albumFuture,
-          builder: (final context, final album) =>
-              AlbumWall(albumIds: (album.data ?? <String>[]))),
+          builder: (final context, final album) => LazyAlbumWall(
+            albumIds: (album.data ?? <String>[]),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -189,8 +189,7 @@ class _SearchResultWidget extends HookConsumerWidget {
                 itemCount: result.value!.tracks?.length ?? 0,
               ),
               AlbumWall(
-                albumIds:
-                    result.value!.albums?.map((e) => e.albumId).toList() ?? [],
+                albums: result.value?.albums ?? [],
               ),
               ListView.builder(
                 itemBuilder: (final context, final index) {

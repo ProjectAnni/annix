@@ -152,7 +152,10 @@ class FavoritePage extends HookConsumerWidget {
         final favorites = favoriteAlbums.value ?? [];
         final reversedFavorite =
             favorites.reversed.map((final e) => e.albumId).toList();
-        return AlbumWall(albumIds: reversedFavorite);
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: LazyAlbumWall(albumIds: reversedFavorite),
+        );
       },
     );
   }

@@ -27,7 +27,7 @@ class TagDetailScreen extends ConsumerWidget {
                 );
               }
 
-              return AlbumWall(albumIds: snapshot.data!);
+              return LazyAlbumWall(albumIds: snapshot.data!);
             } else if (snapshot.hasError) {
               Navigator.of(context).pop();
               return const Center(child: Text('Error'));

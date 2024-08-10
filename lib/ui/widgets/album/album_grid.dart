@@ -1,7 +1,9 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_album_grid.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,22 +14,15 @@ enum AlbumGridStyle {
 }
 
 class AlbumGrid extends ConsumerWidget {
-  final String albumId;
+  final Album album;
   final AlbumGridStyle style;
 
-  const AlbumGrid({
-    super.key,
-    required this.albumId,
-    this.style = AlbumGridStyle.card,
-  });
+  const AlbumGrid({super.key, required this.album, required this.style});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final metadata = ref.read(metadataProvider);
-    final metadataFuture = metadata.getAlbum(albumId: albumId);
-
+  Widget build(BuildContext context, WidgetRef ref) {
     void toAlbum(final BuildContext context) {
-      ref.read(routerProvider).to(name: '/album', arguments: albumId);
+      ref.read(routerProvider).to(name: '/album', arguments: album.albumId);
     }
 
     final child = Column(
@@ -37,40 +32,35 @@ class AlbumGrid extends ConsumerWidget {
         AspectRatio(
           aspectRatio: 1,
           child: MusicCover.fromAlbum(
-            albumId: albumId,
+            albumId: album.albumId,
             fit: BoxFit.fitHeight,
           ),
         ),
-        FutureBuilder<Album?>(
-          future: metadataFuture,
-          builder: (final context, final snapshot) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 26,
-                    child: Text(
-                      snapshot.data?.fullTitle ?? '',
-                      style: context.textTheme.titleMedium,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 17,
-                    child: ArtistText(
-                      snapshot.data?.artist ?? '',
-                      style: context.textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 26,
+                child: Text(
+                  album.title,
+                  style: context.textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
-            );
-          },
+              SizedBox(
+                height: 17,
+                child: ArtistText(
+                  album.artist,
+                  style: context.textTheme.bodySmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -87,5 +77,27 @@ class AlbumGrid extends ConsumerWidget {
     } else {
       return child;
     }
+  }
+}
+
+class LoadingAlbumGrid extends ConsumerWidget {
+  final String albumId;
+  final AlbumGridStyle style;
+
+  const LoadingAlbumGrid({
+    super.key,
+    required this.albumId,
+    this.style = AlbumGridStyle.card,
+  });
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final album = ref.watch(albumFamily(albumId));
+
+    return album.when(
+      data: (album) => AlbumGrid(album: album, style: style),
+      error: (error, stacktrace) => const Text('Error'),
+      loading: () => ShimmerAlbumGrid(albumId: albumId),
+    );
   }
 }

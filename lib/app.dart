@@ -10,7 +10,6 @@ class AnnixApp extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final theme = ref.watch(themeProvider);
-    final delegate = ref.read(routerProvider);
     final locale = ref.watch(localeProvider);
 
     return MaterialApp.router(
@@ -29,7 +28,7 @@ class AnnixApp extends ConsumerWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
 
       // routes
-      routerDelegate: delegate,
+      routerDelegate: ref.read(routerProvider),
     );
   }
 }

@@ -1,33 +1,52 @@
+import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/widgets/album/album_grid.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class AlbumWall extends StatefulWidget {
-  final List<String> albumIds;
-
-  const AlbumWall({super.key, required this.albumIds});
+class AlbumWall extends StatelessWidget {
+  final List<Album> albums;
+  const AlbumWall({super.key, required this.albums});
 
   @override
-  State<AlbumWall> createState() => _AlbumWallState();
-}
-
-class _AlbumWallState extends State<AlbumWall> {
-  @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return MasonryGridView.count(
       primary: false,
       crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
       itemBuilder: (final BuildContext context, final int index) {
-        final albumId = widget.albumIds[index];
+        final album = albums[index];
         return AlbumGrid(
+          album: album,
+          style: AlbumGridStyle.card,
+        );
+      },
+      itemCount: albums.length,
+    );
+  }
+}
+
+class LazyAlbumWall extends StatelessWidget {
+  final List<String> albumIds;
+  const LazyAlbumWall({super.key, required this.albumIds});
+
+  @override
+  Widget build(BuildContext context) {
+    return MasonryGridView.count(
+      primary: false,
+      crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      padding: EdgeInsets.zero,
+      itemBuilder: (final BuildContext context, final int index) {
+        final albumId = albumIds[index];
+        return LoadingAlbumGrid(
           albumId: albumId,
           style: AlbumGridStyle.card,
         );
       },
-      itemCount: widget.albumIds.length,
+      itemCount: albumIds.length,
     );
   }
 }
