@@ -424,6 +424,48 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
+  Future<void> removeItemsFromPlaylist(
+      final PlaylistInfo playlist, final List<String> items) async {
+    final newPlaylist = await client?.removePlaylistItem(
+      playlistId: playlist.id,
+      items: items,
+    );
+    if (newPlaylist != null) {
+      final db = ref.read(localDatabaseProvider);
+      final playlist = db.playlist.select()
+        ..where((final tbl) => tbl.remoteId.equals(newPlaylist.intro.id));
+      final table = await playlist.getSingleOrNull();
+      int? tableId = table?.id;
+      if (table == null) {
+        // playlist does not on local, should not exist, but just insert it
+        await db.playlist.insertOne(newPlaylist.intro.toCompanion());
+        final table = await playlist.getSingle();
+        tableId = table.id;
+      }
+
+      await db.transaction(() async {
+        // clear items
+        await db.playlistItem
+            .deleteWhere((final tbl) => tbl.playlistId.equals(tableId!));
+
+        // update tracks
+        await db.batch((final batch) => batch.insertAll(
+              db.playlistItem,
+              newPlaylist.items
+                  .asMap()
+                  .entries
+                  .map((final e) =>
+                      e.value.toCompanion(playlistId: tableId!, order: e.key))
+                  .toList(),
+            ));
+
+        // update modified playlist
+        await db.playlist.update().replace(
+            newPlaylist.intro.toCompanion(id: Value(tableId!), hasItems: true));
+      });
+    }
+  }
+
   ////////////////////////////// Statistics //////////////////////////////
   Future<void> trackPlayback(final TrackIdentifier track, final int at) async {
     final db = ref.read(localDatabaseProvider);

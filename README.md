@@ -70,8 +70,8 @@ There are two release branches: `canary` and `nightly`.
         - [ ] Create playlist
         - [ ] Remove playlist
         - [ ] Edit playlist
-            - [ ] Append
-            - [ ] Remove
+            - [x] Append
+            - [x] Remove
             - [ ] Reorder
             - [ ] Replace
     - [ ] Favorite

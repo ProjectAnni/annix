@@ -12,6 +12,9 @@ flutter_rust_bridge_codegen generate --no-web --watch
 
 ```bash
 dart run build_runner watch --delete-conflicting-outputs
+
+# Force update i18n
+flutter pub run slang
 ```
 
 ## Upgrading database

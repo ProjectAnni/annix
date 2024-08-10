@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 90 (45 per locale)
+/// Strings: 92 (46 per locale)
 ///
-/// Built on 2024-08-08 at 15:26 UTC
+/// Built on 2024-08-10 at 16:02 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -251,6 +251,7 @@ class _StringsTrackEn {
 
 	// Translations
 	String get add_to_playlist => 'Add to playlist';
+	String get remove_from_playlist => 'Remove from playlist';
 	String get add_to_queue => 'Add to queue';
 	String get share => 'Share track';
 }
@@ -382,6 +383,7 @@ class _StringsTrackZhCn implements _StringsTrackEn {
 
 	// Translations
 	@override String get add_to_playlist => '保存到播放列表';
+	@override String get remove_from_playlist => '从播放列表删除';
 	@override String get add_to_queue => '添加到待播列表';
 	@override String get share => '分享歌曲';
 }
@@ -430,6 +432,7 @@ extension on Translations {
 			case 'settings.custom_font_not_specified': return 'Not specified';
 			case 'search': return 'Search';
 			case 'track.add_to_playlist': return 'Add to playlist';
+			case 'track.remove_from_playlist': return 'Remove from playlist';
 			case 'track.add_to_queue': return 'Add to queue';
 			case 'track.share': return 'Share track';
 			case 'tracks': return 'Tracks';
@@ -483,6 +486,7 @@ extension on _StringsZhCn {
 			case 'settings.custom_font_not_specified': return '默认字体';
 			case 'search': return '搜索';
 			case 'track.add_to_playlist': return '保存到播放列表';
+			case 'track.remove_from_playlist': return '从播放列表删除';
 			case 'track.add_to_queue': return '添加到待播列表';
 			case 'track.share': return '分享歌曲';
 			case 'tracks': return '单曲';

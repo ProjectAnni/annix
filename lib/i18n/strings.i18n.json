@@ -48,6 +48,7 @@
   "search": "Search",
   "track": {
     "add_to_playlist": "Add to playlist",
+    "remove_from_playlist": "Remove from playlist",
     "add_to_queue": "Add to queue",
     "share": "Share track"
   },

@@ -1,6 +1,7 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
@@ -272,6 +273,28 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     delegate.panelController.close();
                   },
                 ),
+                if (widget.playlist.intro.remoteId != null && track.id != null)
+                  ListTile(
+                    title: Text(t.track.remove_from_playlist),
+                    leading: const Icon(Icons.delete),
+                    onTap: () async {
+                      final anniv = ref.read(annivProvider);
+                      final delegate = ref.read(routerProvider);
+                      showLoadingDialog(context);
+
+                      final playlist =
+                          PlaylistInfo.fromData(widget.playlist.intro);
+                      await anniv
+                          .removeItemsFromPlaylist(playlist, [track.id!]);
+
+                      await delegate.popRoute();
+                      if (context.mounted) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
+
+                      // TODO: update current playlist
+                    },
+                  ),
                 ListTile(
                   title: Text(t.track.add_to_playlist),
                   leading: const Icon(Icons.playlist_add),
