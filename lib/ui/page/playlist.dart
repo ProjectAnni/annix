@@ -180,7 +180,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
         return ListTile(
           key: ValueKey(item),
           isThreeLine: useThreeLine,
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

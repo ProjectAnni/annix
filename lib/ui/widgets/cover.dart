@@ -1,7 +1,9 @@
 import 'package:annix/providers.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PlayingMusicCover extends ConsumerWidget {
   final bool card;
@@ -102,7 +104,7 @@ class MusicCover extends ConsumerWidget {
     this.height,
   });
 
-  Widget? _loadStateChanged(final ExtendedImageState state) {
+  Widget? _loadStateChanged(BuildContext context, ExtendedImageState state) {
     switch (state.extendedImageLoadState) {
       case LoadState.completed:
         final image = state.extendedImageInfo!.image;
@@ -115,7 +117,18 @@ class MusicCover extends ConsumerWidget {
           height: height,
         );
       default:
-        return const DummyMusicCover();
+        return Stack(
+          children: [
+            Shimmer.fromColors(
+              baseColor: context.colorScheme.secondaryContainer,
+              highlightColor: context.colorScheme.onPrimary,
+              child: const DummyMusicCover(),
+            ),
+            const Center(
+              child: Icon(Icons.music_note, size: 32),
+            )
+          ],
+        );
     }
   }
 
@@ -130,7 +143,7 @@ class MusicCover extends ConsumerWidget {
     return ExtendedImage(
       image: image,
       fit: fit,
-      loadStateChanged: _loadStateChanged,
+      loadStateChanged: (state) => _loadStateChanged(context, state),
     );
   }
 }
