@@ -1,9 +1,9 @@
 pub use anni_playback::player::AudioQuality;
-use once_cell::sync::Lazy;
-use tokio::runtime::Runtime;
+use rusqlite::{Connection, OpenFlags};
+use tracing::level_filters::LevelFilter;
 
 use std::{
-    sync::{Arc, OnceLock},
+    sync::{Arc, Once, OnceLock},
     thread,
 };
 
@@ -152,21 +152,23 @@ impl AnnixPlayer {
 
 #[frb(sync)]
 pub fn init_logger(path: String) {
-    static LOGGER: OnceLock<tokio::task::JoinHandle<db_logger::Handle>> = OnceLock::new();
-    static RUNTIME: Lazy<Runtime> = Lazy::new(|| Runtime::new().unwrap());
+    static LOGGER: Once = Once::new();
 
-    LOGGER.get_or_init(|| {
-        RUNTIME.spawn(async {
-            let conn = db_logger::sqlite::connect(db_logger::sqlite::ConnectionOptions {
-                uri: path,
-                ..Default::default()
-            })
-            .await
-            .unwrap();
-            conn.create_schema().await.unwrap();
-            let handle = db_logger::init(conn).await;
+    LOGGER.call_once(|| {
+        let conn = Connection::open_with_flags(
+            path,
+            OpenFlags::SQLITE_OPEN_CREATE
+                | OpenFlags::SQLITE_OPEN_READ_WRITE
+                | OpenFlags::SQLITE_OPEN_NO_MUTEX,
+        )
+        .unwrap();
 
-            handle
-        })
-    });
+        tracing_subscriber_sqlite::prepare_database(&conn).unwrap();
+
+        tracing_log::LogTracer::init().unwrap();
+        tracing::subscriber::set_global_default(
+            tracing_subscriber_sqlite::Subscriber::with_max_level(conn, LevelFilter::DEBUG),
+        )
+        .unwrap();
+    })
 }
