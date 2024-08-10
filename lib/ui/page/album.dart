@@ -14,7 +14,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final albumFamily = FutureProvider.family<Album, String>((ref, albumId) {
+final albumFamily = FutureProvider.autoDispose.family<Album, String>((ref, albumId) {
   final metadata = ref.read(metadataProvider);
   return metadata.getAlbum(albumId: albumId).then(
     (final album) {

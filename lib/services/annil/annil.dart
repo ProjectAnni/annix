@@ -284,6 +284,13 @@ class AnnilService extends ChangeNotifier {
     final db = ref.read(localDatabaseProvider);
     final etag = etags[server.id];
 
+    // update timestamp
+    await db.updateAnnilETag(
+      server.id,
+      etag,
+      DateTime.timestamp().millisecondsSinceEpoch,
+    );
+
     try {
       final response = await client.getUri(
         Uri.parse('${server.url}/albums'),
@@ -302,7 +309,11 @@ class AnnilService extends ChangeNotifier {
       if (etag != newETag) {
         etags[server.id] = newETag;
         await db.transaction(() async {
-          await db.updateAnnilETag(server.id, newETag);
+          await db.updateAnnilETag(
+            server.id,
+            newETag,
+            DateTime.timestamp().millisecondsSinceEpoch,
+          );
           await db.localAnnilAlbums
               .deleteWhere((final tbl) => tbl.annilId.equals(server.id));
           await db.batch((final batch) => batch.insertAll(db.localAnnilAlbums, [
@@ -320,13 +331,15 @@ class AnnilService extends ChangeNotifier {
       } else {
         etags.remove(server.id);
         await db.transaction(() async {
-          await db.updateAnnilETag(server.id, null);
+          await db.updateAnnilETag(server.id, null, null);
           await db.localAnnilAlbums
               .deleteWhere((final tbl) => tbl.annilId.equals(server.id));
         });
         rethrow;
       }
     }
+
+    notifyListeners();
   }
 }
 

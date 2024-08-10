@@ -17,8 +17,8 @@ enum _PlaylistAction {
   delete,
 }
 
-final playlistFamily =
-    FutureProvider.family<Playlist, PlaylistInfo>((ref, playlistInfo) {
+final playlistFamily = FutureProvider.autoDispose
+    .family<Playlist, PlaylistInfo>((ref, playlistInfo) {
   final db = ref.read(localDatabaseProvider);
   final anniv = ref.read(annivProvider);
   return Playlist.loadRemote(info: playlistInfo, db: db, anniv: anniv);

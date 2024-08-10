@@ -50,3 +50,25 @@ class LazyAlbumWall extends StatelessWidget {
     );
   }
 }
+
+class LazySliverAlbumWall extends StatelessWidget {
+  final List<String> albumIds;
+  const LazySliverAlbumWall({super.key, required this.albumIds});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverMasonryGrid.count(
+      crossAxisCount: context.isDesktopOrLandscape ? 4 : 2,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      itemBuilder: (final BuildContext context, final int index) {
+        final albumId = albumIds[index];
+        return LoadingAlbumGrid(
+          albumId: albumId,
+          style: AlbumGridStyle.card,
+        );
+      },
+      childCount: albumIds.length,
+    );
+  }
+}

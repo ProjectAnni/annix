@@ -21,5 +21,5 @@ dart run build_runner watch --delete-conflicting-outputs
 3. Dump new schema:
 ```bash
 dart run drift_dev schema dump lib/services/local/database.dart drift_schemas
-dart run drift_dev schema steps drift_schemas/
+dart run drift_dev schema steps drift_schemas/ ./lib/services/local/schema_versions.dart
 ```

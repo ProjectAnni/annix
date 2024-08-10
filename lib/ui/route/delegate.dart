@@ -5,6 +5,7 @@ import 'package:annix/services/theme.dart';
 import 'package:annix/ui/layout/layout_desktop.dart';
 import 'package:annix/ui/layout/layout_mobile.dart';
 import 'package:annix/ui/page/album.dart';
+import 'package:annix/ui/page/annil/annil.dart';
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/favorite.dart';
@@ -218,9 +219,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/server':
         child = const ServerView();
         break;
-      case '/server_detail':
-        child = ServerDetail(
-          server: routeSettings.arguments as db.LocalAnnilServer,
+      case '/annil':
+        child = AnnilDetailPage(
+          annil: routeSettings.arguments as db.LocalAnnilServer,
         );
         break;
       case '/favorite':

@@ -3,7 +3,6 @@ import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
 import 'package:annix/ui/route/delegate.dart';
-import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
@@ -147,7 +146,7 @@ class AnnilListTile extends ConsumerWidget {
       selected: true,
       enabled: enabled,
       onTap: () {
-        ref.read(routerProvider).to(name: '/server_detail', arguments: annil);
+        ref.read(routerProvider).to(name: '/annil', arguments: annil);
       },
     );
   }
@@ -235,35 +234,6 @@ class ServerView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ServerDetail extends ConsumerWidget {
-  final LocalAnnilServer server;
-
-  const ServerDetail({required this.server, super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final db = ref.read(localDatabaseProvider);
-    final query = db.localAnnilAlbums.select()
-      ..where((tbl) => tbl.annilId.equals(server.id));
-    final albumFuture = query
-        .get()
-        .then((albums) => albums.map((album) => album.albumId).toList());
-
-    return Scaffold(
-      appBar: AppBar(title: Text(server.name)),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: FutureBuilder(
-          future: albumFuture,
-          builder: (final context, final album) => LazyAlbumWall(
-            albumIds: (album.data ?? <String>[]),
-          ),
-        ),
       ),
     );
   }
