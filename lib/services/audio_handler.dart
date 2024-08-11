@@ -83,9 +83,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
     AudioService.notificationClicked.listen((final clicked) {
       if (clicked) {
-        final router = ref.read(routerProvider);
-        router.slideController.show();
-        router.panelController.open();
+        ref.read(routerProvider).openPanel();
       }
     });
   }

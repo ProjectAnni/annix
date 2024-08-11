@@ -49,9 +49,7 @@ class PlayingScreenMobile extends HookConsumerWidget {
             angle: -math.pi / 2,
             child: const Icon(Icons.arrow_back_ios_new),
           ),
-          onPressed: () {
-            ref.read(routerProvider).panelController.close();
-          },
+          onPressed: ref.read(routerProvider).closePanel,
         ),
         backgroundColor: context.colorScheme.secondaryContainer,
         // title: const Text(''),

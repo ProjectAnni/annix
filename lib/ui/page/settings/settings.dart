@@ -7,7 +7,6 @@ import 'package:annix/services/settings.dart';
 import 'package:annix/ui/dialogs/enum_select.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/prefer_quality.dart';
-import 'package:annix/ui/widgets/maybe_appbar.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/services/local/cache.dart';
 import 'package:flutter/material.dart';
@@ -48,13 +47,10 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.read(settingsProvider);
 
     return Scaffold(
-      appBar: maybeAppBar(
-        context,
-        AppBar(
-          title: Text(t.settings.settings),
-          centerTitle: true,
-          forceMaterialTransparency: true,
-        ),
+      appBar: AppBar(
+        title: Text(t.settings.settings),
+        centerTitle: true,
+        forceMaterialTransparency: true,
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(

@@ -1,5 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/playback/playback_service.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
@@ -15,14 +16,12 @@ class DesktopBottomPlayer extends ConsumerWidget {
   /// Constant height of the player
   static const double height = 96;
 
-  /// Callback triggered when the cover is clicked
-  final VoidCallback onClick;
-
-  const DesktopBottomPlayer({super.key, required this.onClick});
+  const DesktopBottomPlayer({super.key});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final player = ref.read(playbackProvider);
+    final delegate = ref.read(routerProvider);
 
     return Container(
       color: ElevationOverlay.colorWithOverlay(
@@ -34,7 +33,7 @@ class DesktopBottomPlayer extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _cover(player),
+          _cover(player, delegate),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -48,11 +47,16 @@ class DesktopBottomPlayer extends ConsumerWidget {
     );
   }
 
-  Widget _cover(final PlaybackService player) {
+  Widget _cover(
+      final PlaybackService player, final AnnixRouterDelegate router) {
     return GestureDetector(
       onTap: () {
         if (player.playing.source != null) {
-          onClick();
+          if (router.panelController.isPanelOpen) {
+            router.panelController.close();
+          } else {
+            router.panelController.open();
+          }
         }
       },
       child: const PlayingMusicCover(

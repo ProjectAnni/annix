@@ -67,7 +67,7 @@ There are two release branches: `canary` and `nightly`.
         - [ ] Revoke account
     - [ ] Playlist
         - [x] List playlist
-        - [ ] Create playlist
+        - [x] Create playlist
         - [ ] Remove playlist
         - [ ] Edit playlist
             - [x] Append

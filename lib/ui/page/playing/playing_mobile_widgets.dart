@@ -90,9 +90,6 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                   name: '/album',
                   arguments: player.playing.source!.identifier.albumId,
                 );
-                // hide playing page after navigation
-                ref.read(routerProvider).slideController.hide();
-                ref.read(routerProvider).panelController.close();
               },
             ),
             // const Divider(height: 1),

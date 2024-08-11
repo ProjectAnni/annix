@@ -269,9 +269,6 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                       name: '/album',
                       arguments: track.info.id.albumId,
                     );
-                    // hide playing page after navigation
-                    delegate.slideController.hide();
-                    delegate.panelController.close();
                   },
                 ),
                 if (widget.playlist.intro.remoteId != null && track.id != null)
