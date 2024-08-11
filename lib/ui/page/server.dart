@@ -54,17 +54,10 @@ class AnnivCard extends ConsumerWidget {
               ),
               // TODO: Add more things in this card
               const SizedBox(height: 80),
-              PopupMenuButton<String>(
-                itemBuilder: (final context) => [
-                  PopupMenuItem(
-                    value: 'Logout',
-                    child: Text(t.server.logout),
-                  ),
-                ],
-                onSelected: (final value) {
-                  if (value == 'Logout') {
-                    ref.read(annivProvider).logout();
-                  }
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  ref.read(annivProvider).logout();
                 },
               ),
             ],

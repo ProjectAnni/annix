@@ -342,7 +342,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                   child: Text('Delete'),
                 ),
               ],
-              onSelected: (final value) {
+              onSelected: (final value) async {
                 switch (value) {
                   case _PlaylistAction.edit:
                     // generate reorder list on entering edit mode
@@ -357,6 +357,11 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     break;
                   case _PlaylistAction.delete:
                     // TODO: show dialog
+                    final anniv = ref.read(annivProvider);
+                    await anniv.deletePlaylist(playlist: widget.playlist.intro);
+
+                    final delegate = ref.read(routerProvider);
+                    delegate.popRoute();
                     break;
                 }
               },

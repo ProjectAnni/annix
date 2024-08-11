@@ -363,6 +363,17 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
+  Future<void> deletePlaylist({required final PlaylistData playlist}) async {
+    if (playlist.remoteId != null) {
+      await client?.deletePlaylist(playlist.remoteId!);
+    }
+
+    final db = ref.read(localDatabaseProvider);
+    await db.playlist.deleteWhere((final tbl) => tbl.id.equals(playlist.id));
+    await db.playlistItem
+        .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
+  }
+
   Future<List<AnnivPlaylistItem>?> getPlaylistItems(final PlaylistData playlist,
       {bool force = false, Playlist? remote}) async {
     final db = ref.read(localDatabaseProvider);
