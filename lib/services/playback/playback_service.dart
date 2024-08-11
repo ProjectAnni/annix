@@ -133,19 +133,6 @@ class PlaybackService extends ChangeNotifier {
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
-
-    final db = ref.read(localDatabaseProvider);
-    final annilServersStream = db.sortedAnnilServers().watch();
-    annilServersStream.listen((servers) {
-      PlaybackService.player.clearProvider();
-      for (final server in servers) {
-        PlaybackService.player.addProvider(
-          url: server.url,
-          auth: server.token,
-          priority: server.priority,
-        );
-      }
-    });
   }
 
   Future<void> play({
@@ -180,6 +167,10 @@ class PlaybackService extends ChangeNotifier {
     // stop previous playback
     FLog.trace(text: 'Start playing');
     await stop(false);
+
+    // TODO: move annil logic to rust and remove the workaround
+    final annil = ref.read(annilProvider);
+    await annil.syncedToRust.future;
 
     final settings = ref.read(settingsProvider);
     await PlaybackService.player.setTrack(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/providers.dart';
@@ -5,6 +6,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/path.dart';
+import 'package:annix/services/playback/playback_service.dart';
 import 'package:annix/utils/redirect_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -23,6 +25,9 @@ class AnnilService extends ChangeNotifier {
   List<LocalAnnilServer> servers = [];
   Map<int, String?> etags = {};
   List<String> albums = [];
+
+  // TODO: move annil logic to rust and remove the workaround
+  Completer<void> syncedToRust = Completer();
 
   AnnilService(this.ref) {
     client.httpClientAdapter = IOHttpClientAdapter(
@@ -57,6 +62,20 @@ class AnnilService extends ChangeNotifier {
     annilServersStream.listen((final event) {
       if (!listEquals(event, servers)) {
         servers = event;
+
+        // TODO: move annil logic to rust and remove the workaround
+        if (!syncedToRust.isCompleted) {
+          PlaybackService.player.clearProvider();
+          for (final server in servers) {
+            PlaybackService.player.addProvider(
+              url: server.url,
+              auth: server.token,
+              priority: server.priority,
+            );
+          }
+          syncedToRust.complete();
+        }
+
         reload();
       }
     });
@@ -113,6 +132,17 @@ class AnnilService extends ChangeNotifier {
 
   /// Keep sync with new credential list
   Future<void> sync(final List<AnnilToken> remoteList) async {
+    // TODO: move annil logic to rust and remove the workaround
+    PlaybackService.player.clearProvider();
+    for (final server in remoteList) {
+      PlaybackService.player.addProvider(
+        url: server.url,
+        auth: server.token,
+        priority: server.priority,
+      );
+    }
+    syncedToRust.complete();
+
     final db = ref.read(localDatabaseProvider);
     final toUpdate = servers
         .map((final server) {
