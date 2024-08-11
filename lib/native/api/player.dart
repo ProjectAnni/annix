@@ -34,7 +34,9 @@ abstract class AnnixPlayer implements RustOpaqueInterface {
   Future<void> seek({required int position});
 
   Future<void> setTrack(
-      {required String identifier, required AudioQuality quality});
+      {required String identifier,
+      required AudioQuality quality,
+      required bool opus});
 
   Future<void> setVolume({required double volume});
 

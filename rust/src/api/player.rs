@@ -112,8 +112,13 @@ impl AnnixPlayer {
         self.player.pause();
     }
 
-    pub fn set_track(&self, identifier: String, quality: AudioQuality) -> anyhow::Result<()> {
-        self.player.open(identifier.parse()?, quality)
+    pub fn set_track(
+        &self,
+        identifier: String,
+        quality: AudioQuality,
+        opus: bool,
+    ) -> anyhow::Result<()> {
+        Ok(self.player.open(identifier.parse()?, quality, opus)?)
     }
 
     pub fn set_volume(&self, volume: f32) {

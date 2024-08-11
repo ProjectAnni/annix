@@ -176,6 +176,7 @@ class PlaybackService extends ChangeNotifier {
     await PlaybackService.player.setTrack(
       identifier: source.identifier.toString(),
       quality: fromQuality(settings.defaultAudioQuality.value),
+      opus: settings.experimentalOpus.value,
     );
 
     if (setSourceOnly) {

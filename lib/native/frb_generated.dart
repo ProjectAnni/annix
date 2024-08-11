@@ -104,7 +104,8 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiPlayerAnnixPlayerSetTrack(
       {required AnnixPlayer that,
       required String identifier,
-      required AudioQuality quality});
+      required AudioQuality quality,
+      required bool opus});
 
   Future<void> crateApiPlayerAnnixPlayerSetVolume(
       {required AnnixPlayer that, required double volume});
@@ -498,7 +499,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<void> crateApiPlayerAnnixPlayerSetTrack(
       {required AnnixPlayer that,
       required String identifier,
-      required AudioQuality quality}) {
+      required AudioQuality quality,
+      required bool opus}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -506,6 +508,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_String(identifier, serializer);
         sse_encode_audio_quality(quality, serializer);
+        sse_encode_bool(opus, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 12, port: port_);
       },
@@ -514,7 +517,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiPlayerAnnixPlayerSetTrackConstMeta,
-      argValues: [that, identifier, quality],
+      argValues: [that, identifier, quality, opus],
       apiImpl: this,
     ));
   }
@@ -522,7 +525,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiPlayerAnnixPlayerSetTrackConstMeta =>
       const TaskConstMeta(
         debugName: "AnnixPlayer_set_track",
-        argNames: ["that", "identifier", "quality"],
+        argNames: ["that", "identifier", "quality", "opus"],
       );
 
   @override
@@ -1797,9 +1800,11 @@ class AnnixPlayerImpl extends RustOpaque implements AnnixPlayer {
       .crateApiPlayerAnnixPlayerSeek(that: this, position: position);
 
   Future<void> setTrack(
-          {required String identifier, required AudioQuality quality}) =>
+          {required String identifier,
+          required AudioQuality quality,
+          required bool opus}) =>
       RustLib.instance.api.crateApiPlayerAnnixPlayerSetTrack(
-          that: this, identifier: identifier, quality: quality);
+          that: this, identifier: identifier, quality: quality, opus: opus);
 
   Future<void> setVolume({required double volume}) => RustLib.instance.api
       .crateApiPlayerAnnixPlayerSetVolume(that: this, volume: volume);
