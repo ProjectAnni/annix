@@ -106,6 +106,18 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                 );
               },
             ),
+            MenuItemButton(
+              leadingIcon: const Icon(Icons.file_copy),
+              child: const Text('[DEV] Export file'),
+              onPressed: () {
+                final track = player.playing.source!.track;
+                final box = context.findRenderObject() as RenderBox?;
+                shareTrackFile(
+                  track,
+                  box!.localToGlobal(Offset.zero) & box.size,
+                );
+              },
+            ),
           ],
           child: const Icon(Icons.more_vert_rounded),
         ),

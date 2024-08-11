@@ -25,3 +25,12 @@ void shareTrackInfo(TrackInfoWithAlbum track, Rect? sharePositionOrigin,
     sharePositionOrigin: sharePositionOrigin,
   );
 }
+
+void shareTrackFile(TrackInfoWithAlbum track, Rect? sharePositionOrigin) {
+  final id = track.id;
+  Share.shareXFiles(
+    [XFile(getAudioCachePath(id))],
+    subject: 'Audio File',
+    sharePositionOrigin: sharePositionOrigin,
+  );
+}
