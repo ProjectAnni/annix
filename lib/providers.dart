@@ -25,7 +25,8 @@ final networkProvider =
     ChangeNotifierProvider((final ref) => NetworkService(ref));
 final isOnlineProvider =
     StateProvider((final ref) => ref.watch(networkProvider).isOnline);
-final routerProvider = Provider((final ref) => AnnixRouterDelegate(ref));
+final routerProvider =
+    ChangeNotifierProvider((final ref) => AnnixRouterDelegate(ref));
 final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));
 final downloadManagerProvider =
@@ -55,8 +56,8 @@ final favoriteAlbumsProvider = StreamProvider((final ref) =>
 
 // anni
 final metadataProvider = Provider((final _) => MetadataService());
-final annilProvider = Provider((final ref) => AnnilService(ref));
-final annivProvider = Provider((final ref) => AnnivService(ref));
+final annilProvider = ChangeNotifierProvider((final ref) => AnnilService(ref));
+final annivProvider = ChangeNotifierProvider((final ref) => AnnivService(ref));
 final playbackProvider =
     ChangeNotifierProvider((final ref) => PlaybackService(ref));
 final playingProvider = ChangeNotifierProvider(

@@ -77,6 +77,7 @@ class AnnivService extends ChangeNotifier {
         }
       }
       this.client = client;
+      notifyListeners();
 
       // do not await here
       Future.wait([
@@ -129,6 +130,8 @@ class AnnivService extends ChangeNotifier {
     if (oldInfo != null) {
       await syncPlaylist(userId: oldInfo.user.userId, playlists: []);
     }
+
+    notifyListeners();
   }
 
   void _loadInfo() {
