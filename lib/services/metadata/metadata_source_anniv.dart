@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:annix/providers.dart';
@@ -42,7 +43,8 @@ class AnnivMetadataSource extends MetadataSource with CachedMetadataStore {
     if (ref.read(isOnlineProvider) && client != null) {
       final albums = await client.getAlbumsByTag(tag);
       for (final album in albums) {
-        persist(album);
+        // did not await here for performance
+        unawaited(persist(album));
       }
       return albums.map((final e) => e.albumId).toSet();
     } else {

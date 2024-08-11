@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -423,7 +424,7 @@ class PlaybackService extends ChangeNotifier {
     if (waitUntilPlayback) {
       await setPlayingQueue(resultQueue);
     } else {
-      setPlayingQueue(resultQueue);
+      unawaited(setPlayingQueue(resultQueue));
     }
   }
 }

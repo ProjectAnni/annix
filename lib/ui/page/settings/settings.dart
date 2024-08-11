@@ -229,7 +229,7 @@ class SettingsScreen extends ConsumerWidget {
                 onPressed: (final context) async {
                   showLoadingDialog(context);
                   await AnnixStore().clear('album');
-                  ref.read(routerProvider).popRoute();
+                  await ref.read(routerProvider).popRoute();
                 },
               ),
               // clear local lyric cache

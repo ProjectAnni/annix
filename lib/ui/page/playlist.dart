@@ -361,7 +361,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     await anniv.deletePlaylist(playlist: widget.playlist.intro);
 
                     final delegate = ref.read(routerProvider);
-                    delegate.popRoute();
+                    await delegate.popRoute();
                     break;
                 }
               },

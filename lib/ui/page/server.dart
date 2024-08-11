@@ -72,7 +72,7 @@ class AnnivCard extends ConsumerWidget {
                 TextButton(
                   child: const Text('Update Database'),
                   onPressed: () async {
-                    ref.read(annivProvider).updateDatabase();
+                    await ref.read(annivProvider).updateDatabase();
                   },
                 ),
             ],

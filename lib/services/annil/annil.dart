@@ -78,7 +78,7 @@ class AnnilService extends ChangeNotifier {
           }
         }
 
-        reload();
+        unawaited(reload());
       }
     });
 

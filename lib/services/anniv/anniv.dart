@@ -80,7 +80,7 @@ class AnnivService extends ChangeNotifier {
       notifyListeners();
 
       // do not await here
-      Future.wait([
+      unawaited(Future.wait([
         (() async {
           final annil = ref.read(annilProvider);
           final annilTokens = await client.getCredentials();
@@ -92,7 +92,7 @@ class AnnivService extends ChangeNotifier {
         // reload playlist list
         client.getPlaylistByUserId().then((playlists) =>
             syncPlaylist(userId: info!.user.userId, playlists: playlists)),
-      ]);
+      ]));
     }
   }
 
@@ -319,8 +319,8 @@ class AnnivService extends ChangeNotifier {
 
         // playlist does not exist on remote, remove it
         if (remote == null) {
-          db.playlist.deleteOne(playlist);
-          db.playlistItem
+          await db.playlist.deleteOne(playlist);
+          await db.playlistItem
               .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
         } else {
           // playlist exists on remote, compare last_modified and update it
@@ -340,7 +340,7 @@ class AnnivService extends ChangeNotifier {
 
     // the remaining playlist is new, add it
     for (final playlist in map.values) {
-      db.playlist.insertOne(playlist.toCompanion());
+      await db.playlist.insertOne(playlist.toCompanion());
     }
   }
 
@@ -359,7 +359,7 @@ class AnnivService extends ChangeNotifier {
       items: items,
     );
     if (newPlaylist != null) {
-      _updatePlaylistInDatabase(newPlaylist);
+      await _updatePlaylistInDatabase(newPlaylist);
     }
   }
 
@@ -459,7 +459,7 @@ class AnnivService extends ChangeNotifier {
       items: [AnnivPlaylistItemPlainTrack(track: track)],
     );
     if (newPlaylist != null) {
-      _updatePlaylistInDatabase(newPlaylist);
+      await _updatePlaylistInDatabase(newPlaylist);
     }
   }
 
@@ -470,7 +470,7 @@ class AnnivService extends ChangeNotifier {
       items: items,
     );
     if (newPlaylist != null) {
-      _updatePlaylistInDatabase(newPlaylist);
+      await _updatePlaylistInDatabase(newPlaylist);
     }
   }
 
@@ -481,7 +481,7 @@ class AnnivService extends ChangeNotifier {
       items: items,
     );
     if (newPlaylist != null) {
-      _updatePlaylistInDatabase(newPlaylist);
+      await _updatePlaylistInDatabase(newPlaylist);
     }
   }
 

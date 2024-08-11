@@ -33,5 +33,6 @@ linter:
     use_enums: true
     prefer_final_locals: true
     prefer_final_parameters: false
+    unawaited_futures: true
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

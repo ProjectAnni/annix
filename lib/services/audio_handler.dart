@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/providers.dart';
@@ -42,8 +43,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
       ),
     );
 
-    AudioSession.instance.then((final session) async {
-      session.configure(const AudioSessionConfiguration.music());
+    unawaited(AudioSession.instance.then((final session) async {
+      await session.configure(const AudioSessionConfiguration.music());
 
       // unplugged
       session.becomingNoisyEventStream.listen((final _) => service.pause());
@@ -79,7 +80,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
           }
         }
       });
-    });
+    }));
 
     AudioService.notificationClicked.listen((final clicked) {
       if (clicked) {

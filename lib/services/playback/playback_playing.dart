@@ -110,7 +110,7 @@ class PlayingTrack extends ChangeNotifier {
 
       // 4. save to local cache
       if (lyric != null) {
-        LyricSource.saveLocal(id, lyric);
+        await LyricSource.saveLocal(id, lyric);
         return TrackLyric(lyric: lyric, type: source.track.type);
       }
 
