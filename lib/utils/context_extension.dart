@@ -20,4 +20,7 @@ extension AnnixContextExtension on BuildContext {
   bool get isApple => Platform.isIOS || Platform.isMacOS;
 
   bool get isMobileOrPortrait => !isDesktopOrLandscape;
+
+  bool get isIOS => Platform.isIOS;
+  bool get isAndroid => Platform.isAndroid;
 }
