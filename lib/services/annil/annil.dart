@@ -59,21 +59,23 @@ class AnnilService extends ChangeNotifier {
           Map.fromEntries(value.map((final e) => MapEntry(e.annilId, e.etag))));
     });
     final annilServersStream = db.sortedAnnilServers().watch();
-    annilServersStream.listen((final event) {
+    annilServersStream.listen((final event) async {
       if (!listEquals(event, servers)) {
         servers = event;
 
         // TODO: move annil logic to rust and remove the workaround
         if (!syncedToRust.isCompleted) {
-          PlaybackService.player.clearProvider();
+          await PlaybackService.player.clearProvider();
           for (final server in servers) {
-            PlaybackService.player.addProvider(
+            await PlaybackService.player.addProvider(
               url: server.url,
               auth: server.token,
               priority: server.priority,
             );
           }
-          syncedToRust.complete();
+          if (!syncedToRust.isCompleted) {
+            syncedToRust.complete();
+          }
         }
 
         reload();
@@ -133,15 +135,17 @@ class AnnilService extends ChangeNotifier {
   /// Keep sync with new credential list
   Future<void> sync(final List<AnnilToken> remoteList) async {
     // TODO: move annil logic to rust and remove the workaround
-    PlaybackService.player.clearProvider();
+    await PlaybackService.player.clearProvider();
     for (final server in remoteList) {
-      PlaybackService.player.addProvider(
+      await PlaybackService.player.addProvider(
         url: server.url,
         auth: server.token,
         priority: server.priority,
       );
     }
-    syncedToRust.complete();
+    if (!syncedToRust.isCompleted) {
+      syncedToRust.complete();
+    }
 
     final db = ref.read(localDatabaseProvider);
     final toUpdate = servers
