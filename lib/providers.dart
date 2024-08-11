@@ -62,5 +62,3 @@ final playbackProvider =
     ChangeNotifierProvider((final ref) => PlaybackService(ref));
 final playingProvider = ChangeNotifierProvider(
     (final ref) => ref.watch(playbackProvider.select((final p) => p.playing)));
-final playingDownloadProgressProvider = StateProvider((final ref) =>
-    ref.watch(playingProvider.select((final p) => p.source?.downloadProgress)));

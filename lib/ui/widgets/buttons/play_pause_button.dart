@@ -43,18 +43,14 @@ class PlayPauseButton extends HookConsumerWidget {
       return null;
     }, [player.playerStatus]);
 
-    final downloadProgress = ref.watch(playingDownloadProgressProvider);
-    final isBuffering = player.playerStatus == PlayerStatus.buffering &&
-        downloadProgress != null;
+    final isBuffering = player.playerStatus == PlayerStatus.buffering;
 
     Widget child;
     if (isBuffering) {
-      final total = downloadProgress.total;
-      child = Padding(
-        padding: const EdgeInsets.all(10.0),
+      child = const Padding(
+        padding: EdgeInsets.all(10.0),
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          value: total == null ? null : downloadProgress.current / total,
         ),
       );
     } else {
