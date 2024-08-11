@@ -101,7 +101,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> play() async {
-    return player.play(trackPlayback: false);
+    return player.play();
   }
 
   @override
@@ -325,7 +325,7 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onPlay() async {
-    await player.play(trackPlayback: false);
+    await player.play();
   }
 
   @override
