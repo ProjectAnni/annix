@@ -307,6 +307,11 @@ class AnnivClient {
     return Playlist.fromJson(response.data);
   }
 
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E5%88%9B%E5%BB%BA%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<void> deletePlaylist(String id) async {
+    await _client.delete('/api/playlist', data: {'id': id});
+  }
+
   // https://book.anni.rs/06.anniv/03.playlist.html#%E4%BF%AE%E6%94%B9%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
   Future<Playlist> updatePlaylistInfo({
     required final String playlistId,
