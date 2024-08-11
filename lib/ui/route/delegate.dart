@@ -28,12 +28,12 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final _panelController = PanelController();
   get panelController => _panelController;
   get isPanelOpen =>
-      _panelController.isAttached && _panelController.isPanelOpen;
-  get isPanelClosed =>
-      _panelController.isAttached && _panelController.isPanelClosed;
+      _panelController.isAttached &&
+      (_panelController.isPanelOpen || _panelController.isPanelAnimating);
+  get isPanelClosed => !isPanelOpen;
 
   void openPanel() {
-    if (_panelController.isPanelClosed) {
+    if (!_panelController.isPanelOpen) {
       _panelController.open();
       notifyListeners();
     }
