@@ -1,9 +1,7 @@
 pub use anni_playback::player::AudioQuality;
-use rusqlite::{Connection, OpenFlags};
-use tracing::level_filters::LevelFilter;
 
 use std::{
-    sync::{Arc, Once, OnceLock},
+    sync::{Arc, OnceLock},
     thread,
 };
 
@@ -153,27 +151,4 @@ impl AnnixPlayer {
     pub fn progress_stream(&self, stream: StreamSink<ProgressState>) {
         self._progress.get_or_init(move || stream);
     }
-}
-
-#[frb(sync)]
-pub fn init_logger(path: String) {
-    static LOGGER: Once = Once::new();
-
-    LOGGER.call_once(|| {
-        let conn = Connection::open_with_flags(
-            path,
-            OpenFlags::SQLITE_OPEN_CREATE
-                | OpenFlags::SQLITE_OPEN_READ_WRITE
-                | OpenFlags::SQLITE_OPEN_NO_MUTEX,
-        )
-        .unwrap();
-
-        tracing_subscriber_sqlite::prepare_database(&conn).unwrap();
-
-        tracing_log::LogTracer::init().unwrap();
-        tracing::subscriber::set_global_default(
-            tracing_subscriber_sqlite::Subscriber::with_max_level(conn, LevelFilter::DEBUG),
-        )
-        .unwrap();
-    })
 }
