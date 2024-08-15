@@ -17,7 +17,7 @@ class DownloadManager extends ChangeNotifier {
     notifyListeners();
 
     for (final task in tasks) {
-      pool.withResource(() => task.start());
+      await pool.withResource(() => task.start());
     }
   }
 }

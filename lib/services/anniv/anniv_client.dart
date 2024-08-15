@@ -162,8 +162,8 @@ class AnnivClient {
   /// https://book.anni.rs/06.anniv/02.user.html#%E7%94%A8%E6%88%B7%E9%80%80%E5%87%BA
   Future<void> logout() async {
     // do not wait here
-    _client.post('/api/user/logout').catchError((final err) {});
-    _cookieJar.deleteAll();
+    await _client.post('/api/user/logout').catchError((final err) {});
+    await _cookieJar.deleteAll();
     ref.read(preferencesProvider).remove('anniv_url');
     return;
   }
@@ -295,7 +295,7 @@ class AnnivClient {
     required final String description,
     final bool public = true,
     final DiscIdentifier? cover,
-    final List<AnnivPlaylistItem> items = const [],
+    final List<AnnivPlaylistPlainItem> items = const [],
   }) async {
     final response = await _client.put('/api/playlist', data: {
       'name': name,
@@ -305,6 +305,11 @@ class AnnivClient {
       'items': items.map((final e) => e.toJson()).toList(),
     });
     return Playlist.fromJson(response.data);
+  }
+
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E5%88%9B%E5%BB%BA%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<void> deletePlaylist(String id) async {
+    await _client.delete('/api/playlist', data: {'id': id});
   }
 
   // https://book.anni.rs/06.anniv/03.playlist.html#%E4%BF%AE%E6%94%B9%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
@@ -329,6 +334,32 @@ class AnnivClient {
       'id': playlistId,
       'command': 'append',
       'payload': items.map((final e) => e.toJson()).toList(),
+    });
+    return Playlist.fromJson(response.data);
+  }
+
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E4%BF%AE%E6%94%B9%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<Playlist> removePlaylistItem({
+    required final String playlistId,
+    required final List<String> items,
+  }) async {
+    final response = await _client.patch('/api/playlist', data: {
+      'id': playlistId,
+      'command': 'remove',
+      'payload': items,
+    });
+    return Playlist.fromJson(response.data);
+  }
+
+  // https://book.anni.rs/06.anniv/03.playlist.html#%E4%BF%AE%E6%94%B9%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8
+  Future<Playlist> reorderPlaylistItems({
+    required final String playlistId,
+    required final List<String> items,
+  }) async {
+    final response = await _client.patch('/api/playlist', data: {
+      'id': playlistId,
+      'command': 'reorder',
+      'payload': items,
     });
     return Playlist.fromJson(response.data);
   }

@@ -1,11 +1,15 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/dialogs/loading.dart';
+import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
+import 'package:annix/utils/share.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -17,8 +21,8 @@ enum _PlaylistAction {
   delete,
 }
 
-final playlistFamily =
-    FutureProvider.family<Playlist, PlaylistInfo>((ref, playlistInfo) {
+final playlistFamily = FutureProvider.autoDispose
+    .family<Playlist, PlaylistInfo>((ref, playlistInfo) {
   final db = ref.read(localDatabaseProvider);
   final anniv = ref.read(annivProvider);
   return Playlist.loadRemote(info: playlistInfo, db: db, anniv: anniv);
@@ -180,23 +184,18 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
         return ListTile(
           key: ValueKey(item),
           isThreeLine: useThreeLine,
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _editMode
-                  ? ReorderableDragStartListener(
-                      index: index,
-                      child: const Icon(Icons.drag_handle),
-                    )
-                  : Container(
-                      width: 24,
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${index + 1}',
-                        style: context.textTheme.labelLarge,
-                      ),
-                    ),
+              Container(
+                width: 24,
+                alignment: Alignment.center,
+                child: Text(
+                  _editMode ? '' : '${index + 1}',
+                  style: context.textTheme.labelLarge,
+                ),
+              ),
               const SizedBox(width: 8),
               CoverCard(
                 child: MusicCover.fromAlbum(
@@ -226,9 +225,97 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                 )
             ],
           ),
-          trailing: const Icon(Icons.more_vert),
+          trailing: _editMode
+              ? ReorderableDragStartListener(
+                  index: index,
+                  child: const Icon(Icons.drag_handle),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  onPressed: () => showMoreMenu(item),
+                ),
           enabled: annil.isTrackAvailable(item.info.id),
-          onTap: () => _onPlay(index: index),
+          onTap: _editMode ? null : () => _onPlay(index: index),
+          onLongPress: _editMode ? null : () => showMoreMenu(item),
+        );
+      },
+    );
+  }
+
+  showMoreMenu(AnnivPlaylistItemTrack track) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      isScrollControlled: true,
+      clipBehavior: Clip.antiAlias,
+      showDragHandle: true,
+      builder: (final context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (final context, final scrollController) {
+            return ListView(
+              controller: scrollController,
+              children: [
+                ListTile(
+                  title: Text(t.playing.view_album),
+                  leading: const Icon(Icons.album_outlined),
+                  onTap: () {
+                    // hide the previous dialog
+                    Navigator.of(context, rootNavigator: true).pop();
+
+                    final delegate = ref.read(routerProvider);
+                    // jump to album page
+                    delegate.to(
+                      name: '/album',
+                      arguments: track.info.id.albumId,
+                    );
+                  },
+                ),
+                if (widget.playlist.intro.remoteId != null && track.id != null)
+                  ListTile(
+                    title: Text(t.track.remove_from_playlist),
+                    leading: const Icon(Icons.delete),
+                    onTap: () async {
+                      final anniv = ref.read(annivProvider);
+                      final delegate = ref.read(routerProvider);
+                      showLoadingDialog(context);
+
+                      final playlist =
+                          PlaylistInfo.fromData(widget.playlist.intro);
+                      await anniv
+                          .removeItemsFromPlaylist(playlist, [track.id!]);
+
+                      await delegate.popRoute();
+                      if (context.mounted) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
+
+                      // refresh
+                      ref.invalidate(playlistFamily);
+                    },
+                  ),
+                ListTile(
+                  title: Text(t.track.add_to_playlist),
+                  leading: const Icon(Icons.playlist_add),
+                  onTap: () {
+                    showPlaylistDialog(context, ref, track.info.id);
+                  },
+                ),
+                ListTile(
+                  title: Text(t.track.share),
+                  leading: const Icon(Icons.share),
+                  onTap: () {
+                    final box = context.findRenderObject() as RenderBox?;
+                    shareTrackInfo(
+                      track.info,
+                      box!.localToGlobal(Offset.zero) & box.size,
+                      nowPlaying: false,
+                    );
+                  },
+                )
+              ],
+            );
+          },
         );
       },
     );
@@ -255,7 +342,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                   child: Text('Delete'),
                 ),
               ],
-              onSelected: (final value) {
+              onSelected: (final value) async {
                 switch (value) {
                   case _PlaylistAction.edit:
                     // generate reorder list on entering edit mode
@@ -270,6 +357,11 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     break;
                   case _PlaylistAction.delete:
                     // TODO: show dialog
+                    final anniv = ref.read(annivProvider);
+                    await anniv.deletePlaylist(playlist: widget.playlist.intro);
+
+                    final delegate = ref.read(routerProvider);
+                    await delegate.popRoute();
                     break;
                 }
               },
@@ -277,9 +369,22 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
           if (_editMode)
             IconButton(
               icon: const Icon(Icons.check),
-              onPressed: () {
-                // TODO: save edited result to server, keep _reorder on success, or set it to null
+              onPressed: () async {
+                final tracks = widget.playlist.items;
+                final newTracks = tracks.mapIndexed((final i, final element) {
+                  final index = _reorder != null ? _reorder![i] : i;
+                  return tracks[index].id!;
+                }).toList();
+
+                final anniv = ref.read(annivProvider);
+                await anniv.reorderItemsInPlaylist(
+                  PlaylistInfo.fromData(widget.playlist.intro),
+                  newTracks,
+                );
+
                 setState(() {
+                  ref.invalidate(playlistFamily);
+                  _reorder = null;
                   _editMode = false;
                 });
               },

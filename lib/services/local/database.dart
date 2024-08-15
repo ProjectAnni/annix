@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:annix/services/path.dart';
 import 'package:drift/drift.dart';
+import 'package:annix/services/local/migration.dart' as m;
 
 import 'package:drift/native.dart';
 
@@ -12,7 +13,10 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => m.migration;
 }
 
 LazyDatabase _openConnection() {

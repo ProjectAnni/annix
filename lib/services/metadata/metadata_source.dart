@@ -45,7 +45,7 @@ mixin CachedMetadataStore {
 
   Future<void> clear() async {
     _albumCache.clear();
-    _albumStore.clear();
+    await _albumStore.clear();
   }
 
   Future<Map<String, Album>> getAlbums(final List<String> albums) async {

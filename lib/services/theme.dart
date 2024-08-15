@@ -1,9 +1,12 @@
+import 'package:animations/animations.dart';
 import 'package:annix/native/api/simple.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/font.dart';
 import 'package:annix/ui/route/page.dart';
+import 'package:annix/ui/route/predictive_back_page_transitions_builder.dart';
 import 'package:annix/ui/route/route.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'
+    hide PredictiveBackPageTransitionsBuilder;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnixTheme extends ChangeNotifier {
@@ -27,17 +30,30 @@ class AnnixTheme extends ChangeNotifier {
   ColorScheme? _temporaryPrimaryScheme;
   ColorScheme? _temporaryPrimaryDarkScheme;
 
+  PageTransitionsTheme get transitions => const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          // Set the predictive back transitions for Android.
+          TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: FadeThroughPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeThroughPageTransitionsBuilder(),
+          TargetPlatform.macOS: FadeThroughPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeThroughPageTransitionsBuilder(),
+        },
+      );
   ThemeData get theme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
         fontFamily: FontService.getFontFamilyName(),
         colorScheme: _temporaryPrimaryScheme ?? _primaryScheme,
+        pageTransitionsTheme: transitions,
       );
   ThemeData get darkTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
         fontFamily: FontService.getFontFamilyName(),
         colorScheme: _temporaryPrimaryDarkScheme ?? _primaryDarkScheme,
+        pageTransitionsTheme: transitions,
       );
 
   ThemeMode _themeMode;

@@ -15,7 +15,11 @@
     "shuffle": "随机播放"
   },
   "playlist": {
-    "edit": "编辑"
+    "edit": "编辑",
+    "title": "标题",
+    "description": "描述",
+    "create_new": "创建新播放列表",
+    "created": "播放列表已创建"
   },
   "server": {
     "server": "服务器",
@@ -48,6 +52,7 @@
   "search": "搜索",
   "track": {
     "add_to_playlist": "保存到播放列表",
+    "remove_from_playlist": "从播放列表删除",
     "add_to_queue": "添加到待播列表",
     "share": "分享歌曲"
   },

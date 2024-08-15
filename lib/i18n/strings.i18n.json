@@ -15,7 +15,11 @@
     "shuffle": "Shuffle"
   },
   "playlist": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "title": "Title",
+    "description": "Description",
+    "create_new": "Create New Playlist",
+    "created": "Playlist created"
   },
   "server": {
     "server": "Server",
@@ -48,6 +52,7 @@
   "search": "Search",
   "track": {
     "add_to_playlist": "Add to playlist",
+    "remove_from_playlist": "Remove from playlist",
     "add_to_queue": "Add to queue",
     "share": "Share track"
   },

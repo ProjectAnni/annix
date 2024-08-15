@@ -45,7 +45,7 @@ There are two release branches: `canary` and `nightly`.
 
 - [x] Audio Playback
 - [ ] Annil
-    - [ ] Server info
+    - [x] Server info
     - [x] Album list
     - [x] Cover
         - [x] Cover cache
@@ -67,19 +67,19 @@ There are two release branches: `canary` and `nightly`.
         - [ ] Revoke account
     - [ ] Playlist
         - [x] List playlist
-        - [ ] Create playlist
-        - [ ] Remove playlist
+        - [x] Create playlist
+        - [x] Remove playlist
         - [ ] Edit playlist
-            - [ ] Append
-            - [ ] Remove
-            - [ ] Reorder
+            - [x] Append
+            - [x] Remove
+            - [x] Reorder
             - [ ] Replace
     - [ ] Favorite
         - [x] Add favorite
         - [x] Remove favorite
         - [x] Favorite list
-        - [ ] Add favorite album
-        - [ ] Remove favorite album
+        - [x] Add favorite album
+        - [x] Remove favorite album
         - [ ] Favorite album list
     - [ ] Credentials
         - [x] Get credentials

@@ -1,3 +1,4 @@
+import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/lyric/lyric_source_anniv.dart';
@@ -12,6 +13,7 @@ class PlayingTrack extends ChangeNotifier {
   final Ref ref;
 
   AnnilAudioSource? source;
+  bool reported = false;
 
   PlayingTrack(this.ref);
 
@@ -19,11 +21,16 @@ class PlayingTrack extends ChangeNotifier {
     this.source = source;
     position = Duration.zero;
     duration = Duration.zero;
+    reported = false;
 
     if (source != null) {
       getLyric().then(updateLyric, onError: (final _) => updateLyric(null));
     }
     notifyListeners();
+  }
+
+  void resetReport() {
+    reported = false;
   }
 
   TrackLyric? lyric;
@@ -33,6 +40,16 @@ class PlayingTrack extends ChangeNotifier {
   void updatePosition(final Duration position) {
     this.position = position;
     notifyListeners();
+
+    if (!reported &&
+        duration != Duration.zero &&
+        position.inSeconds >= (duration.inSeconds / 3)) {
+      reported = true;
+      if (!kDebugMode) {
+        ref.read(annivProvider).trackPlayback(
+            source!.identifier, DateTime.now().millisecondsSinceEpoch ~/ 1000);
+      }
+    }
   }
 
   void updateDuration(final Duration duration) {
@@ -93,7 +110,7 @@ class PlayingTrack extends ChangeNotifier {
 
       // 4. save to local cache
       if (lyric != null) {
-        LyricSource.saveLocal(id, lyric);
+        await LyricSource.saveLocal(id, lyric);
         return TrackLyric(lyric: lyric, type: source.track.type);
       }
 

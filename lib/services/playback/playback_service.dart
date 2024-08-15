@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -12,7 +13,6 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
 import 'package:f_logs/f_logs.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -132,27 +132,13 @@ class PlaybackService extends ChangeNotifier {
     volume = preferences.getDouble('player.volume') ?? 1.0;
     PlaybackService.player.setVolume(volume: volume);
 
-    WidgetsBinding.instance.addPostFrameCallback((final _) =>
-        play(reload: true, setSourceOnly: true, trackPlayback: false));
-
-    final db = ref.read(localDatabaseProvider);
-    final annilServersStream = db.sortedAnnilServers().watch();
-    annilServersStream.listen((servers) {
-      PlaybackService.player.clearProvider();
-      for (final server in servers) {
-        PlaybackService.player.addProvider(
-          url: server.url,
-          auth: server.token,
-          priority: server.priority,
-        );
-      }
-    });
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
   }
 
   Future<void> play({
     final bool reload = false,
     final bool setSourceOnly = false,
-    final bool trackPlayback = true,
   }) async {
     if (queue.isEmpty) return;
 
@@ -168,14 +154,6 @@ class PlaybackService extends ChangeNotifier {
 
       if (loadedAndPaused) {
         loadedAndPaused = false;
-
-        final source = this.playing.source;
-        if (source != null) {
-          anniv.trackPlayback(
-            source.identifier,
-            DateTime.now().millisecondsSinceEpoch ~/ 1000,
-          );
-        }
       }
       return;
     }
@@ -191,21 +169,15 @@ class PlaybackService extends ChangeNotifier {
     FLog.trace(text: 'Start playing');
     await stop(false);
 
-    if (trackPlayback) {
-      // FIXME: track playback after 1/3 of the song is played
-      // Notice: we should not await statistics
-      if (!kDebugMode) {
-        anniv.trackPlayback(
-          source.identifier,
-          DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        );
-      }
-    }
+    // TODO: move annil logic to rust and remove the workaround
+    final annil = ref.read(annilProvider);
+    await annil.syncedToRust.future;
 
     final settings = ref.read(settingsProvider);
     await PlaybackService.player.setTrack(
       identifier: source.identifier.toString(),
       quality: fromQuality(settings.defaultAudioQuality.value),
+      opus: settings.experimentalOpus.value,
     );
 
     if (setSourceOnly) {
@@ -231,7 +203,7 @@ class PlaybackService extends ChangeNotifier {
     if (playerStatus == PlayerStatus.playing) {
       await pause();
     } else {
-      await play(trackPlayback: false);
+      await play();
     }
   }
 
@@ -263,6 +235,7 @@ class PlaybackService extends ChangeNotifier {
           break;
         case LoopMode.one:
           // replay this song
+          playing.resetReport();
           await seek(Duration.zero);
           await play();
           break;
@@ -397,7 +370,7 @@ class PlaybackService extends ChangeNotifier {
 
   Future<void> fullShuffleMode(
       {final int count = 30, final bool waitUntilPlayback = false}) async {
-    final AnnilService annil = ref.read(annilProvider);
+    final annil = ref.read(annilProvider);
     final albums = annil.albums;
     if (albums.isEmpty) {
       return;
@@ -451,7 +424,7 @@ class PlaybackService extends ChangeNotifier {
     if (waitUntilPlayback) {
       await setPlayingQueue(resultQueue);
     } else {
-      setPlayingQueue(resultQueue);
+      unawaited(setPlayingQueue(resultQueue));
     }
   }
 }

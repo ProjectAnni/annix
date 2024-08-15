@@ -14,7 +14,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final albumFamily = FutureProvider.family<Album, String>((ref, albumId) {
+final albumFamily =
+    FutureProvider.autoDispose.family<Album, String>((ref, albumId) {
   final metadata = ref.read(metadataProvider);
   return metadata.getAlbum(albumId: albumId).then(
     (final album) {
@@ -157,7 +158,7 @@ class AlbumPage extends ConsumerWidget {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -247,7 +248,15 @@ class TrackListTile extends ConsumerWidget {
     }
 
     return ListTile(
-      leading: Text('${track.id.trackId}'),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      leading: Container(
+        width: 24,
+        alignment: Alignment.center,
+        child: Text(
+          '${track.id.trackId}',
+          style: context.textTheme.labelLarge,
+        ),
+      ),
       title: Text(
         track.title,
         overflow: TextOverflow.ellipsis,
@@ -255,7 +264,7 @@ class TrackListTile extends ConsumerWidget {
       ),
       subtitle: ArtistText(track.artist),
       trailing: IconButton(
-        icon: const Icon(Icons.more_horiz),
+        icon: const Icon(Icons.more_vert),
         onPressed: showMoreMenu,
       ),
       enabled: annil.isTrackAvailable(track.id),

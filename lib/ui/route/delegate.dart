@@ -2,9 +2,9 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart' as db;
 import 'package:annix/services/theme.dart';
-import 'package:annix/ui/layout/layout_desktop.dart';
-import 'package:annix/ui/layout/layout_mobile.dart';
+import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/album.dart';
+import 'package:annix/ui/page/annil/annil.dart';
 import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/download_manager.dart';
 import 'package:annix/ui/page/favorite.dart';
@@ -19,16 +19,34 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
-import 'package:annix/utils/anni_weslide_controller.dart';
-import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
-  final slideController = AnniWeSlideController(initial: false);
-  final panelController = PanelController();
+  final _panelController = PanelController();
+  get panelController => _panelController;
+  get isPanelOpen =>
+      _panelController.isAttached &&
+      (_panelController.isPanelOpen ||
+          _panelController.isPanelAnimating ||
+          _panelController.panelPosition > 0.9);
+  get isPanelClosed => !isPanelOpen;
+
+  void openPanel() {
+    if (!_panelController.isPanelOpen) {
+      _panelController.open();
+      notifyListeners();
+    }
+  }
+
+  void closePanel() {
+    if (isPanelOpen) {
+      _panelController.close();
+      notifyListeners();
+    }
+  }
 
   final Ref ref;
   final List<AnnixPage> _pages = [];
@@ -37,8 +55,6 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   AnnixRouterDelegate(this.ref) {
-    slideController.addListener(() => notifyListeners());
-
     to(name: '/home');
   }
 
@@ -51,17 +67,10 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       observers: [ThemePopObserver(ref.read(themeProvider))],
       onPopPage: _onPopPage,
     );
-    if (context.isDesktopOrLandscape) {
-      return AnnixLayoutDesktop(
-        router: this,
-        child: child,
-      );
-    } else {
-      return AnnixLayoutMobile(
-        router: this,
-        child: child,
-      );
-    }
+    return AnnixLayout(
+      router: this,
+      child: child,
+    );
   }
 
   @override
@@ -74,8 +83,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
 
     if (await rootNavigator.maybePop()) {
       return true;
-    } else if (slideController.isOpened) {
-      slideController.hide();
+    } else if (isPanelOpen) {
+      closePanel();
       return true;
     } else if (_canPop()) {
       _pages.removeLast();
@@ -88,9 +97,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   }
 
   bool mayPop() {
-    if (slideController.isOpened) {
-      return true;
-    } else if (slideController.isOpened) {
+    if (isPanelOpen) {
       return true;
     } else {
       return _canPop();
@@ -125,10 +132,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     // if (currentRoute == name) {
     //   return;
     // }
-
-    if (slideController.isOpened) {
-      slideController.hide();
-    }
+    closePanel();
 
     _pages.add(_createPage(
       RouteSettings(name: name, arguments: arguments),
@@ -144,9 +148,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     final AnnixRoutePageBuilder? pageBuilder,
     final Duration? transitionDuration,
   }) {
-    if (slideController.isOpened) {
-      slideController.hide();
-    }
+    closePanel();
 
     _pages.clear();
     to(
@@ -163,9 +165,7 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     final AnnixRoutePageBuilder? pageBuilder,
     final Duration? transitionDuration,
   }) {
-    if (slideController.isOpened) {
-      slideController.hide();
-    }
+    closePanel();
 
     if (_pages.isNotEmpty) {
       _pages.removeLast();
@@ -218,9 +218,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
       case '/server':
         child = const ServerView();
         break;
-      case '/server_detail':
-        child = ServerDetail(
-          server: routeSettings.arguments as db.LocalAnnilServer,
+      case '/annil':
+        child = AnnilDetailPage(
+          annil: routeSettings.arguments as db.LocalAnnilServer,
         );
         break;
       case '/favorite':

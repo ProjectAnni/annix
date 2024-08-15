@@ -90,9 +90,6 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                   name: '/album',
                   arguments: player.playing.source!.identifier.albumId,
                 );
-                // hide playing page after navigation
-                ref.read(routerProvider).slideController.hide();
-                ref.read(routerProvider).panelController.close();
               },
             ),
             // const Divider(height: 1),
@@ -102,8 +99,23 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               onPressed: () {
                 final track = player.playing.source!.track;
                 final box = context.findRenderObject() as RenderBox?;
-                shareNowPlayingTrack(
-                    track, box!.localToGlobal(Offset.zero) & box.size);
+                shareTrackInfo(
+                  track,
+                  box!.localToGlobal(Offset.zero) & box.size,
+                  nowPlaying: true,
+                );
+              },
+            ),
+            MenuItemButton(
+              leadingIcon: const Icon(Icons.file_copy),
+              child: const Text('[DEV] Export file'),
+              onPressed: () {
+                final track = player.playing.source!.track;
+                final box = context.findRenderObject() as RenderBox?;
+                shareTrackFile(
+                  track,
+                  box!.localToGlobal(Offset.zero) & box.size,
+                );
               },
             ),
           ],

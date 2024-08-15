@@ -27,7 +27,7 @@ class FavoriteButton extends ConsumerWidget {
       selectedIcon: const Icon(Icons.favorite_outlined),
       onPressed: () async {
         if (playingTrack != null) {
-          ref.read(annivProvider).toggleFavoriteTrack(playingTrack);
+          await ref.read(annivProvider).toggleFavoriteTrack(playingTrack);
         }
       },
     );
@@ -49,7 +49,7 @@ class FavoriteAlbumButton extends ConsumerWidget {
       icon: const Icon(Icons.star_border_outlined),
       selectedIcon: const Icon(Icons.star_outlined),
       onPressed: () async {
-        ref.read(annivProvider).toggleFavoriteAlbum(albumId);
+        await ref.read(annivProvider).toggleFavoriteAlbum(albumId);
       },
     );
   }

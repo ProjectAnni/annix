@@ -25,7 +25,8 @@ final networkProvider =
     ChangeNotifierProvider((final ref) => NetworkService(ref));
 final isOnlineProvider =
     StateProvider((final ref) => ref.watch(networkProvider).isOnline);
-final routerProvider = Provider((final ref) => AnnixRouterDelegate(ref));
+final routerProvider =
+    ChangeNotifierProvider((final ref) => AnnixRouterDelegate(ref));
 final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));
 final downloadManagerProvider =
@@ -42,7 +43,10 @@ final playlistProvider = StreamProvider((final ref) {
   final db = ref.read(localDatabaseProvider);
   final playlist = db.playlist.select()
     ..where((tbl) => tbl.owner
-        .equals(info?.user.userId ?? '__ANNIV_PLACEHOLDER_SHOULD_NOT_EXIST__'));
+        .equals(info?.user.userId ?? '__ANNIV_PLACEHOLDER_SHOULD_NOT_EXIST__'))
+    ..orderBy([
+      (u) => OrderingTerm(expression: u.lastModified, mode: OrderingMode.desc)
+    ]);
   return playlist.watch();
 });
 final favoriteTracksProvider = StreamProvider((final ref) =>
@@ -52,11 +56,9 @@ final favoriteAlbumsProvider = StreamProvider((final ref) =>
 
 // anni
 final metadataProvider = Provider((final _) => MetadataService());
-final annilProvider = Provider((final ref) => AnnilService(ref));
-final annivProvider = Provider((final ref) => AnnivService(ref));
+final annilProvider = ChangeNotifierProvider((final ref) => AnnilService(ref));
+final annivProvider = ChangeNotifierProvider((final ref) => AnnivService(ref));
 final playbackProvider =
     ChangeNotifierProvider((final ref) => PlaybackService(ref));
 final playingProvider = ChangeNotifierProvider(
     (final ref) => ref.watch(playbackProvider.select((final p) => p.playing)));
-final playingDownloadProgressProvider = StateProvider((final ref) =>
-    ref.watch(playingProvider.select((final p) => p.source?.downloadProgress)));

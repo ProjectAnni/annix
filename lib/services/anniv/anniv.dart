@@ -77,9 +77,10 @@ class AnnivService extends ChangeNotifier {
         }
       }
       this.client = client;
+      notifyListeners();
 
       // do not await here
-      Future.wait([
+      unawaited(Future.wait([
         (() async {
           final annil = ref.read(annilProvider);
           final annilTokens = await client.getCredentials();
@@ -91,7 +92,7 @@ class AnnivService extends ChangeNotifier {
         // reload playlist list
         client.getPlaylistByUserId().then((playlists) =>
             syncPlaylist(userId: info!.user.userId, playlists: playlists)),
-      ]);
+      ]));
     }
   }
 
@@ -129,6 +130,8 @@ class AnnivService extends ChangeNotifier {
     if (oldInfo != null) {
       await syncPlaylist(userId: oldInfo.user.userId, playlists: []);
     }
+
+    notifyListeners();
   }
 
   void _loadInfo() {
@@ -316,8 +319,8 @@ class AnnivService extends ChangeNotifier {
 
         // playlist does not exist on remote, remove it
         if (remote == null) {
-          db.playlist.deleteOne(playlist);
-          db.playlistItem
+          await db.playlist.deleteOne(playlist);
+          await db.playlistItem
               .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
         } else {
           // playlist exists on remote, compare last_modified and update it
@@ -337,8 +340,38 @@ class AnnivService extends ChangeNotifier {
 
     // the remaining playlist is new, add it
     for (final playlist in map.values) {
-      db.playlist.insertOne(playlist.toCompanion());
+      await db.playlist.insertOne(playlist.toCompanion());
     }
+  }
+
+  Future<void> createPlaylist({
+    required final String name,
+    required final String description,
+    final bool public = true,
+    final DiscIdentifier? cover,
+    final List<AnnivPlaylistPlainItem> items = const [],
+  }) async {
+    final newPlaylist = await client?.createPlaylist(
+      name: name,
+      description: description,
+      public: public,
+      cover: cover,
+      items: items,
+    );
+    if (newPlaylist != null) {
+      await _updatePlaylistInDatabase(newPlaylist);
+    }
+  }
+
+  Future<void> deletePlaylist({required final PlaylistData playlist}) async {
+    if (playlist.remoteId != null) {
+      await client?.deletePlaylist(playlist.remoteId!);
+    }
+
+    final db = ref.read(localDatabaseProvider);
+    await db.playlist.deleteWhere((final tbl) => tbl.id.equals(playlist.id));
+    await db.playlistItem
+        .deleteWhere((final tbl) => tbl.playlistId.equals(playlist.id));
   }
 
   Future<List<AnnivPlaylistItem>?> getPlaylistItems(final PlaylistData playlist,
@@ -382,6 +415,43 @@ class AnnivService extends ChangeNotifier {
     return items.map((final e) => AnnivPlaylistItem.fromDatabase(e)).toList();
   }
 
+  Future<String> _updatePlaylistInDatabase(final Playlist newPlaylist) async {
+    final db = ref.read(localDatabaseProvider);
+    final playlist = db.playlist.select()
+      ..where((final tbl) => tbl.remoteId.equals(newPlaylist.intro.id));
+    PlaylistData? table = await playlist.getSingleOrNull();
+    int? tableId = table?.id;
+    if (table == null) {
+      // playlist does not on local, should not exist, but just insert it
+      await db.playlist.insertOne(newPlaylist.intro.toCompanion());
+      table = await playlist.getSingle();
+      tableId = table.id;
+    }
+
+    await db.transaction(() async {
+      // clear items
+      await db.playlistItem
+          .deleteWhere((final tbl) => tbl.playlistId.equals(tableId!));
+
+      // update tracks
+      await db.batch((final batch) => batch.insertAll(
+            db.playlistItem,
+            newPlaylist.items
+                .asMap()
+                .entries
+                .map((final e) =>
+                    e.value.toCompanion(playlistId: tableId!, order: e.key))
+                .toList(),
+          ));
+
+      // update modified playlist
+      await db.playlist.update().replace(
+          newPlaylist.intro.toCompanion(id: Value(tableId!), hasItems: true));
+    });
+
+    return table.remoteId!;
+  }
+
   Future<void> appendTrackToPlaylist(
       final PlaylistInfo playlist, final TrackIdentifier track) async {
     final newPlaylist = await client?.appendPlaylistItem(
@@ -389,38 +459,29 @@ class AnnivService extends ChangeNotifier {
       items: [AnnivPlaylistItemPlainTrack(track: track)],
     );
     if (newPlaylist != null) {
-      final db = ref.read(localDatabaseProvider);
-      final playlist = db.playlist.select()
-        ..where((final tbl) => tbl.remoteId.equals(newPlaylist.intro.id));
-      final table = await playlist.getSingleOrNull();
-      int? tableId = table?.id;
-      if (table == null) {
-        // playlist does not on local, should not exist, but just insert it
-        await db.playlist.insertOne(newPlaylist.intro.toCompanion());
-        final table = await playlist.getSingle();
-        tableId = table.id;
-      }
+      await _updatePlaylistInDatabase(newPlaylist);
+    }
+  }
 
-      await db.transaction(() async {
-        // clear items
-        await db.playlistItem
-            .deleteWhere((final tbl) => tbl.playlistId.equals(tableId!));
+  Future<void> removeItemsFromPlaylist(
+      final PlaylistInfo playlist, final List<String> items) async {
+    final newPlaylist = await client?.removePlaylistItem(
+      playlistId: playlist.id,
+      items: items,
+    );
+    if (newPlaylist != null) {
+      await _updatePlaylistInDatabase(newPlaylist);
+    }
+  }
 
-        // update tracks
-        await db.batch((final batch) => batch.insertAll(
-              db.playlistItem,
-              newPlaylist.items
-                  .asMap()
-                  .entries
-                  .map((final e) =>
-                      e.value.toCompanion(playlistId: tableId!, order: e.key))
-                  .toList(),
-            ));
-
-        // update modified playlist
-        await db.playlist.update().replace(
-            newPlaylist.intro.toCompanion(id: Value(tableId!), hasItems: true));
-      });
+  Future<void> reorderItemsInPlaylist(
+      final PlaylistInfo playlist, final List<String> items) async {
+    final newPlaylist = await client?.reorderPlaylistItems(
+      playlistId: playlist.id,
+      items: items,
+    );
+    if (newPlaylist != null) {
+      await _updatePlaylistInDatabase(newPlaylist);
     }
   }
 

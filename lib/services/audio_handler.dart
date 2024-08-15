@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/providers.dart';
@@ -42,8 +43,8 @@ class AnnixAudioHandler extends BaseAudioHandler {
       ),
     );
 
-    AudioSession.instance.then((final session) async {
-      session.configure(const AudioSessionConfiguration.music());
+    unawaited(AudioSession.instance.then((final session) async {
+      await session.configure(const AudioSessionConfiguration.music());
 
       // unplugged
       session.becomingNoisyEventStream.listen((final _) => service.pause());
@@ -70,23 +71,20 @@ class AnnixAudioHandler extends BaseAudioHandler {
               // TODO
               break;
             case AudioInterruptionType.pause:
+            case AudioInterruptionType.unknown:
               if (pausedByInterrupt) {
                 pausedByInterrupt = false;
                 service.play();
               }
               break;
-            case AudioInterruptionType.unknown:
-              break;
           }
         }
       });
-    });
+    }));
 
     AudioService.notificationClicked.listen((final clicked) {
       if (clicked) {
-        final router = ref.read(routerProvider);
-        router.slideController.show();
-        router.panelController.open();
+        ref.read(routerProvider).openPanel();
       }
     });
   }
@@ -104,7 +102,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> play() async {
-    return player.play(trackPlayback: false);
+    return player.play();
   }
 
   @override
@@ -328,7 +326,7 @@ class AnnixMPRISService extends MPRISService {
 
   @override
   Future<void> onPlay() async {
-    await player.play(trackPlayback: false);
+    await player.play();
   }
 
   @override

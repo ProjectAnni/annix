@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 90 (45 per locale)
+/// Strings: 100 (50 per locale)
 ///
-/// Built on 2024-08-08 at 15:26 UTC
+/// Built on 2024-08-10 at 17:19 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -199,6 +199,10 @@ class _StringsPlaylistEn {
 
 	// Translations
 	String get edit => 'Edit';
+	String get title => 'Title';
+	String get description => 'Description';
+	String get create_new => 'Create New Playlist';
+	String get created => 'Playlist created';
 }
 
 // Path: server
@@ -251,6 +255,7 @@ class _StringsTrackEn {
 
 	// Translations
 	String get add_to_playlist => 'Add to playlist';
+	String get remove_from_playlist => 'Remove from playlist';
 	String get add_to_queue => 'Add to queue';
 	String get share => 'Share track';
 }
@@ -330,6 +335,10 @@ class _StringsPlaylistZhCn implements _StringsPlaylistEn {
 
 	// Translations
 	@override String get edit => '编辑';
+	@override String get title => '标题';
+	@override String get description => '描述';
+	@override String get create_new => '创建新播放列表';
+	@override String get created => '播放列表已创建';
 }
 
 // Path: server
@@ -382,6 +391,7 @@ class _StringsTrackZhCn implements _StringsTrackEn {
 
 	// Translations
 	@override String get add_to_playlist => '保存到播放列表';
+	@override String get remove_from_playlist => '从播放列表删除';
 	@override String get add_to_queue => '添加到待播列表';
 	@override String get share => '分享歌曲';
 }
@@ -404,6 +414,10 @@ extension on Translations {
 			case 'playback.play_all': return 'Play All';
 			case 'playback.shuffle': return 'Shuffle';
 			case 'playlist.edit': return 'Edit';
+			case 'playlist.title': return 'Title';
+			case 'playlist.description': return 'Description';
+			case 'playlist.create_new': return 'Create New Playlist';
+			case 'playlist.created': return 'Playlist created';
 			case 'server.server': return 'Server';
 			case 'server.login': return 'Login';
 			case 'server.logout': return 'Logout';
@@ -430,6 +444,7 @@ extension on Translations {
 			case 'settings.custom_font_not_specified': return 'Not specified';
 			case 'search': return 'Search';
 			case 'track.add_to_playlist': return 'Add to playlist';
+			case 'track.remove_from_playlist': return 'Remove from playlist';
 			case 'track.add_to_queue': return 'Add to queue';
 			case 'track.share': return 'Share track';
 			case 'tracks': return 'Tracks';
@@ -457,6 +472,10 @@ extension on _StringsZhCn {
 			case 'playback.play_all': return '播放全部';
 			case 'playback.shuffle': return '随机播放';
 			case 'playlist.edit': return '编辑';
+			case 'playlist.title': return '标题';
+			case 'playlist.description': return '描述';
+			case 'playlist.create_new': return '创建新播放列表';
+			case 'playlist.created': return '播放列表已创建';
 			case 'server.server': return '服务器';
 			case 'server.login': return '登录';
 			case 'server.logout': return '退出登录';
@@ -483,6 +502,7 @@ extension on _StringsZhCn {
 			case 'settings.custom_font_not_specified': return '默认字体';
 			case 'search': return '搜索';
 			case 'track.add_to_playlist': return '保存到播放列表';
+			case 'track.remove_from_playlist': return '从播放列表删除';
 			case 'track.add_to_queue': return '添加到待播列表';
 			case 'track.share': return '分享歌曲';
 			case 'tracks': return '单曲';

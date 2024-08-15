@@ -2,8 +2,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
-import 'package:annix/ui/route/delegate.dart';
-import 'package:annix/ui/widgets/album/album_wall.dart';
+import 'package:annix/ui/widgets/anniv/anniv_not_login_card.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
@@ -14,35 +13,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 /// Anniv
 class AnnivCard extends ConsumerWidget {
   const AnnivCard({super.key});
-
-  // Card content before login
-  Widget beforeLogin(final BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0).copyWith(bottom: 12, right: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            t.server.not_logged_in,
-            style: context.textTheme.titleLarge,
-          ),
-          Text(
-            t.server.anniv_features,
-            style: context.textTheme.bodyMedium,
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: TextButton(
-              child: Text(t.server.login),
-              onPressed: () {
-                AnnixRouterDelegate.of(context).to(name: '/login');
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget afterLogin(
     final BuildContext context,
@@ -84,17 +54,10 @@ class AnnivCard extends ConsumerWidget {
               ),
               // TODO: Add more things in this card
               const SizedBox(height: 80),
-              PopupMenuButton<String>(
-                itemBuilder: (final context) => [
-                  PopupMenuItem(
-                    value: 'Logout',
-                    child: Text(t.server.logout),
-                  ),
-                ],
-                onSelected: (final value) {
-                  if (value == 'Logout') {
-                    ref.read(annivProvider).logout();
-                  }
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  ref.read(annivProvider).logout();
                 },
               ),
             ],
@@ -109,7 +72,7 @@ class AnnivCard extends ConsumerWidget {
                 TextButton(
                   child: const Text('Update Database'),
                   onPressed: () async {
-                    ref.read(annivProvider).updateDatabase();
+                    await ref.read(annivProvider).updateDatabase();
                   },
                 ),
             ],
@@ -121,13 +84,13 @@ class AnnivCard extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final annivInfo = ref.watch(annivProvider);
+    final annivInfo = ref.watch(annivProvider.select((final v) => v.info));
 
-    return Card(
-      child: annivInfo.info == null
-          ? beforeLogin(context)
-          : afterLogin(context, ref, annivInfo.info!),
-    );
+    return annivInfo == null
+        ? const AnnivNotLoginCard()
+        : Card(
+            child: afterLogin(context, ref, annivInfo),
+          );
   }
 }
 
@@ -147,7 +110,7 @@ class AnnilListTile extends ConsumerWidget {
       selected: true,
       enabled: enabled,
       onTap: () {
-        ref.read(routerProvider).to(name: '/server_detail', arguments: annil);
+        ref.read(routerProvider).to(name: '/annil', arguments: annil);
       },
     );
   }
@@ -235,35 +198,6 @@ class ServerView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ServerDetail extends ConsumerWidget {
-  final LocalAnnilServer server;
-
-  const ServerDetail({required this.server, super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final db = ref.read(localDatabaseProvider);
-    final query = db.localAnnilAlbums.select()
-      ..where((tbl) => tbl.annilId.equals(server.id));
-    final albumFuture = query
-        .get()
-        .then((albums) => albums.map((album) => album.albumId).toList());
-
-    return Scaffold(
-      appBar: AppBar(title: Text(server.name)),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: FutureBuilder(
-          future: albumFuture,
-          builder: (final context, final album) => LazyAlbumWall(
-            albumIds: (album.data ?? <String>[]),
-          ),
-        ),
       ),
     );
   }

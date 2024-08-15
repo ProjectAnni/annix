@@ -2027,8 +2027,15 @@ class LocalAnnilCaches extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       $customConstraints: '');
+  static const VerificationMeta _lastUpdateMeta =
+      const VerificationMeta('lastUpdate');
+  late final GeneratedColumn<int> lastUpdate = GeneratedColumn<int>(
+      'last_update', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
-  List<GeneratedColumn> get $columns => [annilId, etag];
+  List<GeneratedColumn> get $columns => [annilId, etag, lastUpdate];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2047,6 +2054,12 @@ class LocalAnnilCaches extends Table
       context.handle(
           _etagMeta, etag.isAcceptableOrUnknown(data['etag']!, _etagMeta));
     }
+    if (data.containsKey('last_update')) {
+      context.handle(
+          _lastUpdateMeta,
+          lastUpdate.isAcceptableOrUnknown(
+              data['last_update']!, _lastUpdateMeta));
+    }
     return context;
   }
 
@@ -2060,6 +2073,8 @@ class LocalAnnilCaches extends Table
           .read(DriftSqlType.int, data['${effectivePrefix}annil_id'])!,
       etag: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}etag']),
+      lastUpdate: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}last_update']),
     );
   }
 
@@ -2078,13 +2093,17 @@ class LocalAnnilCaches extends Table
 class LocalAnnilCache extends DataClass implements Insertable<LocalAnnilCache> {
   final int annilId;
   final String? etag;
-  const LocalAnnilCache({required this.annilId, this.etag});
+  final int? lastUpdate;
+  const LocalAnnilCache({required this.annilId, this.etag, this.lastUpdate});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['annil_id'] = Variable<int>(annilId);
     if (!nullToAbsent || etag != null) {
       map['etag'] = Variable<String>(etag);
+    }
+    if (!nullToAbsent || lastUpdate != null) {
+      map['last_update'] = Variable<int>(lastUpdate);
     }
     return map;
   }
@@ -2093,6 +2112,9 @@ class LocalAnnilCache extends DataClass implements Insertable<LocalAnnilCache> {
     return LocalAnnilCachesCompanion(
       annilId: Value(annilId),
       etag: etag == null && nullToAbsent ? const Value.absent() : Value(etag),
+      lastUpdate: lastUpdate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUpdate),
     );
   }
 
@@ -2102,6 +2124,7 @@ class LocalAnnilCache extends DataClass implements Insertable<LocalAnnilCache> {
     return LocalAnnilCache(
       annilId: serializer.fromJson<int>(json['annil_id']),
       etag: serializer.fromJson<String?>(json['etag']),
+      lastUpdate: serializer.fromJson<int?>(json['last_update']),
     );
   }
   @override
@@ -2110,60 +2133,72 @@ class LocalAnnilCache extends DataClass implements Insertable<LocalAnnilCache> {
     return <String, dynamic>{
       'annil_id': serializer.toJson<int>(annilId),
       'etag': serializer.toJson<String?>(etag),
+      'last_update': serializer.toJson<int?>(lastUpdate),
     };
   }
 
   LocalAnnilCache copyWith(
-          {int? annilId, Value<String?> etag = const Value.absent()}) =>
+          {int? annilId,
+          Value<String?> etag = const Value.absent(),
+          Value<int?> lastUpdate = const Value.absent()}) =>
       LocalAnnilCache(
         annilId: annilId ?? this.annilId,
         etag: etag.present ? etag.value : this.etag,
+        lastUpdate: lastUpdate.present ? lastUpdate.value : this.lastUpdate,
       );
   @override
   String toString() {
     return (StringBuffer('LocalAnnilCache(')
           ..write('annilId: $annilId, ')
-          ..write('etag: $etag')
+          ..write('etag: $etag, ')
+          ..write('lastUpdate: $lastUpdate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(annilId, etag);
+  int get hashCode => Object.hash(annilId, etag, lastUpdate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is LocalAnnilCache &&
           other.annilId == this.annilId &&
-          other.etag == this.etag);
+          other.etag == this.etag &&
+          other.lastUpdate == this.lastUpdate);
 }
 
 class LocalAnnilCachesCompanion extends UpdateCompanion<LocalAnnilCache> {
   final Value<int> annilId;
   final Value<String?> etag;
+  final Value<int?> lastUpdate;
   const LocalAnnilCachesCompanion({
     this.annilId = const Value.absent(),
     this.etag = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
   });
   LocalAnnilCachesCompanion.insert({
     this.annilId = const Value.absent(),
     this.etag = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
   });
   static Insertable<LocalAnnilCache> custom({
     Expression<int>? annilId,
     Expression<String>? etag,
+    Expression<int>? lastUpdate,
   }) {
     return RawValuesInsertable({
       if (annilId != null) 'annil_id': annilId,
       if (etag != null) 'etag': etag,
+      if (lastUpdate != null) 'last_update': lastUpdate,
     });
   }
 
   LocalAnnilCachesCompanion copyWith(
-      {Value<int>? annilId, Value<String?>? etag}) {
+      {Value<int>? annilId, Value<String?>? etag, Value<int?>? lastUpdate}) {
     return LocalAnnilCachesCompanion(
       annilId: annilId ?? this.annilId,
       etag: etag ?? this.etag,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
     );
   }
 
@@ -2176,6 +2211,9 @@ class LocalAnnilCachesCompanion extends UpdateCompanion<LocalAnnilCache> {
     if (etag.present) {
       map['etag'] = Variable<String>(etag.value);
     }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<int>(lastUpdate.value);
+    }
     return map;
   }
 
@@ -2183,7 +2221,8 @@ class LocalAnnilCachesCompanion extends UpdateCompanion<LocalAnnilCache> {
   String toString() {
     return (StringBuffer('LocalAnnilCachesCompanion(')
           ..write('annilId: $annilId, ')
-          ..write('etag: $etag')
+          ..write('etag: $etag, ')
+          ..write('lastUpdate: $lastUpdate')
           ..write(')'))
         .toString();
   }
@@ -2817,10 +2856,14 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         }).asyncMap(localAnnilServers.mapFromRow);
   }
 
-  Future<int> updateAnnilETag(int var1, String? var2) {
+  Future<int> updateAnnilETag(int var1, String? var2, int? var3) {
     return customInsert(
-      'INSERT OR REPLACE INTO local_annil_caches (annil_id, etag) VALUES (?1, ?2)',
-      variables: [Variable<int>(var1), Variable<String>(var2)],
+      'INSERT OR REPLACE INTO local_annil_caches (annil_id, etag, last_update) VALUES (?1, ?2, ?3)',
+      variables: [
+        Variable<int>(var1),
+        Variable<String>(var2),
+        Variable<int>(var3)
+      ],
       updates: {localAnnilCaches},
     );
   }

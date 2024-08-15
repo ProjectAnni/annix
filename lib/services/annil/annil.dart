@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:annix/providers.dart';
@@ -5,6 +6,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/path.dart';
+import 'package:annix/services/playback/playback_service.dart';
 import 'package:annix/utils/redirect_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -23,6 +25,9 @@ class AnnilService extends ChangeNotifier {
   List<LocalAnnilServer> servers = [];
   Map<int, String?> etags = {};
   List<String> albums = [];
+
+  // TODO: move annil logic to rust and remove the workaround
+  Completer<void> syncedToRust = Completer();
 
   AnnilService(this.ref) {
     client.httpClientAdapter = IOHttpClientAdapter(
@@ -54,10 +59,26 @@ class AnnilService extends ChangeNotifier {
           Map.fromEntries(value.map((final e) => MapEntry(e.annilId, e.etag))));
     });
     final annilServersStream = db.sortedAnnilServers().watch();
-    annilServersStream.listen((final event) {
+    annilServersStream.listen((final event) async {
       if (!listEquals(event, servers)) {
         servers = event;
-        reload();
+
+        // TODO: move annil logic to rust and remove the workaround
+        if (!syncedToRust.isCompleted) {
+          await PlaybackService.player.clearProvider();
+          for (final server in servers) {
+            await PlaybackService.player.addProvider(
+              url: server.url,
+              auth: server.token,
+              priority: server.priority,
+            );
+          }
+          if (!syncedToRust.isCompleted) {
+            syncedToRust.complete();
+          }
+        }
+
+        unawaited(reload());
       }
     });
 
@@ -113,6 +134,19 @@ class AnnilService extends ChangeNotifier {
 
   /// Keep sync with new credential list
   Future<void> sync(final List<AnnilToken> remoteList) async {
+    // TODO: move annil logic to rust and remove the workaround
+    await PlaybackService.player.clearProvider();
+    for (final server in remoteList) {
+      await PlaybackService.player.addProvider(
+        url: server.url,
+        auth: server.token,
+        priority: server.priority,
+      );
+    }
+    if (!syncedToRust.isCompleted) {
+      syncedToRust.complete();
+    }
+
     final db = ref.read(localDatabaseProvider);
     final toUpdate = servers
         .map((final server) {
@@ -284,6 +318,13 @@ class AnnilService extends ChangeNotifier {
     final db = ref.read(localDatabaseProvider);
     final etag = etags[server.id];
 
+    // update timestamp
+    await db.updateAnnilETag(
+      server.id,
+      etag,
+      DateTime.timestamp().millisecondsSinceEpoch,
+    );
+
     try {
       final response = await client.getUri(
         Uri.parse('${server.url}/albums'),
@@ -302,7 +343,11 @@ class AnnilService extends ChangeNotifier {
       if (etag != newETag) {
         etags[server.id] = newETag;
         await db.transaction(() async {
-          await db.updateAnnilETag(server.id, newETag);
+          await db.updateAnnilETag(
+            server.id,
+            newETag,
+            DateTime.timestamp().millisecondsSinceEpoch,
+          );
           await db.localAnnilAlbums
               .deleteWhere((final tbl) => tbl.annilId.equals(server.id));
           await db.batch((final batch) => batch.insertAll(db.localAnnilAlbums, [
@@ -320,13 +365,15 @@ class AnnilService extends ChangeNotifier {
       } else {
         etags.remove(server.id);
         await db.transaction(() async {
-          await db.updateAnnilETag(server.id, null);
+          await db.updateAnnilETag(server.id, null, null);
           await db.localAnnilAlbums
               .deleteWhere((final tbl) => tbl.annilId.equals(server.id));
         });
         rethrow;
       }
     }
+
+    notifyListeners();
   }
 }
 

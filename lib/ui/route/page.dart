@@ -84,14 +84,11 @@ class AnnixPage extends Page {
           disableAppBarDismissal ?? context.isDesktopOrLandscape,
       settings: this,
       transitionDuration: transitionDuration,
-      reverseTransitionDuration: transitionDuration,
+      reverseTransitionDuration: context.isAndroid
+          ? const Duration(milliseconds: 100)
+          : transitionDuration,
       pageBuilder: (final context, final animation, final secondaryAnimation) {
-        return (pageBuilder ??
-            (context.isDesktopOrLandscape
-                ? fadeTransitionBuilder
-                : context.isApple
-                    ? cupertinoTransitionBuilder
-                    : fadeThroughTransitionBuilder))(
+        return noneTransitionBuilder(
           context,
           animation,
           secondaryAnimation,
