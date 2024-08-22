@@ -3,15 +3,17 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+// Static analysis wrongly picks the IO variant, thus ignore this
+// ignore_for_file: argument_type_not_assignable
+
 import 'api/logging.dart';
 import 'api/network.dart';
 import 'api/player.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
@@ -24,15 +26,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_MutexConnectionPtr =>
-          wire._rust_arc_decrement_strong_count_RustOpaque_MutexConnectionPtr;
+          wire.rust_arc_decrement_strong_count_RustOpaque_MutexConnection;
 
   CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_MutexRepoDatabaseReadPtr => wire
-          ._rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseReadPtr;
+      get rust_arc_decrement_strong_count_MutexRepoDatabaseReadPtr =>
+          wire.rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead;
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_AnnixPlayerPtr => wire
-          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayerPtr;
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
@@ -373,106 +375,64 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
-  factory RustLibWire.fromExternalLibrary(ExternalLibrary lib) =>
-      RustLibWire(lib.ffiDynamicLibrary);
+  RustLibWire.fromExternalLibrary(ExternalLibrary lib);
 
-  /// Holds the symbol lookup function.
-  final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-      _lookup;
+  void rust_arc_increment_strong_count_RustOpaque_MutexConnection(int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_MutexConnection(ptr);
 
-  /// The symbols are looked up in [dynamicLibrary].
-  RustLibWire(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
-
-  void rust_arc_increment_strong_count_RustOpaque_MutexConnection(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_increment_strong_count_RustOpaque_MutexConnection(
-      ptr,
-    );
-  }
-
-  late final _rust_arc_increment_strong_count_RustOpaque_MutexConnectionPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_annix_rust_arc_increment_strong_count_RustOpaque_MutexConnection');
-  late final _rust_arc_increment_strong_count_RustOpaque_MutexConnection =
-      _rust_arc_increment_strong_count_RustOpaque_MutexConnectionPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
-
-  void rust_arc_decrement_strong_count_RustOpaque_MutexConnection(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_decrement_strong_count_RustOpaque_MutexConnection(
-      ptr,
-    );
-  }
-
-  late final _rust_arc_decrement_strong_count_RustOpaque_MutexConnectionPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_annix_rust_arc_decrement_strong_count_RustOpaque_MutexConnection');
-  late final _rust_arc_decrement_strong_count_RustOpaque_MutexConnection =
-      _rust_arc_decrement_strong_count_RustOpaque_MutexConnectionPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+  void rust_arc_decrement_strong_count_RustOpaque_MutexConnection(int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_MutexConnection(ptr);
 
   void rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead(
-      ptr,
-    );
-  }
-
-  late final _rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseReadPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_annix_rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead');
-  late final _rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead =
-      _rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseReadPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead(
+              ptr);
 
   void rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead(
-      ptr,
-    );
-  }
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead(
+              ptr);
 
-  late final _rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseReadPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_annix_rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead');
-  late final _rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead =
-      _rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseReadPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+              ptr);
 
-  void
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
+              ptr);
+}
+
+@JS('wasm_bindgen')
+external RustLibWasmModule get wasmModule;
+
+@JS()
+@anonymous
+extension type RustLibWasmModule._(JSObject _) implements JSObject {
+  external void rust_arc_increment_strong_count_RustOpaque_MutexConnection(
+      int ptr);
+
+  external void rust_arc_decrement_strong_count_RustOpaque_MutexConnection(
+      int ptr);
+
+  external void
+      rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead(int ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead(int ptr);
+
+  external void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
-      ptr,
-    );
-  }
+          int ptr);
 
-  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayerPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_annix_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer');
-  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer =
-      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayerPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
-
-  void
+  external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
-      ptr,
-    );
-  }
-
-  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayerPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_annix_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer');
-  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer =
-      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayerPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+          int ptr);
 }

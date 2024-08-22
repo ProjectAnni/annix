@@ -16,18 +16,15 @@ anni-repo = { version = "0.4.2", features = ["db"] }
 uuid = "1"
 crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
 anyhow = "1.0.75"
-log = "0.4.20"
-env_logger = "0.11"
 
 anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "c5df54272ecace24368df22ef557ea80b98125fe" }
 cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 material-colors = { version = "0.3.3", features = ["image"] }
 
-db_logger = { git = "https://github.com/ProjectAnni/db_logger.git", branch = "upgrade-sqlx", default-features = false, features = [
-    "sqlite",
-] }
-tokio = { version = "1.39.2", features = ["rt-multi-thread"] }
+tracing-subscriber-sqlite = { version = "0.1", features = ["tracing-log"] }
+tracing = "0.1.40"
+tracing-log = "0.2"
 
 [patch.crates-io]
 cpal = { git = "https://github.com/sidit77/cpal.git", branch = "master" }

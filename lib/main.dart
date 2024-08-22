@@ -1,12 +1,12 @@
 import 'package:annix/app.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:annix/native/api/logging.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/services/path.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/native/frb_generated.dart';
-import 'package:annix/native/api/player.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {

@@ -1,6 +1,4 @@
 pub use anni_playback::player::AudioQuality;
-use once_cell::sync::Lazy;
-use tokio::runtime::Runtime;
 
 use std::{
     sync::{Arc, OnceLock},
@@ -153,25 +151,4 @@ impl AnnixPlayer {
     pub fn progress_stream(&self, stream: StreamSink<ProgressState>) {
         self._progress.get_or_init(move || stream);
     }
-}
-
-#[frb(sync)]
-pub fn init_logger(path: String) {
-    static LOGGER: OnceLock<tokio::task::JoinHandle<db_logger::Handle>> = OnceLock::new();
-    static RUNTIME: Lazy<Runtime> = Lazy::new(|| Runtime::new().unwrap());
-
-    LOGGER.get_or_init(|| {
-        RUNTIME.spawn(async {
-            let conn = db_logger::sqlite::connect(db_logger::sqlite::ConnectionOptions {
-                uri: path,
-                ..Default::default()
-            })
-            .await
-            .unwrap();
-            conn.create_schema().await.unwrap();
-            let handle = db_logger::init(conn).await;
-
-            handle
-        })
-    });
 }
