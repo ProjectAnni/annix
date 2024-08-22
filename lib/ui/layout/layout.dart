@@ -93,33 +93,39 @@ class AnnixLayout extends HookConsumerWidget {
               child: child!,
             ),
             if (showMiniPlayer)
-              SlidingUpPanel(
-                controller: router.panelController,
-                renderPanelSheet: false,
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-                panelBuilder: () {
-                  return panel;
-                },
-                collapsed: GestureDetector(
-                  onTap: router.openPanel,
-                  child: SlotLayout(
-                    config: <Breakpoint, SlotLayoutConfig>{
-                      Breakpoints.small: SlotLayout.from(
-                        key: const Key('Bottom Player Small'),
-                        builder: (context) => const MobileBottomPlayer(),
-                      ),
-                      Breakpoints.mediumAndUp: SlotLayout.from(
-                        key: const Key('Bottom Player Medium'),
-                        builder: (context) => const DesktopBottomPlayer(),
-                      ),
+              LayoutBuilder(
+                builder: (context, constraints) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                      size: Size(constraints.maxWidth, constraints.maxHeight)),
+                  child: SlidingUpPanel(
+                    controller: router.panelController,
+                    renderPanelSheet: false,
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    panelBuilder: () {
+                      return panel;
                     },
+                    collapsed: GestureDetector(
+                      onTap: router.openPanel,
+                      child: SlotLayout(
+                        config: <Breakpoint, SlotLayoutConfig>{
+                          Breakpoints.small: SlotLayout.from(
+                            key: const Key('Bottom Player Small'),
+                            builder: (context) => const MobileBottomPlayer(),
+                          ),
+                          Breakpoints.mediumAndUp: SlotLayout.from(
+                            key: const Key('Bottom Player Medium'),
+                            builder: (context) => const DesktopBottomPlayer(),
+                          ),
+                        },
+                      ),
+                    ),
+                    minHeight: miniPlayerHeight,
+                    maxHeight: panelMaxSize,
+                    onPanelSlide: (pos) => positionState.value = pos,
                   ),
                 ),
-                minHeight: miniPlayerHeight,
-                maxHeight: panelMaxSize,
-                onPanelSlide: (pos) => positionState.value = pos,
-              ),
+              )
           ],
         );
       },
