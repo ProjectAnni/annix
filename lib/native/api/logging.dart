@@ -6,5 +6,53 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
+
 void initLogger({required String path}) =>
     RustLib.instance.api.crateApiLoggingInitLogger(path: path);
+
+Future<List<LogEntry>> readLogs({required String path}) =>
+    RustLib.instance.api.crateApiLoggingReadLogs(path: path);
+
+class LogEntry {
+  final String time;
+  final String level;
+  final String? module;
+  final String? file;
+  final int? line;
+  final String message;
+  final String structured;
+
+  const LogEntry({
+    required this.time,
+    required this.level,
+    this.module,
+    this.file,
+    this.line,
+    required this.message,
+    required this.structured,
+  });
+
+  @override
+  int get hashCode =>
+      time.hashCode ^
+      level.hashCode ^
+      module.hashCode ^
+      file.hashCode ^
+      line.hashCode ^
+      message.hashCode ^
+      structured.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LogEntry &&
+          runtimeType == other.runtimeType &&
+          time == other.time &&
+          level == other.level &&
+          module == other.module &&
+          file == other.file &&
+          line == other.line &&
+          message == other.message &&
+          structured == other.structured;
+}

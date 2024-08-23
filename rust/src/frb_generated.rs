@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.1.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1346659799;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -803034545;
 
 // Section: executor
 
@@ -76,6 +76,41 @@ fn wire__crate__api__logging__init_logger_impl(
                 })?;
                 Ok(output_ok)
             })())
+        },
+    )
+}
+fn wire__crate__api__logging__read_logs_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "read_logs",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::logging::read_logs(api_path)?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
         },
     )
 }
@@ -1414,6 +1449,18 @@ impl SseDecode for Vec<uuid::Uuid> {
     }
 }
 
+impl SseDecode for Vec<crate::api::logging::LogEntry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::logging::LogEntry>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1454,6 +1501,28 @@ impl SseDecode for crate::api::simple::LocalStore {
     }
 }
 
+impl SseDecode for crate::api::logging::LogEntry {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_time = <String>::sse_decode(deserializer);
+        let mut var_level = <String>::sse_decode(deserializer);
+        let mut var_module = <Option<String>>::sse_decode(deserializer);
+        let mut var_file = <Option<String>>::sse_decode(deserializer);
+        let mut var_line = <Option<i32>>::sse_decode(deserializer);
+        let mut var_message = <String>::sse_decode(deserializer);
+        let mut var_structured = <String>::sse_decode(deserializer);
+        return crate::api::logging::LogEntry {
+            time: var_time,
+            level: var_level,
+            module: var_module,
+            file: var_file,
+            line: var_line,
+            message: var_message,
+            structured: var_structured,
+        };
+    }
+}
+
 impl SseDecode for crate::api::simple::NativePreferenceStore {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1479,6 +1548,17 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<i32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<i32>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -1557,61 +1637,62 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        2 => wire__crate__api__network__network_status_is_online_impl(
+        2 => wire__crate__api__logging__read_logs_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__network__network_status_is_online_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        3 => {
+        4 => {
             wire__crate__api__network__update_network_status_impl(port, ptr, rust_vec_len, data_len)
         }
-        4 => wire__crate__api__player__AnnixPlayer_add_provider_impl(
+        5 => wire__crate__api__player__AnnixPlayer_add_provider_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__player__AnnixPlayer_clear_provider_impl(
+        6 => wire__crate__api__player__AnnixPlayer_clear_provider_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__player__AnnixPlayer_pause_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire__crate__api__player__AnnixPlayer_play_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire__crate__api__player__AnnixPlayer_player_state_stream_impl(
+        9 => wire__crate__api__player__AnnixPlayer_pause_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire__crate__api__player__AnnixPlayer_play_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire__crate__api__player__AnnixPlayer_player_state_stream_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__player__AnnixPlayer_progress_stream_impl(
+        12 => wire__crate__api__player__AnnixPlayer_progress_stream_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__player__AnnixPlayer_seek_impl(port, ptr, rust_vec_len, data_len),
-        13 => {
+        13 => wire__crate__api__player__AnnixPlayer_seek_impl(port, ptr, rust_vec_len, data_len),
+        14 => {
             wire__crate__api__player__AnnixPlayer_set_track_impl(port, ptr, rust_vec_len, data_len)
         }
-        14 => {
+        15 => {
             wire__crate__api__player__AnnixPlayer_set_volume_impl(port, ptr, rust_vec_len, data_len)
         }
-        15 => wire__crate__api__player__AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__simple__local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__simple__local_db_get_albums_by_tag_impl(
+        16 => wire__crate__api__player__AnnixPlayer_stop_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__simple__local_db_get_album_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__simple__local_db_get_albums_by_tag_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => wire__crate__api__simple__local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__simple__local_db_new_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__simple__local_store_clear_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__simple__local_store_get_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__simple__local_store_insert_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__simple__local_db_get_tags_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__simple__local_db_new_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__simple__local_store_clear_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__simple__local_store_get_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__simple__local_store_insert_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1625,27 +1706,27 @@ fn pde_ffi_dispatcher_sync_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         1 => wire__crate__api__logging__init_logger_impl(ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__player__AnnixPlayer_is_playing_impl(ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__player__AnnixPlayer_new_impl(ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__simple__get_theme_color_impl(ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__simple__local_store_new_impl(ptr, rust_vec_len, data_len),
-        25 => {
+        7 => wire__crate__api__player__AnnixPlayer_is_playing_impl(ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__player__AnnixPlayer_new_impl(ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__simple__get_theme_color_impl(ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__simple__local_store_new_impl(ptr, rust_vec_len, data_len),
+        26 => {
             wire__crate__api__simple__native_preference_store_get_impl(ptr, rust_vec_len, data_len)
         }
-        26 => {
+        27 => {
             wire__crate__api__simple__native_preference_store_new_impl(ptr, rust_vec_len, data_len)
         }
-        27 => wire__crate__api__simple__native_preference_store_remove_impl(
+        28 => wire__crate__api__simple__native_preference_store_remove_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__simple__native_preference_store_remove_prefix_impl(
+        29 => wire__crate__api__simple__native_preference_store_remove_prefix_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => {
+        30 => {
             wire__crate__api__simple__native_preference_store_set_impl(ptr, rust_vec_len, data_len)
         }
         _ => unreachable!(),
@@ -1720,6 +1801,29 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::simple::LocalStore>
     for crate::api::simple::LocalStore
 {
     fn into_into_dart(self) -> crate::api::simple::LocalStore {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::logging::LogEntry {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.time.into_into_dart().into_dart(),
+            self.level.into_into_dart().into_dart(),
+            self.module.into_into_dart().into_dart(),
+            self.file.into_into_dart().into_dart(),
+            self.line.into_into_dart().into_dart(),
+            self.message.into_into_dart().into_dart(),
+            self.structured.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::logging::LogEntry {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::logging::LogEntry>
+    for crate::api::logging::LogEntry
+{
+    fn into_into_dart(self) -> crate::api::logging::LogEntry {
         self
     }
 }
@@ -1960,6 +2064,16 @@ impl SseEncode for Vec<uuid::Uuid> {
     }
 }
 
+impl SseEncode for Vec<crate::api::logging::LogEntry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::logging::LogEntry>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1994,6 +2108,19 @@ impl SseEncode for crate::api::simple::LocalStore {
     }
 }
 
+impl SseEncode for crate::api::logging::LogEntry {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.time, serializer);
+        <String>::sse_encode(self.level, serializer);
+        <Option<String>>::sse_encode(self.module, serializer);
+        <Option<String>>::sse_encode(self.file, serializer);
+        <Option<i32>>::sse_encode(self.line, serializer);
+        <String>::sse_encode(self.message, serializer);
+        <String>::sse_encode(self.structured, serializer);
+    }
+}
+
 impl SseEncode for crate::api::simple::NativePreferenceStore {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2023,6 +2150,16 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<i32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <i32>::sse_encode(value, serializer);
         }
     }
 }
@@ -2153,71 +2290,3 @@ mod io {
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;
-
-/// cbindgen:ignore
-#[cfg(target_family = "wasm")]
-mod web {
-    // This file is automatically generated, so please do not edit it.
-    // Generated by `flutter_rust_bridge`@ 2.1.0.
-
-    // Section: imports
-
-    use super::*;
-    use crate::api::player::*;
-    use crate::api::simple::*;
-    use flutter_rust_bridge::for_generated::byteorder::{
-        NativeEndian, ReadBytesExt, WriteBytesExt,
-    };
-    use flutter_rust_bridge::for_generated::wasm_bindgen;
-    use flutter_rust_bridge::for_generated::wasm_bindgen::prelude::*;
-    use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
-    use flutter_rust_bridge::{Handler, IntoIntoDart};
-
-    // Section: boilerplate
-
-    flutter_rust_bridge::frb_generated_boilerplate_web!();
-
-    #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_MutexConnection(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<Mutex<Connection>>::increment_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_MutexConnection(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<Mutex<Connection>>::decrement_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_MutexRepoDatabaseRead(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<Mutex<RepoDatabaseRead>>::increment_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_MutexRepoDatabaseRead(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<Mutex<RepoDatabaseRead>>::decrement_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>::increment_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAnnixPlayer(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>::decrement_strong_count(ptr as _);
-    }
-}
-#[cfg(target_family = "wasm")]
-pub use web::*;

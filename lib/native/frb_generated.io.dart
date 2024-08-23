@@ -80,6 +80,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_i_32(dynamic raw);
+
+  @protected
   LocalDb dco_decode_box_autoadd_local_db(dynamic raw);
 
   @protected
@@ -102,6 +105,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<UuidValue> dco_decode_list_Uuid(dynamic raw);
 
   @protected
+  List<LogEntry> dco_decode_list_log_entry(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
@@ -114,6 +120,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LocalStore dco_decode_local_store(dynamic raw);
 
   @protected
+  LogEntry dco_decode_log_entry(dynamic raw);
+
+  @protected
   NativePreferenceStore dco_decode_native_preference_store(dynamic raw);
 
   @protected
@@ -121,6 +130,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_i_32(dynamic raw);
 
   @protected
   PlayerStateEvent dco_decode_player_state_event(dynamic raw);
@@ -190,6 +202,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_i_32(SseDeserializer deserializer);
+
+  @protected
   LocalDb sse_decode_box_autoadd_local_db(SseDeserializer deserializer);
 
   @protected
@@ -212,6 +227,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<UuidValue> sse_decode_list_Uuid(SseDeserializer deserializer);
 
   @protected
+  List<LogEntry> sse_decode_list_log_entry(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
@@ -224,6 +242,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LocalStore sse_decode_local_store(SseDeserializer deserializer);
 
   @protected
+  LogEntry sse_decode_log_entry(SseDeserializer deserializer);
+
+  @protected
   NativePreferenceStore sse_decode_native_preference_store(
       SseDeserializer deserializer);
 
@@ -232,6 +253,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_i_32(SseDeserializer deserializer);
 
   @protected
   PlayerStateEvent sse_decode_player_state_event(SseDeserializer deserializer);
@@ -302,6 +326,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_i_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_local_db(LocalDb self, SseSerializer serializer);
 
   @protected
@@ -325,6 +352,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_Uuid(List<UuidValue> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_log_entry(List<LogEntry> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
 
@@ -338,6 +368,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_local_store(LocalStore self, SseSerializer serializer);
 
   @protected
+  void sse_encode_log_entry(LogEntry self, SseSerializer serializer);
+
+  @protected
   void sse_encode_native_preference_store(
       NativePreferenceStore self, SseSerializer serializer);
 
@@ -346,6 +379,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_32(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_player_state_event(
