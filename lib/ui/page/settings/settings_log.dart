@@ -1,5 +1,4 @@
 import 'package:annix/native/api/logging.dart';
-import 'package:annix/services/path.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
@@ -110,8 +109,7 @@ class SettingsLogView extends HookConsumerWidget {
               },
             )
           : FutureBuilder<List<LogEntry>>(
-              future: readLogs(path: logPath())
-                  .then((logs) => logs.reversed.toList()),
+              future: readLogs().then((logs) => logs.reversed.toList()),
               builder: (final context, final snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(

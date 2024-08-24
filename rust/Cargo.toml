@@ -22,7 +22,10 @@ cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 material-colors = { version = "0.3.3", features = ["image"] }
 
-tracing-subscriber-sqlite = { version = "0.1", features = ["tracing-log"] }
+# TODO: upgrade version
+tracing-subscriber-sqlite = { git = "https://github.com/ProjectAnni/tracing-subscriber-sqlite", features = [
+    "tracing-log",
+], rev = "42e79729fae0cb2803b8b9cebb01b039d30f0c9a" }
 tracing = "0.1.40"
 tracing-log = "0.2"
 

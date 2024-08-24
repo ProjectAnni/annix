@@ -11,8 +11,23 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 void initLogger({required String path}) =>
     RustLib.instance.api.crateApiLoggingInitLogger(path: path);
 
-Future<List<LogEntry>> readLogs({required String path}) =>
-    RustLib.instance.api.crateApiLoggingReadLogs(path: path);
+Future<List<LogEntry>> readLogs() =>
+    RustLib.instance.api.crateApiLoggingReadLogs();
+
+void logNative(
+        {required String level,
+        String? module,
+        String? file,
+        int? line,
+        required String message,
+        String? stacktace}) =>
+    RustLib.instance.api.crateApiLoggingLogNative(
+        level: level,
+        module: module,
+        file: file,
+        line: line,
+        message: message,
+        stacktace: stacktace);
 
 class LogEntry {
   final String time;

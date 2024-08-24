@@ -2754,8 +2754,7 @@ dependencies = [
 [[package]]
 name = "tracing-subscriber-sqlite"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f219c00ed12939e3ced5fece83be1856b1baeda9b5796727fcd4cd5f2e6978db"
+source = "git+https://github.com/ProjectAnni/tracing-subscriber-sqlite?rev=42e79729fae0cb2803b8b9cebb01b039d30f0c9a#42e79729fae0cb2803b8b9cebb01b039d30f0c9a"
 dependencies = [
  "rusqlite",
  "serde_json",

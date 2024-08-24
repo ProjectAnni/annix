@@ -5,6 +5,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback_service.dart';
 import 'package:annix/utils/redirect_interceptor.dart';
@@ -42,7 +43,7 @@ class AnnilService extends ChangeNotifier {
 
     client.interceptors.add(RetryInterceptor(
       dio: client,
-      logPrint: (final text) => FLog.error(text: text),
+      logPrint: (final text) => Logger.error(text),
       retries: 3,
       retryDelays: const [
         Duration(seconds: 1),
@@ -337,8 +338,8 @@ class AnnilService extends ChangeNotifier {
         ),
       );
       final newETag = response.headers['etag']![0];
-      FLog.debug(
-        text: 'Annil cache MISSED, old etag: $etag, new etag: $newETag',
+      Logger.debug(
+        'Annil cache MISSED, old etag: $etag, new etag: $newETag',
       );
       if (etag != newETag) {
         etags[server.id] = newETag;
@@ -361,7 +362,7 @@ class AnnilService extends ChangeNotifier {
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 304) {
-        FLog.trace(text: 'Annil cache HIT, etag: $etag');
+        Logger.trace('Annil cache HIT, etag: $etag');
       } else {
         etags.remove(server.id);
         await db.transaction(() async {

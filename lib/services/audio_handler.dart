@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:audio_service/audio_service.dart';
@@ -53,7 +54,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
       // interruption
       session.interruptionEventStream.listen((final event) {
         if (event.begin) {
-          FLog.info(text: 'handling interruption beginning ${event.type}');
+          Logger.info('handling interruption beginning ${event.type}');
           switch (event.type) {
             case AudioInterruptionType.duck:
               // TODO
@@ -65,7 +66,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
               break;
           }
         } else {
-          FLog.info(text: 'handling interruption end ${event.type}');
+          Logger.info('handling interruption end ${event.type}');
           switch (event.type) {
             case AudioInterruptionType.duck:
               // TODO

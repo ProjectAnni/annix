@@ -7,12 +7,12 @@ import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/path.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/native/api/player.dart';
 import 'package:audio_session/audio_session.dart' hide AVAudioSessionCategory;
-import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -149,7 +149,7 @@ class PlaybackService extends ChangeNotifier {
     }
 
     if (!reload && !PlaybackService.player.isPlaying()) {
-      FLog.trace(text: 'Resume playing');
+      Logger.trace('Resume playing');
       await PlaybackService.player.play();
 
       if (loadedAndPaused) {
@@ -166,7 +166,7 @@ class PlaybackService extends ChangeNotifier {
     }
 
     // stop previous playback
-    FLog.trace(text: 'Start playing');
+    Logger.trace('Start playing');
     await stop(false);
 
     // TODO: move annil logic to rust and remove the workaround
@@ -192,7 +192,7 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> pause() async {
-    FLog.trace(text: 'Pause playing');
+    Logger.trace('Pause playing');
 
     await PlaybackService.player.pause();
     // deactivate audio session
@@ -281,7 +281,7 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> seek(final Duration position) async {
-    FLog.trace(text: 'Seek to position $position');
+    Logger.trace('Seek to position $position');
 
     // seek first for ui update
     playing.updatePosition(position);
@@ -307,7 +307,7 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> jump(final int index) async {
-    FLog.trace(text: 'Jump to $index in playing queue');
+    Logger.trace('Jump to $index in playing queue');
     if (queue.isNotEmpty) {
       final to = index % queue.length;
       if (to != playingIndex) {

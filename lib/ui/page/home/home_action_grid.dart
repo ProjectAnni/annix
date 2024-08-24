@@ -36,7 +36,9 @@ class HomeActionGrid extends ConsumerWidget {
             showLoadingDialog(context);
             ref.read(playbackProvider).fullShuffleMode().then(
               (final value) {
-                Navigator.of(context, rootNavigator: true).pop();
+                if (context.mounted) {
+                  Navigator.of(context, rootNavigator: true).pop();
+                }
               },
             );
           },

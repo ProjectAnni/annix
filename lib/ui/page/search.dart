@@ -76,7 +76,6 @@ class _SearchResultWidget extends HookConsumerWidget {
   final ValueNotifier<bool> isLoading;
 
   const _SearchResultWidget({
-    super.key,
     required this.result,
     required this.isLoading,
   });
