@@ -12,7 +12,6 @@ import 'package:annix/utils/redirect_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:drift/drift.dart';
-import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as p;
@@ -265,8 +264,8 @@ class AnnilService extends ChangeNotifier {
         try {
           await updateAlbums(server);
         } catch (e) {
-          FLog.warning(
-            text: 'Failed to refresh annil ${server.name}',
+          Logger.warn(
+            'Failed to refresh annil ${server.name}',
             exception: e,
           );
         }

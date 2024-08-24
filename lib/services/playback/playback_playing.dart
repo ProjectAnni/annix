@@ -1,11 +1,11 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/lyric/lyric_source_anniv.dart';
 import 'package:annix/services/lyric/lyric_source_petitlyrics.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
-import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -116,7 +116,7 @@ class PlayingTrack extends ChangeNotifier {
 
       return null;
     } catch (e) {
-      FLog.error(text: 'Failed to fetch lyric', exception: e);
+      Logger.error('Failed to fetch lyric', exception: e);
       return null;
     }
   }

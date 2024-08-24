@@ -56,6 +56,7 @@ pub fn log_native(
     file: Option<String>,
     line: Option<u32>,
     message: String,
+    exception: Option<String>,
     stacktace: Option<String>,
 ) -> anyhow::Result<()> {
     let logger = LOGGER
@@ -63,6 +64,9 @@ pub fn log_native(
         .ok_or_else(|| anyhow::anyhow!("Logger not initialized"))?;
 
     let mut kvs = HashMap::new();
+    if let Some(exception) = exception {
+        kvs.insert("exception", exception);
+    }
     if let Some(stacktace) = stacktace {
         kvs.insert("stacktace", stacktace);
     }

@@ -105,6 +105,7 @@ fn wire__crate__api__logging__log_native_impl(
             let api_file = <Option<String>>::sse_decode(&mut deserializer);
             let api_line = <Option<u32>>::sse_decode(&mut deserializer);
             let api_message = <String>::sse_decode(&mut deserializer);
+            let api_exception = <Option<String>>::sse_decode(&mut deserializer);
             let api_stacktace = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -115,6 +116,7 @@ fn wire__crate__api__logging__log_native_impl(
                         api_file,
                         api_line,
                         api_message,
+                        api_exception,
                         api_stacktace,
                     )?;
                     Ok(output_ok)

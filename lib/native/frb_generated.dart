@@ -79,6 +79,7 @@ abstract class RustLibApi extends BaseApi {
       String? file,
       int? line,
       required String message,
+      String? exception,
       String? stacktace});
 
   Future<List<LogEntry>> crateApiLoggingReadLogs();
@@ -235,6 +236,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       String? file,
       int? line,
       required String message,
+      String? exception,
       String? stacktace}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
@@ -244,6 +246,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_String(file, serializer);
         sse_encode_opt_box_autoadd_u_32(line, serializer);
         sse_encode_String(message, serializer);
+        sse_encode_opt_String(exception, serializer);
         sse_encode_opt_String(stacktace, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
       },
@@ -252,14 +255,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiLoggingLogNativeConstMeta,
-      argValues: [level, module, file, line, message, stacktace],
+      argValues: [level, module, file, line, message, exception, stacktace],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiLoggingLogNativeConstMeta => const TaskConstMeta(
         debugName: "log_native",
-        argNames: ["level", "module", "file", "line", "message", "stacktace"],
+        argNames: [
+          "level",
+          "module",
+          "file",
+          "line",
+          "message",
+          "exception",
+          "stacktace"
+        ],
       );
 
   @override

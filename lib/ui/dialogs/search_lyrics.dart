@@ -120,13 +120,17 @@ class _SearchLyricsDialogState extends ConsumerState<SearchLyricsDialog> {
             ),
             controller: _albumController,
           ),
-          ButtonBar(
-            children: [
-              TextButton(
-                onPressed: _searchLyric,
-                child: const Text('Search'),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: OverflowBar(
+              alignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: _searchLyric,
+                  child: const Text('Search'),
+                ),
+              ],
+            ),
           )
         ],
       );
@@ -167,7 +171,9 @@ class _SearchLyricsDialogState extends ConsumerState<SearchLyricsDialog> {
                               lyric: lyric,
                               type: widget.track.type,
                             ));
-                            Navigator.of(context, rootNavigator: true).pop();
+                            if (context.mounted) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
                           });
                         },
                       );

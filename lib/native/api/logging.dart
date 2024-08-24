@@ -20,6 +20,7 @@ void logNative(
         String? file,
         int? line,
         required String message,
+        String? exception,
         String? stacktace}) =>
     RustLib.instance.api.crateApiLoggingLogNative(
         level: level,
@@ -27,6 +28,7 @@ void logNative(
         file: file,
         line: line,
         message: message,
+        exception: exception,
         stacktace: stacktace);
 
 class LogEntry {

@@ -4,6 +4,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/download/download_models.dart';
 import 'package:annix/services/download/download_task.dart';
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/utils/hash.dart';
 import 'package:annix/utils/cookie_storage.dart';
@@ -12,7 +13,6 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-import 'package:f_logs/f_logs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as p;
 
@@ -69,7 +69,7 @@ class AnnivClient {
             if (status != 902000) {
               // skip logging [lyric not found] error
               // TODO: show error to user
-              FLog.error(text: resp['message'].toString(), exception: error);
+              Logger.error(resp['message'].toString(), exception: error);
             }
             // business logic error code
             handler.reject(DioException(

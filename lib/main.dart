@@ -1,9 +1,8 @@
 import 'package:annix/app.dart';
 import 'package:annix/i18n/strings.g.dart';
-import 'package:annix/native/api/logging.dart';
 import 'package:annix/providers.dart';
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/path.dart';
-import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/native/frb_generated.dart';
@@ -13,10 +12,12 @@ Future<void> main() async {
   await RustLib.init();
 
   WidgetsFlutterBinding.ensureInitialized();
-  FLog.getDefaultConfigurations().isDevelopmentDebuggingEnabled = true;
+
+  await PathService.init();
+  // logger requires path service, and is required by all other services
+  Logger.init();
 
   final container = ProviderContainer();
-  await PathService.init();
   await Future.wait([
     container.read(proxyProvider).start(),
     container.read(audioServiceProvider.future),
@@ -25,8 +26,8 @@ Future<void> main() async {
   LocaleSettings.useDeviceLocale();
 
   FlutterError.onError = (final details) {
-    FLog.error(
-      text: 'Flutter error',
+    Logger.error(
+      'Flutter error',
       className: details.library,
       exception: details.exception,
       stacktrace: details.stack,
@@ -35,11 +36,9 @@ Future<void> main() async {
     FlutterError.presentError(details);
   };
   PlatformDispatcher.instance.onError = (final error, final stack) {
-    FLog.error(text: 'Root isolate error', exception: error, stacktrace: stack);
+    Logger.error('Root isolate error', exception: error, stacktrace: stack);
     return true;
   };
-
-  initLogger(path: logPath());
 
   try {
     runApp(
@@ -49,6 +48,6 @@ Future<void> main() async {
       ),
     );
   } catch (e) {
-    FLog.error(text: 'Uncaught exception', exception: e);
+    Logger.error('Uncaught exception', exception: e);
   }
 }

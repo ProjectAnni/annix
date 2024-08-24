@@ -78,8 +78,8 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                             return const SizedBox.shrink();
                           }
 
-                          return ButtonBar(
-                            buttonPadding: EdgeInsets.zero,
+                          return OverflowBar(
+                            spacing: 0,
                             alignment: MainAxisAlignment.start,
                             children: [
                               TextButton.icon(
@@ -156,7 +156,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                 Container(
                   width: 64,
                   alignment: Alignment.bottomCenter,
-                  child: ButtonBar(
+                  child: OverflowBar(
                     alignment: MainAxisAlignment.end,
                     children: [
                       IconButton(

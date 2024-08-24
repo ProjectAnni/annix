@@ -425,15 +425,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.4"
-  f_logs:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "91c7cf3fb5300c64f6c8ab513517015a1ea8dcf7"
-      url: "https://github.com/ProjectAnni/Flogs"
-    source: git
-    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -688,7 +679,7 @@ packages:
     source: hosted
     version: "4.0.2"
   intl:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: intl
       sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
@@ -1031,14 +1022,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
-  sembast:
-    dependency: transitive
-    description:
-      name: sembast
-      sha256: "85ff944434f7b566fdc388be4f85b23e954736b7d6e51f965f4f419d966c15b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.5.0+1"
   share_plus:
     dependency: "direct main"
     description:
@@ -1220,14 +1203,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  synchronized:
-    dependency: transitive
-    description:
-      name: synchronized
-      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1396,14 +1371,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
-  xxtea:
-    dependency: transitive
-    description:
-      name: xxtea
-      sha256: edd57229638e16e88f4bb299737fe76a235d0f11da6df8573b3c7f28dec283ce
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   yaml:
     dependency: transitive
     description:

@@ -96,46 +96,49 @@ class _SearchResultWidget extends HookConsumerWidget {
 
     return Column(
       children: [
-        ButtonBar(
-          alignment: MainAxisAlignment.start,
-          children: [
-            if ((result.value?.tracks?.length ?? 0) > 0)
-              FilterChip(
-                avatar: categoryState.value == 0
-                    ? null
-                    : const Icon(Icons.music_note),
-                label: Text(t.tracks),
-                onSelected: (selected) {
-                  if (selected) {
-                    categoryState.value = 0;
-                  }
-                },
-                selected: categoryState.value == 0,
-              ),
-            if ((result.value?.albums?.length ?? 0) > 0)
-              FilterChip(
-                avatar: categoryState.value == 1
-                    ? null
-                    : const Icon(Icons.album_outlined),
-                label: Text(t.albums),
-                onSelected: (selected) {
-                  if (selected) {
-                    categoryState.value = 1;
-                  }
-                },
-                selected: categoryState.value == 1,
-              ),
-            if ((result.value?.playlists?.length ?? 0) > 0)
-              FilterChip(
-                label: Text(t.playlists),
-                onSelected: (selected) {
-                  if (selected) {
-                    categoryState.value = 2;
-                  }
-                },
-                selected: categoryState.value == 2,
-              ),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: OverflowBar(
+            alignment: MainAxisAlignment.start,
+            children: [
+              if ((result.value?.tracks?.length ?? 0) > 0)
+                FilterChip(
+                  avatar: categoryState.value == 0
+                      ? null
+                      : const Icon(Icons.music_note),
+                  label: Text(t.tracks),
+                  onSelected: (selected) {
+                    if (selected) {
+                      categoryState.value = 0;
+                    }
+                  },
+                  selected: categoryState.value == 0,
+                ),
+              if ((result.value?.albums?.length ?? 0) > 0)
+                FilterChip(
+                  avatar: categoryState.value == 1
+                      ? null
+                      : const Icon(Icons.album_outlined),
+                  label: Text(t.albums),
+                  onSelected: (selected) {
+                    if (selected) {
+                      categoryState.value = 1;
+                    }
+                  },
+                  selected: categoryState.value == 1,
+                ),
+              if ((result.value?.playlists?.length ?? 0) > 0)
+                FilterChip(
+                  label: Text(t.playlists),
+                  onSelected: (selected) {
+                    if (selected) {
+                      categoryState.value = 2;
+                    }
+                  },
+                  selected: categoryState.value == 2,
+                ),
+            ],
+          ),
         ),
         Expanded(
           child: FadeIndexedStack(
