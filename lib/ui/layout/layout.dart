@@ -52,8 +52,7 @@ class AnnixLayout extends HookConsumerWidget {
       },
     );
 
-    final currentIndex =
-        pages.indexOf(router.currentRoute).clamp(0, pages.length);
+    final currentIndex = pages.indexOf(router.currentRoute);
     onDestinationSelected(final index) {
       router.off(
         name: pages[index],
@@ -176,7 +175,7 @@ class AnnixLayout extends HookConsumerWidget {
               ),
             ),
             labelType: NavigationRailLabelType.all,
-            selectedIndex: currentIndex,
+            selectedIndex: currentIndex >= 0 ? currentIndex : null,
             onDestinationSelected: onDestinationSelected,
             destinations: destinations
                 .map(
