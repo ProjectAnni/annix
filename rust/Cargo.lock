@@ -131,7 +131,7 @@ dependencies = [
 [[package]]
 name = "anni-common"
 version = "0.2.0"
-source = "git+https://github.com/ProjectAnni/anni?rev=c5842a7849d70a9e4f4fd3e392448c16142009fe#c5842a7849d70a9e4f4fd3e392448c16142009fe"
+source = "git+https://github.com/ProjectAnni/anni?rev=0edc10c3e0e00f38cc6a72d76dea84b620b7af3d#0edc10c3e0e00f38cc6a72d76dea84b620b7af3d"
 dependencies = [
  "anni-artist",
  "byteorder",
@@ -150,7 +150,7 @@ dependencies = [
 [[package]]
 name = "anni-flac"
 version = "0.2.2"
-source = "git+https://github.com/ProjectAnni/anni?rev=c5842a7849d70a9e4f4fd3e392448c16142009fe#c5842a7849d70a9e4f4fd3e392448c16142009fe"
+source = "git+https://github.com/ProjectAnni/anni?rev=0edc10c3e0e00f38cc6a72d76dea84b620b7af3d#0edc10c3e0e00f38cc6a72d76dea84b620b7af3d"
 dependencies = [
  "async-trait",
  "byteorder",
@@ -164,9 +164,9 @@ dependencies = [
 [[package]]
 name = "anni-playback"
 version = "0.1.0"
-source = "git+https://github.com/ProjectAnni/anni?rev=c5842a7849d70a9e4f4fd3e392448c16142009fe#c5842a7849d70a9e4f4fd3e392448c16142009fe"
+source = "git+https://github.com/ProjectAnni/anni?rev=0edc10c3e0e00f38cc6a72d76dea84b620b7af3d#0edc10c3e0e00f38cc6a72d76dea84b620b7af3d"
 dependencies = [
- "anni-common 0.2.0 (git+https://github.com/ProjectAnni/anni?rev=c5842a7849d70a9e4f4fd3e392448c16142009fe)",
+ "anni-common 0.2.0 (git+https://github.com/ProjectAnni/anni?rev=0edc10c3e0e00f38cc6a72d76dea84b620b7af3d)",
  "anni-provider",
  "anyhow",
  "arrayvec",
@@ -189,9 +189,9 @@ dependencies = [
 [[package]]
 name = "anni-provider"
 version = "0.3.1"
-source = "git+https://github.com/ProjectAnni/anni?rev=c5842a7849d70a9e4f4fd3e392448c16142009fe#c5842a7849d70a9e4f4fd3e392448c16142009fe"
+source = "git+https://github.com/ProjectAnni/anni?rev=0edc10c3e0e00f38cc6a72d76dea84b620b7af3d#0edc10c3e0e00f38cc6a72d76dea84b620b7af3d"
 dependencies = [
- "anni-common 0.2.0 (git+https://github.com/ProjectAnni/anni?rev=c5842a7849d70a9e4f4fd3e392448c16142009fe)",
+ "anni-common 0.2.0 (git+https://github.com/ProjectAnni/anni?rev=0edc10c3e0e00f38cc6a72d76dea84b620b7af3d)",
  "anni-flac",
  "async-trait",
  "dashmap 5.5.3",
