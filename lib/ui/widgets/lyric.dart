@@ -48,28 +48,23 @@ class PlayingLyricUI extends LyricUI {
 
   @override
   TextStyle getPlayingMainTextStyle() {
-    return textTheme.titleMedium!.copyWith(
-      fontWeight: FontWeight.w500,
-      height: 1,
-      color: isKaraoke ? null : context.colorScheme.primary,
-    );
+    return textTheme.headlineMedium!
+        .copyWith(
+          fontWeight: FontWeight.w600,
+          color: isKaraoke
+              ? context.colorScheme.onSecondaryContainer
+              : getLyricHightlightColor(),
+        )
+        .apply(fontSizeFactor: 0.9);
   }
 
   @override
   TextStyle getOtherMainTextStyle() {
-    final theme = textTheme.bodyMedium;
-    return theme!.copyWith(color: theme.color!.withOpacity(0.5));
-  }
-
-  @override
-  double getInlineSpace() => 10;
-
-  @override
-  double getLineSpace() => 18;
-
-  @override
-  LyricAlign getLyricHorizontalAlign() {
-    return align;
+    return textTheme.titleMedium!.copyWith(
+      height: 1,
+      color: context.colorScheme.onSecondaryContainer
+          .withOpacity(isKaraoke ? 0.8 : 0.5),
+    );
   }
 
   @override
@@ -80,6 +75,17 @@ class PlayingLyricUI extends LyricUI {
   @override
   TextStyle getOtherExtTextStyle() {
     return getOtherMainTextStyle().apply(fontSizeFactor: 0.8);
+  }
+
+  @override
+  double getInlineSpace() => 8;
+
+  @override
+  double getLineSpace() => 24;
+
+  @override
+  LyricAlign getLyricHorizontalAlign() {
+    return align;
   }
 
   @override
@@ -104,7 +110,7 @@ class PlayingLyricUI extends LyricUI {
 class LyricView extends ConsumerWidget {
   final LyricAlign alignment;
 
-  const LyricView({super.key, this.alignment = LyricAlign.CENTER});
+  const LyricView({super.key, this.alignment = LyricAlign.LEFT});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -122,7 +128,7 @@ class _LyricView extends StatelessWidget {
 
   const _LyricView({
     this.lyric,
-    this.lyricAlign = LyricAlign.CENTER,
+    this.lyricAlign = LyricAlign.LEFT,
   });
 
   @override

@@ -28,99 +28,107 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
     final player = ref.read(playbackProvider);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        GestureDetector(
-          child: IconButton(
-            icon: const Icon(Icons.text_snippet_rounded),
-            onPressed: () {
-              showLyrics.value = !showLyrics.value;
-            },
-          ),
-          onLongPress: () {
-            final playing = player.playing.source?.track;
-            if (playing != null) {
-              showDialog(
-                context: context,
-                useRootNavigator: true,
-                builder: (final context) {
-                  return SearchLyricsDialog(track: playing);
-                },
-              );
-            }
-          },
+        IconButton(
+          icon: const Icon(Icons.keyboard_arrow_down),
+          onPressed: ref.read(routerProvider).closePanel,
         ),
-        MenuAnchor(
-          // alignmentOffset: const Offset(-64, 0),
-          // style: MenuStyle(
-          //   padding:
-          //       MaterialStateProperty.resolveWith((states) => EdgeInsets.zero),
-          //   shape: MaterialStateProperty.resolveWith(
-          //     (states) => RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(20)),
-          //   ),
-          // ),
-          builder: (final context, final controller, final child) {
-            return IconButton(
-              icon: child!,
-              onPressed: () {
-                if (controller.isOpen) {
-                  controller.close();
-                } else {
-                  controller.open();
+        OverflowBar(
+          children: [
+            GestureDetector(
+              child: IconButton(
+                icon: const Icon(Icons.text_snippet_rounded),
+                onPressed: () {
+                  showLyrics.value = !showLyrics.value;
+                },
+              ),
+              onLongPress: () {
+                final playing = player.playing.source?.track;
+                if (playing != null) {
+                  showDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (final context) {
+                      return SearchLyricsDialog(track: playing);
+                    },
+                  );
                 }
               },
-            );
-          },
-          menuChildren: [
-            MenuItemButton(
-              leadingIcon: const Icon(Icons.playlist_add),
-              child: Text(t.track.add_to_playlist),
-              onPressed: () {
-                showPlaylistDialog(
-                    context, ref, player.playing.source!.identifier);
-              },
             ),
-            MenuItemButton(
-              leadingIcon: const Icon(Icons.album_outlined),
-              child: Text(t.playing.view_album),
-              onPressed: () async {
-                // jump to album page
-                delegate.to(
-                  name: '/album',
-                  arguments: player.playing.source!.identifier.albumId,
+            MenuAnchor(
+              // alignmentOffset: const Offset(-64, 0),
+              // style: MenuStyle(
+              //   padding:
+              //       MaterialStateProperty.resolveWith((states) => EdgeInsets.zero),
+              //   shape: MaterialStateProperty.resolveWith(
+              //     (states) => RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(20)),
+              //   ),
+              // ),
+              builder: (final context, final controller, final child) {
+                return IconButton(
+                  icon: child!,
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
                 );
               },
-            ),
-            // const Divider(height: 1),
-            MenuItemButton(
-              leadingIcon: const Icon(Icons.share_outlined),
-              child: Text(t.track.share),
-              onPressed: () {
-                final track = player.playing.source!.track;
-                final box = context.findRenderObject() as RenderBox?;
-                shareTrackInfo(
-                  track,
-                  box!.localToGlobal(Offset.zero) & box.size,
-                  nowPlaying: true,
-                );
-              },
-            ),
-            MenuItemButton(
-              leadingIcon: const Icon(Icons.file_copy),
-              child: const Text('[DEV] Export file'),
-              onPressed: () {
-                final track = player.playing.source!.track;
-                final box = context.findRenderObject() as RenderBox?;
-                shareTrackFile(
-                  track,
-                  box!.localToGlobal(Offset.zero) & box.size,
-                );
-              },
+              menuChildren: [
+                MenuItemButton(
+                  leadingIcon: const Icon(Icons.playlist_add),
+                  child: Text(t.track.add_to_playlist),
+                  onPressed: () {
+                    showPlaylistDialog(
+                        context, ref, player.playing.source!.identifier);
+                  },
+                ),
+                MenuItemButton(
+                  leadingIcon: const Icon(Icons.album_outlined),
+                  child: Text(t.playing.view_album),
+                  onPressed: () async {
+                    // jump to album page
+                    delegate.to(
+                      name: '/album',
+                      arguments: player.playing.source!.identifier.albumId,
+                    );
+                  },
+                ),
+                // const Divider(height: 1),
+                MenuItemButton(
+                  leadingIcon: const Icon(Icons.share_outlined),
+                  child: Text(t.track.share),
+                  onPressed: () {
+                    final track = player.playing.source!.track;
+                    final box = context.findRenderObject() as RenderBox?;
+                    shareTrackInfo(
+                      track,
+                      box!.localToGlobal(Offset.zero) & box.size,
+                      nowPlaying: true,
+                    );
+                  },
+                ),
+                MenuItemButton(
+                  leadingIcon: const Icon(Icons.file_copy),
+                  child: const Text('[DEV] Export file'),
+                  onPressed: () {
+                    final track = player.playing.source!.track;
+                    final box = context.findRenderObject() as RenderBox?;
+                    shareTrackFile(
+                      track,
+                      box!.localToGlobal(Offset.zero) & box.size,
+                    );
+                  },
+                ),
+              ],
+              child: const Icon(Icons.more_vert_rounded),
             ),
           ],
-          child: const Icon(Icons.more_vert_rounded),
-        ),
+        )
       ],
     );
   }
@@ -274,10 +282,8 @@ class _MusicCoverOrLyricState extends State<MusicCoverOrLyric> {
         key: ValueKey(showLyric ? 0 : 1),
         children: const [
           AspectRatio(
-            aspectRatio: 1,
-            child: LyricView(
-              alignment: LyricAlign.CENTER,
-            ),
+            aspectRatio: 0.9,
+            child: LyricView(),
           ),
           PlayingMusicCover(),
         ],
