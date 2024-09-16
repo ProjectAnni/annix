@@ -11,9 +11,7 @@ class LoopModeButton extends ConsumerWidget {
     final loopMode =
         ref.watch(playbackProvider.select((final p) => p.loopMode));
     return IconButton(
-      icon: loopMode.getIcon(
-        inactiveColor: context.theme.iconTheme.color?.withOpacity(0.3),
-      ),
+      icon: loopMode.getIcon(activeColor: context.colorScheme.primary),
       onPressed: () {
         ref.read(playbackProvider).setLoopMode(loopMode.next());
       },
@@ -29,9 +27,7 @@ class ShuffleModeButton extends ConsumerWidget {
     final shuffleMode =
         ref.watch(playbackProvider.select((final p) => p.shuffleMode));
     return IconButton(
-      icon: shuffleMode.getIcon(
-        inactiveColor: context.theme.iconTheme.color?.withOpacity(0.3),
-      ),
+      icon: shuffleMode.getIcon(activeColor: context.colorScheme.primary),
       onPressed: () {
         ref.read(playbackProvider).setShuffleMode(shuffleMode.next());
       },

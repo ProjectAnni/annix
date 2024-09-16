@@ -7,12 +7,12 @@ enum ShuffleMode {
   off,
   on;
 
-  Icon getIcon({final Color? inactiveColor}) {
+  Icon getIcon({final Color? activeColor}) {
     switch (this) {
       case ShuffleMode.off:
-        return Icon(Icons.shuffle, color: inactiveColor);
-      case ShuffleMode.on:
         return const Icon(Icons.shuffle);
+      case ShuffleMode.on:
+        return Icon(Icons.shuffle, color: activeColor);
     }
   }
 
@@ -31,14 +31,14 @@ enum LoopMode {
   all,
   one;
 
-  Icon getIcon({final Color? inactiveColor}) {
+  Icon getIcon({final Color? activeColor}) {
     switch (this) {
       case LoopMode.off:
-        return Icon(Icons.repeat, color: inactiveColor);
-      case LoopMode.all:
         return const Icon(Icons.repeat);
+      case LoopMode.all:
+        return Icon(Icons.repeat, color: activeColor);
       case LoopMode.one:
-        return const Icon(Icons.repeat_one);
+        return Icon(Icons.repeat_one, color: activeColor);
     }
   }
 

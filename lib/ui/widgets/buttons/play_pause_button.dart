@@ -22,7 +22,7 @@ class PlayPauseButton extends HookConsumerWidget {
   }
 
   factory PlayPauseButton.large() {
-    return const PlayPauseButton(size: 56, type: PlayPauseButtonType.floating);
+    return const PlayPauseButton(size: 64, type: PlayPauseButtonType.floating);
   }
 
   @override
@@ -55,17 +55,18 @@ class PlayPauseButton extends HookConsumerWidget {
       );
     } else {
       if (type == PlayPauseButtonType.floating) {
-        return FloatingActionButton(
+        child = FloatingActionButton(
           child: AnimatedIconWidget(
             controller: controller,
             icon: AnimatedIcons.play_pause,
+            size: size / 2,
           ),
           onPressed: () {
             player.playOrPause();
           },
         );
       } else if (type == PlayPauseButtonType.elevated) {
-        return Card(
+        child = Card(
           elevation: 2,
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
@@ -82,7 +83,7 @@ class PlayPauseButton extends HookConsumerWidget {
           ),
         );
       } else {
-        return IconButton(
+        child = IconButton(
           icon: AnimatedIconWidget(
             controller: controller,
             icon: AnimatedIcons.play_pause,
