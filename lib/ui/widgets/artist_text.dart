@@ -1,3 +1,4 @@
+import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -94,6 +95,10 @@ class _ArtistTextState extends State<ArtistText> {
   @override
   Widget build(final BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        AnnixRouterDelegate.of(context)
+            .off(name: '/search', arguments: widget.artist);
+      },
       onLongPress: toggleExtend,
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -231,7 +231,8 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
             playlistInfo: routeSettings.arguments as PlaylistInfo);
         break;
       case '/search':
-        child = const SearchPage();
+        final keyword = routeSettings.arguments as String?;
+        child = SearchPage(keyword: keyword);
         break;
       case '/settings':
         child = const SettingsScreen();

@@ -14,7 +14,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SearchPage extends HookConsumerWidget {
-  const SearchPage({super.key});
+  final String? keyword;
+
+  const SearchPage({super.key, this.keyword});
 
   @override
   Widget build(BuildContext context, final WidgetRef ref) {
@@ -43,6 +45,13 @@ class SearchPage extends HookConsumerWidget {
       }
     }
 
+    useEffect(() {
+      if (keyword != null) {
+        search(anniv.client!, keyword!);
+      }
+      return null;
+    }, [keyword]);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -55,6 +64,7 @@ class SearchPage extends HookConsumerWidget {
                   icon: const Icon(Icons.search),
                   hintText: t.search,
                 ),
+                controller: TextEditingController(text: keyword),
                 onSubmitted: (final keyword) => search(anniv.client!, keyword),
               ),
               Expanded(
@@ -100,6 +110,7 @@ class _SearchResultWidget extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: OverflowBar(
             alignment: MainAxisAlignment.start,
+            spacing: 8.0,
             children: [
               if ((result.value?.tracks?.length ?? 0) > 0)
                 FilterChip(
