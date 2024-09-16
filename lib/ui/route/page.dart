@@ -23,20 +23,6 @@ Widget fadeThroughTransitionBuilder(
   );
 }
 
-Widget cupertinoTransitionBuilder(
-  final BuildContext context,
-  final Animation<double> animation,
-  final Animation<double> secondaryAnimation,
-  final Widget child,
-) {
-  return CupertinoPageTransition(
-    primaryRouteAnimation: animation,
-    secondaryRouteAnimation: secondaryAnimation,
-    linearTransition: false,
-    child: child,
-  );
-}
-
 Widget noneTransitionBuilder(
   final BuildContext context,
   final Animation<double> animation,
@@ -88,7 +74,7 @@ class AnnixPage extends Page {
           ? const Duration(milliseconds: 100)
           : transitionDuration,
       pageBuilder: (final context, final animation, final secondaryAnimation) {
-        return noneTransitionBuilder(
+        return (pageBuilder ?? noneTransitionBuilder)(
           context,
           animation,
           secondaryAnimation,

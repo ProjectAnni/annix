@@ -1342,20 +1342,6 @@ fn wire__crate__api__simple__native_preference_store_set_impl(
     )
 }
 
-// Section: static_checks
-
-#[allow(clippy::unnecessary_literal_unwrap)]
-const _: fn() = || {
-    let LogEntry = None::<crate::api::logging::LogEntry>.unwrap();
-    let _: String = LogEntry.time;
-    let _: String = LogEntry.level;
-    let _: Option<String> = LogEntry.module;
-    let _: Option<String> = LogEntry.file;
-    let _: Option<i32> = LogEntry.line;
-    let _: String = LogEntry.message;
-    let _: String = LogEntry.structured;
-};
-
 // Section: related_funcs
 
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(Mutex<Connection>);
@@ -1381,6 +1367,14 @@ impl SseDecode for AnnixPlayer {
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for std::collections::HashMap<String, String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <Vec<(String, String)>>::sse_decode(deserializer);
+        return inner.into_iter().collect();
     }
 }
 
@@ -1532,6 +1526,18 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<(String, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<(String, String)>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::simple::TagItem> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1567,9 +1573,10 @@ impl SseDecode for crate::api::logging::LogEntry {
         let mut var_level = <String>::sse_decode(deserializer);
         let mut var_module = <Option<String>>::sse_decode(deserializer);
         let mut var_file = <Option<String>>::sse_decode(deserializer);
-        let mut var_line = <Option<i32>>::sse_decode(deserializer);
+        let mut var_line = <Option<u32>>::sse_decode(deserializer);
         let mut var_message = <String>::sse_decode(deserializer);
-        let mut var_structured = <String>::sse_decode(deserializer);
+        let mut var_structured =
+            <std::collections::HashMap<String, String>>::sse_decode(deserializer);
         return crate::api::logging::LogEntry {
             time: var_time,
             level: var_level,
@@ -1613,17 +1620,6 @@ impl SseDecode for Option<String> {
     }
 }
 
-impl SseDecode for Option<i32> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        if (<bool>::sse_decode(deserializer)) {
-            return Some(<i32>::sse_decode(deserializer));
-        } else {
-            return None;
-        }
-    }
-}
-
 impl SseDecode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1657,6 +1653,15 @@ impl SseDecode for crate::api::player::ProgressState {
             position: var_position,
             duration: var_duration,
         };
+    }
+}
+
+impl SseDecode for (String, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        let mut var_field1 = <String>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -1876,29 +1881,26 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::simple::LocalStore>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<crate::api::logging::LogEntry> {
+impl flutter_rust_bridge::IntoDart for crate::api::logging::LogEntry {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.0.time.into_into_dart().into_dart(),
-            self.0.level.into_into_dart().into_dart(),
-            self.0.module.into_into_dart().into_dart(),
-            self.0.file.into_into_dart().into_dart(),
-            self.0.line.into_into_dart().into_dart(),
-            self.0.message.into_into_dart().into_dart(),
-            self.0.structured.into_into_dart().into_dart(),
+            self.time.into_into_dart().into_dart(),
+            self.level.into_into_dart().into_dart(),
+            self.module.into_into_dart().into_dart(),
+            self.file.into_into_dart().into_dart(),
+            self.line.into_into_dart().into_dart(),
+            self.message.into_into_dart().into_dart(),
+            self.structured.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<crate::api::logging::LogEntry>
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<crate::api::logging::LogEntry>>
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::logging::LogEntry {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::logging::LogEntry>
     for crate::api::logging::LogEntry
 {
-    fn into_into_dart(self) -> FrbWrapper<crate::api::logging::LogEntry> {
-        self.into()
+    fn into_into_dart(self) -> crate::api::logging::LogEntry {
+        self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2012,6 +2014,13 @@ impl SseEncode for AnnixPlayer {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AnnixPlayer>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
+impl SseEncode for std::collections::HashMap<String, String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<(String, String)>>::sse_encode(self.into_iter().collect(), serializer);
     }
 }
 
@@ -2158,6 +2167,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<(String, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(String, String)>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::simple::TagItem> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2189,9 +2208,9 @@ impl SseEncode for crate::api::logging::LogEntry {
         <String>::sse_encode(self.level, serializer);
         <Option<String>>::sse_encode(self.module, serializer);
         <Option<String>>::sse_encode(self.file, serializer);
-        <Option<i32>>::sse_encode(self.line, serializer);
+        <Option<u32>>::sse_encode(self.line, serializer);
         <String>::sse_encode(self.message, serializer);
-        <String>::sse_encode(self.structured, serializer);
+        <std::collections::HashMap<String, String>>::sse_encode(self.structured, serializer);
     }
 }
 
@@ -2228,16 +2247,6 @@ impl SseEncode for Option<String> {
     }
 }
 
-impl SseEncode for Option<i32> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.is_some(), serializer);
-        if let Some(value) = self {
-            <i32>::sse_encode(value, serializer);
-        }
-    }
-}
-
 impl SseEncode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2270,6 +2279,14 @@ impl SseEncode for crate::api::player::ProgressState {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u32>::sse_encode(self.position, serializer);
         <u32>::sse_encode(self.duration, serializer);
+    }
+}
+
+impl SseEncode for (String, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+        <String>::sse_encode(self.1, serializer);
     }
 }
 

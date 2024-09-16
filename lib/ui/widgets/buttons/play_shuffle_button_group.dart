@@ -21,8 +21,8 @@ class PlayShuffleButtonGroup extends StatelessWidget {
         maxWidth = constraints.maxWidth / 2.2;
       }
 
-      return ButtonBar(
-        layoutBehavior: ButtonBarLayoutBehavior.constrained,
+      return OverflowBar(
+        spacing: 8.0,
         alignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
         children: [
           SizedBox(

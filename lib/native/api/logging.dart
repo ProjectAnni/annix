@@ -38,7 +38,7 @@ class LogEntry {
   final String? file;
   final int? line;
   final String message;
-  final String structured;
+  final Map<String, String> structured;
 
   const LogEntry({
     required this.time,

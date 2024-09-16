@@ -1,11 +1,12 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 
 use flutter_rust_bridge::frb;
 use once_cell::sync::OnceCell;
 use rusqlite::Connection;
-use tracing::level_filters::LevelFilter;
-pub use tracing_subscriber_sqlite::LogEntry;
-use tracing_subscriber_sqlite::LogHandle;
+use time::OffsetDateTime;
+use tracing::{level_filters::LevelFilter, Level};
+use tracing_subscriber_sqlite::{prepare_database, LogHandle};
+pub use tracing_subscriber_sqlite::{Connect, LogEntry as TracingLogEntry};
 
 static LOGGER: OnceCell<LogHandle> = OnceCell::new();
 
@@ -13,14 +14,15 @@ static LOGGER: OnceCell<LogHandle> = OnceCell::new();
 pub fn init_logger(path: String) {
     LOGGER.get_or_init(|| {
         let conn = Connection::open(path).unwrap();
+        prepare_database(&conn).unwrap();
 
+        let logger = LogHandle::new(conn);
         let subscriber = tracing_subscriber_sqlite::SubscriberBuilder::new()
             .with_max_level(LevelFilter::DEBUG)
             .with_black_list(["h2"])
-            .build_prepared(conn)
-            .unwrap();
+            .build_layer(logger.clone())
+            .to_subscriber();
 
-        let logger = subscriber.log_handle();
         tracing::subscriber::set_global_default(subscriber).unwrap();
 
         tracing_log::LogTracer::init().unwrap();
@@ -30,23 +32,33 @@ pub fn init_logger(path: String) {
 }
 
 #[derive(Debug)]
-#[frb(mirror(LogEntry))]
-pub struct _LogEntry {
+pub struct LogEntry {
     pub time: String,
     pub level: String,
     pub module: Option<String>,
     pub file: Option<String>,
-    pub line: Option<i32>,
+    pub line: Option<u32>,
     pub message: String,
-    pub structured: String,
+    pub structured: HashMap<String, String>,
 }
 
 pub fn read_logs() -> anyhow::Result<Vec<LogEntry>> {
     let handle = LOGGER
         .get()
         .ok_or_else(|| anyhow::anyhow!("Logger not initialized"))?;
-    let logs = handle.read_logs_v0()?;
-    Ok(logs)
+    let logs = handle.read_logs()?;
+    Ok(logs
+        .into_iter()
+        .map(|l| LogEntry {
+            time: l.time.to_string(),
+            level: l.level.to_string(),
+            module: l.module,
+            file: l.file,
+            line: l.line,
+            message: l.message,
+            structured: l.structured,
+        })
+        .collect())
 }
 
 #[frb(sync)]
@@ -71,13 +83,14 @@ pub fn log_native(
         kvs.insert("stacktace", stacktace);
     }
 
-    logger.log_v0(
-        &level,
-        module.as_deref(),
-        file.as_deref(),
+    logger.log(TracingLogEntry {
+        time: OffsetDateTime::now_utc(),
+        level: Level::from_str(&level).unwrap(),
+        module: module.as_deref(),
+        file: file.as_deref(),
         line,
-        &message,
-        kvs,
-    );
+        message,
+        structured: kvs,
+    });
     Ok(())
 }

@@ -2201,6 +2201,7 @@ dependencies = [
  "once_cell",
  "rand",
  "rusqlite",
+ "time",
  "tracing",
  "tracing-log",
  "tracing-subscriber-sqlite",
@@ -2835,7 +2836,7 @@ dependencies = [
 [[package]]
 name = "tracing-subscriber-sqlite"
 version = "0.1.0"
-source = "git+https://github.com/ProjectAnni/tracing-subscriber-sqlite?rev=42e79729fae0cb2803b8b9cebb01b039d30f0c9a#42e79729fae0cb2803b8b9cebb01b039d30f0c9a"
+source = "git+https://github.com/ProjectAnni/tracing-subscriber-sqlite?rev=71cc7476dd6b711350665975a7a1b0181c8fd71c#71cc7476dd6b711350665975a7a1b0181c8fd71c"
 dependencies = [
  "rusqlite",
  "serde_json",

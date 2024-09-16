@@ -54,6 +54,11 @@ class AnnixLayout extends HookConsumerWidget {
 
     final currentIndex = pages.indexOf(router.currentRoute);
     onDestinationSelected(final index) {
+      if (index >= pages.length) {
+        router.popRoute();
+        return;
+      }
+
       router.off(
         name: pages[index],
         pageBuilder: fadeTransitionBuilder,
@@ -135,6 +140,7 @@ class AnnixLayout extends HookConsumerWidget {
         Breakpoints.mediumAndUp: SlotLayout.from(
           key: const Key('Primary Navigation Medium'),
           builder: (context) => AdaptiveScaffold.standardNavigationRail(
+            padding: EdgeInsets.zero,
             leading: Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: Consumer(builder: (context, ref, child) {
@@ -159,32 +165,24 @@ class AnnixLayout extends HookConsumerWidget {
                 );
               }),
             ),
-            trailing: Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Consumer(
-                  builder: (final context, final ref, final child) {
-                    final router = ref.watch(routerProvider);
-                    return IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed:
-                          router.mayPop() ? () => router.popRoute() : null,
-                    );
-                  },
-                ),
-              ),
-            ),
-            labelType: NavigationRailLabelType.all,
+            labelType: NavigationRailLabelType.none,
             selectedIndex: currentIndex >= 0 ? currentIndex : null,
             onDestinationSelected: onDestinationSelected,
-            destinations: destinations
-                .map(
-                  (d) => NavigationRailDestination(
-                    icon: d.icon,
-                    label: Text(d.label),
-                  ),
-                )
-                .toList(),
+            destinations: [
+              ...destinations
+                  .map(
+                    (d) => NavigationRailDestination(
+                      icon: d.icon,
+                      label: Text(d.label),
+                    ),
+                  )
+                  .toList(),
+              NavigationRailDestination(
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('back'),
+                disabled: !router.mayPop(),
+              )
+            ],
           ),
         ),
       }),
@@ -213,7 +211,7 @@ class AnnixLayout extends HookConsumerWidget {
                 duration: const Duration(milliseconds: 200),
                 opacity: opacity,
                 child: AdaptiveScaffold.standardBottomNavigationBar(
-                  currentIndex: currentIndex,
+                  currentIndex: currentIndex >= 0 ? currentIndex : 0,
                   onDestinationSelected: onDestinationSelected,
                   destinations: destinations,
                 ),

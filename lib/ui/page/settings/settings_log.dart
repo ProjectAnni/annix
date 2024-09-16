@@ -1,6 +1,8 @@
 import 'package:annix/native/api/logging.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:flutter_json_view/flutter_json_view.dart';
 
 class SettingsLogView extends StatelessWidget {
   const SettingsLogView({super.key});
@@ -27,7 +29,24 @@ class SettingsLogView extends StatelessWidget {
         return AlertDialog(
           title: const Text('Detail'),
           content: SingleChildScrollView(
-            child: Text(log.structured),
+            child: JsonView.map(
+              log.structured,
+              theme: JsonViewTheme(
+                defaultTextStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                backgroundColor: context.colorScheme.surface,
+                closeIcon: const Icon(
+                  Icons.arrow_drop_up,
+                  size: 16,
+                ),
+                openIcon: const Icon(
+                  Icons.arrow_drop_down,
+                  size: 16,
+                ),
+              ),
+            ),
           ),
           actions: [
             TextButton(
