@@ -20,3 +20,21 @@ class LoopModeButton extends ConsumerWidget {
     );
   }
 }
+
+class ShuffleModeButton extends ConsumerWidget {
+  const ShuffleModeButton({super.key});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final shuffleMode =
+        ref.watch(playbackProvider.select((final p) => p.shuffleMode));
+    return IconButton(
+      icon: shuffleMode.getIcon(
+        inactiveColor: context.theme.iconTheme.color?.withOpacity(0.3),
+      ),
+      onPressed: () {
+        ref.read(playbackProvider).setShuffleMode(shuffleMode.next());
+      },
+    );
+  }
+}

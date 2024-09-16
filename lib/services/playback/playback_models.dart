@@ -3,11 +3,33 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/native/api/player.dart';
 import 'package:flutter/material.dart';
 
+enum ShuffleMode {
+  off,
+  on;
+
+  Icon getIcon({final Color? inactiveColor}) {
+    switch (this) {
+      case ShuffleMode.off:
+        return Icon(Icons.shuffle, color: inactiveColor);
+      case ShuffleMode.on:
+        return const Icon(Icons.shuffle);
+    }
+  }
+
+  ShuffleMode next() {
+    switch (this) {
+      case ShuffleMode.off:
+        return ShuffleMode.on;
+      case ShuffleMode.on:
+        return ShuffleMode.off;
+    }
+  }
+}
+
 enum LoopMode {
   off,
   all,
-  one,
-  random;
+  one;
 
   Icon getIcon({final Color? inactiveColor}) {
     switch (this) {
@@ -17,8 +39,6 @@ enum LoopMode {
         return const Icon(Icons.repeat);
       case LoopMode.one:
         return const Icon(Icons.repeat_one);
-      case LoopMode.random:
-        return const Icon(Icons.shuffle);
     }
   }
 
@@ -29,8 +49,6 @@ enum LoopMode {
       case LoopMode.all:
         return LoopMode.one;
       case LoopMode.one:
-        return LoopMode.random;
-      case LoopMode.random:
         return LoopMode.off;
     }
   }

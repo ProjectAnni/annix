@@ -47,7 +47,7 @@ class PlayingScreenMobile extends HookConsumerWidget {
     return Scaffold(
       body: Container(
         color: context.colorScheme.secondaryContainer,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 28),
         child: _mainPlayingWidget(context, showLyric),
       ),
       bottomNavigationBar: BottomAppBar(

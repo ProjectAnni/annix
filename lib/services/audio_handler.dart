@@ -301,18 +301,19 @@ class AnnixMPRISService extends MPRISService {
       switch (player.loopMode) {
         case LoopMode.off:
           loopStatus = LoopStatus.none;
-          shuffle = false;
           break;
         case LoopMode.all:
           loopStatus = LoopStatus.playlist;
-          shuffle = false;
           break;
         case LoopMode.one:
           loopStatus = LoopStatus.track;
+          break;
+      }
+      switch (player.shuffleMode) {
+        case ShuffleMode.off:
           shuffle = false;
           break;
-        case LoopMode.random:
-          loopStatus = LoopStatus.playlist;
+        case ShuffleMode.on:
           shuffle = true;
           break;
       }
@@ -376,19 +377,9 @@ class AnnixMPRISService extends MPRISService {
   @override
   Future<void> onShuffle(final bool shuffle) async {
     if (shuffle) {
-      await player.setLoopMode(LoopMode.random);
+      await player.setShuffleMode(ShuffleMode.on);
     } else {
-      switch (loopStatus) {
-        case LoopStatus.none:
-          await player.setLoopMode(LoopMode.off);
-          break;
-        case LoopStatus.track:
-          await player.setLoopMode(LoopMode.one);
-          break;
-        case LoopStatus.playlist:
-          await player.setLoopMode(LoopMode.all);
-          break;
-      }
+      await player.setShuffleMode(ShuffleMode.off);
     }
     this.shuffle = shuffle;
   }

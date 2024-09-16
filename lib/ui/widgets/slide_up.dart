@@ -202,6 +202,8 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
   }
 
   bool _ignoreScrollable = false;
+  bool _isHorizontalScrollableWidget = false;
+  Axis? _scrollableAxis;
 
   // returns a gesture detector if panel is used
   // and a listener if panel is used.
@@ -220,6 +222,10 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
           _scMinffset = 0.0;
         }
         if (result.path.any((entry) =>
+            entry.target.runtimeType == _HorizontalScrollableWidgetRenderBox)) {
+          _isHorizontalScrollableWidget = true;
+          widget.controller?._nowTargetForceDraggable = false;
+        } else if (result.path.any((entry) =>
             entry.target.runtimeType ==
             _IgnoreDraggableWidgetWidgetRenderBox)) {
           _ignoreScrollable = true;
@@ -229,6 +235,19 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
         _vt.addPosition(e.timeStamp, e.position);
       },
       onPointerMove: (PointerMoveEvent e) {
+        if (_scrollableAxis == null) {
+          if (e.delta.dx.abs() > e.delta.dy.abs()) {
+            _scrollableAxis = Axis.horizontal;
+          } else {
+            _scrollableAxis = Axis.vertical;
+          }
+        }
+
+        if (_isHorizontalScrollableWidget &&
+            _scrollableAxis == Axis.horizontal) {
+          return;
+        }
+
         if (_ignoreScrollable) return;
         // add current position for velocity tracking
         _vt.addPosition(e.timeStamp, e.position);
@@ -236,6 +255,7 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
       },
       onPointerUp: (PointerUpEvent e) {
         if (_ignoreScrollable) return;
+        _scrollableAxis = null;
         _onGestureEnd(_vt.getVelocity());
       },
       child: child,
@@ -246,7 +266,9 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
 
   // handles the sliding gesture
   void _onGestureSlide(double dy) {
-    if ((!_scrollingEnabled) || _panelPosition < 1) {
+    if ((!_scrollingEnabled) ||
+        _panelPosition < 1 ||
+        widget.controller?._nowTargetForceDraggable == true) {
       _ac.value -= dy / (widget.maxHeight - widget.minHeight);
     }
 
@@ -440,6 +462,8 @@ class PanelController {
     _forceScrollChange = false;
   }
 
+  bool _nowTargetForceDraggable = false;
+
   /// Determine if the panelController is attached to an instance
   /// of the SlidingUpPanel (this property must return true before any other
   /// functions can be used)
@@ -558,6 +582,22 @@ class IgnoreDraggableWidget extends SingleChildRenderObjectWidget {
 }
 
 class _IgnoreDraggableWidgetWidgetRenderBox extends RenderPointerListener {
+  @override
+  HitTestBehavior get behavior => HitTestBehavior.opaque;
+}
+
+/// if you want to prevent unwanted panel dragging when scrolling widgets [Scrollable] with horizontal axis
+/// wrap the widget with this
+class HorizontalScrollableWidget extends SingleChildRenderObjectWidget {
+  const HorizontalScrollableWidget({super.key, required super.child});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return _HorizontalScrollableWidgetRenderBox();
+  }
+}
+
+class _HorizontalScrollableWidgetRenderBox extends RenderPointerListener {
   @override
   HitTestBehavior get behavior => HitTestBehavior.opaque;
 }

@@ -60,6 +60,7 @@ class PlaybackService extends ChangeNotifier {
 
   PlayerStatus playerStatus = PlayerStatus.stopped;
   LoopMode loopMode = LoopMode.off;
+  ShuffleMode shuffleMode = ShuffleMode.off;
   double volume = 1.0;
 
   // Playing queue
@@ -128,6 +129,9 @@ class PlaybackService extends ChangeNotifier {
 
     final loopMode = preferences.getInt('player.loopMode');
     this.loopMode = LoopMode.values[loopMode ?? 0];
+
+    final shuffleMode = preferences.getInt('player.shuffleMode');
+    this.shuffleMode = ShuffleMode.values[shuffleMode ?? 0];
 
     volume = preferences.getDouble('player.volume') ?? 1.0;
     PlaybackService.player.setVolume(volume: volume);
@@ -219,6 +223,12 @@ class PlaybackService extends ChangeNotifier {
   Future<void> previous() async {
     final currentIndex = playingIndex;
     if (queue.isNotEmpty && currentIndex != null) {
+      if (shuffleMode == ShuffleMode.on) {
+        await setPlayingIndex(rng.nextInt(queue.length));
+        await play(reload: true);
+        return;
+      }
+
       switch (loopMode) {
         case LoopMode.off:
           // to the next song / stop
@@ -239,11 +249,6 @@ class PlaybackService extends ChangeNotifier {
           await seek(Duration.zero);
           await play();
           break;
-        case LoopMode.random:
-          // to a random song
-          await setPlayingIndex(rng.nextInt(queue.length));
-          await play(reload: true);
-          break;
       }
     }
   }
@@ -251,6 +256,12 @@ class PlaybackService extends ChangeNotifier {
   Future<void> next() async {
     final currentIndex = playingIndex;
     if (queue.isNotEmpty && currentIndex != null) {
+      if (shuffleMode == ShuffleMode.on) {
+        await setPlayingIndex(rng.nextInt(queue.length));
+        await play(reload: true);
+        return;
+      }
+
       switch (loopMode) {
         case LoopMode.off:
           // to the next song / stop
@@ -270,11 +281,6 @@ class PlaybackService extends ChangeNotifier {
           // replay this song
           await seek(Duration.zero);
           await play();
-          break;
-        case LoopMode.random:
-          // to a random song
-          await setPlayingIndex(rng.nextInt(queue.length));
-          await play(reload: true);
           break;
       }
     }
@@ -325,6 +331,12 @@ class PlaybackService extends ChangeNotifier {
     loopMode = mode;
     notifyListeners();
     ref.read(preferencesProvider).set('player.loopMode', loopMode.index);
+  }
+
+  Future<void> setShuffleMode(final ShuffleMode mode) async {
+    shuffleMode = mode;
+    notifyListeners();
+    ref.read(preferencesProvider).set('player.shuffleMode', shuffleMode.index);
   }
 
   Future<void> setPlayingIndex(final int index,

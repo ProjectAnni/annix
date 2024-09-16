@@ -8,12 +8,12 @@ import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
+import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:annix/i18n/strings.g.dart';
 
@@ -54,6 +54,26 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                     },
                   );
                 }
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.queue_music_rounded),
+              onPressed: () {
+                showModalBottomSheet(
+                  useRootNavigator: true,
+                  context: context,
+                  isScrollControlled: true,
+                  showDragHandle: true,
+                  clipBehavior: Clip.antiAlias,
+                  builder: (final context) {
+                    return DraggableScrollableSheet(
+                      expand: false,
+                      builder: (final context, final scrollController) {
+                        return PlayingQueue(controller: scrollController);
+                      },
+                    );
+                  },
+                );
               },
             ),
             MenuAnchor(
@@ -146,14 +166,14 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
         Text(
           playing.source?.track.title ?? '',
           style: context.textTheme.titleLarge?.copyWith(
-            height: 1.5,
             fontWeight: FontWeight.w600,
+            height: 1.5,
           ),
           overflow: TextOverflow.ellipsis,
         ),
         ArtistText(
           playing.source?.track.artist ?? '',
-          style: context.textTheme.titleMedium,
+          style: context.textTheme.bodyLarge,
           overflow: TextOverflow.ellipsis,
         )
       ],
@@ -174,15 +194,20 @@ class PlayingScreenMobileControl extends ConsumerWidget {
           builder: (final context, final ref, final child) {
             final playing = ref.watch(playingProvider);
 
-            return ProgressBar(
-              progress: playing.position,
-              total: playing.duration,
-              onSeek: (final position) {
-                player.seek(position);
-              },
-              barHeight: 2.0,
-              thumbRadius: 5.0,
-              thumbCanPaintOutsideBar: false,
+            return HorizontalScrollableWidget(
+              child: ProgressBar(
+                progress: playing.position,
+                total: playing.duration == Duration.zero
+                    ? playing.position
+                    : playing.duration,
+                onSeek: (final position) {
+                  player.seek(position);
+                },
+                timeLabelTextStyle: context.textTheme.labelLarge,
+                timeLabelLocation: TimeLabelLocation.below,
+                thumbCanPaintOutsideBar: false,
+                timeLabelType: TimeLabelType.totalTime,
+              ),
             );
           },
         ),
@@ -201,26 +226,7 @@ class PlayingScreenMobileControl extends ConsumerWidget {
               iconSize: 32,
               onPressed: player.next,
             ),
-            IconButton(
-              icon: const Icon(Icons.queue_music_rounded),
-              onPressed: () {
-                showModalBottomSheet(
-                  useRootNavigator: true,
-                  context: context,
-                  isScrollControlled: true,
-                  showDragHandle: true,
-                  clipBehavior: Clip.antiAlias,
-                  builder: (final context) {
-                    return DraggableScrollableSheet(
-                      expand: false,
-                      builder: (final context, final scrollController) {
-                        return PlayingQueue(controller: scrollController);
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+            const ShuffleModeButton(),
           ],
         ),
       ],
