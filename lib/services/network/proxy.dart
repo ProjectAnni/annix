@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:annix/services/annil/cover.dart';
+import 'package:extended_image/extended_image.dart' hide Request;
+import 'package:flutter/material.dart' hide Router;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -33,8 +35,15 @@ class AnnixProxy {
     return this;
   }
 
-  String coverUrl(final String albumId, final int? discId) {
-    return coverUri(albumId, discId).toString();
+  ImageProvider<Object> coverProvider(final String albumId, final int? discId) {
+    final coverProxy = ref.read(coverProxyProvider);
+    final coverFile =
+        coverProxy.getCoverImageFile(albumId: albumId, discId: discId);
+    if (coverFile != null) {
+      return ExtendedFileImageProvider(coverFile);
+    }
+
+    return ExtendedNetworkImageProvider(coverUri(albumId, discId).toString());
   }
 
   Uri coverUri(final String albumId, final int? discId) {

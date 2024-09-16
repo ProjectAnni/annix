@@ -35,6 +35,21 @@ class _CoverReverseProxy {
   final Ref ref;
   final downloadingMap = {};
 
+  File? getCoverImageFile({required String albumId, int? discId}) {
+    final cover = CoverItem(albumId: albumId, discId: discId);
+    if (downloadingMap.containsKey(cover.key)) {
+      return null;
+    }
+
+    final coverImagePath = getCoverCachePath(cover.albumId, cover.discId);
+    final file = File(coverImagePath);
+
+    if (!file.existsSync()) {
+      return null;
+    }
+    return file;
+  }
+
   Future<File?> getCoverImage({required String albumId, int? discId}) async {
     final annil = ref.read(annilProvider);
     final cover = CoverItem(albumId: albumId, discId: discId);
