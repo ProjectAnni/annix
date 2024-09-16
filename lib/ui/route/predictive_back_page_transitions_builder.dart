@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:animations/animations.dart';
+import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -183,10 +184,10 @@ class _PredictiveBackPageTransition extends StatelessWidget {
   // These values were eyeballed to match the native predictive back animation
   // on a Pixel 2 running Android API 34.
   static const double _scaleStartTransition = 0.85;
-  static const double _weightForStartState = 10.0;
-  static const double _weightForEndState = 90.0;
-  static const double _screenWidthDivisionFactor = 20.0;
-  static const double _xShiftAdjustment = 8.0;
+  static const double _weightForStartState = 2.0;
+  static const double _weightForEndState = 98.0;
+  static const double _screenWidthDivisionFactor = 10.0;
+  static const double _xShiftAdjustment = 18.0;
 
   final Animation<double> animation;
   final Animation<double> secondaryAnimation;
@@ -196,27 +197,9 @@ class _PredictiveBackPageTransition extends StatelessWidget {
 
   // add decoration to background page
   Widget _secondaryAnimatedBuilder(BuildContext context, Widget? child) {
-    final Animatable<double> fadeTween = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(
-            begin: 0,
-            end: 0.5,
-          ),
-          weight: 20,
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(
-            begin: 0.5,
-            end: 0.5,
-          ),
-          weight: 80,
-        ),
-      ],
-    );
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(fadeTween.animate(animation).value),
+        color: context.colorScheme.onSurface.withOpacity(0.4),
       ),
       child: child,
     );
@@ -229,8 +212,7 @@ class _PredictiveBackPageTransition extends StatelessWidget {
     final double xShift =
         (screenWidth / _screenWidthDivisionFactor) - _xShiftAdjustment;
 
-    final Animatable<double> xShiftTween =
-        TweenSequence<double>(<TweenSequenceItem<double>>[
+    final Animatable<double> xShiftTween = TweenSequence<double>([
       TweenSequenceItem<double>(
         tween: Tween<double>(begin: 0.0, end: 0.0),
         weight: _weightForStartState,
@@ -240,8 +222,7 @@ class _PredictiveBackPageTransition extends StatelessWidget {
         weight: _weightForEndState,
       ),
     ]);
-    final Animatable<double> scaleTween =
-        TweenSequence<double>(<TweenSequenceItem<double>>[
+    final Animatable<double> scaleTween = TweenSequence<double>([
       // TweenSequenceItem<double>(
       //   tween: Tween<double>(
       //     begin: _scaleFullyOpened,
@@ -257,25 +238,22 @@ class _PredictiveBackPageTransition extends StatelessWidget {
       //   weight: _weightForStartState,
       // ),
       TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: _scaleStartTransition,
-          end: 1.0,
-        ),
+        tween: Tween<double>(begin: 0.0, end: _scaleStartTransition),
+        weight: _weightForStartState,
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: _scaleStartTransition, end: 1.0),
         weight: _weightForEndState,
       ),
     ]);
-    final Animatable<double> fadeTween =
-        TweenSequence<double>(<TweenSequenceItem<double>>[
+    final Animatable<double> fadeTween = TweenSequence<double>([
       TweenSequenceItem<double>(
-        tween: Tween<double>(begin: 0.0, end: 1),
-        weight: 60,
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 10,
       ),
       TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: 1,
-          end: 1,
-        ),
-        weight: 40,
+        tween: ConstantTween(1.0),
+        weight: 90,
       ),
     ]);
 

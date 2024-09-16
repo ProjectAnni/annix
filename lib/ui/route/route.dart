@@ -12,15 +12,6 @@ class AnnixRoute extends PageRouteBuilder {
   });
 
   @override
-  bool get canPop {
-    if (disableAppBarDismissal) {
-      return false;
-    } else {
-      return super.canPop;
-    }
-  }
-
-  @override
   bool get impliesAppBarDismissal {
     if (disableAppBarDismissal) {
       return false;
