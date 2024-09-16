@@ -19,9 +19,9 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/search.dart';
 import 'package:annix/ui/route/page.dart';
+import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {

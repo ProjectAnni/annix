@@ -51,7 +51,6 @@ dependencies:
   flutter_linkify: ^6.0.0
   flutter_json_view: ^1.1.5
 
-  sliding_up_panel2: ^3.3.0+1
   flutter_adaptive_scaffold: ^0.1.12
   animations: ^2.0.11
   crypto: ^3.0.3

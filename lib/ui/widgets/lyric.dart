@@ -1,12 +1,12 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 extension on LyricAlign {
   TextAlign get textAlign {

@@ -6,11 +6,11 @@ import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/route/page.dart';
+import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -97,38 +97,29 @@ class AnnixLayout extends HookConsumerWidget {
               child: child!,
             ),
             if (showMiniPlayer)
-              LayoutBuilder(
-                builder: (context, constraints) => MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                      size: Size(constraints.maxWidth, constraints.maxHeight)),
-                  child: SlidingUpPanel(
-                    controller: router.panelController,
-                    renderPanelSheet: false,
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                    panelBuilder: () {
-                      return panel;
-                    },
-                    collapsed: GestureDetector(
-                      onTap: router.openPanel,
-                      child: SlotLayout(
-                        config: <Breakpoint, SlotLayoutConfig>{
-                          Breakpoints.small: SlotLayout.from(
-                            key: const Key('Bottom Player Small'),
-                            builder: (context) => const MobileBottomPlayer(),
-                          ),
-                          Breakpoints.mediumAndUp: SlotLayout.from(
-                            key: const Key('Bottom Player Medium'),
-                            builder: (context) => const DesktopBottomPlayer(),
-                          ),
-                        },
+              SlidingUpPanel(
+                controller: router.panelController,
+                borderRadius: BorderRadius.circular(8),
+                panel: panel,
+                isDraggable: context.isMobileOrPortrait,
+                collapsed: GestureDetector(
+                  onTap: router.openPanel,
+                  child: SlotLayout(
+                    config: <Breakpoint, SlotLayoutConfig>{
+                      Breakpoints.small: SlotLayout.from(
+                        key: const Key('Bottom Player Small'),
+                        builder: (context) => const MobileBottomPlayer(),
                       ),
-                    ),
-                    minHeight: miniPlayerHeight,
-                    maxHeight: panelMaxSize,
-                    onPanelSlide: (pos) => positionState.value = pos,
+                      Breakpoints.mediumAndUp: SlotLayout.from(
+                        key: const Key('Bottom Player Medium'),
+                        builder: (context) => const DesktopBottomPlayer(),
+                      ),
+                    },
                   ),
                 ),
+                minHeight: miniPlayerHeight,
+                maxHeight: panelMaxSize,
+                onPanelSlide: (pos) => positionState.value = pos,
               )
           ],
         );
@@ -136,6 +127,7 @@ class AnnixLayout extends HookConsumerWidget {
       child: child,
     );
     final root = AdaptiveLayout(
+      internalAnimations: false,
       primaryNavigation: SlotLayout(config: <Breakpoint, SlotLayoutConfig>{
         Breakpoints.mediumAndUp: SlotLayout.from(
           key: const Key('Primary Navigation Medium'),
