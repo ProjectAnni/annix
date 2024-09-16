@@ -51,7 +51,7 @@ class PlayingTrackSwiper extends HookConsumerWidget {
           }
         },
         itemCount: queue.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (_, index) {
           final track = queue[index].track;
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
