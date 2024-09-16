@@ -30,6 +30,42 @@ class AnnixLayout extends HookConsumerWidget {
     required this.router,
   });
 
+  static Builder standardBottomNavigationBar({
+    required List<NavigationDestination> destinations,
+    int? currentIndex,
+    double iconSize = 24,
+    ValueChanged<int>? onDestinationSelected,
+  }) {
+    return Builder(
+      builder: (BuildContext context) {
+        final NavigationBarThemeData currentNavBarTheme =
+            NavigationBarTheme.of(context);
+        return NavigationBarTheme(
+          data: currentNavBarTheme.copyWith(
+            iconTheme: WidgetStateProperty.resolveWith(
+              (Set<WidgetState> states) {
+                return currentNavBarTheme.iconTheme
+                        ?.resolve(states)
+                        ?.copyWith(size: iconSize) ??
+                    IconTheme.of(context).copyWith(size: iconSize);
+              },
+            ),
+          ),
+          child: MediaQuery(
+            data: MediaQuery.of(context).removePadding(removeTop: true),
+            child: NavigationBar(
+              selectedIndex: currentIndex ?? 0,
+              destinations: destinations,
+              onDestinationSelected: onDestinationSelected,
+              // hide the indicator if the currentIndex is null
+              indicatorColor: currentIndex == null ? Colors.transparent : null,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
@@ -52,7 +88,9 @@ class AnnixLayout extends HookConsumerWidget {
       },
     );
 
-    final currentIndex = pages.indexOf(router.currentRoute);
+    final currentIndex = pages.contains(router.currentRoute)
+        ? pages.indexOf(router.currentRoute)
+        : null;
     onDestinationSelected(final index) {
       if (index >= pages.length) {
         router.popRoute();
@@ -158,7 +196,7 @@ class AnnixLayout extends HookConsumerWidget {
               }),
             ),
             labelType: NavigationRailLabelType.none,
-            selectedIndex: currentIndex >= 0 ? currentIndex : null,
+            selectedIndex: currentIndex,
             onDestinationSelected: onDestinationSelected,
             destinations: [
               ...destinations
@@ -202,8 +240,8 @@ class AnnixLayout extends HookConsumerWidget {
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: opacity,
-                child: AdaptiveScaffold.standardBottomNavigationBar(
-                  currentIndex: currentIndex >= 0 ? currentIndex : 0,
+                child: standardBottomNavigationBar(
+                  currentIndex: currentIndex,
                   onDestinationSelected: onDestinationSelected,
                   destinations: destinations,
                 ),
