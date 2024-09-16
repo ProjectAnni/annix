@@ -124,7 +124,7 @@ class PlaybackService extends ChangeNotifier {
       this.queue = queue
           .map((final e) => AnnilAudioSource.fromJson(jsonDecode(e)))
           .toList();
-      setPlayingIndex(playingIndex);
+      _setPlayingIndex(playingIndex);
     }
 
     final loopMode = preferences.getInt('player.loopMode');
@@ -224,7 +224,7 @@ class PlaybackService extends ChangeNotifier {
     final currentIndex = playingIndex;
     if (queue.isNotEmpty && currentIndex != null) {
       if (shuffleMode == ShuffleMode.on) {
-        await setPlayingIndex(rng.nextInt(queue.length));
+        await _setPlayingIndex(rng.nextInt(queue.length));
         await play(reload: true);
         return;
       }
@@ -233,13 +233,13 @@ class PlaybackService extends ChangeNotifier {
         case LoopMode.off:
           // to the next song / stop
           if (currentIndex > 0) {
-            await setPlayingIndex(currentIndex - 1);
+            await _setPlayingIndex(currentIndex - 1);
             await play(reload: true);
           }
           break;
         case LoopMode.all:
           // to the previous song / last song
-          await setPlayingIndex(
+          await _setPlayingIndex(
               (currentIndex > 0 ? currentIndex : queue.length) - 1);
           await play(reload: true);
           break;
@@ -257,7 +257,7 @@ class PlaybackService extends ChangeNotifier {
     final currentIndex = playingIndex;
     if (queue.isNotEmpty && currentIndex != null) {
       if (shuffleMode == ShuffleMode.on) {
-        await setPlayingIndex(rng.nextInt(queue.length));
+        await _setPlayingIndex(rng.nextInt(queue.length));
         await play(reload: true);
         return;
       }
@@ -266,7 +266,7 @@ class PlaybackService extends ChangeNotifier {
         case LoopMode.off:
           // to the next song / stop
           if (currentIndex < queue.length - 1) {
-            await setPlayingIndex(currentIndex + 1);
+            await _setPlayingIndex(currentIndex + 1);
             await play(reload: true);
           } else {
             await stop();
@@ -274,7 +274,7 @@ class PlaybackService extends ChangeNotifier {
           break;
         case LoopMode.all:
           // to the next song / first song
-          await setPlayingIndex((currentIndex + 1) % queue.length);
+          await _setPlayingIndex((currentIndex + 1) % queue.length);
           await play(reload: true);
           break;
         case LoopMode.one:
@@ -306,7 +306,7 @@ class PlaybackService extends ChangeNotifier {
 
     queue.removeAt(index);
     if (removeCurrentPlayingTrack) {
-      await setPlayingIndex(index, notify: false);
+      await _setPlayingIndex(index, notify: false);
       await play(reload: true);
     }
     notifyListeners();
@@ -318,7 +318,7 @@ class PlaybackService extends ChangeNotifier {
       final to = index % queue.length;
       if (to != playingIndex) {
         // index changed, set new audio source
-        await setPlayingIndex(to);
+        await _setPlayingIndex(to);
         await play(reload: true);
       } else {
         // index not changed, seek to start
@@ -339,7 +339,7 @@ class PlaybackService extends ChangeNotifier {
     ref.read(preferencesProvider).set('player.shuffleMode', shuffleMode.index);
   }
 
-  Future<void> setPlayingIndex(final int index,
+  Future<void> _setPlayingIndex(final int index,
       {final bool reload = false, final bool notify = true}) async {
     loadedAndPaused = false;
 
@@ -360,7 +360,7 @@ class PlaybackService extends ChangeNotifier {
     queue = songs;
     // 2. set playing index
     if (songs.isNotEmpty) {
-      await setPlayingIndex(initialIndex % songs.length,
+      await _setPlayingIndex(initialIndex % songs.length,
           reload: true, notify: false);
     } else {
       playing.setSource(null);

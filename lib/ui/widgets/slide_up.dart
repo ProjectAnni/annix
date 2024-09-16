@@ -238,7 +238,7 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
         if (_scrollableAxis == null) {
           if (e.delta.dx.abs() > e.delta.dy.abs()) {
             _scrollableAxis = Axis.horizontal;
-          } else {
+          } else if (e.delta.dx.abs() < e.delta.dy.abs()) {
             _scrollableAxis = Axis.vertical;
           }
         }

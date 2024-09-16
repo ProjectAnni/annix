@@ -37,6 +37,10 @@ class PlayingTrack extends ChangeNotifier {
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
 
+  double get progress => duration.inMilliseconds == 0
+      ? 0
+      : position.inMilliseconds / duration.inMilliseconds;
+
   void updatePosition(final Duration position) {
     this.position = position;
     notifyListeners();

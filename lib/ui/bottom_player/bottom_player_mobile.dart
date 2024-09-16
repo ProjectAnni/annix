@@ -1,7 +1,7 @@
 import 'package:annix/providers.dart';
-import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
+import 'package:annix/ui/widgets/swiper.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,69 +28,33 @@ class MobileBottomPlayer extends StatelessWidget {
         ),
       ),
       height: height,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const PlayingMusicCover(card: true, animated: false),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: const PlayingMusicCover(card: true, animated: false),
+              ),
+              const Expanded(
+                flex: 1,
+                child: PlayingTrackSwiper(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PlayPauseButton.small(),
+              ),
+            ],
           ),
-          Expanded(
-            flex: 1,
-            child: Consumer(
-              builder: (final context, final ref, final child) {
-                final playing = ref.watch(playingProvider);
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      playing.source?.track.title ?? '',
-                      style: context.textTheme.titleSmall,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                    ),
-                    ArtistText(
-                      playing.source?.track.artist ?? '',
-                      style: context.textTheme.bodySmall,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Consumer(
-              builder: (final context, final ref, final child) {
-                final double? progress =
-                    ref.watch(playingProvider.select((final playing) {
-                  if (playing.source == null) {
-                    return null;
-                  }
-
-                  if (playing.duration == Duration.zero) {
-                    return 0;
-                  }
-
-                  return playing.position.inMicroseconds /
-                      playing.duration.inMicroseconds;
-                }));
-                if (progress == null) {
-                  return child!;
-                }
-
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircularProgressIndicator(value: progress),
-                    child!,
-                  ],
-                );
-              },
-              child: PlayPauseButton.small(),
-            ),
-          ),
+          Consumer(builder: (context, ref, child) {
+            final playing = ref.watch(playingProvider);
+            return LinearProgressIndicator(
+              value: playing.progress,
+              minHeight: 2,
+            );
+          }),
         ],
       ),
     );
