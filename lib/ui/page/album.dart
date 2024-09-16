@@ -262,7 +262,7 @@ class TrackListTile extends ConsumerWidget {
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
-      subtitle: ArtistText(track.artist),
+      subtitle: ArtistText(track.artist, search: true),
       trailing: IconButton(
         icon: const Icon(Icons.more_vert),
         onPressed: showMoreMenu,

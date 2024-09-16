@@ -83,6 +83,7 @@ class DesktopBottomPlayer extends ConsumerWidget {
             ArtistText(
               playing.source?.track.artist ?? '',
               style: context.textTheme.labelSmall,
+              search: true,
             ),
             const SizedBox(height: 8),
             RepaintBoundary(

@@ -175,6 +175,7 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
           playing.source?.track.artist ?? '',
           style: context.textTheme.bodyLarge,
           overflow: TextOverflow.ellipsis,
+          search: true,
         )
       ],
     );

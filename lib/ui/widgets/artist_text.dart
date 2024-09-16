@@ -1,6 +1,7 @@
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 // https://github.com/ProjectAnni/anniw/blob/d1770ded6cffb1c7c4ed74205b7d40ae8ec18998/src/utils/helper.ts#L62
 class _ArtistParser {
@@ -61,12 +62,13 @@ List<Artist> _readArtists(final _ArtistParser reader) {
   return res;
 }
 
-class ArtistText extends StatefulWidget {
+class ArtistText extends HookWidget {
   final String artist;
   final List<Artist> artists;
   final TextStyle? style;
   final TextOverflow? overflow;
   final bool expandable;
+  final bool search;
 
   bool get isExtensible =>
       expandable && artist.contains('（') && artist.contains('）');
@@ -76,29 +78,25 @@ class ArtistText extends StatefulWidget {
     this.overflow = TextOverflow.ellipsis,
     this.style,
     this.expandable = true,
+    this.search = false,
     super.key,
   }) : artists = _readArtists(_ArtistParser(data: artist, idx: 0));
 
   @override
-  State<ArtistText> createState() => _ArtistTextState();
-}
-
-class _ArtistTextState extends State<ArtistText> {
-  bool fullArtist = false;
-
-  void toggleExtend() {
-    setState(() {
-      fullArtist = !fullArtist;
-    });
-  }
-
-  @override
   Widget build(final BuildContext context) {
+    final fullArtist = useState(false);
+
+    final toggleExtend = useCallback(() {
+      fullArtist.value = !fullArtist.value;
+    }, [fullArtist]);
+
     return GestureDetector(
-      onTap: () {
-        AnnixRouterDelegate.of(context)
-            .off(name: '/search', arguments: widget.artist);
-      },
+      onTap: search
+          ? () {
+              AnnixRouterDelegate.of(context)
+                  .off(name: '/search', arguments: artist);
+            }
+          : null,
       onLongPress: toggleExtend,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -106,18 +104,18 @@ class _ArtistTextState extends State<ArtistText> {
         children: [
           Flexible(
             child: Text(
-              fullArtist
-                  ? widget.artist
-                  : widget.artists.map((final e) => e.name).join('、'),
-              style: widget.style,
-              overflow: widget.overflow,
+              fullArtist.value
+                  ? artist
+                  : artists.map((final e) => e.name).join('、'),
+              style: style,
+              overflow: overflow,
               maxLines: 1,
             ),
           ),
-          if (widget.isExtensible && context.isDesktopOrLandscape)
+          if (isExtensible && context.isDesktopOrLandscape)
             IconButton(
               onPressed: toggleExtend,
-              isSelected: fullArtist,
+              isSelected: fullArtist.value,
               icon: const Icon(Icons.arrow_forward_ios_outlined),
               selectedIcon: const Icon(Icons.arrow_back_ios_outlined),
               iconSize: 12,

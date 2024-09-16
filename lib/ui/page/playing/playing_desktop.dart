@@ -90,6 +90,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                 label: ArtistText(
                                   track.artist,
                                   expandable: false,
+                                  search: true,
                                 ),
                                 onPressed: () {
                                   // FIXME: dialog to show all available tags

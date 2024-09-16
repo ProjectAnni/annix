@@ -216,7 +216,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ArtistText(item.info.artist),
+              ArtistText(item.info.artist, search: true),
               if (useThreeLine)
                 Text(
                   item.description!,

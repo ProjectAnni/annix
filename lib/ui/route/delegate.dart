@@ -52,9 +52,9 @@ class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
   final List<AnnixPage> _pages = [];
 
   @override
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  final GlobalKey<NavigatorState> navigatorKey;
 
-  AnnixRouterDelegate(this.ref) {
+  AnnixRouterDelegate(this.ref) : navigatorKey = GlobalKey() {
     to(name: '/home');
   }
 
