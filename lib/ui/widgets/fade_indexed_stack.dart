@@ -1,8 +1,9 @@
 // https://gist.github.com/diegoveloper/1cd23e79a31d0c18a67424f0cbdfd7ad
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class FadeIndexedStack extends StatefulWidget {
+class FadeIndexedStack extends HookWidget {
   final int index;
   final List<Widget> children;
   final Duration duration;
@@ -25,45 +26,24 @@ class FadeIndexedStack extends StatefulWidget {
   });
 
   @override
-  FadeIndexedStackState createState() => FadeIndexedStackState();
-}
+  Widget build(BuildContext context) {
+    final animation =
+        useAnimationController(duration: duration, initialValue: 1.0);
 
-class FadeIndexedStackState extends State<FadeIndexedStack>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-      AnimationController(vsync: this, duration: widget.duration);
+    useEffect(() {
+      animation.forward(from: 0.0);
+      return null;
+    }, [index]);
 
-  @override
-  void didUpdateWidget(final FadeIndexedStack oldWidget) {
-    if (widget.index != oldWidget.index) {
-      _controller.forward(from: 0.0);
-    }
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void initState() {
-    _controller.forward();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(final BuildContext context) {
     return FadeTransition(
-      opacity: _controller,
+      opacity: animation,
       child: IndexedStack(
-        index: widget.index,
-        alignment: widget.alignment,
-        textDirection: widget.textDirection,
-        clipBehavior: widget.clipBehavior,
-        sizing: widget.sizing,
-        children: widget.children,
+        index: index,
+        alignment: alignment,
+        textDirection: textDirection,
+        clipBehavior: clipBehavior,
+        sizing: sizing,
+        children: children,
       ),
     );
   }
