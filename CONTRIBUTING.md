@@ -26,3 +26,14 @@ flutter pub run slang
 dart run drift_dev schema dump lib/services/local/database.dart drift_schemas
 dart run drift_dev schema steps drift_schemas/ ./lib/services/local/schema_versions.dart
 ```
+
+## FAQs
+
+### `Could not find a command named "bin/build_tool_runner.dill".`
+
+You should remove the `.package_hash` file. It usually locates in:
+
+```
+./build/rust_lib_annix/build/build_tool/.package_hash
+./build/macos/Build/Intermediates.noindex/Pods.build/Debug/rust_lib_annix.build/build_tool/.package_hash
+```

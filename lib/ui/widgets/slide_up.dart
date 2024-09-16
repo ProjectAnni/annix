@@ -150,24 +150,22 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
                   child: Stack(
                     children: <Widget>[
                       // open panel
-                      Positioned(
-                        top: 0,
-                        width: MediaQuery.of(context).size.width,
-                        child: SizedBox(
-                          height: widget.maxHeight,
-                          child: FadeTransition(
-                            opacity: TweenSequence<double>([
-                              TweenSequenceItem<double>(
-                                tween: Tween<double>(begin: 0, end: 1),
-                                weight: 10,
-                              ),
-                              TweenSequenceItem<double>(
-                                tween: Tween<double>(begin: 1, end: 1),
-                                weight: 90,
-                              ),
-                            ]).animate(animationController),
-                            child: widget.panel,
-                          ),
+                      OverflowBox(
+                        minHeight: widget.maxHeight,
+                        maxHeight: widget.maxHeight,
+                        alignment: Alignment.topCenter,
+                        child: FadeTransition(
+                          opacity: TweenSequence<double>([
+                            TweenSequenceItem<double>(
+                              tween: Tween<double>(begin: 0.0, end: 1.0),
+                              weight: 10,
+                            ),
+                            TweenSequenceItem<double>(
+                              tween: Tween<double>(begin: 1.0, end: 1.0),
+                              weight: 90,
+                            ),
+                          ]).animate(animationController),
+                          child: widget.panel,
                         ),
                       ),
 
@@ -175,8 +173,16 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
                       SizedBox(
                         height: widget.minHeight,
                         child: FadeTransition(
-                          opacity: Tween(begin: 1.0, end: 0.0)
-                              .animate(animationController),
+                          opacity: TweenSequence<double>([
+                            TweenSequenceItem<double>(
+                              tween: Tween<double>(begin: 1.0, end: 0.0),
+                              weight: 20,
+                            ),
+                            TweenSequenceItem<double>(
+                              tween: Tween<double>(begin: 0.0, end: 0.0),
+                              weight: 80,
+                            ),
+                          ]).animate(animationController),
 
                           // if the panel is open ignore pointers (touch events) on the collapsed
                           // child so that way touch events go through to whatever is underneath
