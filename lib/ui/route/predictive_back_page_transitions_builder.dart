@@ -199,7 +199,14 @@ class _PredictiveBackPageTransition extends StatelessWidget {
   Widget _secondaryAnimatedBuilder(BuildContext context, Widget? child) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colorScheme.onSurface.withOpacity(0.4),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: child,
     );
