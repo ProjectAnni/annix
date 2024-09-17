@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:animations/animations.dart';
-import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -26,7 +26,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class AnnixRouterDelegate extends RouterDelegate<List<RouteSettings>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<List<RouteSettings>> {
   final _panelController = PanelController();
-  get panelController => _panelController;
+  PanelController get panelController => _panelController;
   get isPanelOpen =>
       _panelController.isAttached &&
       (_panelController.isPanelOpen ||

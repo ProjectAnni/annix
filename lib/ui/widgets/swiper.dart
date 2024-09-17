@@ -32,7 +32,11 @@ class PlayingTrackSwiper extends HookConsumerWidget {
 
     useEffect(() {
       if (playingIndex != null && controller.hasClients) {
-        controller.jumpToPage(playingIndex);
+        controller.animateToPage(
+          playingIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       }
       return null;
     }, [queue, playingIndex]);
