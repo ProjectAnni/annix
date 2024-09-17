@@ -403,7 +403,10 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                       padding: EdgeInsets.symmetric(
                         horizontal: constraints.maxWidth / 6,
                       ),
-                      child: cover,
+                      child: Hero(
+                        tag: 'playlist:cover',
+                        child: cover,
+                      ),
                     );
                   },
                 ),
@@ -429,10 +432,13 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.playlist.intro.name,
-                            style: context.textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                          Hero(
+                            tag: 'playlist:name',
+                            child: Text(
+                              widget.playlist.intro.name,
+                              style: context.textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
                           ),
                           if (description != null)
                             Linkify(

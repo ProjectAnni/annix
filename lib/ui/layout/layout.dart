@@ -57,6 +57,8 @@ class AnnixLayout extends HookConsumerWidget {
               selectedIndex: currentIndex ?? 0,
               destinations: destinations,
               onDestinationSelected: onDestinationSelected,
+              labelBehavior:
+                  NavigationDestinationLabelBehavior.onlyShowSelected,
               // hide the indicator if the currentIndex is null
               indicatorColor: currentIndex == null ? Colors.transparent : null,
             ),
@@ -69,6 +71,7 @@ class AnnixLayout extends HookConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
+    final heroC = HeroController();
 
     final positionState = useState(0.0);
     final opacity = 1 - positionState.value;
@@ -99,14 +102,15 @@ class AnnixLayout extends HookConsumerWidget {
 
       router.off(
         name: pages[index],
-        pageBuilder: fadeTransitionBuilder,
-        transitionDuration: const Duration(milliseconds: 250),
+        pageBuilder: fadeThroughTransitionBuilder,
+        // transitionDuration: const Duration(milliseconds: 250),
       );
     }
 
     final destinations = [
       NavigationDestination(
-        icon: const Icon(Icons.casino_outlined),
+        icon: const Icon(Icons.home_outlined),
+        selectedIcon: const Icon(Icons.home_filled),
         label: t.home,
       ),
       NavigationDestination(
@@ -115,6 +119,7 @@ class AnnixLayout extends HookConsumerWidget {
       ),
       NavigationDestination(
         icon: const Icon(Icons.settings_outlined),
+        selectedIcon: const Icon(Icons.settings),
         label: t.settings.settings,
       ),
     ];
@@ -257,7 +262,10 @@ class AnnixLayout extends HookConsumerWidget {
       onPopPage: (final route, final result) {
         return false;
       },
-      observers: [ThemePopObserver(ref.read(themeProvider))],
+      observers: [
+        ThemePopObserver(ref.read(themeProvider)),
+        heroC,
+      ],
     );
   }
 }
