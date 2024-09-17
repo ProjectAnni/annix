@@ -118,15 +118,14 @@ class MusicCover extends ConsumerWidget {
         );
       default:
         return Stack(
+          alignment: Alignment.center,
           children: [
             Shimmer.fromColors(
               baseColor: context.colorScheme.secondaryContainer,
               highlightColor: context.colorScheme.onPrimary,
               child: const DummyMusicCover(),
             ),
-            const Center(
-              child: Icon(Icons.music_note, size: 32),
-            )
+            const Icon(Icons.music_note, size: 32),
           ],
         );
     }
