@@ -169,20 +169,23 @@ class CoverCard extends StatelessWidget {
 }
 
 class DummyMusicCover extends StatelessWidget {
-  const DummyMusicCover({super.key});
+  final bool square;
+
+  const DummyMusicCover({super.key, this.square = true});
 
   @override
   Widget build(final BuildContext context) {
-    final cover = AspectRatio(
-      aspectRatio: 1,
-      child: Container(
-        color: Colors.black87,
-        child: const Center(
-          child: Icon(Icons.music_note, color: Colors.white, size: 32),
-        ),
+    final cover = Container(
+      color: Colors.black87,
+      child: const Center(
+        child: Icon(Icons.music_note, color: Colors.white, size: 32),
       ),
     );
 
-    return cover;
+    if (square) {
+      return AspectRatio(aspectRatio: 1, child: cover);
+    } else {
+      return cover;
+    }
   }
 }

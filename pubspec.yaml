@@ -32,6 +32,7 @@ dependencies:
   netease_music_api:
     git:
       url: https://github.com/ProjectAnni/flutter-netease-music-api.git
+  encrypt: 5.0.1
   xml: ^6.5.0
 
   audio_service: ^0.18.15
@@ -43,13 +44,14 @@ dependencies:
   slang_flutter: ^3.31.0
 
   audio_video_progress_bar: ^2.0.3
-  extended_image: ^8.2.1
+  extended_image: ^8.2.3
   flutter_lyric: ^2.0.4+6
   flutter_settings_ui: ^3.0.0
   cupertino_icons: ^1.0.8
   flutter_staggered_grid_view: ^0.7.0
   flutter_linkify: ^6.0.0
   flutter_json_view: ^1.1.5
+  local_hero: ^0.3.0
 
   flutter_adaptive_scaffold: ^0.1.12
   animations: ^2.0.11
@@ -63,7 +65,7 @@ dependencies:
 
   uuid: ^4.4.2
 
-  file_picker: ^5.3.4
+  file_picker: ^8.1.2
   url_launcher: ^6.1.12
 
   # reverse proxy
@@ -105,3 +107,4 @@ dependency_overrides:
     git:
       url: https://github.com/ProjectAnni/flutter_cache_manager
       path: flutter_cache_manager
+  web: 1.0.0
