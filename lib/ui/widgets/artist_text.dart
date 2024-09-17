@@ -1,7 +1,7 @@
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 // https://github.com/ProjectAnni/anniw/blob/d1770ded6cffb1c7c4ed74205b7d40ae8ec18998/src/utils/helper.ts#L62
 class _ArtistParser {
@@ -93,8 +93,7 @@ class ArtistText extends HookWidget {
     return GestureDetector(
       onTap: search
           ? () {
-              AnnixRouterDelegate.of(context)
-                  .off(name: '/search', arguments: artist);
+              context.go('/search', extra: artist);
             }
           : null,
       onLongPress: toggleExtend,

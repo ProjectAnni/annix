@@ -13,6 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -263,12 +264,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     // hide the previous dialog
                     Navigator.of(context, rootNavigator: true).pop();
 
-                    final delegate = ref.read(routerProvider);
-                    // jump to album page
-                    delegate.to(
-                      name: '/album',
-                      arguments: track.info.id.albumId,
-                    );
+                    context.push('/album', extra: track.info.id.albumId);
                   },
                 ),
                 if (widget.playlist.intro.remoteId != null && track.id != null)
@@ -277,7 +273,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     leading: const Icon(Icons.delete),
                     onTap: () async {
                       final anniv = ref.read(annivProvider);
-                      final delegate = ref.read(routerProvider);
+                      final delegate = ref.read(goRouterProvider);
                       showLoadingDialog(context);
 
                       final playlist =
@@ -285,7 +281,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                       await anniv
                           .removeItemsFromPlaylist(playlist, [track.id!]);
 
-                      await delegate.popRoute();
+                      delegate.pop();
                       if (context.mounted) {
                         Navigator.of(context, rootNavigator: true).pop();
                       }
@@ -360,8 +356,8 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     final anniv = ref.read(annivProvider);
                     await anniv.deletePlaylist(playlist: widget.playlist.intro);
 
-                    final delegate = ref.read(routerProvider);
-                    await delegate.popRoute();
+                    final delegate = ref.read(goRouterProvider);
+                    delegate.pop();
                     break;
                 }
               },
@@ -404,7 +400,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                         horizontal: constraints.maxWidth / 6,
                       ),
                       child: Hero(
-                        tag: 'playlist:cover',
+                        tag: 'playlist:cover:${widget.playlist.intro.remoteId}',
                         child: cover,
                       ),
                     );
@@ -433,7 +429,8 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Hero(
-                            tag: 'playlist:name',
+                            tag:
+                                'playlist:name:${widget.playlist.intro.remoteId}',
                             child: Text(
                               widget.playlist.intro.name,
                               style: context.textTheme.headlineSmall

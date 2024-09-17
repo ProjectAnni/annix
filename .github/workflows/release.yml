@@ -30,9 +30,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
-          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+          channel: beta
       - name: Setup | Dependencies
         run: flutter pub get
       - name: Setup | Android NDK
@@ -82,9 +80,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
-          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+          channel: beta
       - name: Setup | Certificates
         uses: apple-actions/import-codesign-certs@v1
         with:
@@ -128,9 +124,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
-          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+          channel: beta
       - name: Setup | Dependencies
         run: |
           sudo apt update -y
@@ -161,9 +155,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
-          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+          channel: beta
       - name: Setup | Dependencies
         run: |
           rustup update
@@ -191,9 +183,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
-          cache-key: ${{ secrets.FLUTTER_CACHE_KEY }}
+          channel: beta
       - name: Setup | Dependencies
         run: |
           rustup update

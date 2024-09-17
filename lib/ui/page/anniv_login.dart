@@ -31,7 +31,7 @@ class AnnivLoginPage extends HookConsumerWidget {
               var url = serverUrlController.text;
               var email = emailController.text;
               final password = passwordController.text;
-              final delegate = ref.read(routerProvider);
+              final delegate = ref.read(goRouterProvider);
               if (url.isEmpty) {
                 _showSnackBar(context, 'Please enter a valid URL');
               } else if (email.isEmpty || !email.contains('@')) {
@@ -47,14 +47,14 @@ class AnnivLoginPage extends HookConsumerWidget {
                   showLoadingDialog(context);
                   await anniv.login(url, email, password);
                   // pop login page
-                  await delegate.popRoute();
+                  delegate.pop();
                 } catch (e) {
                   if (context.mounted) {
                     _showSnackBar(context, e.toString());
                   }
                 } finally {
                   // hide loading dialog
-                  await delegate.popRoute();
+                  delegate.pop();
                 }
               }
             },

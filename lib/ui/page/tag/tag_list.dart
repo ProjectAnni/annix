@@ -4,6 +4,7 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class TagList extends ConsumerWidget {
@@ -83,7 +84,7 @@ class TagListView extends StatelessWidget {
       ),
       body: TagList(
         onSelected: (final ref, final tag) {
-          ref.read(routerProvider).to(name: '/tag', arguments: tag.name);
+          context.push('/tag', extra: tag.name);
         },
       ),
     );

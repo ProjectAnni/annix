@@ -6,6 +6,7 @@ import 'package:annix/ui/widgets/anniv/anniv_not_login_card.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,12 +19,8 @@ class HomePage extends StatelessWidget {
         headerSliverBuilder: (final context, final innerBoxIsScrolled) {
           return [
             if (context.isMobileOrPortrait)
-              SliverAppBar(
-                title: Text(
-                  t.home,
-                  // style: context.textTheme.displayMedium,
-                ),
-                floating: false,
+              SliverAppBar.large(
+                title: const Text('Welcome Back'),
                 actions: [
                   Consumer(builder: (context, ref, child) {
                     final info =
@@ -34,7 +31,7 @@ class HomePage extends StatelessWidget {
                           child: Text(info.user.nickname.substring(0, 1)),
                         ),
                         onPressed: () {
-                          ref.read(routerProvider).to(name: '/server');
+                          context.push('/server');
                         },
                       );
                     } else {

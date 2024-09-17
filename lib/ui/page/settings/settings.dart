@@ -10,6 +10,7 @@ import 'package:annix/ui/dialogs/prefer_quality.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/services/local/cache.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -193,7 +194,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(t.settings.view_logs),
                 description: Text(t.settings.view_logs_desc),
                 onPressed: (final context) {
-                  ref.read(routerProvider).to(name: '/settings/log');
+                  context.push('/logs');
                 },
               ),
               // remove local database
@@ -229,7 +230,7 @@ class SettingsScreen extends ConsumerWidget {
                 onPressed: (final context) async {
                   showLoadingDialog(context);
                   await AnnixStore().clear('album');
-                  await ref.read(routerProvider).popRoute();
+                  ref.read(goRouterProvider).pop();
                 },
               ),
               // clear local lyric cache

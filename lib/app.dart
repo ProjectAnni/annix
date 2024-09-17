@@ -28,7 +28,7 @@ class AnnixApp extends ConsumerWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
 
       // routes
-      routerDelegate: ref.read(routerProvider),
+      routerConfig: ref.read(goRouterProvider),
     );
   }
 }

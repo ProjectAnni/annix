@@ -1,4 +1,5 @@
 import 'package:annix/i18n/strings.g.dart';
+import 'package:annix/router.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/audio_handler.dart';
@@ -27,6 +28,7 @@ final isOnlineProvider =
     StateProvider((final ref) => ref.watch(networkProvider).isOnline);
 final routerProvider =
     ChangeNotifierProvider((final ref) => AnnixRouterDelegate(ref));
+final goRouterProvider = Provider(buildRouter);
 final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));
 final downloadManagerProvider =

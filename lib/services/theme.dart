@@ -2,9 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:annix/native/api/simple.dart';
 import 'package:annix/services/annil/cover.dart';
 import 'package:annix/services/font.dart';
-import 'package:annix/ui/route/page.dart';
 import 'package:annix/ui/route/predictive_back_page_transitions_builder.dart';
-import 'package:annix/ui/route/route.dart';
 import 'package:flutter/material.dart'
     hide PredictiveBackPageTransitionsBuilder;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -152,13 +150,11 @@ class ThemePopObserver extends NavigatorObserver {
 
   @override
   didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
-    if (route is AnnixRoute && route.settings is AnnixPage) {
-      // if this route had pushed a theme, them pop it
-      if (['/album', '/playlist'].contains(route.settings.name)) {
-        WidgetsBinding.instance.addPostFrameCallback((final _) {
-          theme.popTemporaryTheme();
-        });
-      }
+    // if this route had pushed a theme, them pop it
+    if (['/album', '/playlist'].contains(route.settings.name)) {
+      WidgetsBinding.instance.addPostFrameCallback((final _) {
+        theme.popTemporaryTheme();
+      });
     }
   }
 }

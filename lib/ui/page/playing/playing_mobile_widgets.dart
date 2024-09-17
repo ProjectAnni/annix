@@ -14,6 +14,7 @@ import 'package:annix/utils/share.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:annix/i18n/strings.g.dart';
 
@@ -24,7 +25,6 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final delegate = ref.read(routerProvider);
     final player = ref.read(playbackProvider);
 
     return Row(
@@ -110,12 +110,14 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                 MenuItemButton(
                   leadingIcon: const Icon(Icons.album_outlined),
                   child: Text(t.playing.view_album),
-                  onPressed: () async {
+                  onPressed: () {
                     // jump to album page
-                    delegate.to(
-                      name: '/album',
-                      arguments: player.playing.source!.identifier.albumId,
+                    context.replace(
+                      '/album',
+                      extra: player.playing.source!.identifier.albumId,
                     );
+                    // hide self
+                    ref.read(routerProvider).closePanel();
                   },
                 ),
                 // const Divider(height: 1),

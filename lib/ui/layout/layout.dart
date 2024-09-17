@@ -1,21 +1,18 @@
 import 'package:annix/providers.dart';
-import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
 import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
-import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
-import 'package:annix/ui/route/page.dart';
 import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class AnnixLayout extends HookConsumerWidget {
-  final AnnixRouterDelegate router;
   final Widget child;
 
   static const pages = <String>[
@@ -24,11 +21,7 @@ class AnnixLayout extends HookConsumerWidget {
     '/settings',
   ];
 
-  const AnnixLayout({
-    super.key,
-    required this.child,
-    required this.router,
-  });
+  const AnnixLayout({super.key, required this.child});
 
   static Builder standardBottomNavigationBar({
     required List<NavigationDestination> destinations,
@@ -71,7 +64,6 @@ class AnnixLayout extends HookConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final double panelMaxSize = MediaQuery.of(context).size.height;
-    final heroC = HeroController();
 
     final positionState = useState(0.0);
     final opacity = 1 - positionState.value;
@@ -91,21 +83,19 @@ class AnnixLayout extends HookConsumerWidget {
       },
     );
 
-    final currentIndex = pages.contains(router.currentRoute)
-        ? pages.indexOf(router.currentRoute)
-        : null;
-    onDestinationSelected(final index) {
-      if (index >= pages.length) {
-        router.popRoute();
-        return;
-      }
+    final router = GoRouter.of(context);
 
-      router.off(
-        name: pages[index],
-        pageBuilder: fadeThroughTransitionBuilder,
+    final currentIndex =
+        pages.contains(router.location) ? pages.indexOf(router.location) : null;
+    onDestinationSelected(final index) {
+      context.go(
+        pages[index],
+        // pageBuilder: fadeThroughTransitionBuilder,
         // transitionDuration: const Duration(milliseconds: 250),
       );
     }
+
+    final delegate = ref.read(routerProvider);
 
     final destinations = [
       NavigationDestination(
@@ -141,12 +131,12 @@ class AnnixLayout extends HookConsumerWidget {
             ),
             if (showMiniPlayer)
               SlidingUpPanel(
-                controller: router.panelController,
+                controller: delegate.panelController,
                 borderRadius: BorderRadius.circular(8),
                 panel: panel,
                 isDraggable: context.isMobileOrPortrait,
                 collapsed: GestureDetector(
-                  onTap: router.openPanel,
+                  onTap: delegate.openPanel,
                   child: SlotLayout(
                     config: <Breakpoint, SlotLayoutConfig>{
                       Breakpoints.small: SlotLayout.from(
@@ -163,6 +153,18 @@ class AnnixLayout extends HookConsumerWidget {
                 minHeight: miniPlayerHeight,
                 maxHeight: panelMaxSize,
                 onPanelSlide: (pos) => positionState.value = pos,
+                onPanelOpened: () {
+                  // push shadow route on open
+                  if (router.location != '/player') {
+                    router.push('/player');
+                  }
+                },
+                onPanelClosed: () {
+                  // pop shadow route on close
+                  while (router.location == '/player') {
+                    router.pop();
+                  }
+                },
               )
           ],
         );
@@ -184,7 +186,7 @@ class AnnixLayout extends HookConsumerWidget {
                   return TextButton(
                     child: Text(t.server.login),
                     onPressed: () {
-                      ref.read(routerProvider).to(name: '/login');
+                      context.push('/login');
                     },
                   );
                 }
@@ -195,7 +197,7 @@ class AnnixLayout extends HookConsumerWidget {
                     child: Text(info.user.nickname.substring(0, 1)),
                   ),
                   onPressed: () {
-                    ref.read(routerProvider).to(name: '/server');
+                    context.push('/server');
                   },
                 );
               }),
@@ -212,11 +214,11 @@ class AnnixLayout extends HookConsumerWidget {
                     ),
                   )
                   .toList(),
-              NavigationRailDestination(
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('back'),
-                disabled: !router.mayPop(),
-              )
+              // NavigationRailDestination(
+              //   icon: const Icon(Icons.arrow_back),
+              //   label: const Text('back'),
+              //   disabled: !router.mayPop(),
+              // )
             ],
           ),
         ),
@@ -256,16 +258,6 @@ class AnnixLayout extends HookConsumerWidget {
         },
       ),
     );
-
-    return Navigator(
-      pages: [MaterialPage(child: Material(child: root))],
-      onPopPage: (final route, final result) {
-        return false;
-      },
-      observers: [
-        ThemePopObserver(ref.read(themeProvider)),
-        heroC,
-      ],
-    );
+    return Material(child: root);
   }
 }

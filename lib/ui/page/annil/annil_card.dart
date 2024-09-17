@@ -21,12 +21,12 @@ class AnnilCard extends ConsumerWidget {
   }
 
   void onSync(BuildContext context, WidgetRef ref) async {
-    final delegate = ref.read(routerProvider);
+    final delegate = ref.read(goRouterProvider);
     final provider = ref.read(annilProvider);
 
     showLoadingDialog(context);
     await provider.updateAlbums(annil);
-    await delegate.popRoute();
+    delegate.pop();
     ref.invalidate(annilCacheFamily);
   }
 

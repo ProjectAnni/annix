@@ -1,9 +1,9 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/ui/route/page.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PlaylistView extends ConsumerWidget {
@@ -33,7 +33,7 @@ class PlaylistView extends ConsumerWidget {
               fit: StackFit.passthrough,
               children: [
                 Hero(
-                  tag: 'playlist:cover',
+                  tag: 'playlist:cover:${playlist.id}',
                   child: cover,
                 ),
                 Container(
@@ -43,7 +43,7 @@ class PlaylistView extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Hero(
-                        tag: 'playlist:name',
+                        tag: 'playlist:name:${playlist.id}',
                         child: Text(
                           playlist.name,
                           style: context.textTheme.titleMedium?.copyWith(
@@ -65,11 +65,7 @@ class PlaylistView extends ConsumerWidget {
           }).toList(),
           onTap: (index) {
             final playlist = PlaylistInfo.fromData(playlists[index]);
-            ref.read(routerProvider).to(
-                  name: '/playlist',
-                  arguments: playlist,
-                  pageBuilder: fadeThroughTransitionBuilder,
-                );
+            context.push('/playlist', extra: playlist);
           },
         ),
       ),

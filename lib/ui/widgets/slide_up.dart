@@ -14,7 +14,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum PanelState { open, closed }
@@ -59,6 +58,14 @@ class SlidingUpPanel extends StatefulHookConsumerWidget {
   /// between 0.0 and 1.0 where 0.0 is fully collapsed and 1.0 is fully open.
   final void Function(double position)? onPanelSlide;
 
+  /// If non-null, this callback is called when the
+  /// panel is fully opened
+  final VoidCallback? onPanelOpened;
+
+  /// If non-null, this callback is called when the panel
+  /// is fully collapsed.
+  final VoidCallback? onPanelClosed;
+
   /// Allows toggling of the draggability of the SlidingUpPanel.
   /// Set this to false to prevent the user from being able to drag
   /// the panel up and down. Defaults to true.
@@ -80,6 +87,8 @@ class SlidingUpPanel extends StatefulHookConsumerWidget {
       this.panelSnapping = true,
       this.controller,
       this.onPanelSlide,
+      this.onPanelOpened,
+      this.onPanelClosed,
       this.isDraggable = true,
       this.defaultPanelState = PanelState.closed,
       required this.panel})
@@ -90,7 +99,8 @@ class SlidingUpPanel extends StatefulHookConsumerWidget {
   ConsumerState<SlidingUpPanel> createState() => _SlidingUpPanelState();
 }
 
-class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
+class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel>
+    with SingleTickerProviderStateMixin {
   late AnimationController _ac;
   final ScrollController _sc = ScrollController();
 
@@ -102,6 +112,23 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
   @override
   void initState() {
     super.initState();
+
+    _ac = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 300),
+        value: widget.defaultPanelState == PanelState.closed
+            ? 0.0
+            : 1.0 //set the default panel state (i.e. set initial value of _ac)
+        )
+      ..addListener(() {
+        widget.onPanelSlide?.call(_ac.value);
+        if (widget.onPanelOpened != null && _ac.value == 1.0) {
+          widget.onPanelOpened!();
+        }
+        if (widget.onPanelClosed != null && _ac.value == 0.0) {
+          widget.onPanelClosed!();
+        }
+      });
 
     // prevent the panel content from being scrolled only if the widget is
     // draggable and panel scrolling is enabled
@@ -117,20 +144,13 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
   }
 
   @override
+  void dispose() {
+    _ac.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final animationController = useAnimationController(
-      duration: const Duration(milliseconds: 300),
-      initialValue: widget.defaultPanelState == PanelState.closed ? 0.0 : 1.0,
-    );
-    useEffect(() {
-      if (widget.onPanelSlide != null) {
-        animationController.addListener(() => widget.onPanelSlide!(_ac.value));
-      }
-      _ac = animationController;
-
-      return animationController.dispose;
-    }, [animationController]);
-
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -138,12 +158,12 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
         _isPanelVisible
             ? _gestureHandler(
                 child: AnimatedBuilder(
-                  animation: animationController,
+                  animation: _ac,
                   builder: (context, child) {
                     return SizedBox(
-                      height: animationController.value *
-                              (widget.maxHeight - widget.minHeight) +
-                          widget.minHeight,
+                      height:
+                          _ac.value * (widget.maxHeight - widget.minHeight) +
+                              widget.minHeight,
                       child: child,
                     );
                   },
@@ -164,7 +184,7 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
                               tween: Tween<double>(begin: 1.0, end: 1.0),
                               weight: 90,
                             ),
-                          ]).animate(animationController),
+                          ]).animate(_ac),
                           child: widget.panel,
                         ),
                       ),
@@ -182,7 +202,7 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel> {
                               tween: Tween<double>(begin: 0.0, end: 0.0),
                               weight: 80,
                             ),
-                          ]).animate(animationController),
+                          ]).animate(_ac),
 
                           // if the panel is open ignore pointers (touch events) on the collapsed
                           // child so that way touch events go through to whatever is underneath

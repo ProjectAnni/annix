@@ -7,6 +7,7 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ class AnnilListTile extends ConsumerWidget {
       selected: true,
       enabled: enabled,
       onTap: () {
-        ref.read(routerProvider).to(name: '/annil', arguments: annil);
+        context.push('/annil', extra: annil);
       },
     );
   }

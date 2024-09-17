@@ -8,6 +8,7 @@ import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PlayingDesktopScreen extends StatefulWidget {
@@ -94,11 +95,7 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                 ),
                                 onPressed: () {
                                   // FIXME: dialog to show all available tags
-                                  final router = ref.read(routerProvider);
-                                  router.to(
-                                    name: '/tag',
-                                    arguments: track.artist,
-                                  );
+                                  context.push('/tag', extra: track.artist);
                                 },
                               ),
                               TextButton.icon(
@@ -111,11 +108,10 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                onPressed: () async {
-                                  final router = ref.read(routerProvider);
-                                  router.to(
-                                    name: '/album',
-                                    arguments: track.id.albumId,
+                                onPressed: () {
+                                  context.push(
+                                    '/album',
+                                    extra: track.id.albumId,
                                   );
                                 },
                               ),

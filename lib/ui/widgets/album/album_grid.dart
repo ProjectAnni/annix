@@ -1,4 +1,3 @@
-import 'package:annix/providers.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
@@ -6,6 +5,7 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_album_grid.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum AlbumGridStyle {
@@ -22,19 +22,28 @@ class AlbumGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     void toAlbum(final BuildContext context) {
-      ref.read(routerProvider).to(name: '/album', arguments: album.albumId);
+      context.push('/album', extra: album.albumId);
     }
 
     final child = Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AspectRatio(
-          aspectRatio: 1,
-          child: MusicCover.fromAlbum(
-            albumId: album.albumId,
-            fit: BoxFit.fitHeight,
-          ),
+        Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              child: MusicCover.fromAlbum(
+                albumId: album.albumId,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            IconButton.filledTonal(
+              icon: const Icon(Icons.favorite),
+              onPressed: () {},
+            ),
+          ],
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),

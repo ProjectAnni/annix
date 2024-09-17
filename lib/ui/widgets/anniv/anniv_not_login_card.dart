@@ -1,7 +1,7 @@
 import 'package:annix/i18n/strings.g.dart';
-import 'package:annix/providers.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AnnivNotLoginCard extends ConsumerWidget {
@@ -29,7 +29,7 @@ class AnnivNotLoginCard extends ConsumerWidget {
               child: TextButton(
                 child: Text(t.server.login),
                 onPressed: () {
-                  ref.read(routerProvider).to(name: '/login');
+                  context.push('/login');
                 },
               ),
             ),
