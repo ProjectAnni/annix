@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS store(
 #[frb(sync)]
 pub fn get_theme_color(path: String) -> u32 {
     let mut data = ImageReader::open(path).expect("failed to read image");
-    data.resize(128, 128, FilterType::Nearest);
+    data.resize(128, 128, FilterType::Lanczos3);
     let color = ImageReader::extract_color(&data);
 
     // alpha: ((value >> 24) & 0xFF) as u8,

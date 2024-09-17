@@ -6,7 +6,6 @@ String getAudioCachePath(final TrackIdentifier id) {
   return p.join(
     audioCachePath(),
     id.albumId,
-    /* extension is required on macOS for playback */
     '${id.discId}_${id.trackId}',
   );
 }

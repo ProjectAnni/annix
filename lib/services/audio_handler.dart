@@ -44,7 +44,15 @@ class AnnixAudioHandler extends BaseAudioHandler {
     );
 
     unawaited(AudioSession.instance.then((final session) async {
-      await session.configure(const AudioSessionConfiguration.music());
+      await session.configure(const AudioSessionConfiguration(
+        avAudioSessionCategory: AVAudioSessionCategory.playback,
+        avAudioSessionMode: AVAudioSessionMode.moviePlayback,
+        androidAudioAttributes: AndroidAudioAttributes(
+          contentType: AndroidAudioContentType.music,
+          usage: AndroidAudioUsage.media,
+        ),
+        androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+      ));
 
       // unplugged
       session.becomingNoisyEventStream.listen((final _) => service.pause());
@@ -94,6 +102,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
         anniv = ref.read(annivProvider),
         database = ref.read(localDatabaseProvider) {
     player.addListener(() => _updatePlaybackState());
+    player.playing.addListener(() => _updatePlaybackState());
     database.localFavoriteTracks
         .select()
         .watch()
