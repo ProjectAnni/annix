@@ -88,6 +88,11 @@ class AnnixLayout extends HookConsumerWidget {
     final currentIndex =
         pages.contains(router.location) ? pages.indexOf(router.location) : null;
     onDestinationSelected(final index) {
+      if (index >= pages.length && router.canPop()) {
+        router.pop();
+        return;
+      }
+
       context.go(
         pages[index],
         // pageBuilder: fadeThroughTransitionBuilder,
@@ -214,11 +219,11 @@ class AnnixLayout extends HookConsumerWidget {
                     ),
                   )
                   .toList(),
-              // NavigationRailDestination(
-              //   icon: const Icon(Icons.arrow_back),
-              //   label: const Text('back'),
-              //   disabled: !router.mayPop(),
-              // )
+              const NavigationRailDestination(
+                icon: Icon(Icons.arrow_back),
+                label: Text('back'),
+                // disabled: !router.canPop(),
+              )
             ],
           ),
         ),

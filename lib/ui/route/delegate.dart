@@ -30,3 +30,16 @@ class AnnixRouterDelegate with ChangeNotifier {
 
   AnnixRouterDelegate(this.ref);
 }
+
+class PlayerRouteObserver extends NavigatorObserver {
+  final AnnixRouterDelegate delegate;
+
+  PlayerRouteObserver(this.delegate);
+
+  @override
+  didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+    if (['/player'].contains(route.settings.name)) {
+      delegate.closePanel();
+    }
+  }
+}

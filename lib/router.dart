@@ -1,5 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/theme.dart';
+import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -39,6 +40,7 @@ GoRouter buildRouter(Ref ref) {
         navigatorKey: _mainNavigatorKey,
         observers: [
           ThemePopObserver(ref.read(themeProvider)),
+          PlayerRouteObserver(ref.read(routerProvider)),
         ],
         builder: (context, state, child) {
           return AnnixLayout(child: child);
