@@ -48,11 +48,11 @@ class PlayingTrackSwiper extends HookConsumerWidget {
         physics: const HarderScrollPhysics(),
         controller: controller,
         onPageChanged: (index) {
-          if (playingIndex != null && index != playingIndex) {
-            WidgetsBinding.instance.addPostFrameCallback((final _) {
-              player.jump(index);
-            });
-          }
+          // if (playingIndex != null && index != playingIndex) {
+          //   WidgetsBinding.instance.addPostFrameCallback((final _) {
+          //     player.jump(index);
+          //   });
+          // }
         },
         itemCount: queue.length,
         itemBuilder: (_, index) {
