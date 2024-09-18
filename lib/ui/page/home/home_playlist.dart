@@ -39,23 +39,27 @@ class PlaylistView extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(4.0),
                   alignment: Alignment.bottomLeft,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Hero(
-                        tag: 'playlist:name:${playlist.id}',
-                        child: Text(
-                          playlist.name,
-                          style: context.textTheme.titleMedium?.copyWith(
-                            color: context.colorScheme.onSecondaryContainer,
-                            fontWeight: FontWeight.w600,
-                            // backgroundColor: context.colorScheme.secondaryContainer
-                            //     .withValues(alpha: 0.8),
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          softWrap: false,
-                        ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withValues(alpha: 0),
+                        Colors.black.withValues(alpha: 0.5),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Hero(
+                      tag: 'playlist:name:${playlist.id}',
+                      child: Text(
+                        playlist.name,
+                        style: context.textTheme.titleMedium
+                            ?.copyWith(color: Colors.white),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        softWrap: false,
                       ),
                     ),
                   ),
