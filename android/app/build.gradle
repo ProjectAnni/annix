@@ -28,7 +28,9 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    // TODO: revert if it compiles
+    // ndkVersion flutter.ndkVersion
+    ndkVersion "23.1.7779620"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
