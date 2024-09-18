@@ -24,9 +24,9 @@ class AnnixTheme extends ChangeNotifier {
   ColorScheme _primaryDarkScheme;
 
   // temporary theme generated per-page
-  Color? _temporaryPrimaryColor;
-  ColorScheme? _temporaryPrimaryScheme;
-  ColorScheme? _temporaryPrimaryDarkScheme;
+  Color? _temporaryColor;
+  ColorScheme? _temporaryScheme;
+  ColorScheme? _temporaryDarkScheme;
 
   PageTransitionsTheme get transitions => const PageTransitionsTheme(
         builders: <TargetPlatform, PageTransitionsBuilder>{
@@ -43,14 +43,14 @@ class AnnixTheme extends ChangeNotifier {
         useMaterial3: true,
         brightness: Brightness.light,
         fontFamily: FontService.getFontFamilyName(),
-        colorScheme: _temporaryPrimaryScheme ?? _primaryScheme,
+        colorScheme: _temporaryScheme ?? _primaryScheme,
         pageTransitionsTheme: transitions,
       );
   ThemeData get darkTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
         fontFamily: FontService.getFontFamilyName(),
-        colorScheme: _temporaryPrimaryDarkScheme ?? _primaryDarkScheme,
+        colorScheme: _temporaryDarkScheme ?? _primaryDarkScheme,
         pageTransitionsTheme: transitions,
       );
 
@@ -72,8 +72,8 @@ class AnnixTheme extends ChangeNotifier {
 
     _themeStack.add(albumId);
     final [scheme, darkScheme] = await _cache[albumId];
-    if (activeTemporaryTheme == albumId && _temporaryPrimaryScheme != scheme ||
-        _temporaryPrimaryDarkScheme != darkScheme) {
+    if (activeTemporaryTheme == albumId && _temporaryScheme != scheme ||
+        _temporaryDarkScheme != darkScheme) {
       WidgetsBinding.instance.addPostFrameCallback((final _) {
         _setTemporaryScheme(scheme, darkScheme);
       });
@@ -81,11 +81,11 @@ class AnnixTheme extends ChangeNotifier {
   }
 
   void popTemporaryTheme() {
-    if (_temporaryPrimaryColor != null) {
-      final oldTemporaryPrimaryColor = _temporaryPrimaryColor;
-      _temporaryPrimaryColor = null;
-      _temporaryPrimaryScheme = null;
-      _temporaryPrimaryDarkScheme = null;
+    if (_temporaryColor != null) {
+      final oldTemporaryPrimaryColor = _temporaryColor;
+      _temporaryColor = null;
+      _temporaryScheme = null;
+      _temporaryDarkScheme = null;
       _themeStack.clear();
 
       if (oldTemporaryPrimaryColor != _primaryColor) {
@@ -94,7 +94,7 @@ class AnnixTheme extends ChangeNotifier {
     }
   }
 
-  void setImageProvider(String albumId) async {
+  void setPrimaryTheme(String albumId) async {
     final [scheme, darkScheme] = await _getSchemeFromCover(albumId);
     _setScheme(scheme, darkScheme);
   }
@@ -102,7 +102,7 @@ class AnnixTheme extends ChangeNotifier {
   Future<List<ColorScheme>> _getSchemeFromCover(String albumId) async {
     final proxy = ref.read(coverProxyProvider);
     final image = await proxy.getCoverImage(albumId: albumId);
-    final seed = getThemeColor(path: image!.path);
+    final seed = await getThemeColor(path: image!.path);
     final scheme = ColorScheme.fromSeed(seedColor: Color(seed));
     final darkScheme = ColorScheme.fromSeed(
         seedColor: Color(seed), brightness: Brightness.dark);
@@ -112,9 +112,9 @@ class AnnixTheme extends ChangeNotifier {
 
   void _setTemporaryScheme(
       final ColorScheme scheme, final ColorScheme darkScheme) {
-    _temporaryPrimaryColor = scheme.primary;
-    _temporaryPrimaryScheme = scheme;
-    _temporaryPrimaryDarkScheme = darkScheme;
+    _temporaryColor = scheme.primary;
+    _temporaryScheme = scheme;
+    _temporaryDarkScheme = darkScheme;
     notifyListeners();
   }
 

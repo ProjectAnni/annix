@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:uuid/uuid.dart';
 
 /// Color
-int getThemeColor({required String path}) =>
+Future<int> getThemeColor({required String path}) =>
     RustLib.instance.api.crateApiSimpleGetThemeColor(path: path);
 
 // Rust type: RustOpaqueMoi<Mutex < Connection >>

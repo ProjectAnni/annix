@@ -30,7 +30,7 @@ class PlayingMusicCover extends ConsumerWidget {
       child = const DummyMusicCover();
     } else {
       // is playing
-      ref.read(themeProvider).setImageProvider(playingId.albumId);
+      ref.read(themeProvider).setPrimaryTheme(playingId.albumId);
       child = MusicCover.fromAlbum(
         key: ValueKey(playingId.albumId),
         albumId: playingId.albumId,

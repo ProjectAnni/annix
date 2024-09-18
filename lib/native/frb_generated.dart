@@ -126,7 +126,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiPlayerAnnixPlayerStop({required AnnixPlayer that});
 
-  int crateApiSimpleGetThemeColor({required String path});
+  Future<int> crateApiSimpleGetThemeColor({required String path});
 
   Future<String?> crateApiSimpleLocalDbGetAlbum(
       {required LocalDb that, required UuidValue albumId});
@@ -685,12 +685,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  int crateApiSimpleGetThemeColor({required String path}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<int> crateApiSimpleGetThemeColor({required String path}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(path, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_32,

@@ -205,7 +205,6 @@ CREATE TABLE IF NOT EXISTS store(
 }
 
 /// Color
-#[frb(sync)]
 pub fn get_theme_color(path: String) -> u32 {
     let mut data = ImageReader::open(path).expect("failed to read image");
     data.resize(128, 128, FilterType::Lanczos3);
