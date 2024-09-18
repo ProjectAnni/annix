@@ -286,16 +286,16 @@ class _MusicCoverOrLyricState extends State<MusicCoverOrLyric> {
           child: child,
         );
       },
-      child: IndexedStack(
-        index: showLyric ? 0 : 1,
-        key: ValueKey(showLyric ? 0 : 1),
-        children: const [
-          AspectRatio(
-            aspectRatio: 0.9,
-            child: LyricView(),
-          ),
-          PlayingMusicCover(),
-        ],
+      child: AspectRatio(
+        aspectRatio: 0.9,
+        child: IndexedStack(
+          index: showLyric ? 0 : 1,
+          key: ValueKey(showLyric ? 0 : 1),
+          children: const [
+            LyricView(),
+            Center(child: PlayingMusicCover()),
+          ],
+        ),
       ),
     );
   }

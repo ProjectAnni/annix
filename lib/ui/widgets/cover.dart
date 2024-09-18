@@ -10,6 +10,7 @@ class PlayingMusicCover extends ConsumerWidget {
   final BoxFit? fit;
   final FilterQuality filterQuality;
   final bool animated;
+  final BorderRadius? borderRadius;
 
   const PlayingMusicCover({
     super.key,
@@ -17,6 +18,7 @@ class PlayingMusicCover extends ConsumerWidget {
     this.fit,
     this.filterQuality = FilterQuality.medium,
     this.animated = true,
+    this.borderRadius,
   });
 
   @override
@@ -52,6 +54,7 @@ class PlayingMusicCover extends ConsumerWidget {
 
     if (card) {
       return CoverCard(
+        borderRadius: borderRadius,
         child: child,
       );
     } else {
@@ -148,8 +151,13 @@ class MusicCover extends ConsumerWidget {
 
 class CoverCard extends StatelessWidget {
   final Widget child;
+  final BorderRadius? borderRadius;
 
-  const CoverCard({super.key, required this.child});
+  const CoverCard({
+    super.key,
+    required this.child,
+    this.borderRadius,
+  });
 
   @override
   Widget build(final BuildContext context) {
@@ -158,7 +166,7 @@ class CoverCard extends StatelessWidget {
       elevation: 1,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: borderRadius ?? BorderRadius.circular(8),
       ),
       child: AspectRatio(
         aspectRatio: 1,
