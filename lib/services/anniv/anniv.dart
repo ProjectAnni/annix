@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:annix/providers.dart';
 import 'package:annix/services/local/database.dart' hide Playlist;
+import 'package:annix/services/logger.dart';
 import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
@@ -521,7 +522,8 @@ class AnnivService extends ChangeNotifier {
           .toList();
       try {
         await client!.trackPlayback(tracks);
-      } catch (_) {
+      } catch (e) {
+        Logger.error('Failed to submit playback records', exception: e);
         // unlock tracks for next submission
         final ids = records.map((final e) => e.id).toList();
         await db.unlockPlaybackRecords(ids);

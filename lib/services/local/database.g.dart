@@ -154,6 +154,15 @@ class AnnivUserData extends DataClass implements Insertable<AnnivUserData> {
         nickname: nickname ?? this.nickname,
         avatar: avatar ?? this.avatar,
       );
+  AnnivUserData copyWithCompanion(AnnivUserCompanion data) {
+    return AnnivUserData(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      nickname: data.nickname.present ? data.nickname.value : this.nickname,
+      avatar: data.avatar.present ? data.avatar.value : this.avatar,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('AnnivUserData(')
@@ -555,6 +564,23 @@ class PlaylistData extends DataClass implements Insertable<PlaylistData> {
             lastModified.present ? lastModified.value : this.lastModified,
         hasItems: hasItems ?? this.hasItems,
       );
+  PlaylistData copyWithCompanion(PlaylistCompanion data) {
+    return PlaylistData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      cover: data.cover.present ? data.cover.value : this.cover,
+      description:
+          data.description.present ? data.description.value : this.description,
+      remoteId: data.remoteId.present ? data.remoteId.value : this.remoteId,
+      owner: data.owner.present ? data.owner.value : this.owner,
+      public: data.public.present ? data.public.value : this.public,
+      lastModified: data.lastModified.present
+          ? data.lastModified.value
+          : this.lastModified,
+      hasItems: data.hasItems.present ? data.hasItems.value : this.hasItems,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('PlaylistData(')
@@ -955,6 +981,20 @@ class PlaylistItemData extends DataClass
         remoteId: remoteId.present ? remoteId.value : this.remoteId,
         order: order ?? this.order,
       );
+  PlaylistItemData copyWithCompanion(PlaylistItemCompanion data) {
+    return PlaylistItemData(
+      id: data.id.present ? data.id.value : this.id,
+      playlistId:
+          data.playlistId.present ? data.playlistId.value : this.playlistId,
+      type: data.type.present ? data.type.value : this.type,
+      description:
+          data.description.present ? data.description.value : this.description,
+      info: data.info.present ? data.info.value : this.info,
+      remoteId: data.remoteId.present ? data.remoteId.value : this.remoteId,
+      order: data.order.present ? data.order.value : this.order,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('PlaylistItemData(')
@@ -1349,6 +1389,20 @@ class LocalFavoriteTrack extends DataClass
         albumTitle: albumTitle.present ? albumTitle.value : this.albumTitle,
         type: type ?? this.type,
       );
+  LocalFavoriteTrack copyWithCompanion(LocalFavoriteTracksCompanion data) {
+    return LocalFavoriteTrack(
+      id: data.id.present ? data.id.value : this.id,
+      albumId: data.albumId.present ? data.albumId.value : this.albumId,
+      discId: data.discId.present ? data.discId.value : this.discId,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      title: data.title.present ? data.title.value : this.title,
+      artist: data.artist.present ? data.artist.value : this.artist,
+      albumTitle:
+          data.albumTitle.present ? data.albumTitle.value : this.albumTitle,
+      type: data.type.present ? data.type.value : this.type,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LocalFavoriteTrack(')
@@ -1608,6 +1662,13 @@ class LocalFavoriteAlbum extends DataClass
         id: id ?? this.id,
         albumId: albumId ?? this.albumId,
       );
+  LocalFavoriteAlbum copyWithCompanion(LocalFavoriteAlbumsCompanion data) {
+    return LocalFavoriteAlbum(
+      id: data.id.present ? data.id.value : this.id,
+      albumId: data.albumId.present ? data.albumId.value : this.albumId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LocalFavoriteAlbum(')
@@ -1882,6 +1943,17 @@ class LocalAnnilServer extends DataClass
         token: token ?? this.token,
         priority: priority ?? this.priority,
       );
+  LocalAnnilServer copyWithCompanion(LocalAnnilServersCompanion data) {
+    return LocalAnnilServer(
+      id: data.id.present ? data.id.value : this.id,
+      remoteId: data.remoteId.present ? data.remoteId.value : this.remoteId,
+      name: data.name.present ? data.name.value : this.name,
+      url: data.url.present ? data.url.value : this.url,
+      token: data.token.present ? data.token.value : this.token,
+      priority: data.priority.present ? data.priority.value : this.priority,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LocalAnnilServer(')
@@ -2146,6 +2218,15 @@ class LocalAnnilCache extends DataClass implements Insertable<LocalAnnilCache> {
         etag: etag.present ? etag.value : this.etag,
         lastUpdate: lastUpdate.present ? lastUpdate.value : this.lastUpdate,
       );
+  LocalAnnilCache copyWithCompanion(LocalAnnilCachesCompanion data) {
+    return LocalAnnilCache(
+      annilId: data.annilId.present ? data.annilId.value : this.annilId,
+      etag: data.etag.present ? data.etag.value : this.etag,
+      lastUpdate:
+          data.lastUpdate.present ? data.lastUpdate.value : this.lastUpdate,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LocalAnnilCache(')
@@ -2360,6 +2441,14 @@ class LocalAnnilAlbum extends DataClass implements Insertable<LocalAnnilAlbum> {
         annilId: annilId ?? this.annilId,
         albumId: albumId ?? this.albumId,
       );
+  LocalAnnilAlbum copyWithCompanion(LocalAnnilAlbumsCompanion data) {
+    return LocalAnnilAlbum(
+      id: data.id.present ? data.id.value : this.id,
+      annilId: data.annilId.present ? data.annilId.value : this.annilId,
+      albumId: data.albumId.present ? data.albumId.value : this.albumId,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('LocalAnnilAlbum(')
@@ -2649,6 +2738,17 @@ class PlaybackRecord extends DataClass implements Insertable<PlaybackRecord> {
         at: at ?? this.at,
         locked: locked ?? this.locked,
       );
+  PlaybackRecord copyWithCompanion(PlaybackRecordsCompanion data) {
+    return PlaybackRecord(
+      id: data.id.present ? data.id.value : this.id,
+      albumId: data.albumId.present ? data.albumId.value : this.albumId,
+      discId: data.discId.present ? data.discId.value : this.discId,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      at: data.at.present ? data.at.value : this.at,
+      locked: data.locked.present ? data.locked.value : this.locked,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('PlaybackRecord(')
@@ -2778,6 +2878,7 @@ class PlaybackRecordsCompanion extends UpdateCompanion<PlaybackRecord> {
 
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
+  $LocalDatabaseManager get managers => $LocalDatabaseManager(this);
   late final AnnivUser annivUser = AnnivUser(this);
   late final Playlist playlist = Playlist(this);
   late final PlaylistItem playlistItem = PlaylistItem(this);
@@ -2931,6 +3032,1373 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
         localAnnilAlbums,
         playbackRecords
       ];
+}
+
+typedef $AnnivUserCreateCompanionBuilder = AnnivUserCompanion Function({
+  Value<int> id,
+  required String userId,
+  required String nickname,
+  required String avatar,
+});
+typedef $AnnivUserUpdateCompanionBuilder = AnnivUserCompanion Function({
+  Value<int> id,
+  Value<String> userId,
+  Value<String> nickname,
+  Value<String> avatar,
+});
+
+class $AnnivUserFilterComposer
+    extends FilterComposer<_$LocalDatabase, AnnivUser> {
+  $AnnivUserFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get userId => $state.composableBuilder(
+      column: $state.table.userId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get nickname => $state.composableBuilder(
+      column: $state.table.nickname,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get avatar => $state.composableBuilder(
+      column: $state.table.avatar,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $AnnivUserOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, AnnivUser> {
+  $AnnivUserOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get userId => $state.composableBuilder(
+      column: $state.table.userId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get nickname => $state.composableBuilder(
+      column: $state.table.nickname,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get avatar => $state.composableBuilder(
+      column: $state.table.avatar,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $AnnivUserTableManager extends RootTableManager<
+    _$LocalDatabase,
+    AnnivUser,
+    AnnivUserData,
+    $AnnivUserFilterComposer,
+    $AnnivUserOrderingComposer,
+    $AnnivUserCreateCompanionBuilder,
+    $AnnivUserUpdateCompanionBuilder,
+    (AnnivUserData, BaseReferences<_$LocalDatabase, AnnivUser, AnnivUserData>),
+    AnnivUserData,
+    PrefetchHooks Function()> {
+  $AnnivUserTableManager(_$LocalDatabase db, AnnivUser table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $AnnivUserFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $AnnivUserOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> userId = const Value.absent(),
+            Value<String> nickname = const Value.absent(),
+            Value<String> avatar = const Value.absent(),
+          }) =>
+              AnnivUserCompanion(
+            id: id,
+            userId: userId,
+            nickname: nickname,
+            avatar: avatar,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String userId,
+            required String nickname,
+            required String avatar,
+          }) =>
+              AnnivUserCompanion.insert(
+            id: id,
+            userId: userId,
+            nickname: nickname,
+            avatar: avatar,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $AnnivUserProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    AnnivUser,
+    AnnivUserData,
+    $AnnivUserFilterComposer,
+    $AnnivUserOrderingComposer,
+    $AnnivUserCreateCompanionBuilder,
+    $AnnivUserUpdateCompanionBuilder,
+    (AnnivUserData, BaseReferences<_$LocalDatabase, AnnivUser, AnnivUserData>),
+    AnnivUserData,
+    PrefetchHooks Function()>;
+typedef $PlaylistCreateCompanionBuilder = PlaylistCompanion Function({
+  Value<int> id,
+  required String name,
+  Value<String?> cover,
+  Value<String?> description,
+  Value<String?> remoteId,
+  Value<String?> owner,
+  Value<bool?> public,
+  Value<int?> lastModified,
+  required bool hasItems,
+});
+typedef $PlaylistUpdateCompanionBuilder = PlaylistCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String?> cover,
+  Value<String?> description,
+  Value<String?> remoteId,
+  Value<String?> owner,
+  Value<bool?> public,
+  Value<int?> lastModified,
+  Value<bool> hasItems,
+});
+
+class $PlaylistFilterComposer
+    extends FilterComposer<_$LocalDatabase, Playlist> {
+  $PlaylistFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get cover => $state.composableBuilder(
+      column: $state.table.cover,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get remoteId => $state.composableBuilder(
+      column: $state.table.remoteId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get owner => $state.composableBuilder(
+      column: $state.table.owner,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get public => $state.composableBuilder(
+      column: $state.table.public,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get lastModified => $state.composableBuilder(
+      column: $state.table.lastModified,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get hasItems => $state.composableBuilder(
+      column: $state.table.hasItems,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $PlaylistOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, Playlist> {
+  $PlaylistOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get cover => $state.composableBuilder(
+      column: $state.table.cover,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get remoteId => $state.composableBuilder(
+      column: $state.table.remoteId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get owner => $state.composableBuilder(
+      column: $state.table.owner,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get public => $state.composableBuilder(
+      column: $state.table.public,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get lastModified => $state.composableBuilder(
+      column: $state.table.lastModified,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get hasItems => $state.composableBuilder(
+      column: $state.table.hasItems,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $PlaylistTableManager extends RootTableManager<
+    _$LocalDatabase,
+    Playlist,
+    PlaylistData,
+    $PlaylistFilterComposer,
+    $PlaylistOrderingComposer,
+    $PlaylistCreateCompanionBuilder,
+    $PlaylistUpdateCompanionBuilder,
+    (PlaylistData, BaseReferences<_$LocalDatabase, Playlist, PlaylistData>),
+    PlaylistData,
+    PrefetchHooks Function()> {
+  $PlaylistTableManager(_$LocalDatabase db, Playlist table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $PlaylistFilterComposer(ComposerState(db, table)),
+          orderingComposer: $PlaylistOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> cover = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String?> remoteId = const Value.absent(),
+            Value<String?> owner = const Value.absent(),
+            Value<bool?> public = const Value.absent(),
+            Value<int?> lastModified = const Value.absent(),
+            Value<bool> hasItems = const Value.absent(),
+          }) =>
+              PlaylistCompanion(
+            id: id,
+            name: name,
+            cover: cover,
+            description: description,
+            remoteId: remoteId,
+            owner: owner,
+            public: public,
+            lastModified: lastModified,
+            hasItems: hasItems,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<String?> cover = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String?> remoteId = const Value.absent(),
+            Value<String?> owner = const Value.absent(),
+            Value<bool?> public = const Value.absent(),
+            Value<int?> lastModified = const Value.absent(),
+            required bool hasItems,
+          }) =>
+              PlaylistCompanion.insert(
+            id: id,
+            name: name,
+            cover: cover,
+            description: description,
+            remoteId: remoteId,
+            owner: owner,
+            public: public,
+            lastModified: lastModified,
+            hasItems: hasItems,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $PlaylistProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    Playlist,
+    PlaylistData,
+    $PlaylistFilterComposer,
+    $PlaylistOrderingComposer,
+    $PlaylistCreateCompanionBuilder,
+    $PlaylistUpdateCompanionBuilder,
+    (PlaylistData, BaseReferences<_$LocalDatabase, Playlist, PlaylistData>),
+    PlaylistData,
+    PrefetchHooks Function()>;
+typedef $PlaylistItemCreateCompanionBuilder = PlaylistItemCompanion Function({
+  Value<int> id,
+  required int playlistId,
+  Value<String> type,
+  Value<String?> description,
+  required String info,
+  Value<String?> remoteId,
+  required int order,
+});
+typedef $PlaylistItemUpdateCompanionBuilder = PlaylistItemCompanion Function({
+  Value<int> id,
+  Value<int> playlistId,
+  Value<String> type,
+  Value<String?> description,
+  Value<String> info,
+  Value<String?> remoteId,
+  Value<int> order,
+});
+
+class $PlaylistItemFilterComposer
+    extends FilterComposer<_$LocalDatabase, PlaylistItem> {
+  $PlaylistItemFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get playlistId => $state.composableBuilder(
+      column: $state.table.playlistId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get info => $state.composableBuilder(
+      column: $state.table.info,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get remoteId => $state.composableBuilder(
+      column: $state.table.remoteId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get order => $state.composableBuilder(
+      column: $state.table.order,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $PlaylistItemOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, PlaylistItem> {
+  $PlaylistItemOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get playlistId => $state.composableBuilder(
+      column: $state.table.playlistId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get info => $state.composableBuilder(
+      column: $state.table.info,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get remoteId => $state.composableBuilder(
+      column: $state.table.remoteId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get order => $state.composableBuilder(
+      column: $state.table.order,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $PlaylistItemTableManager extends RootTableManager<
+    _$LocalDatabase,
+    PlaylistItem,
+    PlaylistItemData,
+    $PlaylistItemFilterComposer,
+    $PlaylistItemOrderingComposer,
+    $PlaylistItemCreateCompanionBuilder,
+    $PlaylistItemUpdateCompanionBuilder,
+    (
+      PlaylistItemData,
+      BaseReferences<_$LocalDatabase, PlaylistItem, PlaylistItemData>
+    ),
+    PlaylistItemData,
+    PrefetchHooks Function()> {
+  $PlaylistItemTableManager(_$LocalDatabase db, PlaylistItem table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $PlaylistItemFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $PlaylistItemOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> playlistId = const Value.absent(),
+            Value<String> type = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String> info = const Value.absent(),
+            Value<String?> remoteId = const Value.absent(),
+            Value<int> order = const Value.absent(),
+          }) =>
+              PlaylistItemCompanion(
+            id: id,
+            playlistId: playlistId,
+            type: type,
+            description: description,
+            info: info,
+            remoteId: remoteId,
+            order: order,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int playlistId,
+            Value<String> type = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            required String info,
+            Value<String?> remoteId = const Value.absent(),
+            required int order,
+          }) =>
+              PlaylistItemCompanion.insert(
+            id: id,
+            playlistId: playlistId,
+            type: type,
+            description: description,
+            info: info,
+            remoteId: remoteId,
+            order: order,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $PlaylistItemProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    PlaylistItem,
+    PlaylistItemData,
+    $PlaylistItemFilterComposer,
+    $PlaylistItemOrderingComposer,
+    $PlaylistItemCreateCompanionBuilder,
+    $PlaylistItemUpdateCompanionBuilder,
+    (
+      PlaylistItemData,
+      BaseReferences<_$LocalDatabase, PlaylistItem, PlaylistItemData>
+    ),
+    PlaylistItemData,
+    PrefetchHooks Function()>;
+typedef $LocalFavoriteTracksCreateCompanionBuilder
+    = LocalFavoriteTracksCompanion Function({
+  Value<int> id,
+  required String albumId,
+  required int discId,
+  required int trackId,
+  Value<String?> title,
+  Value<String?> artist,
+  Value<String?> albumTitle,
+  Value<String> type,
+});
+typedef $LocalFavoriteTracksUpdateCompanionBuilder
+    = LocalFavoriteTracksCompanion Function({
+  Value<int> id,
+  Value<String> albumId,
+  Value<int> discId,
+  Value<int> trackId,
+  Value<String?> title,
+  Value<String?> artist,
+  Value<String?> albumTitle,
+  Value<String> type,
+});
+
+class $LocalFavoriteTracksFilterComposer
+    extends FilterComposer<_$LocalDatabase, LocalFavoriteTracks> {
+  $LocalFavoriteTracksFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get discId => $state.composableBuilder(
+      column: $state.table.discId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get title => $state.composableBuilder(
+      column: $state.table.title,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get artist => $state.composableBuilder(
+      column: $state.table.artist,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get albumTitle => $state.composableBuilder(
+      column: $state.table.albumTitle,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $LocalFavoriteTracksOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, LocalFavoriteTracks> {
+  $LocalFavoriteTracksOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get discId => $state.composableBuilder(
+      column: $state.table.discId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get title => $state.composableBuilder(
+      column: $state.table.title,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get artist => $state.composableBuilder(
+      column: $state.table.artist,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get albumTitle => $state.composableBuilder(
+      column: $state.table.albumTitle,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $LocalFavoriteTracksTableManager extends RootTableManager<
+    _$LocalDatabase,
+    LocalFavoriteTracks,
+    LocalFavoriteTrack,
+    $LocalFavoriteTracksFilterComposer,
+    $LocalFavoriteTracksOrderingComposer,
+    $LocalFavoriteTracksCreateCompanionBuilder,
+    $LocalFavoriteTracksUpdateCompanionBuilder,
+    (
+      LocalFavoriteTrack,
+      BaseReferences<_$LocalDatabase, LocalFavoriteTracks, LocalFavoriteTrack>
+    ),
+    LocalFavoriteTrack,
+    PrefetchHooks Function()> {
+  $LocalFavoriteTracksTableManager(
+      _$LocalDatabase db, LocalFavoriteTracks table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $LocalFavoriteTracksFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $LocalFavoriteTracksOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> albumId = const Value.absent(),
+            Value<int> discId = const Value.absent(),
+            Value<int> trackId = const Value.absent(),
+            Value<String?> title = const Value.absent(),
+            Value<String?> artist = const Value.absent(),
+            Value<String?> albumTitle = const Value.absent(),
+            Value<String> type = const Value.absent(),
+          }) =>
+              LocalFavoriteTracksCompanion(
+            id: id,
+            albumId: albumId,
+            discId: discId,
+            trackId: trackId,
+            title: title,
+            artist: artist,
+            albumTitle: albumTitle,
+            type: type,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String albumId,
+            required int discId,
+            required int trackId,
+            Value<String?> title = const Value.absent(),
+            Value<String?> artist = const Value.absent(),
+            Value<String?> albumTitle = const Value.absent(),
+            Value<String> type = const Value.absent(),
+          }) =>
+              LocalFavoriteTracksCompanion.insert(
+            id: id,
+            albumId: albumId,
+            discId: discId,
+            trackId: trackId,
+            title: title,
+            artist: artist,
+            albumTitle: albumTitle,
+            type: type,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $LocalFavoriteTracksProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    LocalFavoriteTracks,
+    LocalFavoriteTrack,
+    $LocalFavoriteTracksFilterComposer,
+    $LocalFavoriteTracksOrderingComposer,
+    $LocalFavoriteTracksCreateCompanionBuilder,
+    $LocalFavoriteTracksUpdateCompanionBuilder,
+    (
+      LocalFavoriteTrack,
+      BaseReferences<_$LocalDatabase, LocalFavoriteTracks, LocalFavoriteTrack>
+    ),
+    LocalFavoriteTrack,
+    PrefetchHooks Function()>;
+typedef $LocalFavoriteAlbumsCreateCompanionBuilder
+    = LocalFavoriteAlbumsCompanion Function({
+  Value<int> id,
+  required String albumId,
+});
+typedef $LocalFavoriteAlbumsUpdateCompanionBuilder
+    = LocalFavoriteAlbumsCompanion Function({
+  Value<int> id,
+  Value<String> albumId,
+});
+
+class $LocalFavoriteAlbumsFilterComposer
+    extends FilterComposer<_$LocalDatabase, LocalFavoriteAlbums> {
+  $LocalFavoriteAlbumsFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $LocalFavoriteAlbumsOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, LocalFavoriteAlbums> {
+  $LocalFavoriteAlbumsOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $LocalFavoriteAlbumsTableManager extends RootTableManager<
+    _$LocalDatabase,
+    LocalFavoriteAlbums,
+    LocalFavoriteAlbum,
+    $LocalFavoriteAlbumsFilterComposer,
+    $LocalFavoriteAlbumsOrderingComposer,
+    $LocalFavoriteAlbumsCreateCompanionBuilder,
+    $LocalFavoriteAlbumsUpdateCompanionBuilder,
+    (
+      LocalFavoriteAlbum,
+      BaseReferences<_$LocalDatabase, LocalFavoriteAlbums, LocalFavoriteAlbum>
+    ),
+    LocalFavoriteAlbum,
+    PrefetchHooks Function()> {
+  $LocalFavoriteAlbumsTableManager(
+      _$LocalDatabase db, LocalFavoriteAlbums table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $LocalFavoriteAlbumsFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $LocalFavoriteAlbumsOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> albumId = const Value.absent(),
+          }) =>
+              LocalFavoriteAlbumsCompanion(
+            id: id,
+            albumId: albumId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String albumId,
+          }) =>
+              LocalFavoriteAlbumsCompanion.insert(
+            id: id,
+            albumId: albumId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $LocalFavoriteAlbumsProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    LocalFavoriteAlbums,
+    LocalFavoriteAlbum,
+    $LocalFavoriteAlbumsFilterComposer,
+    $LocalFavoriteAlbumsOrderingComposer,
+    $LocalFavoriteAlbumsCreateCompanionBuilder,
+    $LocalFavoriteAlbumsUpdateCompanionBuilder,
+    (
+      LocalFavoriteAlbum,
+      BaseReferences<_$LocalDatabase, LocalFavoriteAlbums, LocalFavoriteAlbum>
+    ),
+    LocalFavoriteAlbum,
+    PrefetchHooks Function()>;
+typedef $LocalAnnilServersCreateCompanionBuilder = LocalAnnilServersCompanion
+    Function({
+  Value<int> id,
+  Value<String?> remoteId,
+  required String name,
+  required String url,
+  required String token,
+  required int priority,
+});
+typedef $LocalAnnilServersUpdateCompanionBuilder = LocalAnnilServersCompanion
+    Function({
+  Value<int> id,
+  Value<String?> remoteId,
+  Value<String> name,
+  Value<String> url,
+  Value<String> token,
+  Value<int> priority,
+});
+
+class $LocalAnnilServersFilterComposer
+    extends FilterComposer<_$LocalDatabase, LocalAnnilServers> {
+  $LocalAnnilServersFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get remoteId => $state.composableBuilder(
+      column: $state.table.remoteId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get url => $state.composableBuilder(
+      column: $state.table.url,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get token => $state.composableBuilder(
+      column: $state.table.token,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get priority => $state.composableBuilder(
+      column: $state.table.priority,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $LocalAnnilServersOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, LocalAnnilServers> {
+  $LocalAnnilServersOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get remoteId => $state.composableBuilder(
+      column: $state.table.remoteId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get url => $state.composableBuilder(
+      column: $state.table.url,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get token => $state.composableBuilder(
+      column: $state.table.token,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get priority => $state.composableBuilder(
+      column: $state.table.priority,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $LocalAnnilServersTableManager extends RootTableManager<
+    _$LocalDatabase,
+    LocalAnnilServers,
+    LocalAnnilServer,
+    $LocalAnnilServersFilterComposer,
+    $LocalAnnilServersOrderingComposer,
+    $LocalAnnilServersCreateCompanionBuilder,
+    $LocalAnnilServersUpdateCompanionBuilder,
+    (
+      LocalAnnilServer,
+      BaseReferences<_$LocalDatabase, LocalAnnilServers, LocalAnnilServer>
+    ),
+    LocalAnnilServer,
+    PrefetchHooks Function()> {
+  $LocalAnnilServersTableManager(_$LocalDatabase db, LocalAnnilServers table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $LocalAnnilServersFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $LocalAnnilServersOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> remoteId = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> url = const Value.absent(),
+            Value<String> token = const Value.absent(),
+            Value<int> priority = const Value.absent(),
+          }) =>
+              LocalAnnilServersCompanion(
+            id: id,
+            remoteId: remoteId,
+            name: name,
+            url: url,
+            token: token,
+            priority: priority,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> remoteId = const Value.absent(),
+            required String name,
+            required String url,
+            required String token,
+            required int priority,
+          }) =>
+              LocalAnnilServersCompanion.insert(
+            id: id,
+            remoteId: remoteId,
+            name: name,
+            url: url,
+            token: token,
+            priority: priority,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $LocalAnnilServersProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    LocalAnnilServers,
+    LocalAnnilServer,
+    $LocalAnnilServersFilterComposer,
+    $LocalAnnilServersOrderingComposer,
+    $LocalAnnilServersCreateCompanionBuilder,
+    $LocalAnnilServersUpdateCompanionBuilder,
+    (
+      LocalAnnilServer,
+      BaseReferences<_$LocalDatabase, LocalAnnilServers, LocalAnnilServer>
+    ),
+    LocalAnnilServer,
+    PrefetchHooks Function()>;
+typedef $LocalAnnilCachesCreateCompanionBuilder = LocalAnnilCachesCompanion
+    Function({
+  Value<int> annilId,
+  Value<String?> etag,
+  Value<int?> lastUpdate,
+});
+typedef $LocalAnnilCachesUpdateCompanionBuilder = LocalAnnilCachesCompanion
+    Function({
+  Value<int> annilId,
+  Value<String?> etag,
+  Value<int?> lastUpdate,
+});
+
+class $LocalAnnilCachesFilterComposer
+    extends FilterComposer<_$LocalDatabase, LocalAnnilCaches> {
+  $LocalAnnilCachesFilterComposer(super.$state);
+  ColumnFilters<int> get annilId => $state.composableBuilder(
+      column: $state.table.annilId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get etag => $state.composableBuilder(
+      column: $state.table.etag,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get lastUpdate => $state.composableBuilder(
+      column: $state.table.lastUpdate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $LocalAnnilCachesOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, LocalAnnilCaches> {
+  $LocalAnnilCachesOrderingComposer(super.$state);
+  ColumnOrderings<int> get annilId => $state.composableBuilder(
+      column: $state.table.annilId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get etag => $state.composableBuilder(
+      column: $state.table.etag,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get lastUpdate => $state.composableBuilder(
+      column: $state.table.lastUpdate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $LocalAnnilCachesTableManager extends RootTableManager<
+    _$LocalDatabase,
+    LocalAnnilCaches,
+    LocalAnnilCache,
+    $LocalAnnilCachesFilterComposer,
+    $LocalAnnilCachesOrderingComposer,
+    $LocalAnnilCachesCreateCompanionBuilder,
+    $LocalAnnilCachesUpdateCompanionBuilder,
+    (
+      LocalAnnilCache,
+      BaseReferences<_$LocalDatabase, LocalAnnilCaches, LocalAnnilCache>
+    ),
+    LocalAnnilCache,
+    PrefetchHooks Function()> {
+  $LocalAnnilCachesTableManager(_$LocalDatabase db, LocalAnnilCaches table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $LocalAnnilCachesFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $LocalAnnilCachesOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> annilId = const Value.absent(),
+            Value<String?> etag = const Value.absent(),
+            Value<int?> lastUpdate = const Value.absent(),
+          }) =>
+              LocalAnnilCachesCompanion(
+            annilId: annilId,
+            etag: etag,
+            lastUpdate: lastUpdate,
+          ),
+          createCompanionCallback: ({
+            Value<int> annilId = const Value.absent(),
+            Value<String?> etag = const Value.absent(),
+            Value<int?> lastUpdate = const Value.absent(),
+          }) =>
+              LocalAnnilCachesCompanion.insert(
+            annilId: annilId,
+            etag: etag,
+            lastUpdate: lastUpdate,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $LocalAnnilCachesProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    LocalAnnilCaches,
+    LocalAnnilCache,
+    $LocalAnnilCachesFilterComposer,
+    $LocalAnnilCachesOrderingComposer,
+    $LocalAnnilCachesCreateCompanionBuilder,
+    $LocalAnnilCachesUpdateCompanionBuilder,
+    (
+      LocalAnnilCache,
+      BaseReferences<_$LocalDatabase, LocalAnnilCaches, LocalAnnilCache>
+    ),
+    LocalAnnilCache,
+    PrefetchHooks Function()>;
+typedef $LocalAnnilAlbumsCreateCompanionBuilder = LocalAnnilAlbumsCompanion
+    Function({
+  Value<int> id,
+  required int annilId,
+  required String albumId,
+});
+typedef $LocalAnnilAlbumsUpdateCompanionBuilder = LocalAnnilAlbumsCompanion
+    Function({
+  Value<int> id,
+  Value<int> annilId,
+  Value<String> albumId,
+});
+
+class $LocalAnnilAlbumsFilterComposer
+    extends FilterComposer<_$LocalDatabase, LocalAnnilAlbums> {
+  $LocalAnnilAlbumsFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get annilId => $state.composableBuilder(
+      column: $state.table.annilId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $LocalAnnilAlbumsOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, LocalAnnilAlbums> {
+  $LocalAnnilAlbumsOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get annilId => $state.composableBuilder(
+      column: $state.table.annilId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $LocalAnnilAlbumsTableManager extends RootTableManager<
+    _$LocalDatabase,
+    LocalAnnilAlbums,
+    LocalAnnilAlbum,
+    $LocalAnnilAlbumsFilterComposer,
+    $LocalAnnilAlbumsOrderingComposer,
+    $LocalAnnilAlbumsCreateCompanionBuilder,
+    $LocalAnnilAlbumsUpdateCompanionBuilder,
+    (
+      LocalAnnilAlbum,
+      BaseReferences<_$LocalDatabase, LocalAnnilAlbums, LocalAnnilAlbum>
+    ),
+    LocalAnnilAlbum,
+    PrefetchHooks Function()> {
+  $LocalAnnilAlbumsTableManager(_$LocalDatabase db, LocalAnnilAlbums table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $LocalAnnilAlbumsFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $LocalAnnilAlbumsOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> annilId = const Value.absent(),
+            Value<String> albumId = const Value.absent(),
+          }) =>
+              LocalAnnilAlbumsCompanion(
+            id: id,
+            annilId: annilId,
+            albumId: albumId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int annilId,
+            required String albumId,
+          }) =>
+              LocalAnnilAlbumsCompanion.insert(
+            id: id,
+            annilId: annilId,
+            albumId: albumId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $LocalAnnilAlbumsProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    LocalAnnilAlbums,
+    LocalAnnilAlbum,
+    $LocalAnnilAlbumsFilterComposer,
+    $LocalAnnilAlbumsOrderingComposer,
+    $LocalAnnilAlbumsCreateCompanionBuilder,
+    $LocalAnnilAlbumsUpdateCompanionBuilder,
+    (
+      LocalAnnilAlbum,
+      BaseReferences<_$LocalDatabase, LocalAnnilAlbums, LocalAnnilAlbum>
+    ),
+    LocalAnnilAlbum,
+    PrefetchHooks Function()>;
+typedef $PlaybackRecordsCreateCompanionBuilder = PlaybackRecordsCompanion
+    Function({
+  Value<int> id,
+  required String albumId,
+  required int discId,
+  required int trackId,
+  required int at,
+  required bool locked,
+});
+typedef $PlaybackRecordsUpdateCompanionBuilder = PlaybackRecordsCompanion
+    Function({
+  Value<int> id,
+  Value<String> albumId,
+  Value<int> discId,
+  Value<int> trackId,
+  Value<int> at,
+  Value<bool> locked,
+});
+
+class $PlaybackRecordsFilterComposer
+    extends FilterComposer<_$LocalDatabase, PlaybackRecords> {
+  $PlaybackRecordsFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get discId => $state.composableBuilder(
+      column: $state.table.discId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get at => $state.composableBuilder(
+      column: $state.table.at,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get locked => $state.composableBuilder(
+      column: $state.table.locked,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $PlaybackRecordsOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, PlaybackRecords> {
+  $PlaybackRecordsOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get albumId => $state.composableBuilder(
+      column: $state.table.albumId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get discId => $state.composableBuilder(
+      column: $state.table.discId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get at => $state.composableBuilder(
+      column: $state.table.at,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get locked => $state.composableBuilder(
+      column: $state.table.locked,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $PlaybackRecordsTableManager extends RootTableManager<
+    _$LocalDatabase,
+    PlaybackRecords,
+    PlaybackRecord,
+    $PlaybackRecordsFilterComposer,
+    $PlaybackRecordsOrderingComposer,
+    $PlaybackRecordsCreateCompanionBuilder,
+    $PlaybackRecordsUpdateCompanionBuilder,
+    (
+      PlaybackRecord,
+      BaseReferences<_$LocalDatabase, PlaybackRecords, PlaybackRecord>
+    ),
+    PlaybackRecord,
+    PrefetchHooks Function()> {
+  $PlaybackRecordsTableManager(_$LocalDatabase db, PlaybackRecords table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $PlaybackRecordsFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $PlaybackRecordsOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> albumId = const Value.absent(),
+            Value<int> discId = const Value.absent(),
+            Value<int> trackId = const Value.absent(),
+            Value<int> at = const Value.absent(),
+            Value<bool> locked = const Value.absent(),
+          }) =>
+              PlaybackRecordsCompanion(
+            id: id,
+            albumId: albumId,
+            discId: discId,
+            trackId: trackId,
+            at: at,
+            locked: locked,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String albumId,
+            required int discId,
+            required int trackId,
+            required int at,
+            required bool locked,
+          }) =>
+              PlaybackRecordsCompanion.insert(
+            id: id,
+            albumId: albumId,
+            discId: discId,
+            trackId: trackId,
+            at: at,
+            locked: locked,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $PlaybackRecordsProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    PlaybackRecords,
+    PlaybackRecord,
+    $PlaybackRecordsFilterComposer,
+    $PlaybackRecordsOrderingComposer,
+    $PlaybackRecordsCreateCompanionBuilder,
+    $PlaybackRecordsUpdateCompanionBuilder,
+    (
+      PlaybackRecord,
+      BaseReferences<_$LocalDatabase, PlaybackRecords, PlaybackRecord>
+    ),
+    PlaybackRecord,
+    PrefetchHooks Function()>;
+
+class $LocalDatabaseManager {
+  final _$LocalDatabase _db;
+  $LocalDatabaseManager(this._db);
+  $AnnivUserTableManager get annivUser =>
+      $AnnivUserTableManager(_db, _db.annivUser);
+  $PlaylistTableManager get playlist =>
+      $PlaylistTableManager(_db, _db.playlist);
+  $PlaylistItemTableManager get playlistItem =>
+      $PlaylistItemTableManager(_db, _db.playlistItem);
+  $LocalFavoriteTracksTableManager get localFavoriteTracks =>
+      $LocalFavoriteTracksTableManager(_db, _db.localFavoriteTracks);
+  $LocalFavoriteAlbumsTableManager get localFavoriteAlbums =>
+      $LocalFavoriteAlbumsTableManager(_db, _db.localFavoriteAlbums);
+  $LocalAnnilServersTableManager get localAnnilServers =>
+      $LocalAnnilServersTableManager(_db, _db.localAnnilServers);
+  $LocalAnnilCachesTableManager get localAnnilCaches =>
+      $LocalAnnilCachesTableManager(_db, _db.localAnnilCaches);
+  $LocalAnnilAlbumsTableManager get localAnnilAlbums =>
+      $LocalAnnilAlbumsTableManager(_db, _db.localAnnilAlbums);
+  $PlaybackRecordsTableManager get playbackRecords =>
+      $PlaybackRecordsTableManager(_db, _db.playbackRecords);
 }
 
 class PlaybackRecordsToSubmitResult {

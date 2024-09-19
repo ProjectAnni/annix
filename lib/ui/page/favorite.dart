@@ -83,31 +83,42 @@ class FavoritePage extends HookConsumerWidget {
           duration: context.isDesktop
               ? const Duration(milliseconds: 150)
               : const Duration(milliseconds: 300),
-          children: [
-            _favoriteTracks(),
-            _favoriteAlbums(),
-          ],
+          children: const [FavoriteTracks(), FavoriteAlbumWall()],
         ),
       ),
     );
   }
+}
 
-  Widget _favoriteTracks() {
-    return Consumer(
-      builder: (context, ref, child) {
-        final annil = ref.read(annilProvider);
-        final player = ref.read(playbackProvider);
-        final favoriteTracks = ref.watch(favoriteTracksProvider);
-        final favorites = favoriteTracks.value ?? [];
-        final reversedFavorite = favorites.reversed;
+class FavoriteTracks extends ConsumerWidget {
+  const FavoriteTracks({super.key});
 
-        return ListView.builder(
-          primary: false,
+  @override
+  Widget build(BuildContext context, ref) {
+    final annil = ref.read(annilProvider);
+    final player = ref.read(playbackProvider);
+    final favoriteTracks = ref.watch(favoriteTracksProvider);
+    final favorites = favoriteTracks.value ?? [];
+    final reversedFavorite = favorites.reversed;
+
+    return DecoratedSliver(
+      decoration: BoxDecoration(
+        color: context.colorScheme.secondaryContainer,
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+      sliver: SliverPadding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        sliver: SliverList.separated(
           itemCount: reversedFavorite.length,
-          padding: EdgeInsets.zero,
+          separatorBuilder: (context, index) => Divider(
+            height: 4,
+            thickness: 2,
+            color: context.colorScheme.surface,
+          ),
           itemBuilder: (final context, final index) {
             final favorite = reversedFavorite.elementAt(index);
             return ListTile(
+              // contentPadding: EdgeInsets.zero,
               leading: CoverCard(
                 child: MusicCover.fromAlbum(
                   albumId: favorite.albumId,
@@ -122,7 +133,6 @@ class FavoritePage extends HookConsumerWidget {
                 favorite.artist ?? '--',
                 overflow: TextOverflow.ellipsis,
               ),
-              trailing: Text('${index + 1}'),
               enabled: annil.isTrackAvailable(
                 TrackIdentifier(
                   albumId: favorite.albumId,
@@ -140,23 +150,8 @@ class FavoritePage extends HookConsumerWidget {
               },
             );
           },
-        );
-      },
-    );
-  }
-
-  Widget _favoriteAlbums() {
-    return Consumer(
-      builder: (context, ref, child) {
-        final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
-        final favorites = favoriteAlbums.value ?? [];
-        final reversedFavorite =
-            favorites.reversed.map((final e) => e.albumId).toList();
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: LazyAlbumWall(albumIds: reversedFavorite),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -191,5 +186,21 @@ class FavoritePage extends HookConsumerWidget {
         .whereType<TrackInfoWithAlbum>()
         .map((final track) => AnnilAudioSource(track: track))
         .toList();
+  }
+}
+
+class FavoriteAlbumWall extends ConsumerWidget {
+  const FavoriteAlbumWall({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
+    final favorites = favoriteAlbums.value ?? [];
+    final reversedFavorite =
+        favorites.reversed.map((final e) => e.albumId).toList();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: LazyAlbumWall(albumIds: reversedFavorite),
+    );
   }
 }

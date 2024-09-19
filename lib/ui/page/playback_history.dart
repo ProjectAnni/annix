@@ -7,6 +7,7 @@ import 'package:annix/ui/widgets/cover.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class _SongPlayRecordResultWithMetadata {
   final SongPlayRecordResult record;
@@ -107,5 +108,102 @@ class PlaybackHistoryPage extends ConsumerWidget {
         },
       ),
     );
+  }
+}
+
+class _HistoryRecordWithMetadata {
+  final HistoryRecord record;
+  final TrackInfoWithAlbum? metadata;
+
+  _HistoryRecordWithMetadata({
+    required this.record,
+    this.metadata,
+  });
+
+  TrackIdentifier get track => record.track;
+}
+
+class SliverPlaybackHistoryList extends StatefulHookConsumerWidget {
+  const SliverPlaybackHistoryList({super.key});
+
+  @override
+  ConsumerState<SliverPlaybackHistoryList> createState() =>
+      _SliverPlaybackHistoryListState();
+}
+
+class _SliverPlaybackHistoryListState
+    extends ConsumerState<SliverPlaybackHistoryList> {
+  static const _pageSize = 20;
+
+  final PagingController<int, _HistoryRecordWithMetadata> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+    super.initState();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final newItems = await ref
+          .read(annivProvider)
+          .client!
+          .getUserPlaybackHistory(offset: pageKey, limit: _pageSize);
+      final tracks = newItems.map((final t) => t.track).toList();
+      final metadata = await ref.read(metadataProvider).getTracks(tracks);
+      final data = newItems
+          .map(
+            (p) => _HistoryRecordWithMetadata(
+              record: p,
+              metadata: metadata[p.track],
+            ),
+          )
+          .toList();
+
+      final isLastPage = newItems.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(data);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(data, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PagedSliverList<int, _HistoryRecordWithMetadata>(
+      pagingController: _pagingController,
+      builderDelegate: PagedChildBuilderDelegate(
+        itemBuilder: (context, item, index) {
+          return ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: CoverCard(
+              child: MusicCover.fromAlbum(
+                albumId: item.track.albumId,
+                fit: BoxFit.cover,
+              ),
+            ),
+            title: Text(item.metadata?.title ?? 'Unknown Track'),
+            subtitle: ArtistText(
+              DateTime.fromMillisecondsSinceEpoch(item.record.at * 1000)
+                  .toLocal()
+                  .toString(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }

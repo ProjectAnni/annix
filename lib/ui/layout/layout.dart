@@ -18,7 +18,7 @@ class AnnixLayout extends HookConsumerWidget {
   static const pages = <String>[
     '/home',
     '/search',
-    '/settings',
+    '/server',
   ];
 
   const AnnixLayout({super.key, required this.child});
@@ -113,9 +113,9 @@ class AnnixLayout extends HookConsumerWidget {
         label: t.search,
       ),
       NavigationDestination(
-        icon: const Icon(Icons.settings_outlined),
-        selectedIcon: const Icon(Icons.settings),
-        label: t.settings.settings,
+        icon: const Icon(Icons.dns_outlined),
+        selectedIcon: const Icon(Icons.dns),
+        label: t.server.server,
       ),
     ];
     final body = Consumer(

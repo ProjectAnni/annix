@@ -40,3 +40,16 @@ class ShimmerAlbumGrid extends StatelessWidget {
     );
   }
 }
+
+class ShimmerAlbumStackGrid extends StatelessWidget {
+  const ShimmerAlbumStackGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: context.colorScheme.surfaceContainer,
+      highlightColor: context.colorScheme.surfaceContainerHigh,
+      child: const CoverCard(child: DummyMusicCover()),
+    );
+  }
+}
