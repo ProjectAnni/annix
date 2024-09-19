@@ -665,3 +665,14 @@ class SongPlayRecordResult {
   factory SongPlayRecordResult.fromJson(final Map<String, dynamic> json) =>
       _$SongPlayRecordResultFromJson(json);
 }
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class HistoryRecord {
+  final TrackIdentifier track;
+  final int at;
+
+  HistoryRecord({required this.track, required this.at});
+
+  factory HistoryRecord.fromJson(final Map<String, dynamic> json) =>
+      _$HistoryRecordFromJson(json);
+}

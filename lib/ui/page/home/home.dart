@@ -1,6 +1,7 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
+import 'package:annix/ui/page/playback_history.dart';
 import 'package:annix/ui/widgets/album/album_stack_grid.dart';
 import 'package:annix/ui/widgets/anniv/anniv_not_login_card.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
@@ -259,6 +260,13 @@ class HomePage extends HookWidget {
             if (isPlaylistPage)
               const SliverToBoxAdapter(child: SizedBox(height: 16)),
             if (isPlaylistPage) const PlaylistView(),
+
+            ///////////////////////////// HISTORY /////////////////////////////
+            if (isHistoryPage)
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+            // [BEGIN] Playback History
+            if (isHistoryPage) const SliverPlaybackHistoryList(),
           ].mapIndexed((index, sliver) {
             if (index == 0) {
               return sliver;

@@ -49,10 +49,8 @@ class PlayingTrack extends ChangeNotifier {
         duration != Duration.zero &&
         position.inSeconds >= (duration.inSeconds / 3)) {
       reported = true;
-      if (!kDebugMode) {
-        ref.read(annivProvider).trackPlayback(
-            source!.identifier, DateTime.now().millisecondsSinceEpoch ~/ 1000);
-      }
+      ref.read(annivProvider).trackPlayback(
+          source!.identifier, DateTime.now().millisecondsSinceEpoch ~/ 1000);
     }
   }
 

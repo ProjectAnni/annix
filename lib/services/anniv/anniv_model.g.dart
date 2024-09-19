@@ -40,7 +40,7 @@ AnnilToken _$AnnilTokenFromJson(Map<String, dynamic> json) => AnnilToken(
       name: json['name'] as String,
       url: json['url'] as String,
       token: json['token'] as String,
-      priority: json['priority'] as int,
+      priority: (json['priority'] as num).toInt(),
       controlled: json['controlled'] as bool,
     );
 
@@ -89,7 +89,7 @@ DiscInfo _$DiscInfoFromJson(Map<String, dynamic> json) => DiscInfo(
 DiscIdentifier _$DiscIdentifierFromJson(Map<String, dynamic> json) =>
     DiscIdentifier(
       albumId: json['album_id'] as String,
-      discId: json['disc_id'] as int,
+      discId: (json['disc_id'] as num).toInt(),
     );
 
 Map<String, dynamic> _$DiscIdentifierToJson(DiscIdentifier instance) =>
@@ -101,8 +101,8 @@ Map<String, dynamic> _$DiscIdentifierToJson(DiscIdentifier instance) =>
 TrackIdentifier _$TrackIdentifierFromJson(Map<String, dynamic> json) =>
     TrackIdentifier(
       albumId: json['album_id'] as String,
-      discId: json['disc_id'] as int,
-      trackId: json['track_id'] as int,
+      discId: (json['disc_id'] as num).toInt(),
+      trackId: (json['track_id'] as num).toInt(),
     );
 
 Map<String, dynamic> _$TrackIdentifierToJson(TrackIdentifier instance) =>
@@ -151,7 +151,7 @@ PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
       cover: json['cover'] == null
           ? null
           : DiscIdentifier.fromJson(json['cover'] as Map<String, dynamic>),
-      lastModified: json['last_modified'] as int,
+      lastModified: (json['last_modified'] as num).toInt(),
     );
 
 Map<String, dynamic> _$PatchedPlaylistInfoToJson(
@@ -201,7 +201,7 @@ Map<String, dynamic> _$LyricLanguageToJson(LyricLanguage instance) =>
 RepoDatabaseDescription _$RepoDatabaseDescriptionFromJson(
         Map<String, dynamic> json) =>
     RepoDatabaseDescription(
-      lastModified: json['last_modified'] as int,
+      lastModified: (json['last_modified'] as num).toInt(),
     );
 
 TagInfo _$TagInfoFromJson(Map<String, dynamic> json) => TagInfo(
@@ -232,5 +232,11 @@ SongPlayRecordResult _$SongPlayRecordResultFromJson(
         Map<String, dynamic> json) =>
     SongPlayRecordResult(
       track: TrackIdentifier.fromJson(json['track'] as Map<String, dynamic>),
-      count: json['count'] as int,
+      count: (json['count'] as num).toInt(),
+    );
+
+HistoryRecord _$HistoryRecordFromJson(Map<String, dynamic> json) =>
+    HistoryRecord(
+      track: TrackIdentifier.fromJson(json['track'] as Map<String, dynamic>),
+      at: (json['at'] as num).toInt(),
     );
