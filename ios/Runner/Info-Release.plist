@@ -66,5 +66,7 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>FLTEnableImpeller</key>
+  	<false />
 </dict>
 </plist>
