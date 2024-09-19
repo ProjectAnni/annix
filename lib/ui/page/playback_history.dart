@@ -190,9 +190,9 @@ class _SliverPlaybackHistoryListState
             ),
             title: Text(item.metadata?.title ?? 'Unknown'),
             subtitle: ArtistText(
-              DateTime.fromMillisecondsSinceEpoch(item.record.at)
+              DateTime.fromMillisecondsSinceEpoch(item.record.at * 1000)
                   .toLocal()
-                  .toIso8601String(),
+                  .toString(),
             ),
           );
         },
