@@ -100,6 +100,8 @@ class HomePage extends HookWidget {
               ),
             ),
 
+            ...content(context),
+
             ///////////////////////////// ALL /////////////////////////////
             if (isAllPage)
               const SliverToBoxAdapter(child: SizedBox(height: 24)),
@@ -253,6 +255,12 @@ class HomePage extends HookWidget {
             if (isFavoritePage) const FavoriteTracks(),
             if (isFavoritePage)
               const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
+            ///////////////////////////// PLAYLIST /////////////////////////////
+            // [BEGIN] Playlists
+            if (isPlaylistPage)
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            if (isPlaylistPage) const PlaylistView(),
           ].mapIndexed((index, sliver) {
             if (index == 0) {
               return sliver;
@@ -264,37 +272,32 @@ class HomePage extends HookWidget {
             );
           }).toList(),
         ),
-        // child: Consumer(
-        //   builder: (context, ref, child) => CustomScrollView(
-        //     primary: false,
-        //     slivers: content(context, ref),
-        //   ),
-        // ),
       ),
     );
   }
 
-  List<Widget> content(final BuildContext context, WidgetRef ref) {
-    final annivInfo = ref.watch(annivProvider.select((final v) => v.info));
+  List<Widget> content(final BuildContext context) {
     return <Widget>[
-      if (annivInfo == null)
-        const SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 16.0),
-            child: AnnivNotLoginCard(),
+      SliverToBoxAdapter(
+        child: Consumer(
+          builder: (context, ref, child) {
+            final annivInfo =
+                ref.watch(annivProvider.select((final v) => v.info));
+
+            if (annivInfo == null) {
+              return child!;
+            } else {
+              return Container();
+            }
+          },
+          child: const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: AnnivNotLoginCard(),
+            ),
           ),
         ),
-
-      const SliverToBoxAdapter(child: HomeActionGrid()),
-
-      ////////////////////////////////////////////////
-      HomeTitle(
-        sliver: true,
-        title: t.playlists,
-        icon: Icons.queue_music_outlined,
-        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
-      const PlaylistView(),
     ];
   }
 }
@@ -405,8 +408,12 @@ class StatisticItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: context.colorScheme.primaryFixed,
+    return Card.filled(
+      color: ElevationOverlay.applySurfaceTint(
+        context.colorScheme.primaryFixedDim,
+        context.colorScheme.surfaceTint,
+        4.0,
+      ),
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
