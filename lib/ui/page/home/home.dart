@@ -1,8 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/page/favorite.dart';
-import 'package:annix/ui/page/home/home_action_grid.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
-import 'package:annix/ui/page/home/home_title.dart';
 import 'package:annix/ui/widgets/album/album_stack_grid.dart';
 import 'package:annix/ui/widgets/anniv/anniv_not_login_card.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
@@ -64,7 +62,7 @@ class HomePage extends HookWidget {
                     selected: isAllPage,
                   ),
                   FilterChip(
-                    label: Text("Favorites"),
+                    label: Text(t.my_favorite),
                     onSelected: (selected) {
                       if (selected) {
                         filter.value = FilterType.favorite;
@@ -75,7 +73,7 @@ class HomePage extends HookWidget {
                     selected: isFavoritePage,
                   ),
                   FilterChip(
-                    label: Text("Playlists"),
+                    label: Text(t.playlists),
                     onSelected: (selected) {
                       if (selected) {
                         filter.value = FilterType.playlist;
@@ -86,7 +84,7 @@ class HomePage extends HookWidget {
                     selected: isPlaylistPage,
                   ),
                   FilterChip(
-                    label: Text("History"),
+                    label: const Text('History'),
                     onSelected: (selected) {
                       if (selected) {
                         filter.value = FilterType.history;
@@ -131,7 +129,7 @@ class HomePage extends HookWidget {
                       return CarouselView.weighted(
                         flexWeights: const [2, 1],
                         itemSnapping: true,
-                        padding: EdgeInsets.only(right: 4),
+                        padding: const EdgeInsets.only(right: 4),
                         children: annil.albums.slice(0, 10).map((albumId) {
                           return Stack(
                             fit: StackFit.passthrough,
