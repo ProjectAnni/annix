@@ -266,6 +266,40 @@ class HomePage extends HookWidget {
               const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
             // [BEGIN] Playback History
+            if (isHistoryPage)
+              SliverToBoxAdapter(
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 24),
+                        Text(
+                          'Check your Top Played Songs',
+                          style: context.textTheme.headlineSmall,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Which song do you play most?',
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        SizedBox(height: 16),
+                        FilledButton.tonal(
+                          onPressed: () => context.push('/history'),
+                          child: Text("Let's go!"),
+                        ),
+                        SizedBox(height: 21),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            if (isHistoryPage)
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            if (isHistoryPage)
+              const HomePageSectionTitle(title: 'Songs played recently'),
             if (isHistoryPage) const SliverPlaybackHistoryList(),
           ].mapIndexed((index, sliver) {
             if (index == 0) {

@@ -182,13 +182,14 @@ class _SliverPlaybackHistoryListState
       builderDelegate: PagedChildBuilderDelegate(
         itemBuilder: (context, item, index) {
           return ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: CoverCard(
               child: MusicCover.fromAlbum(
                 albumId: item.track.albumId,
                 fit: BoxFit.cover,
               ),
             ),
-            title: Text(item.metadata?.title ?? 'Unknown'),
+            title: Text(item.metadata?.title ?? 'Unknown Track'),
             subtitle: ArtistText(
               DateTime.fromMillisecondsSinceEpoch(item.record.at * 1000)
                   .toLocal()
