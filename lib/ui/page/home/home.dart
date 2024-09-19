@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/playback_history.dart';
@@ -37,6 +38,25 @@ class HomePage extends HookWidget {
                 floating: true,
                 title: const Text('Annix'),
                 actions: [
+                  Consumer(
+                    child: const Icon(Icons.shuffle),
+                    builder: (context, ref, child) {
+                      return IconButton(
+                        icon: child!,
+                        onPressed: () {
+                          showLoadingDialog(context);
+                          ref.read(playbackProvider).fullShuffleMode().then(
+                            (final value) {
+                              if (context.mounted) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              }
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
                   const ThemeButton(),
                   IconButton(
                     icon: const Icon(Icons.settings_outlined),
