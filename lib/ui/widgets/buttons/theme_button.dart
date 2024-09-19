@@ -9,7 +9,11 @@ class ThemeButton extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     return IconButton(
-      icon: Icon(context.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+      icon: Icon(
+        context.isDarkMode
+            ? Icons.light_mode_outlined
+            : Icons.dark_mode_outlined,
+      ),
       onPressed: () {
         ref.read(themeProvider).setThemeMode(
             context.isDarkMode ? ThemeMode.light : ThemeMode.dark);
