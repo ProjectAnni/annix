@@ -12,6 +12,8 @@ import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/route/delegate.dart';
+import 'package:annix/ui/widgets/playback/endless_mode.dart';
+import 'package:annix/ui/widgets/playback/sleep_timer.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -32,6 +34,11 @@ final settingsProvider = Provider((final ref) => SettingsService(ref));
 final preferencesProvider = Provider((final ref) => PreferencesStore(ref));
 final audioServiceProvider =
     FutureProvider((final ref) => AnnixAudioHandler.init(ref));
+
+final endlessModeProvider =
+    ChangeNotifierProvider((ref) => EndlessModeController(ref));
+final sleepTimerProvider =
+    ChangeNotifierProvider((ref) => SleepTimerController(ref));
 
 // db
 @Riverpod(keepAlive: true)

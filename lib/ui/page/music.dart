@@ -1,6 +1,7 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
+import 'package:annix/ui/widgets/playback/endless_mode.dart';
 import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -51,15 +52,37 @@ class MusicPage extends HookConsumerWidget {
       ),
       body: Focus(
         focusNode: bodyFocusNode,
-        child: const PagePadding(
+        child: PagePadding(
           child: CustomScrollView(
             slivers: [
-              SliverGap.belowTop(),
-              SectionTitle(title: 'Playing'),
-              NowPlayingCard(),
-              SliverGap.betweenSections(),
-              SectionTitle(title: 'Next songs'),
-              NextPlayingQueue(),
+              const SliverGap.belowTop(),
+              SliverToBoxAdapter(
+                child: OverflowBar(
+                  spacing: 8.0,
+                  children: [
+                    const EndlessModeChip(),
+                    FilterChip(
+                      avatar: const Icon(Icons.timer),
+                      label: Text('Sleep Timer'),
+                      onSelected: (v) {},
+                    ),
+                  ],
+                ),
+              ),
+              SectionTitle(
+                title: 'Playing',
+                trailing: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.more_horiz),
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              ),
+              const NowPlayingCard(),
+              const SliverGap.betweenSections(),
+              const SectionTitle(title: 'Next songs'),
+              const NextPlayingQueue(),
             ],
           ),
         ),
@@ -75,13 +98,22 @@ class NowPlayingCard extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final delegate = ref.watch(routerProvider);
     final player = ref.watch(playbackProvider);
+
+    if (player.playingIndex == null) {
+      return const SliverToBoxAdapter(
+        child: Center(
+          child: Text('No playing song'),
+        ),
+      );
+    }
+
     final playing = player.queue[player.playingIndex!];
 
     return SliverToBoxAdapter(
       child: Card(
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.zero,
-        color: context.colorScheme.primaryFixedDim,
+        color: context.colorScheme.primaryContainer,
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           leading: CoverCard(
@@ -90,14 +122,14 @@ class NowPlayingCard extends ConsumerWidget {
           title: Text(
             playing.track.title,
             style: context.textTheme.titleMedium?.copyWith(
-              color: context.colorScheme.onPrimaryFixedVariant,
+              color: context.colorScheme.onPrimaryContainer,
             ),
           ),
           subtitle: Text(
             playing.track.albumTitle,
             overflow: TextOverflow.ellipsis,
             style: context.textTheme.labelMedium?.copyWith(
-              color: context.colorScheme.onPrimaryFixed,
+              color: context.colorScheme.onPrimaryContainer,
             ),
           ),
           onTap: () {

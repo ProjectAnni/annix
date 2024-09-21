@@ -400,7 +400,7 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> fullShuffleMode(
-      {final int count = 30, final bool waitUntilPlayback = false}) async {
+      {final int count = 10, bool append = true}) async {
     final annil = ref.read(annilProvider);
     final albums = annil.albums;
     if (albums.isEmpty) {
@@ -452,8 +452,9 @@ class PlaybackService extends ChangeNotifier {
         resultQueue.add(song);
       }
     }
-    if (waitUntilPlayback) {
-      await setPlayingQueue(resultQueue);
+    if (append && this.queue.isNotEmpty) {
+      this.queue.addAll(resultQueue);
+      notifyListeners();
     } else {
       unawaited(setPlayingQueue(resultQueue));
     }
