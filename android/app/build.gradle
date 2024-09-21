@@ -1,5 +1,9 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -29,8 +33,8 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     compileSdk flutter.compileSdkVersion
     // TODO: revert if it compiles
-    // ndkVersion flutter.ndkVersion
-    ndkVersion "23.1.7779620"
+    ndkVersion flutter.ndkVersion
+    // ndkVersion "23.1.7779620"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

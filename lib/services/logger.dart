@@ -3,8 +3,11 @@ import 'package:annix/services/path.dart';
 import 'package:flutter/foundation.dart';
 
 class Logger {
+  static bool initialized = false;
+
   static void init() {
     initLogger(path: logPath());
+    initialized = true;
   }
 
   static void error(
@@ -81,13 +84,15 @@ class Logger {
       }
     }
 
-    logNative(
-      level: level,
-      message: message,
-      file: className,
-      module: methodName,
-      exception: exception.toString(),
-      stacktace: stacktrace.toString(),
-    );
+    if (initialized) {
+      logNative(
+        level: level,
+        message: message,
+        file: className,
+        module: methodName,
+        exception: exception.toString(),
+        stacktace: stacktrace.toString(),
+      );
+    }
   }
 }

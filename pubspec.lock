@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "73.0.0"
+  _flutterfire_internals:
+    dependency: transitive
+    description:
+      name: _flutterfire_internals
+      sha256: "5fdcea390499dd26c808a3c662df5f4208d6bbc0643072eee94f1476249e2818"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.43"
   _macros:
     dependency: transitive
     description: dart
@@ -478,6 +486,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.2"
+  firebase_analytics:
+    dependency: "direct main"
+    description:
+      name: firebase_analytics
+      sha256: "9c52c099e9cbb852c7f1d2302c7eb34a15758834eca1877f7a779e6082f9882d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.3.2"
+  firebase_analytics_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_analytics_platform_interface
+      sha256: "4ec57aee951832fdbf10ca722bbb83fe0001d6168d6c4cfea9ccee0df6afb1e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.4"
+  firebase_analytics_web:
+    dependency: transitive
+    description:
+      name: firebase_analytics_web
+      sha256: "95c594fb1e8960992a607b135459e2f9ea3683dd8d01e6b845cace7c6665ec7e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.10+1"
   firebase_core:
     dependency: "direct main"
     description:
@@ -502,6 +534,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.18.1"
+  firebase_crashlytics:
+    dependency: "direct main"
+    description:
+      name: firebase_crashlytics
+      sha256: "7821f9d8373b91f2a5ca8214226891d5870e196a7376f66350f65204387e9c15"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.2"
+  firebase_crashlytics_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_crashlytics_platform_interface
+      sha256: "8ed539fd9e9b6c07905f9f44c5f6d4785ac841a5a8195bd35586c8b1d54ec26d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.43"
   fixnum:
     dependency: transitive
     description:

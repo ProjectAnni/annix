@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "155003412918",
+    "project_id": "project-anni-firebase",
+    "storage_bucket": "project-anni-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155003412918:android:a74c0164cad2e2ac376117",
+        "android_client_info": {
+          "package_name": "rs.anni.annix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGdDybX7Nt1dABMJTMNWxYCyya5m0MVqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155003412918:android:a74c0164cad2e2ac376117",
+        "android_client_info": {
+          "package_name": "rs.anni.annix.beta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGdDybX7Nt1dABMJTMNWxYCyya5m0MVqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
