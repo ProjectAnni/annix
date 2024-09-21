@@ -18,7 +18,7 @@ uuid = "1"
 crossbeam = { version = "0.8.2", features = ["crossbeam-channel"] }
 anyhow = "1.0.75"
 
-anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "0edc10c3e0e00f38cc6a72d76dea84b620b7af3d" }
+anni-playback = { git = "https://github.com/ProjectAnni/anni", rev = "661fe1be2d6a04e114a421b0ac1ea84857d073ad" }
 cpal = { version = "0.15.3", features = ["oboe-shared-stdcxx"] }
 rand = "0.8.5"
 material-colors = { version = "0.4.2", features = ["image"] }
