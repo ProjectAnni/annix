@@ -59,7 +59,7 @@ dependencies:
       url: https://github.com/ProjectAnni/introduction_screen.git
   dots_indicator: ^2.1.2
 
-  flutter_adaptive_scaffold: ^0.1.12
+  flutter_adaptive_scaffold: ^0.3.1
   animations: ^2.0.11
   crypto: ^3.0.3
 
@@ -85,7 +85,7 @@ dependencies:
   ffi: ^2.1.2
   flutter_rust_bridge: 2.1.0
   freezed_annotation: ^2.4.4
-  meta: ^1.8.0
+  meta: ^1.15.0
   rust_lib_annix:
     path: rust_builder
 
