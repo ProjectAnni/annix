@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
-import 'package:annix/services/download/download_models.dart';
-import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/logger.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/utils/hash.dart';
@@ -402,16 +400,12 @@ class AnnivClient {
 
     // 2. download db
     final dbPath = p.join(saveRoot, 'repo.db');
-    final task = ref.read(downloadManagerProvider).add(DownloadTask(
-          url: '/api/meta/db/repo.db',
-          category: DownloadCategory.database,
-          savePath: dbPath,
-          client: _client,
-        ));
-    await task.start();
+    await _client.download('/api/meta/db/repo.db', '$dbPath.downloading');
+    final dbFile = File('$dbPath.downloading');
 
     // 3. rename json after db downloaded
     await jsonFile.rename(jsonPath);
+    await dbFile.rename(dbPath);
   }
 
   Future<List<TagInfo>> getTags() async {

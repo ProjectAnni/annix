@@ -44,7 +44,8 @@ class _PlayingScreenMobileBlurState extends State<PlayingScreenMobileBlur> {
           ),
           SizedBox.expand(
             child: ColoredBox(
-              color: context.colorScheme.secondaryContainer.withOpacity(0.6),
+              color:
+                  context.colorScheme.secondaryContainer.withValues(alpha: 0.6),
             ),
           ),
           BackdropFilter(

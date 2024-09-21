@@ -3,7 +3,6 @@ import 'package:annix/router.dart';
 import 'package:annix/services/annil/annil.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/audio_handler.dart';
-import 'package:annix/services/download/download_manager.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/local/preferences.dart';
 import 'package:annix/services/metadata/metadata.dart';
@@ -31,8 +30,6 @@ final routerProvider =
 final goRouterProvider = Provider(buildRouter);
 final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));
-final downloadManagerProvider =
-    ChangeNotifierProvider((final ref) => DownloadManager());
 final preferencesProvider = Provider((final ref) => PreferencesStore(ref));
 final audioServiceProvider =
     FutureProvider((final ref) => AnnixAudioHandler.init(ref));

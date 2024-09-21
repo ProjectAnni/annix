@@ -1,12 +1,6 @@
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/annil/annil.dart';
-import 'package:annix/services/download/download_task.dart';
 import 'package:annix/services/metadata/metadata.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-typedef DownloadTaskCallback = Future<DownloadTask?> Function(Ref ref);
-
-class AudioCancelledError extends Error {}
 
 class AnnilAudioSource {
   final PreferQuality? quality;
