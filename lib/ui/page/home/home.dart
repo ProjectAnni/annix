@@ -144,11 +144,16 @@ class HomePage extends HookWidget {
                   child: Consumer(
                     builder: (context, ref, child) {
                       final annil = ref.watch(annilProvider);
+                      final data = annil.albums.take(10);
+                      if (data.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
                       return CarouselView.weighted(
                         flexWeights: const [2, 1],
                         itemSnapping: true,
                         padding: const EdgeInsets.only(right: 4),
-                        children: annil.albums.slice(0, 10).map((albumId) {
+                        children: data.map((albumId) {
                           return Stack(
                             fit: StackFit.passthrough,
                             children: [
@@ -246,7 +251,7 @@ class HomePage extends HookWidget {
                           extra: reversedFavorite[index],
                         ),
                         children: reversedFavorite
-                            .slice(0, 10)
+                            .take(10)
                             .map((albumId) =>
                                 LoadingAlbumStackGrid(albumId: albumId))
                             .toList(),
