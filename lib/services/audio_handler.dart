@@ -57,7 +57,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
       // unplugged
       session.becomingNoisyEventStream.listen((final _) => service.pause());
 
-      bool pausedByInterrupt = false;
       // interruption
       session.interruptionEventStream.listen((final event) {
         if (event.begin) {
@@ -68,7 +67,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
               break;
             case AudioInterruptionType.pause:
             case AudioInterruptionType.unknown:
-              pausedByInterrupt = true;
               service.pause();
               break;
           }
@@ -79,11 +77,9 @@ class AnnixAudioHandler extends BaseAudioHandler {
               // TODO
               break;
             case AudioInterruptionType.pause:
+              service.play();
+            // We should not resume unknown interruptions
             case AudioInterruptionType.unknown:
-              if (pausedByInterrupt) {
-                pausedByInterrupt = false;
-                service.play();
-              }
               break;
           }
         }
