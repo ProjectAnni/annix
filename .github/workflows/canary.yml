@@ -19,7 +19,9 @@ jobs:
         with:
           channel: beta
       - name: Setup | Dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          dart pub global activate flutterfire_cli
       - name: Setup | Android NDK
         run: |
           # /usr/include/bits
@@ -68,6 +70,7 @@ jobs:
           rustup update
           flutter config --enable-linux-desktop
           flutter pub get
+          dart pub global activate flutterfire_cli
       - name: Build | Linux
         run: |
           flutter build linux --verbose
@@ -96,6 +99,7 @@ jobs:
           rustup target add x86_64-apple-darwin aarch64-apple-darwin
           rustup update
           flutter pub get
+          dart pub global activate flutterfire_cli
       - name: Build | macOS
         run: |
           flutter build macos --verbose
@@ -125,6 +129,7 @@ jobs:
           rustup update
           flutter config --enable-windows-desktop
           flutter pub get
+          dart pub global activate flutterfire_cli
       - name: Build | Windows
         run: |
           flutter build windows --verbose
@@ -156,6 +161,7 @@ jobs:
           rustup target add x86_64-apple-darwin aarch64-apple-darwin
           rustup update
           flutter pub get
+          dart pub global activate flutterfire_cli
       - name: Build | iOS
         run: |
           flutter build ios --no-codesign --verbose --build-number ${{ github.run_number }}
