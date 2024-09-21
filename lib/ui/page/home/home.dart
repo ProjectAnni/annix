@@ -6,6 +6,8 @@ import 'package:annix/ui/page/playback_history.dart';
 import 'package:annix/ui/widgets/album/album_stack_grid.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/gaps.dart';
+import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -119,18 +121,16 @@ class HomePage extends HookWidget {
             ),
 
             ///////////////////////////// ALL /////////////////////////////
-            if (isAllPage)
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            if (isAllPage) const SliverGap.betweenSections(),
 
             // [BEGIN] Statistics Card
             if (isAllPage) const SliverToBoxAdapter(child: StatisticsCard()),
-            if (isAllPage)
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            if (isAllPage) const SliverGap.betweenSections(),
             // [END] Statistics Card
 
             // [BEGIN] New Albums
             if (isAllPage)
-              HomePageSectionTitle(
+              SectionTitle(
                 title: 'New Albums',
                 trailing: TextButton(
                   child: Text('More'),
@@ -213,16 +213,14 @@ class HomePage extends HookWidget {
                   ),
                 ),
               ),
-            if (isAllPage)
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            if (isAllPage) const SliverGap.betweenSections(),
             // [END] New Albums
 
             ///////////////////////////// FAVORITE /////////////////////////////
-            if (isFavoritePage)
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            if (isFavoritePage) const SliverGap.belowTop(),
             // [BEGIN] Favorite Albums
             if (isFavoritePage)
-              HomePageSectionTitle(
+              SectionTitle(
                 title: 'Albums',
                 trailing: TextButton(
                   style: TextButton.styleFrom(
@@ -260,13 +258,12 @@ class HomePage extends HookWidget {
                   ),
                 ),
               ),
-            if (isFavoritePage)
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            if (isFavoritePage) const SliverGap.betweenSections(),
             // [END] Favorite Albums
 
             // [BEGIN] Favorite Tracks
             if (isFavoritePage)
-              HomePageSectionTitle(
+              SectionTitle(
                 title: 'Songs',
                 trailing: FilledButton.tonal(
                   child: Text('Play'),
@@ -274,26 +271,22 @@ class HomePage extends HookWidget {
                 ),
               ),
             if (isFavoritePage) const FavoriteTracks(),
-            if (isFavoritePage)
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            if (isFavoritePage) const SliverGap.betweenSections(),
 
             ///////////////////////////// PLAYLIST /////////////////////////////
             // [BEGIN] Playlists
-            if (isPlaylistPage)
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            if (isPlaylistPage) const SliverGap.belowTop(),
             if (isPlaylistPage) const PlaylistView(),
 
             ///////////////////////////// HISTORY /////////////////////////////
-            if (isHistoryPage)
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            if (isHistoryPage) const SliverGap.belowTop(),
 
             // [BEGIN] Playback History
             if (isHistoryPage)
               SliverToBoxAdapter(
                 child: Card(
                   margin: EdgeInsets.zero,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: PagePadding(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -312,7 +305,7 @@ class HomePage extends HookWidget {
                           onPressed: () => context.push('/history'),
                           child: Text("Let's go!"),
                         ),
-                        SizedBox(height: 21),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -321,17 +314,14 @@ class HomePage extends HookWidget {
             if (isHistoryPage)
               const SliverToBoxAdapter(child: SizedBox(height: 24)),
             if (isHistoryPage)
-              const HomePageSectionTitle(title: 'Songs played recently'),
+              const SectionTitle(title: 'Songs played recently'),
             if (isHistoryPage) const SliverPlaybackHistoryList(),
-          ].mapIndexed((index, sliver) {
+          ].mapIndexed((index, child) {
             if (index == 0) {
-              return sliver;
+              return child;
             }
 
-            return SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: sliver,
-            );
+            return PagePadding(sliver: true, child: child);
           }).toList(),
         ),
       ),
@@ -472,35 +462,6 @@ class StatisticItem extends StatelessWidget {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class HomePageSectionTitle extends StatelessWidget {
-  final String title;
-  final Widget? trailing;
-
-  const HomePageSectionTitle({super.key, required this.title, this.trailing});
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: context.textTheme.titleLarge,
-                ),
-              ),
-              if (trailing != null) trailing!,
-            ],
-          ),
-          const SizedBox(height: 8),
-        ],
       ),
     );
   }

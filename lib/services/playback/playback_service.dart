@@ -80,6 +80,27 @@ class PlaybackService extends ChangeNotifier {
 
   final AnnivService anniv;
 
+  void reorderQueue(int oldIndex, int newIndex) {
+    if (oldIndex < 0 || oldIndex >= queue.length) return;
+    // using > instead of >= here because if we drag to the end of the list,
+    // then newIndex will be queue.length
+    if (newIndex < 0 || newIndex > queue.length) return;
+
+    if (oldIndex > newIndex) {
+      // moving up
+      final song = queue.removeAt(oldIndex);
+      queue.insert(newIndex, song);
+    } else {
+      // moving down
+      final song = queue.removeAt(oldIndex);
+      queue.insert(newIndex - 1, song);
+    }
+
+    ref.read(preferencesProvider).set('player.queue',
+        queue.map((final e) => jsonEncode(e.toJson())).toList());
+    notifyListeners();
+  }
+
   // We've loaded the latest playlist from database, and the player is in paused state,
   // then user may 'resume' playback. Here we should track the 'resume' action as playing once.
   //

@@ -8,35 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class PlayingScreenMobile extends HookConsumerWidget {
   const PlayingScreenMobile({super.key});
 
-  Widget _mainPlayingWidget(
-      BuildContext context, ValueNotifier<bool> showLyric) {
-    return SafeArea(
-      top: true,
-      left: false,
-      right: false,
-      bottom: false,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          MusicCoverOrLyric(showLyric: showLyric),
-          const Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(child: PlayingScreenMobileTrackInfo()),
-                  FavoriteButton(),
-                ],
-              ),
-              SizedBox(height: 32),
-              PlayingScreenMobileControl(),
-              SizedBox(height: 32),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final showLyric = useState(false);
@@ -45,11 +16,34 @@ class PlayingScreenMobile extends HookConsumerWidget {
       body: Container(
         color: context.colorScheme.secondaryContainer,
         padding: const EdgeInsets.symmetric(horizontal: 28),
-        child: _mainPlayingWidget(context, showLyric),
+        child: SafeArea(
+          top: true,
+          left: false,
+          right: false,
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              MusicCoverOrLyric(showLyric: showLyric),
+              const Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: PlayingScreenMobileTrackInfo()),
+                      FavoriteButton(),
+                    ],
+                  ),
+                  SizedBox(height: 32),
+                  PlayingScreenMobileControl(),
+                  SizedBox(height: 32),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         color: context.colorScheme.secondaryContainer,
-        elevation: 0,
         child: PlayingScreenMobileBottomBar(showLyrics: showLyric),
       ),
     );
