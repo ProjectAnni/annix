@@ -206,7 +206,6 @@ class SettingsScreen extends ConsumerWidget {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   showDialog(
                     context: context,
-                    useRootNavigator: true,
                     builder: (final context) => SimpleDialog(
                       title: Text(t.progress),
                       children: const [
@@ -242,7 +241,6 @@ class SettingsScreen extends ConsumerWidget {
                   final navigator = Navigator.of(context, rootNavigator: true);
                   showDialog(
                     context: context,
-                    useRootNavigator: true,
                     builder: (final context) => SimpleDialog(
                       title: Text(t.progress),
                       children: const [

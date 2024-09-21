@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 void showLoadingDialog(final BuildContext context) {
   showDialog(
     context: context,
-    useRootNavigator: true,
     barrierDismissible: false,
     builder: (final context) {
       return const Center(

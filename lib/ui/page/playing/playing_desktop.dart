@@ -175,7 +175,6 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                               if (playing != null) {
                                 showDialog(
                                   context: context,
-                                  useRootNavigator: true,
                                   builder: (final context) {
                                     return SearchLyricsDialog(track: playing);
                                   },

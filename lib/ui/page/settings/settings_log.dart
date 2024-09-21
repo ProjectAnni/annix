@@ -24,7 +24,6 @@ class SettingsLogView extends StatelessWidget {
   void showDetailDialog(final BuildContext context, LogEntry log) {
     showDialog(
       context: context,
-      useRootNavigator: true,
       builder: (final context) {
         return AlertDialog(
           title: const Text('Detail'),

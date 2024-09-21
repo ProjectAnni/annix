@@ -17,9 +17,6 @@ Future<void> showPlaylistDialog(
 
   final anniv = ref.read(annivProvider);
 
-  // hide the previous dialog
-  Navigator.of(context, rootNavigator: true).pop();
-
   return showModalBottomSheet(
     useRootNavigator: true,
     context: context,

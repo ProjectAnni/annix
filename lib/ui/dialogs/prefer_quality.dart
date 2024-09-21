@@ -9,7 +9,6 @@ Future<PreferQuality> showPreferQualityDialog(
 
   await showDialog(
     context: context,
-    useRootNavigator: true,
     builder: (final context) {
       return Center(
         child: Card(

@@ -48,7 +48,6 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                 if (playing != null) {
                   showDialog(
                     context: context,
-                    useRootNavigator: true,
                     builder: (final context) {
                       return SearchLyricsDialog(track: playing);
                     },
@@ -60,7 +59,6 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
               icon: const Icon(Icons.queue_music_rounded),
               onPressed: () {
                 showModalBottomSheet(
-                  useRootNavigator: true,
                   context: context,
                   isScrollControlled: true,
                   showDragHandle: true,

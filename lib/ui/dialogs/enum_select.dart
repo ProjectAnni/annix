@@ -20,7 +20,6 @@ Future<T> showEnumSelectDialog<T extends Enum>(final BuildContext context,
 
   await showDialog(
     context: context,
-    useRootNavigator: true,
     builder: (final context) {
       return Center(
         child: Card(child: child),
