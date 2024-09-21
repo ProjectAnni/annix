@@ -196,11 +196,23 @@ class _PredictiveBackPageTransition extends StatelessWidget {
 
   // add decoration to background page
   Widget _secondaryAnimatedBuilder(BuildContext context, Widget? child) {
+    final Animatable<double> fadeTween = TweenSequence<double>([
+      TweenSequenceItem<double>(
+        tween: ConstantTween(0.1),
+        weight: 20,
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 0.1, end: 0.0),
+        weight: 80,
+      ),
+    ]);
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Colors.grey.withValues(
+              alpha: fadeTween.animate(animation).value,
+            ),
             spreadRadius: 2,
             blurRadius: 5,
             offset: const Offset(0, 3),
