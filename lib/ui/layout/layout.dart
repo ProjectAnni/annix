@@ -187,19 +187,11 @@ class AnnixLayout extends HookConsumerWidget {
               padding: const EdgeInsets.only(bottom: 12.0),
               child: Consumer(builder: (context, ref, child) {
                 final info = ref.watch(annivProvider.select((v) => v.info));
-                if (info == null) {
-                  return TextButton(
-                    child: Text(t.server.login),
-                    onPressed: () {
-                      context.push('/login');
-                    },
-                  );
-                }
 
                 return FloatingActionButton(
                   elevation: 2,
                   child: CircleAvatar(
-                    child: Text(info.user.nickname.substring(0, 1)),
+                    child: Text(info!.user.nickname.substring(0, 1)),
                   ),
                   onPressed: () {
                     context.push('/server');

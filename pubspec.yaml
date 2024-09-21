@@ -43,6 +43,7 @@ dependencies:
   slang: ^3.31.1
   slang_flutter: ^3.31.0
 
+  # UI Widgets
   audio_video_progress_bar: ^2.0.3
   extended_image: ^8.2.3
   flutter_lyric: ^2.0.4+6
@@ -52,6 +53,11 @@ dependencies:
   flutter_linkify: ^6.0.0
   flutter_json_view: ^1.1.5
   infinite_scroll_pagination: ^4.0.0
+  flutter_svg: ^2.0.10+1
+  introduction_screen:
+    git:
+      url: https://github.com/ProjectAnni/introduction_screen.git
+  dots_indicator: ^2.1.2
 
   flutter_adaptive_scaffold: ^0.1.12
   animations: ^2.0.11
@@ -83,6 +89,8 @@ dependencies:
   rust_lib_annix:
     path: rust_builder
 
+  firebase_core: ^3.5.0
+
 dev_dependencies:
   flutter_lints: ^2.0.2
   flutter_test:
@@ -101,6 +109,16 @@ flutter:
 
   assets:
     - assets/icon.png
+    - assets/intro/server.png
+    - assets/intro/cloud.png
+    - assets/intro/cloud@2x.png
+    - assets/intro/cloud@3x.png
+    - assets/intro/everything.png
+    - assets/intro/everything@2x.png
+    - assets/intro/everything@3x.png
+    - assets/intro/listen.png
+    - assets/intro/listen@2x.png
+    - assets/intro/listen@3x.png
 
 dependency_overrides:
   # flutter_cache_manager:

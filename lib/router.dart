@@ -1,5 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/theme.dart';
+import 'package:annix/ui/page/intro.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,6 @@ import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/layout/layout.dart';
 import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/page/annil/annil.dart';
-import 'package:annix/ui/page/anniv_login.dart';
 import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/playback_history.dart';
@@ -28,13 +28,18 @@ final GlobalKey<NavigatorState> _mainNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'main');
 
 GoRouter buildRouter(Ref ref) {
+  final anniv = ref.read(annivProvider);
   final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/',
-        redirect: (context, state) => '/home',
+        redirect: (context, state) => anniv.isLogin ? '/home' : '/intro',
+      ),
+      GoRoute(
+        path: '/intro',
+        builder: (context, state) => const IntroPage(),
       ),
       ShellRoute(
         navigatorKey: _mainNavigatorKey,
@@ -49,10 +54,6 @@ GoRouter buildRouter(Ref ref) {
           GoRoute(
             path: '/home',
             builder: (context, state) => const HomePage(),
-          ),
-          GoRoute(
-            path: '/login',
-            builder: (context, state) => const AnnivLoginPage(),
           ),
           GoRoute(
             path: '/album',

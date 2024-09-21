@@ -63,7 +63,7 @@ class PlayingLyricUI extends LyricUI {
     return textTheme.titleMedium!.copyWith(
       height: 1,
       color: context.colorScheme.onSecondaryContainer
-          .withOpacity(isKaraoke ? 0.8 : 0.5),
+          .withValues(alpha: isKaraoke ? 0.8 : 0.5),
     );
   }
 

@@ -2,7 +2,6 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/ui/dialogs/annil.dart';
-import 'package:annix/ui/widgets/anniv/anniv_not_login_card.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
@@ -87,11 +86,9 @@ class AnnivCard extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final annivInfo = ref.watch(annivProvider.select((final v) => v.info));
 
-    return annivInfo == null
-        ? const AnnivNotLoginCard()
-        : Card(
-            child: afterLogin(context, ref, annivInfo),
-          );
+    return Card(
+      child: afterLogin(context, ref, annivInfo!),
+    );
   }
 }
 

@@ -4,7 +4,6 @@ import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/playback_history.dart';
 import 'package:annix/ui/widgets/album/album_stack_grid.dart';
-import 'package:annix/ui/widgets/anniv/anniv_not_login_card.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -74,7 +73,7 @@ class HomePage extends HookWidget {
                 spacing: 8,
                 children: [
                   FilterChip(
-                    label: Text("All"),
+                    label: Text('All'),
                     onSelected: (selected) {
                       if (selected) {
                         filter.value = FilterType.all;
@@ -118,8 +117,6 @@ class HomePage extends HookWidget {
                 ],
               ),
             ),
-
-            ...content(context),
 
             ///////////////////////////// ALL /////////////////////////////
             if (isAllPage)
@@ -335,31 +332,6 @@ class HomePage extends HookWidget {
       ),
     );
   }
-
-  List<Widget> content(final BuildContext context) {
-    return <Widget>[
-      SliverToBoxAdapter(
-        child: Consumer(
-          builder: (context, ref, child) {
-            final annivInfo =
-                ref.watch(annivProvider.select((final v) => v.info));
-
-            if (annivInfo == null) {
-              return child!;
-            } else {
-              return Container();
-            }
-          },
-          child: const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 16.0),
-              child: AnnivNotLoginCard(),
-            ),
-          ),
-        ),
-      ),
-    ];
-  }
 }
 
 class StatisticsCard extends StatelessWidget {
@@ -401,10 +373,10 @@ class StatisticsCard extends StatelessWidget {
                 const Spacer(),
                 TextButton(
                   onPressed: () {},
-                  child: Text('View Details'),
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                   ),
+                  child: Text('View Details'),
                 ),
               ],
             ),
