@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
@@ -6,6 +5,7 @@ import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/widgets/slide_up.dart';
@@ -237,65 +237,25 @@ class PlayingScreenMobileControl extends ConsumerWidget {
   }
 }
 
-class MusicCoverOrLyric extends StatefulWidget {
+class MusicCoverOrLyric extends StatelessWidget {
   final ValueListenable<bool> showLyric;
-  final Color fillColor;
 
-  const MusicCoverOrLyric(
-      {super.key,
-      required this.showLyric,
-      this.fillColor = Colors.transparent});
-
-  @override
-  State<MusicCoverOrLyric> createState() => _MusicCoverOrLyricState();
-}
-
-class _MusicCoverOrLyricState extends State<MusicCoverOrLyric> {
-  bool showLyric = false;
+  const MusicCoverOrLyric({
+    super.key,
+    required this.showLyric,
+  });
 
   @override
-  void initState() {
-    super.initState();
-
-    widget.showLyric.addListener(onShowLyricsChange);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    widget.showLyric.removeListener(onShowLyricsChange);
-  }
-
-  onShowLyricsChange() {
-    setState(() {
-      showLyric = widget.showLyric.value;
-    });
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    return PageTransitionSwitcher(
-      duration: const Duration(milliseconds: 300),
-      transitionBuilder:
-          (final child, final primaryAnimation, final secondaryAnimation) {
-        return FadeThroughTransition(
-          animation: primaryAnimation,
-          secondaryAnimation: secondaryAnimation,
-          fillColor: widget.fillColor,
-          child: child,
-        );
-      },
-      child: AspectRatio(
-        aspectRatio: 0.9,
-        child: IndexedStack(
-          index: showLyric ? 0 : 1,
-          key: ValueKey(showLyric ? 0 : 1),
-          children: const [
-            LyricView(),
-            Center(child: PlayingMusicCover()),
-          ],
-        ),
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 0.9,
+      child: FadeIndexedStack(
+        index: showLyric.value ? 0 : 1,
+        duration: const Duration(milliseconds: 300),
+        children: const [
+          LyricView(),
+          Center(child: PlayingMusicCover()),
+        ],
       ),
     );
   }

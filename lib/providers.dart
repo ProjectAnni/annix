@@ -25,8 +25,7 @@ final networkProvider =
     ChangeNotifierProvider((final ref) => NetworkService(ref));
 final isOnlineProvider =
     StateProvider((final ref) => ref.watch(networkProvider).isOnline);
-final routerProvider =
-    ChangeNotifierProvider((final ref) => AnnixRouterDelegate(ref));
+final routerProvider = Provider((final ref) => AnnixRouterDelegate());
 final goRouterProvider = Provider(buildRouter);
 final proxyProvider = Provider((final ref) => AnnixProxy(ref));
 final settingsProvider = Provider((final ref) => SettingsService(ref));

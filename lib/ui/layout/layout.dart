@@ -17,7 +17,7 @@ class AnnixLayout extends HookConsumerWidget {
 
   static const pages = <String>[
     '/home',
-    '/search',
+    '/music',
     '/server',
   ];
 

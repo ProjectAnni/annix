@@ -1,8 +1,7 @@
 import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AnnixRouterDelegate with ChangeNotifier {
+class AnnixRouterDelegate {
   final _panelController = PanelController();
   PanelController get panelController => _panelController;
   get isPanelOpen =>
@@ -15,20 +14,16 @@ class AnnixRouterDelegate with ChangeNotifier {
   void openPanel() {
     if (!_panelController.isPanelOpen) {
       _panelController.open();
-      notifyListeners();
     }
   }
 
   void closePanel() {
     if (isPanelOpen) {
       _panelController.close();
-      notifyListeners();
     }
   }
 
-  final Ref ref;
-
-  AnnixRouterDelegate(this.ref);
+  AnnixRouterDelegate();
 }
 
 class PlayerRouteObserver extends NavigatorObserver {
@@ -41,5 +36,23 @@ class PlayerRouteObserver extends NavigatorObserver {
     if (['/player'].contains(route.settings.name)) {
       delegate.closePanel();
     }
+  }
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    if (!['/player'].contains(route.settings.name)) {
+      delegate.closePanel();
+    }
+
+    super.didPush(route, previousRoute);
+  }
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}) {
+    if (!['/player'].contains(newRoute?.settings.name)) {
+      delegate.closePanel();
+    }
+
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
   }
 }

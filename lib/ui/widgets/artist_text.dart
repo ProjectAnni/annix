@@ -93,7 +93,8 @@ class ArtistText extends HookWidget {
     return GestureDetector(
       onTap: search
           ? () {
-              context.go('/search', extra: artist);
+              context.go('/music');
+              context.push('/search', extra: artist);
             }
           : null,
       onLongPress: toggleExtend,

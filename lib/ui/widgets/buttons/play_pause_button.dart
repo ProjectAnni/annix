@@ -83,7 +83,8 @@ class PlayPauseButton extends HookConsumerWidget {
           ),
         );
       } else {
-        child = IconButton(
+        // ignore size for small buttons
+        return IconButton(
           icon: AnimatedIconWidget(
             controller: controller,
             icon: AnimatedIcons.play_pause,

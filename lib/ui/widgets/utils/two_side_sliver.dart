@@ -17,13 +17,13 @@ class TwoSideSliver extends MultiChildRenderObjectWidget {
         super(children: [left, right]);
 
   @override
-  RenderTwoSideSliver createRenderObject(final BuildContext context) {
+  RenderTwoSideSliver createRenderObject(BuildContext context) {
     return RenderTwoSideSliver(leftPercentage: leftPercentage);
   }
 
   @override
   void updateRenderObject(
-      final BuildContext context, final RenderTwoSideSliver renderObject) {
+      BuildContext context, RenderTwoSideSliver renderObject) {
     renderObject.leftPercentage = leftPercentage;
   }
 }
@@ -44,14 +44,14 @@ class RenderTwoSideSliver extends RenderSliver
   double get leftPercentage => _leftPercentage;
   double _leftPercentage;
 
-  set leftPercentage(final double value) {
+  set leftPercentage(double value) {
     if (_leftPercentage == value) return;
     _leftPercentage = value;
     markNeedsLayout();
   }
 
   @override
-  void setupParentData(final RenderSliver child) {
+  void setupParentData(RenderSliver child) {
     if (child.parentData is! _TwoSideParentData) {
       child.parentData = _TwoSideParentData();
     }
@@ -142,7 +142,7 @@ class RenderTwoSideSliver extends RenderSliver
   /// Otherwise Widgets like [Slider] or [PopupMenuButton] won't work even
   /// though the rest of Widget will work (like [ElevatedButton])
   @override
-  void applyPaintTransform(final RenderSliver child, final Matrix4 transform) {
+  void applyPaintTransform(RenderSliver child, Matrix4 transform) {
     child.twoSide.applyPaintTransform(transform);
   }
 }

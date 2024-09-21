@@ -1,4 +1,5 @@
 import 'package:annix/providers.dart';
+import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/swiper.dart';
@@ -42,8 +43,9 @@ class MobileBottomPlayer extends StatelessWidget {
                 flex: 1,
                 child: PlayingTrackSwiper(),
               ),
+              const FavoriteButton(),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(right: 8.0),
                 child: PlayPauseButton.small(),
               ),
             ],

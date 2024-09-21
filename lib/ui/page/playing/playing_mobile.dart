@@ -18,10 +18,7 @@ class PlayingScreenMobile extends HookConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          MusicCoverOrLyric(
-            showLyric: showLyric,
-            fillColor: context.colorScheme.secondaryContainer,
-          ),
+          MusicCoverOrLyric(showLyric: showLyric),
           const Column(
             children: [
               Row(
