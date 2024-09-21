@@ -5,6 +5,9 @@ import 'package:annix/utils/context_extension.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:go_router/go_router.dart';
+import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
@@ -36,7 +39,7 @@ class AnnixIntroductionPage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: SizedBox.square(
-                        dimension: 200,
+                        dimension: 280,
                         child: Image.asset(
                           asset!,
                           colorBlendMode: BlendMode.srcOver,
@@ -54,18 +57,18 @@ class AnnixIntroductionPage extends StatelessWidget {
           )
         : null;
     final titleWidget = Container(
-      padding: const EdgeInsets.only(left: 16, bottom: 8),
+      padding: const EdgeInsets.only(left: 24, bottom: 8),
       alignment: Alignment.topLeft,
       child: Text(
         heading,
-        style: context.textTheme.titleLarge?.copyWith(
+        style: context.textTheme.headlineLarge?.copyWith(
           color: context.colorScheme.onSecondaryContainer,
           fontWeight: FontWeight.w600,
         ),
       ),
     );
     final bodyWidget = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       alignment: Alignment.topLeft,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -73,7 +76,7 @@ class AnnixIntroductionPage extends StatelessWidget {
         children: [
           Text(
             description,
-            style: context.textTheme.labelMedium?.copyWith(
+            style: context.textTheme.bodyLarge?.copyWith(
               color: context.colorScheme.onSecondaryContainer,
             ),
           ),
@@ -89,11 +92,14 @@ class AnnixIntroductionPage extends StatelessWidget {
           if (image != null)
             Flexible(
               flex: 4,
-              child: Center(child: image),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: image,
+              ),
             ),
           const Spacer(),
           Flexible(
-            flex: image == null ? 5 : 1,
+            flex: image == null ? 5 : 2,
             child: Column(
               children: [
                 titleWidget,
@@ -132,78 +138,110 @@ class IntroPage extends HookConsumerWidget {
     useListenable(serverController);
 
     return IntroductionScreen(
-      safeAreaList: const [false, false, true, false],
+      safeAreaList: const [false, false, false, false],
       key: _introKey,
       globalBackgroundColor: context.colorScheme.secondaryContainer,
       curve: Curves.easeInOut,
       animationDuration: 150,
       resizeToAvoidBottomInset: false,
       rawPages: [
-        const AnnixIntroductionPage(
-          heading: 'Welcome',
-          description: 'Let us introduce you to Annix',
+        AnnixIntroductionPage(
+          heading: t.intro.welcome.heading,
+          description: t.intro.welcome.description,
           asset: 'assets/icon.png',
           card: false,
         ),
-        const AnnixIntroductionPage(
-          heading: 'Playback',
-          description: 'It should be a place for you to enjoy music',
+        AnnixIntroductionPage(
+          heading: t.intro.enjoy_music.heading,
+          description: t.intro.enjoy_music.description,
           asset: 'assets/intro/listen.png',
           color: Colors.white,
         ),
-        const AnnixIntroductionPage(
-          heading: 'Remote',
-          description: 'From your own music library in cloud',
+        AnnixIntroductionPage(
+          heading: t.intro.host_remotely.heading,
+          description: t.intro.host_remotely.description,
           asset: 'assets/intro/cloud.png',
         ),
         AnnixIntroductionPage(
-          heading: 'And...',
-          description:
-              'Login to an Anniv server and use all other useful features!',
-          // asset: 'assets/intro/everything.png',
-          suffix: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const SizedBox(height: 32),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
-                controller: emailController,
-                autofillHints: const [AutofillHints.email],
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
-                controller: passwordController,
-                obscureText: true,
-                autofillHints: const [AutofillHints.password],
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 8),
-                child: CheckboxListTile(
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  value: selfHost.value,
-                  onChanged: (v) => selfHost.value = v ?? false,
-                  title: Text(
-                    'Use self-hosted server',
-                    style: context.textTheme.labelLarge,
-                  ),
-                ),
-              ),
-              if (selfHost.value)
+          heading: t.intro.fully_featured.heading,
+          description: t.intro.fully_featured.description,
+          asset: 'assets/intro/everything.png',
+        ),
+        AutofillGroup(
+          child: AnnixIntroductionPage(
+            heading: t.intro.login.heading,
+            description: t.intro.login.description,
+            suffix: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const SizedBox(height: 32),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Server',
-                  ),
-                  controller: serverController,
+                  decoration: InputDecoration(labelText: t.intro.login.email),
+                  controller: emailController,
+                  autofillHints: const [AutofillHints.email],
                 ),
-            ],
+                const SizedBox(height: 12),
+                TextFormField(
+                  decoration:
+                      InputDecoration(labelText: t.intro.login.password),
+                  controller: passwordController,
+                  obscureText: true,
+                  autofillHints: const [AutofillHints.password],
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    contentPadding: EdgeInsets.zero,
+                    value: selfHost.value,
+                    onChanged: (v) => selfHost.value = v ?? false,
+                    title: Text(
+                      t.intro.login.self_host,
+                      style: context.textTheme.labelLarge,
+                    ),
+                    secondary: IconButton(
+                      icon: const Icon(Icons.help_outline),
+                      onPressed: () {
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(t.intro.about_anniv.heading),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Linkify(
+                                      text: t.intro.about_anniv.ribbon_features,
+                                    ),
+                                    Linkify(
+                                      text:
+                                          t.intro.about_anniv.how_to_self_host,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(t.intro.about_anniv.confirm),
+                                  onPressed: () => context.pop(),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                if (selfHost.value)
+                  TextFormField(
+                    decoration:
+                        InputDecoration(labelText: t.intro.login.server),
+                    controller: serverController,
+                    autofillHints: const [AutofillHints.url],
+                  ),
+              ],
+            ),
           ),
         ),
       ],
@@ -211,7 +249,7 @@ class IntroPage extends HookConsumerWidget {
       controlsPadding: const EdgeInsets.only(bottom: 8),
       customProgress: (position, totalPages) => Container(
         alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 28),
+        padding: const EdgeInsets.only(left: 24),
         child: DotsIndicator(
           dotsCount: totalPages,
           position: position,
@@ -230,13 +268,19 @@ class IntroPage extends HookConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           TextButton(
+            style: TextButton.styleFrom(
+              visualDensity: VisualDensity.comfortable,
+            ),
+            onPressed: () => _introKey.currentState?.skipToEnd(),
+            child: Text(t.intro.action.skip),
+          ),
+          const SizedBox(width: 8),
+          FilledButton(
             style: FilledButton.styleFrom(
               visualDensity: VisualDensity.comfortable,
             ),
-            onPressed: () {
-              _introKey.currentState?.next();
-            },
-            child: const Text('Next'),
+            onPressed: () => _introKey.currentState?.next(),
+            child: Text(t.intro.action.next),
           ),
           const SizedBox(width: 24),
         ],
@@ -286,7 +330,7 @@ class IntroPage extends HookConsumerWidget {
                       }
                     }
                   : null,
-              child: const Text('Login'),
+              child: Text(t.intro.action.login),
             ),
           ),
         ],

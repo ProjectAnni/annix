@@ -60,5 +60,42 @@
   "recent_played": "最近播放",
   "no_lyric_found": "未找到歌词",
   "download": "下载",
-  "download_manager": "下载管理"
+  "download_manager": "下载管理",
+  "intro": {
+    "welcome": {
+      "heading": "欢迎使用",
+      "description": "Annix，一款为音频整理者设计的全功能音乐播放器。"
+    },
+    "enjoy_music": {
+      "heading": "聆听",
+      "description": "Annix 支持两种主流音频格式：FLAC 用于无损音频；OPUS 用于有损音频。此外，它还支持无缝播放，确保曲目之间的平滑过渡。"
+    },
+    "host_remotely": {
+      "heading": "自建云曲库",
+      "description": "通过自建 Annil 实例管理个人音乐收藏，在任何设备上享受你的曲库！"
+    },
+    "fully_featured": {
+      "heading": "功能齐全",
+      "description": "包括歌词、播放列表、统计分析等在内的全面功能，应有尽有，满足您对音乐播放器的所有需求！"
+    },
+    "login": {
+      "heading": "最后……",
+      "description": "登录 Anniv 服务器，畅享精彩功能！",
+      "self_host": "使用自托管实例",
+      "email": "邮箱",
+      "password": "密码",
+      "server": "Anniv 服务器地址"
+    },
+    "about_anniv": {
+      "heading": "关于 Anniv",
+      "ribbon_features": "Project Anni 提供了官方 Anniv 实例 Ribbon，用户可免费使用。支持播放列表、歌词、统计等功能。",
+      "how_to_self_host": "如果您想自行部署 Anniv 实例，请访问 https://anni.rs 并按照说明进行设置。",
+      "confirm": "我知道了"
+    },
+    "action": {
+      "skip": "跳过",
+      "next": "下一步",
+      "login": "登录"
+    }
+  }
 }

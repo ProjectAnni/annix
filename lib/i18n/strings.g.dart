@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 100 (50 per locale)
+/// Strings: 142 (71 per locale)
 ///
-/// Built on 2024-09-19 at 16:41 UTC
+/// Built on 2024-09-21 at 08:20 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -167,6 +167,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	String get no_lyric_found => 'No lyric found';
 	String get download => 'Download';
 	String get download_manager => 'Download manager';
+	late final _StringsIntroEn intro = _StringsIntroEn._(_root);
 }
 
 // Path: playing
@@ -260,6 +261,106 @@ class _StringsTrackEn {
 	String get share => 'Share track';
 }
 
+// Path: intro
+class _StringsIntroEn {
+	_StringsIntroEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final _StringsIntroWelcomeEn welcome = _StringsIntroWelcomeEn._(_root);
+	late final _StringsIntroEnjoyMusicEn enjoy_music = _StringsIntroEnjoyMusicEn._(_root);
+	late final _StringsIntroHostRemotelyEn host_remotely = _StringsIntroHostRemotelyEn._(_root);
+	late final _StringsIntroFullyFeaturedEn fully_featured = _StringsIntroFullyFeaturedEn._(_root);
+	late final _StringsIntroLoginEn login = _StringsIntroLoginEn._(_root);
+	late final _StringsIntroAboutAnnivEn about_anniv = _StringsIntroAboutAnnivEn._(_root);
+	late final _StringsIntroActionEn action = _StringsIntroActionEn._(_root);
+}
+
+// Path: intro.welcome
+class _StringsIntroWelcomeEn {
+	_StringsIntroWelcomeEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get heading => 'Welcome!';
+	String get description => 'This is Annix, a full-featured music player designed for You.';
+}
+
+// Path: intro.enjoy_music
+class _StringsIntroEnjoyMusicEn {
+	_StringsIntroEnjoyMusicEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get heading => 'Enjoy Music';
+	String get description => 'Annix supports two primary audio formats: FLAC for lossless audio and OPUS for lossy audio. Additionally, it offers gapless playback, ensuring smooth transitions between tracks.';
+}
+
+// Path: intro.host_remotely
+class _StringsIntroHostRemotelyEn {
+	_StringsIntroHostRemotelyEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get heading => 'Host remotely';
+	String get description => 'Host your own Annil instance to manage your personal music collection and enjoy it from anywhere by streaming the tracks on demand.';
+}
+
+// Path: intro.fully_featured
+class _StringsIntroFullyFeaturedEn {
+	_StringsIntroFullyFeaturedEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get heading => 'Fully featured';
+	String get description => 'Lyric, playlist, statistics, ..., and everything you think a music player should have!';
+}
+
+// Path: intro.login
+class _StringsIntroLoginEn {
+	_StringsIntroLoginEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get heading => 'And...';
+	String get description => 'Log in to the Anniv server and take advantage of all these amazing features!';
+	String get self_host => 'Use self-hosted Anniv instance';
+	String get email => 'Email';
+	String get password => 'Password';
+	String get server => 'Anniv Server';
+}
+
+// Path: intro.about_anniv
+class _StringsIntroAboutAnnivEn {
+	_StringsIntroAboutAnnivEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get heading => 'About Anniv';
+	String get ribbon_features => 'Project Anni provides an official instance of Anniv called Ribbon. This server is free to use and provides features like playlist, lyric, and statistics.';
+	String get how_to_self_host => 'If you want to host your own instance of Anniv, check out the project at https://anni.rs and follow the instructions to set up your own server.';
+	String get confirm => 'Got it';
+}
+
+// Path: intro.action
+class _StringsIntroActionEn {
+	_StringsIntroActionEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get skip => 'Skip';
+	String get next => 'Next';
+	String get login => 'Login';
+}
+
 // Path: <root>
 class _StringsZhCn implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
@@ -303,6 +404,7 @@ class _StringsZhCn implements Translations {
 	@override String get no_lyric_found => '未找到歌词';
 	@override String get download => '下载';
 	@override String get download_manager => '下载管理';
+	@override late final _StringsIntroZhCn intro = _StringsIntroZhCn._(_root);
 }
 
 // Path: playing
@@ -396,6 +498,106 @@ class _StringsTrackZhCn implements _StringsTrackEn {
 	@override String get share => '分享歌曲';
 }
 
+// Path: intro
+class _StringsIntroZhCn implements _StringsIntroEn {
+	_StringsIntroZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override late final _StringsIntroWelcomeZhCn welcome = _StringsIntroWelcomeZhCn._(_root);
+	@override late final _StringsIntroEnjoyMusicZhCn enjoy_music = _StringsIntroEnjoyMusicZhCn._(_root);
+	@override late final _StringsIntroHostRemotelyZhCn host_remotely = _StringsIntroHostRemotelyZhCn._(_root);
+	@override late final _StringsIntroFullyFeaturedZhCn fully_featured = _StringsIntroFullyFeaturedZhCn._(_root);
+	@override late final _StringsIntroLoginZhCn login = _StringsIntroLoginZhCn._(_root);
+	@override late final _StringsIntroAboutAnnivZhCn about_anniv = _StringsIntroAboutAnnivZhCn._(_root);
+	@override late final _StringsIntroActionZhCn action = _StringsIntroActionZhCn._(_root);
+}
+
+// Path: intro.welcome
+class _StringsIntroWelcomeZhCn implements _StringsIntroWelcomeEn {
+	_StringsIntroWelcomeZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get heading => '欢迎使用';
+	@override String get description => 'Annix，一款为音频整理者设计的全功能音乐播放器。';
+}
+
+// Path: intro.enjoy_music
+class _StringsIntroEnjoyMusicZhCn implements _StringsIntroEnjoyMusicEn {
+	_StringsIntroEnjoyMusicZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get heading => '聆听';
+	@override String get description => 'Annix 支持两种主流音频格式：FLAC 用于无损音频；OPUS 用于有损音频。此外，它还支持无缝播放，确保曲目之间的平滑过渡。';
+}
+
+// Path: intro.host_remotely
+class _StringsIntroHostRemotelyZhCn implements _StringsIntroHostRemotelyEn {
+	_StringsIntroHostRemotelyZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get heading => '自建云曲库';
+	@override String get description => '通过自建 Annil 实例管理个人音乐收藏，在任何设备上享受你的曲库！';
+}
+
+// Path: intro.fully_featured
+class _StringsIntroFullyFeaturedZhCn implements _StringsIntroFullyFeaturedEn {
+	_StringsIntroFullyFeaturedZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get heading => '功能齐全';
+	@override String get description => '包括歌词、播放列表、统计分析等在内的全面功能，应有尽有，满足您对音乐播放器的所有需求！';
+}
+
+// Path: intro.login
+class _StringsIntroLoginZhCn implements _StringsIntroLoginEn {
+	_StringsIntroLoginZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get heading => '最后……';
+	@override String get description => '登录 Anniv 服务器，畅享精彩功能！';
+	@override String get self_host => '使用自托管实例';
+	@override String get email => '邮箱';
+	@override String get password => '密码';
+	@override String get server => 'Anniv 服务器地址';
+}
+
+// Path: intro.about_anniv
+class _StringsIntroAboutAnnivZhCn implements _StringsIntroAboutAnnivEn {
+	_StringsIntroAboutAnnivZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get heading => '关于 Anniv';
+	@override String get ribbon_features => 'Project Anni 提供了官方 Anniv 实例 Ribbon，用户可免费使用。支持播放列表、歌词、统计等功能。';
+	@override String get how_to_self_host => '如果您想自行部署 Anniv 实例，请访问 https://anni.rs 并按照说明进行设置。';
+	@override String get confirm => '我知道了';
+}
+
+// Path: intro.action
+class _StringsIntroActionZhCn implements _StringsIntroActionEn {
+	_StringsIntroActionZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get skip => '跳过';
+	@override String get next => '下一步';
+	@override String get login => '登录';
+}
+
 /// Flat map(s) containing all translations.
 /// Only for edge cases! For simple maps, use the map function of this library.
 
@@ -452,6 +654,27 @@ extension on Translations {
 			case 'no_lyric_found': return 'No lyric found';
 			case 'download': return 'Download';
 			case 'download_manager': return 'Download manager';
+			case 'intro.welcome.heading': return 'Welcome!';
+			case 'intro.welcome.description': return 'This is Annix, a full-featured music player designed for You.';
+			case 'intro.enjoy_music.heading': return 'Enjoy Music';
+			case 'intro.enjoy_music.description': return 'Annix supports two primary audio formats: FLAC for lossless audio and OPUS for lossy audio. Additionally, it offers gapless playback, ensuring smooth transitions between tracks.';
+			case 'intro.host_remotely.heading': return 'Host remotely';
+			case 'intro.host_remotely.description': return 'Host your own Annil instance to manage your personal music collection and enjoy it from anywhere by streaming the tracks on demand.';
+			case 'intro.fully_featured.heading': return 'Fully featured';
+			case 'intro.fully_featured.description': return 'Lyric, playlist, statistics, ..., and everything you think a music player should have!';
+			case 'intro.login.heading': return 'And...';
+			case 'intro.login.description': return 'Log in to the Anniv server and take advantage of all these amazing features!';
+			case 'intro.login.self_host': return 'Use self-hosted Anniv instance';
+			case 'intro.login.email': return 'Email';
+			case 'intro.login.password': return 'Password';
+			case 'intro.login.server': return 'Anniv Server';
+			case 'intro.about_anniv.heading': return 'About Anniv';
+			case 'intro.about_anniv.ribbon_features': return 'Project Anni provides an official instance of Anniv called Ribbon. This server is free to use and provides features like playlist, lyric, and statistics.';
+			case 'intro.about_anniv.how_to_self_host': return 'If you want to host your own instance of Anniv, check out the project at https://anni.rs and follow the instructions to set up your own server.';
+			case 'intro.about_anniv.confirm': return 'Got it';
+			case 'intro.action.skip': return 'Skip';
+			case 'intro.action.next': return 'Next';
+			case 'intro.action.login': return 'Login';
 			default: return null;
 		}
 	}
@@ -510,6 +733,27 @@ extension on _StringsZhCn {
 			case 'no_lyric_found': return '未找到歌词';
 			case 'download': return '下载';
 			case 'download_manager': return '下载管理';
+			case 'intro.welcome.heading': return '欢迎使用';
+			case 'intro.welcome.description': return 'Annix，一款为音频整理者设计的全功能音乐播放器。';
+			case 'intro.enjoy_music.heading': return '聆听';
+			case 'intro.enjoy_music.description': return 'Annix 支持两种主流音频格式：FLAC 用于无损音频；OPUS 用于有损音频。此外，它还支持无缝播放，确保曲目之间的平滑过渡。';
+			case 'intro.host_remotely.heading': return '自建云曲库';
+			case 'intro.host_remotely.description': return '通过自建 Annil 实例管理个人音乐收藏，在任何设备上享受你的曲库！';
+			case 'intro.fully_featured.heading': return '功能齐全';
+			case 'intro.fully_featured.description': return '包括歌词、播放列表、统计分析等在内的全面功能，应有尽有，满足您对音乐播放器的所有需求！';
+			case 'intro.login.heading': return '最后……';
+			case 'intro.login.description': return '登录 Anniv 服务器，畅享精彩功能！';
+			case 'intro.login.self_host': return '使用自托管实例';
+			case 'intro.login.email': return '邮箱';
+			case 'intro.login.password': return '密码';
+			case 'intro.login.server': return 'Anniv 服务器地址';
+			case 'intro.about_anniv.heading': return '关于 Anniv';
+			case 'intro.about_anniv.ribbon_features': return 'Project Anni 提供了官方 Anniv 实例 Ribbon，用户可免费使用。支持播放列表、歌词、统计等功能。';
+			case 'intro.about_anniv.how_to_self_host': return '如果您想自行部署 Anniv 实例，请访问 https://anni.rs 并按照说明进行设置。';
+			case 'intro.about_anniv.confirm': return '我知道了';
+			case 'intro.action.skip': return '跳过';
+			case 'intro.action.next': return '下一步';
+			case 'intro.action.login': return '登录';
 			default: return null;
 		}
 	}

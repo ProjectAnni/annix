@@ -60,5 +60,42 @@
   "recent_played": "Recently played",
   "no_lyric_found": "No lyric found",
   "download": "Download",
-  "download_manager": "Download manager"
+  "download_manager": "Download manager",
+  "intro": {
+    "welcome": {
+      "heading": "Welcome!",
+      "description": "This is Annix, a full-featured music player designed for You."
+    },
+    "enjoy_music": {
+      "heading": "Enjoy Music",
+      "description": "Annix supports two primary audio formats: FLAC for lossless audio and OPUS for lossy audio. Additionally, it offers gapless playback, ensuring smooth transitions between tracks."
+    },
+    "host_remotely": {
+      "heading": "Host remotely",
+      "description": "Host your own Annil instance to manage your personal music collection and enjoy it from anywhere by streaming the tracks on demand."
+    },
+    "fully_featured": {
+      "heading": "Fully featured",
+      "description": "Lyric, playlist, statistics, ..., and everything you think a music player should have!"
+    },
+    "login": {
+      "heading": "And...",
+      "description": "Log in to the Anniv server and take advantage of all these amazing features!",
+      "self_host": "Use self-hosted Anniv instance",
+      "email": "Email",
+      "password": "Password",
+      "server": "Anniv Server"
+    },
+    "about_anniv": {
+      "heading": "About Anniv",
+      "ribbon_features": "Project Anni provides an official instance of Anniv called Ribbon. This server is free to use and provides features like playlist, lyric, and statistics.",
+      "how_to_self_host": "If you want to host your own instance of Anniv, check out the project at https://anni.rs and follow the instructions to set up your own server.",
+      "confirm": "Got it"
+    },
+    "action": {
+      "skip": "Skip",
+      "next": "Next",
+      "login": "Login"
+    }
+  }
 }
