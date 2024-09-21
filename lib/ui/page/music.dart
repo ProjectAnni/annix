@@ -2,6 +2,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/playback/endless_mode.dart';
+import 'package:annix/ui/widgets/playback/sleep_timer.dart';
 import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -56,16 +57,12 @@ class MusicPage extends HookConsumerWidget {
           child: CustomScrollView(
             slivers: [
               const SliverGap.belowTop(),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: OverflowBar(
                   spacing: 8.0,
                   children: [
-                    const EndlessModeChip(),
-                    FilterChip(
-                      avatar: const Icon(Icons.timer),
-                      label: Text('Sleep Timer'),
-                      onSelected: (v) {},
-                    ),
+                    EndlessModeChip(),
+                    SleepTimerChip(),
                   ],
                 ),
               ),
