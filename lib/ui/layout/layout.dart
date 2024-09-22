@@ -109,8 +109,8 @@ class AnnixLayout extends HookConsumerWidget {
         label: t.home,
       ),
       NavigationDestination(
-        icon: const Icon(Icons.search),
-        label: t.search,
+        icon: const Icon(Icons.queue_music_outlined),
+        label: t.music,
       ),
       NavigationDestination(
         icon: const Icon(Icons.dns_outlined),

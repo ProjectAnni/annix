@@ -110,7 +110,7 @@ class NowPlayingCard extends ConsumerWidget {
       child: Card(
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.zero,
-        color: context.colorScheme.primaryContainer,
+        color: context.colorScheme.tertiaryContainer,
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           leading: CoverCard(
@@ -119,14 +119,14 @@ class NowPlayingCard extends ConsumerWidget {
           title: Text(
             playing.track.title,
             style: context.textTheme.titleMedium?.copyWith(
-              color: context.colorScheme.onPrimaryContainer,
+              color: context.colorScheme.onTertiaryContainer,
             ),
           ),
           subtitle: Text(
             playing.track.albumTitle,
             overflow: TextOverflow.ellipsis,
             style: context.textTheme.labelMedium?.copyWith(
-              color: context.colorScheme.onPrimaryContainer,
+              color: context.colorScheme.onTertiaryContainer,
             ),
           ),
           onTap: () {

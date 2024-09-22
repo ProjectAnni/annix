@@ -33,20 +33,19 @@ class HomePage extends HookWidget {
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            if (context.isMobileOrPortrait)
-              SliverAppBar(
-                floating: true,
-                title: const Text('Annix'),
-                actions: [
-                  const ThemeButton(),
-                  IconButton(
-                    icon: const Icon(Icons.settings_outlined),
-                    onPressed: () {
-                      context.push('/settings');
-                    },
-                  ),
-                ],
-              ),
+            SliverAppBar(
+              floating: true,
+              title: const Text('Annix'),
+              actions: [
+                const ThemeButton(),
+                IconButton(
+                  icon: const Icon(Icons.settings_outlined),
+                  onPressed: () {
+                    context.push('/settings');
+                  },
+                ),
+              ],
+            ),
 
             SliverToBoxAdapter(
               child: OverflowBar(
@@ -130,7 +129,9 @@ class HomePage extends HookWidget {
                       }
 
                       return CarouselView.weighted(
-                        flexWeights: const [2, 1],
+                        flexWeights: context.isDesktopOrLandscape
+                            ? const [5, 4, 4, 2, 1]
+                            : const [2, 1],
                         itemSnapping: true,
                         padding: const EdgeInsets.only(right: 4),
                         children: data.map((albumId) {
@@ -222,7 +223,9 @@ class HomePage extends HookWidget {
                           .map((final e) => e.albumId)
                           .toList();
                       return CarouselView.weighted(
-                        flexWeights: const [6, 3, 1],
+                        flexWeights: context.isDesktopOrLandscape
+                            ? const [4, 3, 3, 2, 1]
+                            : const [6, 3, 1],
                         padding: const EdgeInsets.only(right: 4),
                         onTap: (index) => context.push(
                           '/album',

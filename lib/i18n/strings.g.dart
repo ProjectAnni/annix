@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 142 (71 per locale)
+/// Strings: 144 (72 per locale)
 ///
-/// Built on 2024-09-21 at 08:20 UTC
+/// Built on 2024-09-22 at 06:19 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -155,6 +155,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	String get playlists => 'Playlists';
 	String get shuffle_mode => 'Shuffle Mode';
 	String get my_favorite => 'My Favorite';
+	String get music => 'Music';
 	late final _StringsPlayingEn playing = _StringsPlayingEn._(_root);
 	late final _StringsPlaybackEn playback = _StringsPlaybackEn._(_root);
 	late final _StringsPlaylistEn playlist = _StringsPlaylistEn._(_root);
@@ -392,6 +393,7 @@ class _StringsZhCn implements Translations {
 	@override String get playlists => '播放列表';
 	@override String get shuffle_mode => '随机模式';
 	@override String get my_favorite => '我的收藏';
+	@override String get music => '音乐';
 	@override late final _StringsPlayingZhCn playing = _StringsPlayingZhCn._(_root);
 	@override late final _StringsPlaybackZhCn playback = _StringsPlaybackZhCn._(_root);
 	@override late final _StringsPlaylistZhCn playlist = _StringsPlaylistZhCn._(_root);
@@ -611,6 +613,7 @@ extension on Translations {
 			case 'playlists': return 'Playlists';
 			case 'shuffle_mode': return 'Shuffle Mode';
 			case 'my_favorite': return 'My Favorite';
+			case 'music': return 'Music';
 			case 'playing.is_playing': return 'Playing';
 			case 'playing.view_album': return 'View Album';
 			case 'playback.play_all': return 'Play All';
@@ -690,6 +693,7 @@ extension on _StringsZhCn {
 			case 'playlists': return '播放列表';
 			case 'shuffle_mode': return '随机模式';
 			case 'my_favorite': return '我的收藏';
+			case 'music': return '音乐';
 			case 'playing.is_playing': return '正在播放';
 			case 'playing.view_album': return '查看专辑';
 			case 'playback.play_all': return '播放全部';
