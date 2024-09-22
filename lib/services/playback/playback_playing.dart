@@ -6,6 +6,7 @@ import 'package:annix/services/lyric/lyric_source_anniv.dart';
 import 'package:annix/services/lyric/lyric_source_petitlyrics.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/utils/debounce.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,18 +16,27 @@ class PlayingTrack extends ChangeNotifier {
   AnnilAudioSource? source;
   bool reported = false;
 
-  PlayingTrack(this.ref);
+  late Debouncer progressNotifyDebouncer;
+  PlayingTrack(this.ref) {
+    progressNotifyDebouncer = Debouncer<void>(
+      milliseconds: 300,
+      action: notifyListeners,
+    );
+  }
 
-  void setSource(AnnilAudioSource? source) {
-    this.source = source;
-    position = Duration.zero;
-    duration = Duration.zero;
-    reported = false;
+  void setSource(AnnilAudioSource? newSource) {
+    resetReport();
+    if (source != newSource) {
+      source = newSource;
+      position = Duration.zero;
+      duration = Duration.zero;
 
-    if (source != null) {
-      getLyric().then(updateLyric, onError: (final _) => updateLyric(null));
+      if (newSource != null) {
+        getLyric().then(updateLyric, onError: (final _) => updateLyric(null));
+      }
+
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void resetReport() {
@@ -41,9 +51,20 @@ class PlayingTrack extends ChangeNotifier {
       ? 0
       : position.inMilliseconds / duration.inMilliseconds;
 
-  void updatePosition(final Duration position) {
+  void updatePosition(Duration position, Duration? newDuration) {
+    final oldDuration = duration;
+
     this.position = position;
-    notifyListeners();
+    if (newDuration != null) {
+      duration = newDuration;
+    }
+
+    if (oldDuration != duration) {
+      // update immediately if duration changed
+      notifyListeners();
+    } else {
+      progressNotifyDebouncer.run();
+    }
 
     if (!reported &&
         duration != Duration.zero &&
@@ -54,11 +75,6 @@ class PlayingTrack extends ChangeNotifier {
             source!.identifier, DateTime.now().millisecondsSinceEpoch ~/ 1000);
       }
     }
-  }
-
-  void updateDuration(final Duration duration) {
-    this.duration = duration;
-    notifyListeners();
   }
 
   void updateLyric(final TrackLyric? lyric) {

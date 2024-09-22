@@ -118,19 +118,20 @@ class PlaybackService extends ChangeNotifier {
       if (state == PlayerStateEvent.stop) {
         next();
       } else {
-        playerStatus = PlayerStatus.fromPlayingState(state);
-        notifyListeners();
+        final newPlayerStatus = PlayerStatus.fromPlayingState(state);
+        if (playerStatus != newPlayerStatus) {
+          playerStatus = newPlayerStatus;
+          notifyListeners();
+        }
       }
     });
 
     PlaybackService.player.progressStream().listen((progress) {
-      // Position
-      playing.updatePosition(Duration(milliseconds: progress.position));
+      final position = Duration(milliseconds: progress.position);
+      final duration = Duration(milliseconds: progress.duration);
 
-      // Duration
-      if (progress.duration > 0) {
-        playing.updateDuration(Duration(milliseconds: progress.duration));
-      }
+      playing.updatePosition(
+          position, duration != Duration.zero ? duration : null);
     });
   }
 
@@ -309,7 +310,7 @@ class PlaybackService extends ChangeNotifier {
     Logger.trace('Seek to position $position');
 
     // seek first for ui update
-    playing.updatePosition(position);
+    playing.updatePosition(position, null);
 
     // then notify player
     await PlaybackService.player.seek(position: position.inMilliseconds);

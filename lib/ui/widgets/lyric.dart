@@ -167,7 +167,8 @@ class _LyricView extends StatelessWidget {
         );
         return Consumer(
           builder: (final iconColor, final ref, final child) {
-            final player = ref.watch(playbackProvider);
+            final playerStatus =
+                ref.watch(playbackProvider.select((p) => p.playerStatus));
             final position =
                 ref.watch(playingProvider.select((final p) => p.position));
             return IgnoreDraggableWidget(
@@ -175,7 +176,7 @@ class _LyricView extends StatelessWidget {
                 model: lyric!.lyric.model,
                 lyricUi: ui,
                 position: position.inMilliseconds,
-                playing: player.playerStatus == PlayerStatus.playing,
+                playing: playerStatus == PlayerStatus.playing,
                 emptyBuilder: () => _textLyric(context, lyric!.lyric.text),
               ),
             );

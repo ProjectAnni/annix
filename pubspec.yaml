@@ -58,6 +58,7 @@ dependencies:
     git:
       url: https://github.com/ProjectAnni/introduction_screen.git
   dots_indicator: ^2.1.2
+  lazy_load_indexed_stack: ^1.1.0
 
   flutter_adaptive_scaffold: ^0.3.1
   animations: ^2.0.11
