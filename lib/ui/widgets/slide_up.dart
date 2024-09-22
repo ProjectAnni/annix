@@ -174,19 +174,21 @@ class _SlidingUpPanelState extends ConsumerState<SlidingUpPanel>
                         minHeight: widget.maxHeight,
                         maxHeight: widget.maxHeight,
                         alignment: Alignment.topCenter,
-                        child: FadeTransition(
-                          opacity: TweenSequence<double>([
-                            TweenSequenceItem<double>(
-                              tween: Tween<double>(begin: 0.0, end: 1.0),
-                              weight: 10,
-                            ),
-                            TweenSequenceItem<double>(
-                              tween: Tween<double>(begin: 1.0, end: 1.0),
-                              weight: 90,
-                            ),
-                          ]).animate(_ac),
-                          child: widget.panel,
-                        ),
+                        child: _ac.value == 0
+                            ? Container()
+                            : FadeTransition(
+                                opacity: TweenSequence<double>([
+                                  TweenSequenceItem<double>(
+                                    tween: Tween<double>(begin: 0.0, end: 1.0),
+                                    weight: 10,
+                                  ),
+                                  TweenSequenceItem<double>(
+                                    tween: Tween<double>(begin: 1.0, end: 1.0),
+                                    weight: 90,
+                                  ),
+                                ]).animate(_ac),
+                                child: widget.panel,
+                              ),
                       ),
 
                       // collapsed panel

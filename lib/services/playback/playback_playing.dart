@@ -19,7 +19,7 @@ class PlayingTrack extends ChangeNotifier {
   late Debouncer progressNotifyDebouncer;
   PlayingTrack(this.ref) {
     progressNotifyDebouncer = Debouncer<void>(
-      milliseconds: 300,
+      milliseconds: 1000,
       action: notifyListeners,
     );
   }

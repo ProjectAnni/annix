@@ -239,18 +239,23 @@ class AnnixLayout extends HookConsumerWidget {
         config: <Breakpoint, SlotLayoutConfig>{
           Breakpoints.small: SlotLayout.from(
             key: const Key('Bottom Navigation Small'),
-            builder: (context) => SizedBox(
-              height: currentHeight,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: opacity,
-                child: standardBottomNavigationBar(
-                  currentIndex: currentIndex,
-                  onDestinationSelected: onDestinationSelected,
-                  destinations: destinations,
-                ),
-              ),
-            ),
+            builder: (context) {
+              final bar = standardBottomNavigationBar(
+                currentIndex: currentIndex,
+                onDestinationSelected: onDestinationSelected,
+                destinations: destinations,
+              );
+              return SizedBox(
+                height: currentHeight,
+                child: opacity == 1
+                    ? bar
+                    : AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        opacity: opacity,
+                        child: bar,
+                      ),
+              );
+            },
           ),
         },
       ),

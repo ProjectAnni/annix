@@ -11,11 +11,13 @@ class Debouncer<Args> {
   Debouncer({required this.milliseconds, required this.action});
 
   run() {
-    if (_timer != null && _timer!.isActive) {
+    if (_timer?.isActive == true) {
       return;
     }
 
-    _timer = Timer(Duration(milliseconds: milliseconds), action);
-    _timer = null;
+    _timer = Timer(Duration(milliseconds: milliseconds), () {
+      _timer = null;
+      action();
+    });
   }
 }
