@@ -18,7 +18,7 @@ pub fn init_logger(path: String) {
 
         let logger = LogHandle::new(conn);
         let subscriber = tracing_subscriber_sqlite::SubscriberBuilder::new()
-            .with_max_level(LevelFilter::DEBUG)
+            .with_max_level(LevelFilter::INFO)
             .with_black_list(["h2"])
             .build_layer(logger.clone())
             .to_subscriber();
