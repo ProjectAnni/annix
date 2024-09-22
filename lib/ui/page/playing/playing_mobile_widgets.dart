@@ -159,12 +159,12 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final playing = ref.watch(playingProvider);
+    final source = ref.watch(playingProvider.select((p) => p.source));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          playing.source?.track.title ?? '',
+          source?.track.title ?? '',
           style: context.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             height: 1.5,
@@ -172,7 +172,7 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
           overflow: TextOverflow.ellipsis,
         ),
         ArtistText(
-          playing.source?.track.artist ?? '',
+          source?.track.artist ?? '',
           style: context.textTheme.bodyLarge,
           overflow: TextOverflow.ellipsis,
           search: true,
