@@ -3,14 +3,12 @@ import 'dart:io';
 
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
-import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/logger.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:drift/drift.dart';
 import 'package:anni_mpris_service/anni_mpris_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -21,8 +19,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
 
   final AnnivService anniv;
   final LocalDatabase database;
-
-  List<LocalFavoriteTrack> _favorites = [];
 
   static Future<void> init(final Ref ref) async {
     if (Platform.isLinux) {
@@ -99,10 +95,6 @@ class AnnixAudioHandler extends BaseAudioHandler {
         database = ref.read(localDatabaseProvider) {
     player.addListener(() => _updatePlaybackState());
     player.playing.addListener(() => _updatePlaybackState());
-    database.localFavoriteTracks
-        .select()
-        .watch()
-        .listen((final favorites) => _updatePlaybackState(favorites));
   }
 
   @override
@@ -135,44 +127,10 @@ class AnnixAudioHandler extends BaseAudioHandler {
     return player.previous();
   }
 
-  @override
-  Future<void> fastForward() async {
-    final track = player.playing.source?.track;
-    if (track != null) {
-      await anniv.toggleFavoriteTrack(track);
-    }
-  }
-
-  void _updatePlaybackState([final List<LocalFavoriteTrack>? favorites]) {
-    if (favorites != null) {
-      _favorites = favorites;
-    }
-
+  void _updatePlaybackState() {
     final isPlaying = player.playerStatus == PlayerStatus.playing;
-    final isFavorite = player.playing.source?.track != null &&
-        _favorites.any(
-          (final f) =>
-              player.playing.source?.identifier ==
-              TrackIdentifier(
-                albumId: f.albumId,
-                discId: f.discId,
-                trackId: f.trackId,
-              ),
-        );
 
     final controls = [
-      if (!Platform.isIOS && !Platform.isMacOS)
-        isFavorite
-            ? const MediaControl(
-                label: 'Unfavorite',
-                androidIcon: 'drawable/ic_favorite',
-                action: MediaAction.fastForward,
-              )
-            : const MediaControl(
-                label: 'Favorite',
-                androidIcon: 'drawable/ic_favorite_border',
-                action: MediaAction.fastForward,
-              ),
       MediaControl.skipToPrevious,
       if (isPlaying) MediaControl.pause else MediaControl.play,
       MediaControl.skipToNext,
