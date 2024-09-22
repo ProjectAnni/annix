@@ -5,7 +5,7 @@ use std::{
     thread,
 };
 
-use anni_playback::player::{AnniPlayer, TypedPriorityProvider};
+use anni_playback::player::{AnniPlayer, AnniPlayerOptions, TypedPriorityProvider};
 use anni_playback::types::PlayerEvent;
 use flutter_rust_bridge::frb;
 
@@ -60,8 +60,13 @@ pub struct AnnixPlayer {
 impl AnnixPlayer {
     #[frb(sync)]
     pub fn new(cache_path: String) -> AnnixPlayer {
-        let (player, receiver) =
-            AnniPlayer::new(TypedPriorityProvider::new(vec![]), cache_path.into());
+        let (player, receiver) = AnniPlayer::new(
+            TypedPriorityProvider::new(vec![]),
+            AnniPlayerOptions {
+                sample_rate: 48000,
+                cache_path: cache_path.into(),
+            },
+        );
         let progress = Arc::new(OnceLock::new());
         let player_state = Arc::new(OnceLock::new());
 
