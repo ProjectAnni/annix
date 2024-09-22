@@ -12,27 +12,26 @@ class EndlessModeController extends ChangeNotifier {
 
   bool enabled = false;
   int throttle = 5;
+  Completer? _completer;
 
   EndlessModeController(this.ref) {
     ref.listen(playbackProvider, (_, player) => tryAppend(player, true));
   }
 
-  Completer _completer = Completer();
-
   Future<void> tryAppend(PlaybackService player, bool append) async {
     final currentPlayingIndex = player.playingIndex;
-    if (enabled && _completer.isCompleted) {
+    if (enabled && (_completer == null || _completer!.isCompleted)) {
       final setNew = !append;
       final appendOld = append &&
           currentPlayingIndex != null &&
           currentPlayingIndex + throttle > player.queue.length;
 
-      print('tryAppend: setNew: $setNew, appendOld: $appendOld');
       if (setNew || appendOld) {
-        _completer = Completer();
+        final completer = Completer();
+        _completer = completer;
         // load more songs
         await player.fullShuffleMode(append: append);
-        _completer.complete();
+        completer.complete();
       }
     }
   }
