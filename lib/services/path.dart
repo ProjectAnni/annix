@@ -9,9 +9,9 @@ class PathService {
   static late final String dataRoot;
 
   static Future<void> init() async {
-    final isPortableMode = File(p.normalize(
-            p.join(Platform.resolvedExecutable, '..', 'portable.enable')))
-        .existsSync();
+    final isPortableMode = await File(
+      p.normalize(p.join(Platform.resolvedExecutable, '..', 'portable.enable')),
+    ).exists();
 
     if (Platform.isMacOS) {
       storageRoot = p.join((await getLibraryDirectory()).path, 'data');

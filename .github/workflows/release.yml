@@ -62,7 +62,7 @@ jobs:
       - name: Build | App Bundle
         run: flutter build appbundle --release --build-number ${{ github.run_number }}
       - name: Deploy | Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: annix-android
           path: |
@@ -108,7 +108,7 @@ jobs:
           xcodebuild -workspace $PWD/ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive
           xcodebuild -exportArchive -archivePath $PWD/build/ios/iphoneos/Runner.xcarchive -exportOptionsPlist $PWD/ios/exportOptions.plist -exportPath $PWD/build/ios/iphoneos/Runner.ipa
       - name: Deploy | Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: annix-ios
           path: ./build/ios/iphoneos/Runner.ipa/*.ipa
@@ -143,7 +143,7 @@ jobs:
           cd build/linux/x64/release/
           zip -r annix-linux64.zip bundle
       - name: Deploy | Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: annix-linux64
           path: ./build/linux/x64/release/annix-linux64.zip
@@ -171,7 +171,7 @@ jobs:
           cd build/macos/Build/Products/Release
           ditto -c -k --sequesterRsrc --keepParent Annix.app annix-macos.zip
       - name: Deploy | Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: annix-macos
           path: |
@@ -201,7 +201,7 @@ jobs:
           cp -r build/windows/x64/runner/Release annix-win64
           tar.exe -a -c -f annix-win64.zip annix-win64
       - name: Deploy | Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: annix-win64
           path: |
