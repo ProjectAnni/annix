@@ -3047,52 +3047,68 @@ typedef $AnnivUserUpdateCompanionBuilder = AnnivUserCompanion Function({
   Value<String> avatar,
 });
 
-class $AnnivUserFilterComposer
-    extends FilterComposer<_$LocalDatabase, AnnivUser> {
-  $AnnivUserFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+class $AnnivUserFilterComposer extends Composer<_$LocalDatabase, AnnivUser> {
+  $AnnivUserFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get userId => $state.composableBuilder(
-      column: $state.table.userId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get nickname => $state.composableBuilder(
-      column: $state.table.nickname,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get nickname => $composableBuilder(
+      column: $table.nickname, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get avatar => $state.composableBuilder(
-      column: $state.table.avatar,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get avatar => $composableBuilder(
+      column: $table.avatar, builder: (column) => ColumnFilters(column));
 }
 
-class $AnnivUserOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, AnnivUser> {
-  $AnnivUserOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+class $AnnivUserOrderingComposer extends Composer<_$LocalDatabase, AnnivUser> {
+  $AnnivUserOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get userId => $state.composableBuilder(
-      column: $state.table.userId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get nickname => $state.composableBuilder(
-      column: $state.table.nickname,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get nickname => $composableBuilder(
+      column: $table.nickname, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get avatar => $state.composableBuilder(
-      column: $state.table.avatar,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get avatar => $composableBuilder(
+      column: $table.avatar, builder: (column) => ColumnOrderings(column));
+}
+
+class $AnnivUserAnnotationComposer
+    extends Composer<_$LocalDatabase, AnnivUser> {
+  $AnnivUserAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get nickname =>
+      $composableBuilder(column: $table.nickname, builder: (column) => column);
+
+  GeneratedColumn<String> get avatar =>
+      $composableBuilder(column: $table.avatar, builder: (column) => column);
 }
 
 class $AnnivUserTableManager extends RootTableManager<
@@ -3101,6 +3117,7 @@ class $AnnivUserTableManager extends RootTableManager<
     AnnivUserData,
     $AnnivUserFilterComposer,
     $AnnivUserOrderingComposer,
+    $AnnivUserAnnotationComposer,
     $AnnivUserCreateCompanionBuilder,
     $AnnivUserUpdateCompanionBuilder,
     (AnnivUserData, BaseReferences<_$LocalDatabase, AnnivUser, AnnivUserData>),
@@ -3110,9 +3127,12 @@ class $AnnivUserTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $AnnivUserFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $AnnivUserOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $AnnivUserFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $AnnivUserOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $AnnivUserAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> userId = const Value.absent(),
@@ -3150,6 +3170,7 @@ typedef $AnnivUserProcessedTableManager = ProcessedTableManager<
     AnnivUserData,
     $AnnivUserFilterComposer,
     $AnnivUserOrderingComposer,
+    $AnnivUserAnnotationComposer,
     $AnnivUserCreateCompanionBuilder,
     $AnnivUserUpdateCompanionBuilder,
     (AnnivUserData, BaseReferences<_$LocalDatabase, AnnivUser, AnnivUserData>),
@@ -3178,102 +3199,113 @@ typedef $PlaylistUpdateCompanionBuilder = PlaylistCompanion Function({
   Value<bool> hasItems,
 });
 
-class $PlaylistFilterComposer
-    extends FilterComposer<_$LocalDatabase, Playlist> {
-  $PlaylistFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+class $PlaylistFilterComposer extends Composer<_$LocalDatabase, Playlist> {
+  $PlaylistFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get cover => $state.composableBuilder(
-      column: $state.table.cover,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get cover => $composableBuilder(
+      column: $table.cover, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get description => $state.composableBuilder(
-      column: $state.table.description,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get remoteId => $state.composableBuilder(
-      column: $state.table.remoteId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get remoteId => $composableBuilder(
+      column: $table.remoteId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get owner => $state.composableBuilder(
-      column: $state.table.owner,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get owner => $composableBuilder(
+      column: $table.owner, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get public => $state.composableBuilder(
-      column: $state.table.public,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get public => $composableBuilder(
+      column: $table.public, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get lastModified => $state.composableBuilder(
-      column: $state.table.lastModified,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get lastModified => $composableBuilder(
+      column: $table.lastModified, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get hasItems => $state.composableBuilder(
-      column: $state.table.hasItems,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get hasItems => $composableBuilder(
+      column: $table.hasItems, builder: (column) => ColumnFilters(column));
 }
 
-class $PlaylistOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, Playlist> {
-  $PlaylistOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+class $PlaylistOrderingComposer extends Composer<_$LocalDatabase, Playlist> {
+  $PlaylistOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get cover => $state.composableBuilder(
-      column: $state.table.cover,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get cover => $composableBuilder(
+      column: $table.cover, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get description => $state.composableBuilder(
-      column: $state.table.description,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get remoteId => $state.composableBuilder(
-      column: $state.table.remoteId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get remoteId => $composableBuilder(
+      column: $table.remoteId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get owner => $state.composableBuilder(
-      column: $state.table.owner,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get owner => $composableBuilder(
+      column: $table.owner, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get public => $state.composableBuilder(
-      column: $state.table.public,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get public => $composableBuilder(
+      column: $table.public, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get lastModified => $state.composableBuilder(
-      column: $state.table.lastModified,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get lastModified => $composableBuilder(
+      column: $table.lastModified,
+      builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get hasItems => $state.composableBuilder(
-      column: $state.table.hasItems,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get hasItems => $composableBuilder(
+      column: $table.hasItems, builder: (column) => ColumnOrderings(column));
+}
+
+class $PlaylistAnnotationComposer extends Composer<_$LocalDatabase, Playlist> {
+  $PlaylistAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get cover =>
+      $composableBuilder(column: $table.cover, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteId =>
+      $composableBuilder(column: $table.remoteId, builder: (column) => column);
+
+  GeneratedColumn<String> get owner =>
+      $composableBuilder(column: $table.owner, builder: (column) => column);
+
+  GeneratedColumn<bool> get public =>
+      $composableBuilder(column: $table.public, builder: (column) => column);
+
+  GeneratedColumn<int> get lastModified => $composableBuilder(
+      column: $table.lastModified, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasItems =>
+      $composableBuilder(column: $table.hasItems, builder: (column) => column);
 }
 
 class $PlaylistTableManager extends RootTableManager<
@@ -3282,6 +3314,7 @@ class $PlaylistTableManager extends RootTableManager<
     PlaylistData,
     $PlaylistFilterComposer,
     $PlaylistOrderingComposer,
+    $PlaylistAnnotationComposer,
     $PlaylistCreateCompanionBuilder,
     $PlaylistUpdateCompanionBuilder,
     (PlaylistData, BaseReferences<_$LocalDatabase, Playlist, PlaylistData>),
@@ -3291,8 +3324,12 @@ class $PlaylistTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $PlaylistFilterComposer(ComposerState(db, table)),
-          orderingComposer: $PlaylistOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $PlaylistFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $PlaylistOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $PlaylistAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -3350,6 +3387,7 @@ typedef $PlaylistProcessedTableManager = ProcessedTableManager<
     PlaylistData,
     $PlaylistFilterComposer,
     $PlaylistOrderingComposer,
+    $PlaylistAnnotationComposer,
     $PlaylistCreateCompanionBuilder,
     $PlaylistUpdateCompanionBuilder,
     (PlaylistData, BaseReferences<_$LocalDatabase, Playlist, PlaylistData>),
@@ -3375,81 +3413,96 @@ typedef $PlaylistItemUpdateCompanionBuilder = PlaylistItemCompanion Function({
 });
 
 class $PlaylistItemFilterComposer
-    extends FilterComposer<_$LocalDatabase, PlaylistItem> {
-  $PlaylistItemFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, PlaylistItem> {
+  $PlaylistItemFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get playlistId => $state.composableBuilder(
-      column: $state.table.playlistId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get playlistId => $composableBuilder(
+      column: $table.playlistId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get type => $state.composableBuilder(
-      column: $state.table.type,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get description => $state.composableBuilder(
-      column: $state.table.description,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get info => $state.composableBuilder(
-      column: $state.table.info,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get info => $composableBuilder(
+      column: $table.info, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get remoteId => $state.composableBuilder(
-      column: $state.table.remoteId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get remoteId => $composableBuilder(
+      column: $table.remoteId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get order => $state.composableBuilder(
-      column: $state.table.order,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get order => $composableBuilder(
+      column: $table.order, builder: (column) => ColumnFilters(column));
 }
 
 class $PlaylistItemOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, PlaylistItem> {
-  $PlaylistItemOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, PlaylistItem> {
+  $PlaylistItemOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get playlistId => $state.composableBuilder(
-      column: $state.table.playlistId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get playlistId => $composableBuilder(
+      column: $table.playlistId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get type => $state.composableBuilder(
-      column: $state.table.type,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get description => $state.composableBuilder(
-      column: $state.table.description,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get info => $state.composableBuilder(
-      column: $state.table.info,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get info => $composableBuilder(
+      column: $table.info, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get remoteId => $state.composableBuilder(
-      column: $state.table.remoteId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get remoteId => $composableBuilder(
+      column: $table.remoteId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get order => $state.composableBuilder(
-      column: $state.table.order,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get order => $composableBuilder(
+      column: $table.order, builder: (column) => ColumnOrderings(column));
+}
+
+class $PlaylistItemAnnotationComposer
+    extends Composer<_$LocalDatabase, PlaylistItem> {
+  $PlaylistItemAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get playlistId => $composableBuilder(
+      column: $table.playlistId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get info =>
+      $composableBuilder(column: $table.info, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteId =>
+      $composableBuilder(column: $table.remoteId, builder: (column) => column);
+
+  GeneratedColumn<int> get order =>
+      $composableBuilder(column: $table.order, builder: (column) => column);
 }
 
 class $PlaylistItemTableManager extends RootTableManager<
@@ -3458,6 +3511,7 @@ class $PlaylistItemTableManager extends RootTableManager<
     PlaylistItemData,
     $PlaylistItemFilterComposer,
     $PlaylistItemOrderingComposer,
+    $PlaylistItemAnnotationComposer,
     $PlaylistItemCreateCompanionBuilder,
     $PlaylistItemUpdateCompanionBuilder,
     (
@@ -3470,10 +3524,12 @@ class $PlaylistItemTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $PlaylistItemFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $PlaylistItemOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $PlaylistItemFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $PlaylistItemOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $PlaylistItemAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> playlistId = const Value.absent(),
@@ -3523,6 +3579,7 @@ typedef $PlaylistItemProcessedTableManager = ProcessedTableManager<
     PlaylistItemData,
     $PlaylistItemFilterComposer,
     $PlaylistItemOrderingComposer,
+    $PlaylistItemAnnotationComposer,
     $PlaylistItemCreateCompanionBuilder,
     $PlaylistItemUpdateCompanionBuilder,
     (
@@ -3555,91 +3612,105 @@ typedef $LocalFavoriteTracksUpdateCompanionBuilder
 });
 
 class $LocalFavoriteTracksFilterComposer
-    extends FilterComposer<_$LocalDatabase, LocalFavoriteTracks> {
-  $LocalFavoriteTracksFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalFavoriteTracks> {
+  $LocalFavoriteTracksFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get discId => $state.composableBuilder(
-      column: $state.table.discId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get discId => $composableBuilder(
+      column: $table.discId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get trackId => $state.composableBuilder(
-      column: $state.table.trackId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get title => $state.composableBuilder(
-      column: $state.table.title,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get artist => $state.composableBuilder(
-      column: $state.table.artist,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get artist => $composableBuilder(
+      column: $table.artist, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get albumTitle => $state.composableBuilder(
-      column: $state.table.albumTitle,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get albumTitle => $composableBuilder(
+      column: $table.albumTitle, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get type => $state.composableBuilder(
-      column: $state.table.type,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnFilters(column));
 }
 
 class $LocalFavoriteTracksOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, LocalFavoriteTracks> {
-  $LocalFavoriteTracksOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalFavoriteTracks> {
+  $LocalFavoriteTracksOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get discId => $state.composableBuilder(
-      column: $state.table.discId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get discId => $composableBuilder(
+      column: $table.discId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get trackId => $state.composableBuilder(
-      column: $state.table.trackId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get title => $state.composableBuilder(
-      column: $state.table.title,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get artist => $state.composableBuilder(
-      column: $state.table.artist,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get artist => $composableBuilder(
+      column: $table.artist, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get albumTitle => $state.composableBuilder(
-      column: $state.table.albumTitle,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get albumTitle => $composableBuilder(
+      column: $table.albumTitle, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get type => $state.composableBuilder(
-      column: $state.table.type,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+}
+
+class $LocalFavoriteTracksAnnotationComposer
+    extends Composer<_$LocalDatabase, LocalFavoriteTracks> {
+  $LocalFavoriteTracksAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get albumId =>
+      $composableBuilder(column: $table.albumId, builder: (column) => column);
+
+  GeneratedColumn<int> get discId =>
+      $composableBuilder(column: $table.discId, builder: (column) => column);
+
+  GeneratedColumn<int> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get artist =>
+      $composableBuilder(column: $table.artist, builder: (column) => column);
+
+  GeneratedColumn<String> get albumTitle => $composableBuilder(
+      column: $table.albumTitle, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 }
 
 class $LocalFavoriteTracksTableManager extends RootTableManager<
@@ -3648,6 +3719,7 @@ class $LocalFavoriteTracksTableManager extends RootTableManager<
     LocalFavoriteTrack,
     $LocalFavoriteTracksFilterComposer,
     $LocalFavoriteTracksOrderingComposer,
+    $LocalFavoriteTracksAnnotationComposer,
     $LocalFavoriteTracksCreateCompanionBuilder,
     $LocalFavoriteTracksUpdateCompanionBuilder,
     (
@@ -3661,10 +3733,12 @@ class $LocalFavoriteTracksTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $LocalFavoriteTracksFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $LocalFavoriteTracksOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $LocalFavoriteTracksFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $LocalFavoriteTracksOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $LocalFavoriteTracksAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> albumId = const Value.absent(),
@@ -3718,6 +3792,7 @@ typedef $LocalFavoriteTracksProcessedTableManager = ProcessedTableManager<
     LocalFavoriteTrack,
     $LocalFavoriteTracksFilterComposer,
     $LocalFavoriteTracksOrderingComposer,
+    $LocalFavoriteTracksAnnotationComposer,
     $LocalFavoriteTracksCreateCompanionBuilder,
     $LocalFavoriteTracksUpdateCompanionBuilder,
     (
@@ -3738,31 +3813,51 @@ typedef $LocalFavoriteAlbumsUpdateCompanionBuilder
 });
 
 class $LocalFavoriteAlbumsFilterComposer
-    extends FilterComposer<_$LocalDatabase, LocalFavoriteAlbums> {
-  $LocalFavoriteAlbumsFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalFavoriteAlbums> {
+  $LocalFavoriteAlbumsFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnFilters(column));
 }
 
 class $LocalFavoriteAlbumsOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, LocalFavoriteAlbums> {
-  $LocalFavoriteAlbumsOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalFavoriteAlbums> {
+  $LocalFavoriteAlbumsOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnOrderings(column));
+}
+
+class $LocalFavoriteAlbumsAnnotationComposer
+    extends Composer<_$LocalDatabase, LocalFavoriteAlbums> {
+  $LocalFavoriteAlbumsAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get albumId =>
+      $composableBuilder(column: $table.albumId, builder: (column) => column);
 }
 
 class $LocalFavoriteAlbumsTableManager extends RootTableManager<
@@ -3771,6 +3866,7 @@ class $LocalFavoriteAlbumsTableManager extends RootTableManager<
     LocalFavoriteAlbum,
     $LocalFavoriteAlbumsFilterComposer,
     $LocalFavoriteAlbumsOrderingComposer,
+    $LocalFavoriteAlbumsAnnotationComposer,
     $LocalFavoriteAlbumsCreateCompanionBuilder,
     $LocalFavoriteAlbumsUpdateCompanionBuilder,
     (
@@ -3784,10 +3880,12 @@ class $LocalFavoriteAlbumsTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $LocalFavoriteAlbumsFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $LocalFavoriteAlbumsOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $LocalFavoriteAlbumsFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $LocalFavoriteAlbumsOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $LocalFavoriteAlbumsAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> albumId = const Value.absent(),
@@ -3817,6 +3915,7 @@ typedef $LocalFavoriteAlbumsProcessedTableManager = ProcessedTableManager<
     LocalFavoriteAlbum,
     $LocalFavoriteAlbumsFilterComposer,
     $LocalFavoriteAlbumsOrderingComposer,
+    $LocalFavoriteAlbumsAnnotationComposer,
     $LocalFavoriteAlbumsCreateCompanionBuilder,
     $LocalFavoriteAlbumsUpdateCompanionBuilder,
     (
@@ -3845,71 +3944,87 @@ typedef $LocalAnnilServersUpdateCompanionBuilder = LocalAnnilServersCompanion
 });
 
 class $LocalAnnilServersFilterComposer
-    extends FilterComposer<_$LocalDatabase, LocalAnnilServers> {
-  $LocalAnnilServersFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalAnnilServers> {
+  $LocalAnnilServersFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get remoteId => $state.composableBuilder(
-      column: $state.table.remoteId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get remoteId => $composableBuilder(
+      column: $table.remoteId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get url => $state.composableBuilder(
-      column: $state.table.url,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get token => $state.composableBuilder(
-      column: $state.table.token,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get token => $composableBuilder(
+      column: $table.token, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get priority => $state.composableBuilder(
-      column: $state.table.priority,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => ColumnFilters(column));
 }
 
 class $LocalAnnilServersOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, LocalAnnilServers> {
-  $LocalAnnilServersOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalAnnilServers> {
+  $LocalAnnilServersOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get remoteId => $state.composableBuilder(
-      column: $state.table.remoteId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get remoteId => $composableBuilder(
+      column: $table.remoteId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get url => $state.composableBuilder(
-      column: $state.table.url,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get token => $state.composableBuilder(
-      column: $state.table.token,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get token => $composableBuilder(
+      column: $table.token, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get priority => $state.composableBuilder(
-      column: $state.table.priority,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => ColumnOrderings(column));
+}
+
+class $LocalAnnilServersAnnotationComposer
+    extends Composer<_$LocalDatabase, LocalAnnilServers> {
+  $LocalAnnilServersAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteId =>
+      $composableBuilder(column: $table.remoteId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<String> get token =>
+      $composableBuilder(column: $table.token, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
 }
 
 class $LocalAnnilServersTableManager extends RootTableManager<
@@ -3918,6 +4033,7 @@ class $LocalAnnilServersTableManager extends RootTableManager<
     LocalAnnilServer,
     $LocalAnnilServersFilterComposer,
     $LocalAnnilServersOrderingComposer,
+    $LocalAnnilServersAnnotationComposer,
     $LocalAnnilServersCreateCompanionBuilder,
     $LocalAnnilServersUpdateCompanionBuilder,
     (
@@ -3930,10 +4046,12 @@ class $LocalAnnilServersTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $LocalAnnilServersFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $LocalAnnilServersOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $LocalAnnilServersFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $LocalAnnilServersOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $LocalAnnilServersAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String?> remoteId = const Value.absent(),
@@ -3979,6 +4097,7 @@ typedef $LocalAnnilServersProcessedTableManager = ProcessedTableManager<
     LocalAnnilServer,
     $LocalAnnilServersFilterComposer,
     $LocalAnnilServersOrderingComposer,
+    $LocalAnnilServersAnnotationComposer,
     $LocalAnnilServersCreateCompanionBuilder,
     $LocalAnnilServersUpdateCompanionBuilder,
     (
@@ -4001,41 +4120,60 @@ typedef $LocalAnnilCachesUpdateCompanionBuilder = LocalAnnilCachesCompanion
 });
 
 class $LocalAnnilCachesFilterComposer
-    extends FilterComposer<_$LocalDatabase, LocalAnnilCaches> {
-  $LocalAnnilCachesFilterComposer(super.$state);
-  ColumnFilters<int> get annilId => $state.composableBuilder(
-      column: $state.table.annilId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalAnnilCaches> {
+  $LocalAnnilCachesFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get annilId => $composableBuilder(
+      column: $table.annilId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get etag => $state.composableBuilder(
-      column: $state.table.etag,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get etag => $composableBuilder(
+      column: $table.etag, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get lastUpdate => $state.composableBuilder(
-      column: $state.table.lastUpdate,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get lastUpdate => $composableBuilder(
+      column: $table.lastUpdate, builder: (column) => ColumnFilters(column));
 }
 
 class $LocalAnnilCachesOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, LocalAnnilCaches> {
-  $LocalAnnilCachesOrderingComposer(super.$state);
-  ColumnOrderings<int> get annilId => $state.composableBuilder(
-      column: $state.table.annilId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalAnnilCaches> {
+  $LocalAnnilCachesOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get annilId => $composableBuilder(
+      column: $table.annilId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get etag => $state.composableBuilder(
-      column: $state.table.etag,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get etag => $composableBuilder(
+      column: $table.etag, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get lastUpdate => $state.composableBuilder(
-      column: $state.table.lastUpdate,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get lastUpdate => $composableBuilder(
+      column: $table.lastUpdate, builder: (column) => ColumnOrderings(column));
+}
+
+class $LocalAnnilCachesAnnotationComposer
+    extends Composer<_$LocalDatabase, LocalAnnilCaches> {
+  $LocalAnnilCachesAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get annilId =>
+      $composableBuilder(column: $table.annilId, builder: (column) => column);
+
+  GeneratedColumn<String> get etag =>
+      $composableBuilder(column: $table.etag, builder: (column) => column);
+
+  GeneratedColumn<int> get lastUpdate => $composableBuilder(
+      column: $table.lastUpdate, builder: (column) => column);
 }
 
 class $LocalAnnilCachesTableManager extends RootTableManager<
@@ -4044,6 +4182,7 @@ class $LocalAnnilCachesTableManager extends RootTableManager<
     LocalAnnilCache,
     $LocalAnnilCachesFilterComposer,
     $LocalAnnilCachesOrderingComposer,
+    $LocalAnnilCachesAnnotationComposer,
     $LocalAnnilCachesCreateCompanionBuilder,
     $LocalAnnilCachesUpdateCompanionBuilder,
     (
@@ -4056,10 +4195,12 @@ class $LocalAnnilCachesTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $LocalAnnilCachesFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $LocalAnnilCachesOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $LocalAnnilCachesFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $LocalAnnilCachesOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $LocalAnnilCachesAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> annilId = const Value.absent(),
             Value<String?> etag = const Value.absent(),
@@ -4093,6 +4234,7 @@ typedef $LocalAnnilCachesProcessedTableManager = ProcessedTableManager<
     LocalAnnilCache,
     $LocalAnnilCachesFilterComposer,
     $LocalAnnilCachesOrderingComposer,
+    $LocalAnnilCachesAnnotationComposer,
     $LocalAnnilCachesCreateCompanionBuilder,
     $LocalAnnilCachesUpdateCompanionBuilder,
     (
@@ -4115,41 +4257,60 @@ typedef $LocalAnnilAlbumsUpdateCompanionBuilder = LocalAnnilAlbumsCompanion
 });
 
 class $LocalAnnilAlbumsFilterComposer
-    extends FilterComposer<_$LocalDatabase, LocalAnnilAlbums> {
-  $LocalAnnilAlbumsFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalAnnilAlbums> {
+  $LocalAnnilAlbumsFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get annilId => $state.composableBuilder(
-      column: $state.table.annilId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get annilId => $composableBuilder(
+      column: $table.annilId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnFilters(column));
 }
 
 class $LocalAnnilAlbumsOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, LocalAnnilAlbums> {
-  $LocalAnnilAlbumsOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, LocalAnnilAlbums> {
+  $LocalAnnilAlbumsOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get annilId => $state.composableBuilder(
-      column: $state.table.annilId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get annilId => $composableBuilder(
+      column: $table.annilId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnOrderings(column));
+}
+
+class $LocalAnnilAlbumsAnnotationComposer
+    extends Composer<_$LocalDatabase, LocalAnnilAlbums> {
+  $LocalAnnilAlbumsAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get annilId =>
+      $composableBuilder(column: $table.annilId, builder: (column) => column);
+
+  GeneratedColumn<String> get albumId =>
+      $composableBuilder(column: $table.albumId, builder: (column) => column);
 }
 
 class $LocalAnnilAlbumsTableManager extends RootTableManager<
@@ -4158,6 +4319,7 @@ class $LocalAnnilAlbumsTableManager extends RootTableManager<
     LocalAnnilAlbum,
     $LocalAnnilAlbumsFilterComposer,
     $LocalAnnilAlbumsOrderingComposer,
+    $LocalAnnilAlbumsAnnotationComposer,
     $LocalAnnilAlbumsCreateCompanionBuilder,
     $LocalAnnilAlbumsUpdateCompanionBuilder,
     (
@@ -4170,10 +4332,12 @@ class $LocalAnnilAlbumsTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $LocalAnnilAlbumsFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $LocalAnnilAlbumsOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $LocalAnnilAlbumsFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $LocalAnnilAlbumsOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $LocalAnnilAlbumsAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> annilId = const Value.absent(),
@@ -4207,6 +4371,7 @@ typedef $LocalAnnilAlbumsProcessedTableManager = ProcessedTableManager<
     LocalAnnilAlbum,
     $LocalAnnilAlbumsFilterComposer,
     $LocalAnnilAlbumsOrderingComposer,
+    $LocalAnnilAlbumsAnnotationComposer,
     $LocalAnnilAlbumsCreateCompanionBuilder,
     $LocalAnnilAlbumsUpdateCompanionBuilder,
     (
@@ -4235,71 +4400,87 @@ typedef $PlaybackRecordsUpdateCompanionBuilder = PlaybackRecordsCompanion
 });
 
 class $PlaybackRecordsFilterComposer
-    extends FilterComposer<_$LocalDatabase, PlaybackRecords> {
-  $PlaybackRecordsFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, PlaybackRecords> {
+  $PlaybackRecordsFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get discId => $state.composableBuilder(
-      column: $state.table.discId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get discId => $composableBuilder(
+      column: $table.discId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get trackId => $state.composableBuilder(
-      column: $state.table.trackId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get at => $state.composableBuilder(
-      column: $state.table.at,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<int> get at => $composableBuilder(
+      column: $table.at, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get locked => $state.composableBuilder(
-      column: $state.table.locked,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnFilters<bool> get locked => $composableBuilder(
+      column: $table.locked, builder: (column) => ColumnFilters(column));
 }
 
 class $PlaybackRecordsOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, PlaybackRecords> {
-  $PlaybackRecordsOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+    extends Composer<_$LocalDatabase, PlaybackRecords> {
+  $PlaybackRecordsOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get albumId => $state.composableBuilder(
-      column: $state.table.albumId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<String> get albumId => $composableBuilder(
+      column: $table.albumId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get discId => $state.composableBuilder(
-      column: $state.table.discId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get discId => $composableBuilder(
+      column: $table.discId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get trackId => $state.composableBuilder(
-      column: $state.table.trackId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get at => $state.composableBuilder(
-      column: $state.table.at,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<int> get at => $composableBuilder(
+      column: $table.at, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get locked => $state.composableBuilder(
-      column: $state.table.locked,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
+  ColumnOrderings<bool> get locked => $composableBuilder(
+      column: $table.locked, builder: (column) => ColumnOrderings(column));
+}
+
+class $PlaybackRecordsAnnotationComposer
+    extends Composer<_$LocalDatabase, PlaybackRecords> {
+  $PlaybackRecordsAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get albumId =>
+      $composableBuilder(column: $table.albumId, builder: (column) => column);
+
+  GeneratedColumn<int> get discId =>
+      $composableBuilder(column: $table.discId, builder: (column) => column);
+
+  GeneratedColumn<int> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<int> get at =>
+      $composableBuilder(column: $table.at, builder: (column) => column);
+
+  GeneratedColumn<bool> get locked =>
+      $composableBuilder(column: $table.locked, builder: (column) => column);
 }
 
 class $PlaybackRecordsTableManager extends RootTableManager<
@@ -4308,6 +4489,7 @@ class $PlaybackRecordsTableManager extends RootTableManager<
     PlaybackRecord,
     $PlaybackRecordsFilterComposer,
     $PlaybackRecordsOrderingComposer,
+    $PlaybackRecordsAnnotationComposer,
     $PlaybackRecordsCreateCompanionBuilder,
     $PlaybackRecordsUpdateCompanionBuilder,
     (
@@ -4320,10 +4502,12 @@ class $PlaybackRecordsTableManager extends RootTableManager<
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $PlaybackRecordsFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $PlaybackRecordsOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $PlaybackRecordsFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $PlaybackRecordsOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $PlaybackRecordsAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> albumId = const Value.absent(),
@@ -4369,6 +4553,7 @@ typedef $PlaybackRecordsProcessedTableManager = ProcessedTableManager<
     PlaybackRecord,
     $PlaybackRecordsFilterComposer,
     $PlaybackRecordsOrderingComposer,
+    $PlaybackRecordsAnnotationComposer,
     $PlaybackRecordsCreateCompanionBuilder,
     $PlaybackRecordsUpdateCompanionBuilder,
     (

@@ -23,6 +23,12 @@ flutter build apk --release --split-per-abi --split-debug-info debug --obfuscate
 
 # Build for iOS
 flutter build ios --profile
+
+# When apple build fails due to firebase error
+pod update Firebase/CoreOnly
+
+# Upgrade flutter_rust_bridge
+cargo install flutter_rust_bridge_codegen && flutter_rust_bridge_codegen generate
 ```
 
 ## Distribution
