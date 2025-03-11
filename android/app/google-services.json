@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "155003412918",
     "project_id": "project-anni-firebase",
-    "storage_bucket": "project-anni-firebase.appspot.com"
+    "storage_bucket": "project-anni-firebase.firebasestorage.app"
   },
   "client": [
     {

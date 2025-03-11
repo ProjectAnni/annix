@@ -51,3 +51,5 @@ keystore*
 # Font files
 *.ttf
 *.otf
+
+.cxx

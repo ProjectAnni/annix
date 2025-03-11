@@ -13,7 +13,7 @@
 	<key>PROJECT_ID</key>
 	<string>project-anni-firebase</string>
 	<key>STORAGE_BUCKET</key>
-	<string>project-anni-firebase.appspot.com</string>
+	<string>project-anni-firebase.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
