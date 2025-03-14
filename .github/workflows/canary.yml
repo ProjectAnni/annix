@@ -61,7 +61,7 @@ jobs:
       - name: Setup | Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable 
+          channel: stable
       - name: Setup | Dependencies
         run: |
           sudo apt update -y
@@ -186,7 +186,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y gettext-base
 

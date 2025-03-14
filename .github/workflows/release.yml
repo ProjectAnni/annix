@@ -213,7 +213,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
 
       - if: github.event_name == 'workflow_dispatch'
         run: echo "TAG_NAME=${{ github.event.inputs.tag_name }}" >> $GITHUB_ENV
@@ -241,7 +241,7 @@ jobs:
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
       - name: Setup | Codemagic-cli
         run: pip3 install codemagic-cli-tools
       # https://github.com/actions/runner-images/issues/6507#issuecomment-1301636292
@@ -274,7 +274,7 @@ jobs:
       # before running, and would therefore delete the downloaded artifacts
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
 
       - name: Install dependencies
         run: sudo apt update && sudo apt install -y gettext-base
