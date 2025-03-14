@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup | Java
@@ -76,7 +76,7 @@ jobs:
       KEYCHAIN: job-${{ github.job }}-${{ github.run_id	}}-${{ github.run_number }}-${{ github.run_attempt }}
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup | Flutter
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup | Flutter
@@ -153,7 +153,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup | Flutter
@@ -182,7 +182,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup | Flutter
@@ -212,7 +212,7 @@ jobs:
     needs: [android]
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
 
       - if: github.event_name == 'workflow_dispatch'
@@ -234,13 +234,13 @@ jobs:
 
   testflight:
     needs: [iOS]
-    runs-on: macos-12
+    runs-on: macos-latest
     env:
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.IOS_APPSTORE_CONNECT_API_ISSUER }}
       APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_ID }}
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.IOS_APPSTORE_CONNECT_API_KEY_DATA }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
       - name: Setup | Codemagic-cli
         run: pip3 install codemagic-cli-tools
@@ -272,7 +272,7 @@ jobs:
     steps:
       # Must perform checkout first, since it deletes the target directory
       # before running, and would therefore delete the downloaded artifacts
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
 
