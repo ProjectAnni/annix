@@ -14,7 +14,7 @@ class PlayingScreenMobile extends HookConsumerWidget {
 
     return Scaffold(
       body: Container(
-        color: context.colorScheme.secondaryContainer,
+        color: context.colorScheme.surfaceContainerLow,
         padding: const EdgeInsets.symmetric(horizontal: 28),
         child: SafeArea(
           top: true,
@@ -43,7 +43,7 @@ class PlayingScreenMobile extends HookConsumerWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: context.colorScheme.secondaryContainer,
+        color: context.colorScheme.surfaceContainerLow,
         child: PlayingScreenMobileBottomBar(showLyrics: showLyric),
       ),
     );
