@@ -5,7 +5,6 @@ import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/ui/widgets/text/text.dart';
 import 'package:annix/utils/context_extension.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -69,7 +68,7 @@ class MusicPage extends HookConsumerWidget {
             barElevation: WidgetStateProperty.all(0),
             suggestionsBuilder: (context, controller) {
               return [
-                ListTile(
+                const ListTile(
                   leading: Icon(Icons.history),
                   title: Text('history 1'),
                 )

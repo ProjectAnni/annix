@@ -1,11 +1,8 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/anniv/anniv.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/ui/dialogs/annil.dart';
 import 'package:annix/utils/context_extension.dart';
-import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
-import 'package:annix/i18n/strings.g.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -86,7 +83,7 @@ class AnnivCard extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final annivInfo = ref.watch(annivProvider.select((final v) => v.info));
 
-    return Card(
+    return Card.outlined(
       child: afterLogin(context, ref, annivInfo!),
     );
   }
@@ -110,93 +107,6 @@ class AnnilListTile extends ConsumerWidget {
       onTap: () {
         context.push('/annil', extra: annil);
       },
-    );
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Page
-class ServerView extends StatelessWidget {
-  const ServerView({super.key});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(t.server.server),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          const AnnivCard(),
-          ListTile(
-            title: Text(t.server.libraries),
-            trailing: IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (final context) => AnnilAddDialog(
-                    onSubmit: (final name, final url, final token) {
-                      // TODO: save annil
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: Consumer(
-              builder: (final context, final ref, final child) {
-                final annil = ref.watch(annilProvider);
-                return ReorderableListView(
-                  buildDefaultDragHandles: true,
-                  onReorder: (final oldIndex, final newIndex) async {
-                    var oldAnnil = annil.servers[oldIndex];
-                    final newAnnil = annil.servers[newIndex];
-
-                    final db = ref.read(localDatabaseProvider);
-                    final anniv = ref.read(annivProvider);
-                    if (oldIndex < newIndex) {
-                      // - priority
-                      oldAnnil =
-                          oldAnnil.copyWith(priority: newAnnil.priority - 1);
-                      await (db.localAnnilServers.update()
-                            ..where((final tbl) => tbl.id.equals(oldAnnil.id)))
-                          .write(oldAnnil);
-                    } else if (oldIndex > newIndex) {
-                      // + priority
-                      oldAnnil =
-                          oldAnnil.copyWith(priority: newAnnil.priority + 1);
-                      await (db.localAnnilServers.update()
-                            ..where((final tbl) => tbl.id.equals(oldAnnil.id)))
-                          .write(oldAnnil);
-                    }
-
-                    if (oldAnnil.remoteId != null) {
-                      // update to anniv
-                      // TODO: write to local after request
-                      await anniv.client?.updateCredential(
-                        oldAnnil.remoteId!,
-                        priority: oldAnnil.priority,
-                      );
-                    }
-                  },
-                  children: annil.servers
-                      .map(
-                        (final server) => AnnilListTile(
-                          annil: server,
-                          key: ValueKey(server.priority),
-                          enabled: annil.etags[server.id] != null,
-                        ),
-                      )
-                      .toList(),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

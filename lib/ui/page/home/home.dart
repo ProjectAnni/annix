@@ -2,6 +2,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/ui/page/favorite.dart';
 import 'package:annix/ui/page/home/home_playlist.dart';
 import 'package:annix/ui/page/playback_history.dart';
+import 'package:annix/ui/page/server.dart';
 import 'package:annix/ui/widgets/album/album_stack_grid.dart';
 import 'package:annix/ui/widgets/buttons/theme_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
@@ -9,6 +10,7 @@ import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -152,10 +154,66 @@ class HomePage extends HookWidget {
           ),
 
           ///////////////////////////// ALL /////////////////////////////
+          // [BEGIN] Anniv Card
+          if (isAllPage) const SliverToBoxAdapter(child: AnnivCard()),
+          if (isAllPage) const SliverGap.betweenSections(),
+          // [END] Anniv Card
+
           // [BEGIN] Statistics Card
           if (isAllPage) const SliverToBoxAdapter(child: StatisticsCard()),
           if (isAllPage) const SliverGap.betweenSections(),
           // [END] Statistics Card
+          if (isAllPage)
+            Consumer(
+              builder: (final context, final ref, final child) {
+                final annil = ref.watch(annilProvider);
+                return SliverReorderableList(
+                  itemBuilder: (final context, final index) {
+                    final server = annil.servers[index];
+                    return ReorderableDelayedDragStartListener(
+                      index: index,
+                      key: ValueKey(server.priority),
+                      child: AnnilListTile(
+                        annil: server,
+                        enabled: annil.etags[server.id] != null,
+                      ),
+                    );
+                  },
+                  itemCount: annil.servers.length,
+                  onReorder: (final oldIndex, final newIndex) async {
+                    var oldAnnil = annil.servers[oldIndex];
+                    final newAnnil = annil.servers[newIndex];
+
+                    final db = ref.read(localDatabaseProvider);
+                    final anniv = ref.read(annivProvider);
+                    if (oldIndex < newIndex) {
+                      // - priority
+                      oldAnnil =
+                          oldAnnil.copyWith(priority: newAnnil.priority - 1);
+                      await (db.localAnnilServers.update()
+                            ..where((final tbl) => tbl.id.equals(oldAnnil.id)))
+                          .write(oldAnnil);
+                    } else if (oldIndex > newIndex) {
+                      // + priority
+                      oldAnnil =
+                          oldAnnil.copyWith(priority: newAnnil.priority + 1);
+                      await (db.localAnnilServers.update()
+                            ..where((final tbl) => tbl.id.equals(oldAnnil.id)))
+                          .write(oldAnnil);
+                    }
+
+                    if (oldAnnil.remoteId != null) {
+                      // update to anniv
+                      // TODO: write to local after request
+                      await anniv.client?.updateCredential(
+                        oldAnnil.remoteId!,
+                        priority: oldAnnil.priority,
+                      );
+                    }
+                  },
+                );
+              },
+            ),
 
           // [BEGIN] New Albums
           if (isAllPage)
@@ -365,7 +423,7 @@ class StatisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
-      color: context.colorScheme.primaryContainer,
+      color: context.colorScheme.surfaceContainer,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -465,7 +523,7 @@ class StatisticItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card.filled(
       color: ElevationOverlay.applySurfaceTint(
-        context.colorScheme.primaryFixedDim,
+        context.colorScheme.surfaceContainerHigh,
         context.colorScheme.surfaceTint,
         4.0,
       ),

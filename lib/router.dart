@@ -16,7 +16,6 @@ import 'package:annix/ui/page/home/home.dart';
 import 'package:annix/ui/page/playback_history.dart';
 import 'package:annix/ui/page/playlist.dart';
 import 'package:annix/ui/page/search.dart';
-import 'package:annix/ui/page/server.dart';
 import 'package:annix/ui/page/settings/settings.dart';
 import 'package:annix/ui/page/settings/settings_log.dart';
 import 'package:annix/ui/page/tag/tag_detail.dart';
@@ -88,10 +87,6 @@ GoRouter buildRouter(Ref ref) {
           GoRoute(
             path: '/tags',
             builder: (context, state) => const TagListView(),
-          ),
-          GoRoute(
-            path: '/server',
-            builder: (context, state) => const ServerView(),
           ),
           GoRoute(
             path: '/annil',
