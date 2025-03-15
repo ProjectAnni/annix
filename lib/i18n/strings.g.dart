@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 143 (71 per locale)
+/// Strings: 142 (71 per locale)
 ///
-/// Built on 2025-03-15 at 13:17 UTC
+/// Built on 2025-03-15 at 13:30 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -470,7 +470,6 @@ class _StringsSettingsZhCn implements _StringsSettingsEn {
 	@override String get settings => '设置';
 	@override String get skip_cert => '忽略证书验证';
 	@override String get default_audio_quality => '默认音质';
-	@override String get blur_playing_page => '播放界面使用模糊背景';
 	@override String get use_mobile_network => '使用移动网络播放';
 	@override String get view_logs => '应用日志';
 	@override String get view_logs_desc => '查看应用日志。';
@@ -711,7 +710,6 @@ extension on _StringsZhCn {
 			case 'settings.settings': return '设置';
 			case 'settings.skip_cert': return '忽略证书验证';
 			case 'settings.default_audio_quality': return '默认音质';
-			case 'settings.blur_playing_page': return '播放界面使用模糊背景';
 			case 'settings.use_mobile_network': return '使用移动网络播放';
 			case 'settings.view_logs': return '应用日志';
 			case 'settings.view_logs_desc': return '查看应用日志。';

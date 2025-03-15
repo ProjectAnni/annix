@@ -17,6 +17,91 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum FilterType { all, favorite, playlist, history }
 
+class PersistentHomeHeader extends SliverPersistentHeaderDelegate {
+  final ValueNotifier<FilterType> filter;
+  const PersistentHomeHeader({required this.filter});
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    final isAllPage = filter.value == FilterType.all;
+    final isFavoritePage = filter.value == FilterType.favorite;
+    final isPlaylistPage = filter.value == FilterType.playlist;
+    final isHistoryPage = filter.value == FilterType.history;
+
+    return Material(
+      elevation: overlapsContent ? 3.0 : 0.0,
+      child: Container(
+        color: overlapsContent
+            ? context.colorScheme.surfaceContainerHigh
+            : context.colorScheme.surface,
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+        child: Row(
+          spacing: 8.0,
+          children: [
+            FilterChip(
+              label: const Text('All'),
+              onSelected: (selected) {
+                if (selected) {
+                  filter.value = FilterType.all;
+                }
+              },
+              selected: isAllPage,
+            ),
+            FilterChip(
+              label: Text(t.my_favorite),
+              onSelected: (selected) {
+                if (selected) {
+                  filter.value = FilterType.favorite;
+                } else {
+                  filter.value = FilterType.all;
+                }
+              },
+              selected: isFavoritePage,
+            ),
+            FilterChip(
+              label: Text(t.playlists),
+              onSelected: (selected) {
+                if (selected) {
+                  filter.value = FilterType.playlist;
+                } else {
+                  filter.value = FilterType.all;
+                }
+              },
+              selected: isPlaylistPage,
+            ),
+            FilterChip(
+              label: const Text('History'),
+              onSelected: (selected) {
+                if (selected) {
+                  filter.value = FilterType.history;
+                } else {
+                  filter.value = FilterType.all;
+                }
+              },
+              selected: isHistoryPage,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 56.0;
+
+  @override
+  double get minExtent => 56.0;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
+  }
+}
+
 class HomePage extends HookWidget {
   const HomePage({super.key});
 
@@ -29,297 +114,243 @@ class HomePage extends HookWidget {
     final isHistoryPage = filter.value == FilterType.history;
 
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar.medium(
-              floating: true,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            pinned: true,
+            leadingWidth: 0,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
               title: Text(
                 'Annix',
-                style: context.textTheme.headlineLarge?.copyWith(
+                style: context.textTheme.titleLarge?.copyWith(
                   color: context.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.play_circle_outline),
-                  onPressed: () {
-                    context.push('/playground');
-                  },
-                ),
-                const ThemeButton(),
-                IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: () {
-                    context.push('/settings');
-                  },
-                ),
-              ],
+              expandedTitleScale: 1.5,
             ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.palette_outlined),
+                onPressed: () => context.push('/playground'),
+              ),
+              const ThemeButton(),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () => context.push('/settings'),
+              ),
+            ],
+          ),
 
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: PersistentHomeHeader(filter: filter),
+          ),
+
+          ///////////////////////////// ALL /////////////////////////////
+          // [BEGIN] Statistics Card
+          if (isAllPage) const SliverToBoxAdapter(child: StatisticsCard()),
+          if (isAllPage) const SliverGap.betweenSections(),
+          // [END] Statistics Card
+
+          // [BEGIN] New Albums
+          if (isAllPage)
+            SectionTitle(
+              title: 'New Albums',
+              trailing: TextButton(
+                child: const Text('More'),
+                onPressed: () {},
+              ),
+            ),
+          if (isAllPage)
             SliverToBoxAdapter(
-              child: Row(
-                // scrollDirection: Axis.horizontal,
-                // alignment: MainAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  FilterChip(
-                    label: Text('All'),
-                    onSelected: (selected) {
-                      if (selected) {
-                        filter.value = FilterType.all;
-                      }
-                    },
-                    selected: isAllPage,
-                  ),
-                  FilterChip(
-                    label: Text(t.my_favorite),
-                    onSelected: (selected) {
-                      if (selected) {
-                        filter.value = FilterType.favorite;
-                      } else {
-                        filter.value = FilterType.all;
-                      }
-                    },
-                    selected: isFavoritePage,
-                  ),
-                  FilterChip(
-                    label: Text(t.playlists),
-                    onSelected: (selected) {
-                      if (selected) {
-                        filter.value = FilterType.playlist;
-                      } else {
-                        filter.value = FilterType.all;
-                      }
-                    },
-                    selected: isPlaylistPage,
-                  ),
-                  FilterChip(
-                    label: const Text('History'),
-                    onSelected: (selected) {
-                      if (selected) {
-                        filter.value = FilterType.history;
-                      } else {
-                        filter.value = FilterType.all;
-                      }
-                    },
-                    selected: isHistoryPage,
-                  )
-                ],
+              child: SizedBox(
+                height: 232,
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final annil = ref.watch(annilProvider);
+                    final data = annil.albums.take(10);
+                    if (data.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    return CarouselView.weighted(
+                      flexWeights: context.isDesktopOrLandscape
+                          ? const [5, 4, 4, 2, 1]
+                          : const [2, 1],
+                      itemSnapping: true,
+                      padding: const EdgeInsets.only(right: 4),
+                      children: data.map((albumId) {
+                        return Stack(
+                          fit: StackFit.passthrough,
+                          children: [
+                            MusicCover.fromAlbum(
+                              albumId: albumId,
+                              fit: BoxFit.cover,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(4.0),
+                              alignment: Alignment.bottomLeft,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0),
+                                    Colors.black.withValues(alpha: 0.5),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 16,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Album Name',
+                                      style: context.textTheme.titleMedium
+                                          ?.copyWith(color: Colors.white),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Released on 2024/07/21',
+                                      style: context.textTheme.labelSmall
+                                          ?.copyWith(color: Colors.white),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
               ),
             ),
+          if (isAllPage) const SliverGap.betweenSections(),
+          // [END] New Albums
 
-            ///////////////////////////// ALL /////////////////////////////
-            if (isAllPage) const SliverGap.betweenSections(),
-
-            // [BEGIN] Statistics Card
-            if (isAllPage) const SliverToBoxAdapter(child: StatisticsCard()),
-            if (isAllPage) const SliverGap.betweenSections(),
-            // [END] Statistics Card
-
-            // [BEGIN] New Albums
-            if (isAllPage)
-              SectionTitle(
-                title: 'New Albums',
-                trailing: TextButton(
-                  child: Text('More'),
-                  onPressed: () {},
+          ///////////////////////////// FAVORITE /////////////////////////////
+          // [BEGIN] Favorite Albums
+          if (isFavoritePage)
+            SectionTitle(
+              title: 'Albums',
+              leading: const Icon(Icons.album_outlined),
+              trailing: TextButton(
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                ),
+                child: const Text('View All'),
+                onPressed: () {},
+              ),
+            ),
+          if (isFavoritePage)
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 220,
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
+                    final favorites = favoriteAlbums.value ?? [];
+                    final reversedFavorite =
+                        favorites.reversed.map((final e) => e.albumId).toList();
+                    return CarouselView.weighted(
+                      flexWeights: context.isDesktopOrLandscape
+                          ? const [4, 3, 3, 2, 1]
+                          : const [5, 3, 2],
+                      padding: const EdgeInsets.only(right: 4),
+                      onTap: (index) => context.push(
+                        '/album',
+                        extra: reversedFavorite[index],
+                      ),
+                      children: reversedFavorite
+                          .take(10)
+                          .map((albumId) =>
+                              LoadingAlbumStackGrid(albumId: albumId))
+                          .toList(),
+                    );
+                  },
                 ),
               ),
-            if (isAllPage)
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 232,
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final annil = ref.watch(annilProvider);
-                      final data = annil.albums.take(10);
-                      if (data.isEmpty) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+            ),
+          if (isFavoritePage) const SliverGap.betweenSections(),
+          // [END] Favorite Albums
 
-                      return CarouselView.weighted(
-                        flexWeights: context.isDesktopOrLandscape
-                            ? const [5, 4, 4, 2, 1]
-                            : const [2, 1],
-                        itemSnapping: true,
-                        padding: const EdgeInsets.only(right: 4),
-                        children: data.map((albumId) {
-                          return Stack(
-                            fit: StackFit.passthrough,
-                            children: [
-                              MusicCover.fromAlbum(
-                                albumId: albumId,
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(4.0),
-                                alignment: Alignment.bottomLeft,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.white.withValues(alpha: 0),
-                                      Colors.black.withValues(alpha: 0.5),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 16,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Album Name',
-                                        style: context.textTheme.titleMedium
-                                            ?.copyWith(color: Colors.white),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        'Released on 2024/07/21',
-                                        style: context.textTheme.labelSmall
-                                            ?.copyWith(color: Colors.white),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      );
-                    },
+          // [BEGIN] Favorite Tracks
+          if (isFavoritePage)
+            SectionTitle(
+              title: 'Songs',
+              trailing: FilledButton.tonal(
+                child: const Text('Play'),
+                onPressed: () {},
+              ),
+            ),
+          if (isFavoritePage) const FavoriteTracks(),
+          if (isFavoritePage) const SliverGap.betweenSections(),
+
+          ///////////////////////////// PLAYLIST /////////////////////////////
+          // [BEGIN] Playlists
+          if (isPlaylistPage) const SliverGap.belowTop(),
+          if (isPlaylistPage) const PlaylistView(),
+
+          ///////////////////////////// HISTORY /////////////////////////////
+          // [BEGIN] Playback History
+          if (isHistoryPage)
+            SliverToBoxAdapter(
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: PagePadding(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 24),
+                      Text(
+                        'Check your Top Played Songs',
+                        style: context.textTheme.headlineSmall,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Which song do you play most?',
+                        style: context.textTheme.bodyMedium,
+                      ),
+                      SizedBox(height: 16),
+                      FilledButton.tonal(
+                        onPressed: () => context.push('/history'),
+                        child: Text("Let's go!"),
+                      ),
+                      SizedBox(height: 20),
+                    ],
                   ),
                 ),
               ),
-            if (isAllPage) const SliverGap.betweenSections(),
-            // [END] New Albums
+            ),
+          if (isHistoryPage)
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          if (isHistoryPage) const SectionTitle(title: 'Songs played recently'),
+          if (isHistoryPage) const SliverPlaybackHistoryList(),
+        ].mapIndexed((index, child) {
+          if (index == 0 || index == 1) {
+            return child;
+          }
 
-            ///////////////////////////// FAVORITE /////////////////////////////
-            if (isFavoritePage) const SliverGap.belowTop(),
-            // [BEGIN] Favorite Albums
-            if (isFavoritePage)
-              SectionTitle(
-                title: 'Albums',
-                leading: const Icon(Icons.album_outlined),
-                trailing: TextButton(
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  child: Text('View All'),
-                  onPressed: () {},
-                ),
-              ),
-            if (isFavoritePage)
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 220,
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final favoriteAlbums = ref.watch(favoriteAlbumsProvider);
-                      final favorites = favoriteAlbums.value ?? [];
-                      final reversedFavorite = favorites.reversed
-                          .map((final e) => e.albumId)
-                          .toList();
-                      return CarouselView.weighted(
-                        flexWeights: context.isDesktopOrLandscape
-                            ? const [4, 3, 3, 2, 1]
-                            : const [5, 3, 2],
-                        padding: const EdgeInsets.only(right: 4),
-                        onTap: (index) => context.push(
-                          '/album',
-                          extra: reversedFavorite[index],
-                        ),
-                        children: reversedFavorite
-                            .take(10)
-                            .map((albumId) =>
-                                LoadingAlbumStackGrid(albumId: albumId))
-                            .toList(),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            if (isFavoritePage) const SliverGap.betweenSections(),
-            // [END] Favorite Albums
-
-            // [BEGIN] Favorite Tracks
-            if (isFavoritePage)
-              SectionTitle(
-                title: 'Songs',
-                trailing: FilledButton.tonal(
-                  child: Text('Play'),
-                  onPressed: () {},
-                ),
-              ),
-            if (isFavoritePage) const FavoriteTracks(),
-            if (isFavoritePage) const SliverGap.betweenSections(),
-
-            ///////////////////////////// PLAYLIST /////////////////////////////
-            // [BEGIN] Playlists
-            if (isPlaylistPage) const SliverGap.belowTop(),
-            if (isPlaylistPage) const PlaylistView(),
-
-            ///////////////////////////// HISTORY /////////////////////////////
-            if (isHistoryPage) const SliverGap.belowTop(),
-
-            // [BEGIN] Playback History
-            if (isHistoryPage)
-              SliverToBoxAdapter(
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  child: PagePadding(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 24),
-                        Text(
-                          'Check your Top Played Songs',
-                          style: context.textTheme.headlineSmall,
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Which song do you play most?',
-                          style: context.textTheme.bodyMedium,
-                        ),
-                        SizedBox(height: 16),
-                        FilledButton.tonal(
-                          onPressed: () => context.push('/history'),
-                          child: Text("Let's go!"),
-                        ),
-                        SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            if (isHistoryPage)
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
-            if (isHistoryPage)
-              const SectionTitle(title: 'Songs played recently'),
-            if (isHistoryPage) const SliverPlaybackHistoryList(),
-          ].mapIndexed((index, child) {
-            if (index == 0) {
-              return child;
-            }
-
-            return PagePadding(sliver: true, child: child);
-          }).toList(),
-        ),
+          return PagePadding(sliver: true, child: child);
+        }).toList(),
       ),
     );
   }

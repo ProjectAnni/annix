@@ -46,8 +46,8 @@ class FavoriteAlbumButton extends ConsumerWidget {
 
     return IconButton(
       isSelected: favorites.any((final album) => album.albumId == albumId),
-      icon: const Icon(Icons.star_border_outlined),
-      selectedIcon: const Icon(Icons.star_outlined),
+      icon: const Icon(Icons.favorite_border_outlined),
+      selectedIcon: const Icon(Icons.favorite_outlined),
       onPressed: () async {
         await ref.read(annivProvider).toggleFavoriteAlbum(albumId);
       },

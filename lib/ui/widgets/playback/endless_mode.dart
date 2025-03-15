@@ -36,39 +36,19 @@ class EndlessModeController extends ChangeNotifier {
     }
   }
 
-  Future<void> toggle(bool enable) async {
-    enabled = enable;
+  Future<void> toggle(BuildContext context) async {
+    enabled = !enabled;
     if (enabled) {
+      showLoadingDialog(context);
+
       final player = ref.read(playbackProvider);
       await tryAppend(player, false);
+
+      if (context.mounted) {
+        context.pop();
+      }
     }
 
     notifyListeners();
-  }
-}
-
-class EndlessModeChip extends ConsumerWidget {
-  const EndlessModeChip({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final controller = ref.watch(endlessModeProvider);
-
-    return FilterChip(
-      avatar: const Icon(Icons.loop_outlined),
-      label: const Text('Endless Mode'),
-      selected: controller.enabled,
-      onSelected: (enable) async {
-        if (enable) {
-          showLoadingDialog(context);
-        }
-        await controller.toggle(enable);
-        if (enable) {
-          if (context.mounted) {
-            context.pop();
-          }
-        }
-      },
-    );
   }
 }

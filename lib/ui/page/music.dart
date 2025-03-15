@@ -1,8 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
-import 'package:annix/ui/widgets/playback/endless_mode.dart';
-import 'package:annix/ui/widgets/playback/sleep_timer.dart';
 import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/ui/widgets/text/text.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -84,29 +82,81 @@ class MusicPage extends HookConsumerWidget {
             },
           ),
         ),
-        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(8.0),
+          child: SizedBox(),
+        ),
+        actions: [
+          Consumer(
+            builder: (context, ref, child) {
+              return PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert),
+                menuPadding: const EdgeInsets.symmetric(horizontal: 0),
+                position: PopupMenuPosition.under,
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: () {
+                      ref.read(sleepTimerProvider.notifier).toggle(context);
+                    },
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final controller = ref.watch(sleepTimerProvider);
+                        return Row(
+                          spacing: 8.0,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            controller.enabled
+                                ? Icon(
+                                    Icons.check_circle,
+                                    color: context.colorScheme.primary,
+                                  )
+                                : const Icon(Icons.timer_outlined),
+                            const Text('Sleep Timer'),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: () async {
+                      await ref.read(endlessModeProvider).toggle(context);
+                    },
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final controller = ref.watch(endlessModeProvider);
+                        return Row(
+                          spacing: 8.0,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            controller.enabled
+                                ? Icon(
+                                    Icons.check_circle,
+                                    color: context.colorScheme.primary,
+                                  )
+                                : const Icon(Icons.repeat),
+                            const Text('Endless Mode'),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: hasTrack
           ? Focus(
               focusNode: bodyFocusNode,
-              child: PagePadding(
+              child: const PagePadding(
                 child: CustomScrollView(
                   slivers: [
-                    const SliverGap.belowTop(),
-                    const SliverToBoxAdapter(
-                      child: OverflowBar(
-                        spacing: 8.0,
-                        children: [
-                          EndlessModeChip(),
-                          SleepTimerChip(),
-                        ],
-                      ),
-                    ),
-                    const SliverGap.belowTop(),
-                    const NowPlayingCard(),
-                    const SliverGap.betweenSections(),
-                    const SectionTitle(title: 'Next songs'),
-                    const NextPlayingQueue(),
+                    SliverGap.belowTop(),
+                    NowPlayingCard(),
+                    SliverGap.betweenSections(),
+                    SectionTitle(title: 'Next songs'),
+                    NextPlayingQueue(),
                   ],
                 ),
               ),
