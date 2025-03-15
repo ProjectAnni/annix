@@ -296,6 +296,7 @@ class HomePage extends HookWidget {
           if (isFavoritePage)
             SectionTitle(
               title: 'Songs',
+              leading: const Icon(Icons.list),
               trailing: FilledButton.tonal(
                 child: const Text('Play'),
                 onPressed: () {},

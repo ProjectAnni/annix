@@ -103,7 +103,7 @@ class FavoriteTracks extends ConsumerWidget {
 
     return DecoratedSliver(
       decoration: BoxDecoration(
-        color: context.colorScheme.secondaryContainer,
+        color: context.colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.all(Radius.circular(16)),
       ),
       sliver: SliverPadding(

@@ -20,6 +20,7 @@ class SectionTitle extends StatelessWidget {
     final child = Column(
       children: [
         Row(
+          spacing: 4.0,
           children: [
             if (leading != null) leading!,
             Expanded(

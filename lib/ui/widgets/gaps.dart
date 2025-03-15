@@ -19,7 +19,7 @@ class SliverGap extends StatelessWidget {
 
   /// Below the first top widget in a sliver list.
   const SliverGap.belowTop({super.key}) : size = 16.0;
-  const SliverGap.betweenSections({super.key}) : size = 24.0;
+  const SliverGap.betweenSections({super.key}) : size = 16.0;
 
   @override
   Widget build(BuildContext context) {

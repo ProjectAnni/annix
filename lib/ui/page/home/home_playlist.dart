@@ -14,64 +14,45 @@ class PlaylistView extends ConsumerWidget {
     final playlistsRaw = ref.watch(playlistProvider);
     final playlists = playlistsRaw.value ?? [];
 
-    return SliverToBoxAdapter(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 200),
-        child: CarouselView.weighted(
-          flexWeights: const [3, 2, 1],
-          elevation: 2,
-          children: playlists.map((p) {
-            final playlist = PlaylistInfo.fromData(p);
-            final albumId = playlist.cover?.albumId;
-            final cover = albumId == null
-                ? const DummyMusicCover()
-                : MusicCover.fromAlbum(
-                    albumId: albumId,
-                    fit: BoxFit.cover,
-                  );
-            return Stack(
-              fit: StackFit.passthrough,
-              children: [
-                Hero(
-                  tag: 'playlist:cover:${playlist.id}',
-                  child: cover,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(4.0),
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0),
-                        Colors.black.withValues(alpha: 0.5),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Hero(
-                      tag: 'playlist:name:${playlist.id}',
-                      child: Text(
-                        playlist.name,
-                        style: context.textTheme.titleMedium
-                            ?.copyWith(color: Colors.white),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        softWrap: false,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-          onTap: (index) {
-            final playlist = PlaylistInfo.fromData(playlists[index]);
-            context.push('/playlist', extra: playlist);
-          },
+    return DecoratedSliver(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainer,
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+      sliver: SliverList.separated(
+        itemCount: playlists.length,
+        separatorBuilder: (context, index) => Divider(
+          height: 4,
+          thickness: 2,
+          color: context.colorScheme.surface,
         ),
+        itemBuilder: (context, index) {
+          final playlist = playlists[index];
+          final coverAlbumId = playlist.cover?.split('/').first;
+          return ListTile(
+            title: Text(
+              playlist.name,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            leading: coverAlbumId == null
+                ? const DummyMusicCover()
+                : Hero(
+                    tag: 'playlist:cover:${playlist.id}',
+                    child: MusicCover.fromAlbum(
+                      albumId: coverAlbumId,
+                      discId: 0,
+                      // fit: BoxFit.cover,
+                    ),
+                  ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            onTap: () {
+              final playlist = PlaylistInfo.fromData(playlists[index]);
+              context.push('/playlist', extra: playlist);
+            },
+          );
+        },
       ),
     );
   }

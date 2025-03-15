@@ -85,7 +85,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
     return coverIdentifier;
   }
 
-  Widget? _cover({final bool card = true}) {
+  Widget? _cover({final bool card = true, final String? heroTag}) {
     String? oldCoverIdentifier = widget.playlist.intro.cover;
 
     if (oldCoverIdentifier == null ||
@@ -113,10 +113,16 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
       return null;
     } else {
       final cover = DiscIdentifier.fromIdentifier(coverIdentifier);
-      final child = MusicCover.fromAlbum(
+      Widget child = MusicCover.fromAlbum(
         albumId: cover.albumId,
         discId: cover.discId,
       );
+      if (heroTag != null) {
+        child = Hero(
+          tag: heroTag,
+          child: child,
+        );
+      }
       if (!card) return child;
 
       return Card(
@@ -319,7 +325,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
 
   @override
   Widget build(final BuildContext context) {
-    final cover = _cover();
+    final cover = _cover(heroTag: 'playlist:cover:${widget.playlist.intro.id}');
     final description = widget.playlist.getDescription();
 
     return Scaffold(
@@ -399,10 +405,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                       padding: EdgeInsets.symmetric(
                         horizontal: constraints.maxWidth / 6,
                       ),
-                      child: Hero(
-                        tag: 'playlist:cover:${widget.playlist.intro.remoteId}',
-                        child: cover,
-                      ),
+                      child: cover,
                     );
                   },
                 ),
