@@ -68,9 +68,13 @@ class MusicPage extends HookConsumerWidget {
             barElevation: WidgetStateProperty.all(0),
             suggestionsBuilder: (context, controller) {
               return [
-                const ListTile(
-                  leading: Icon(Icons.history),
-                  title: Text('history 1'),
+                ListTile(
+                  leading: const Icon(Icons.label),
+                  title: const Text('By Tags'),
+                  onTap: () {
+                    searchController.closeView('');
+                    context.push('/tags');
+                  },
                 )
               ];
             },
