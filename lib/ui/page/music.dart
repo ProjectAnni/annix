@@ -53,33 +53,31 @@ class MusicPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: SearchAnchor.bar(
-          searchController: searchController,
-          barLeading: const Icon(Icons.search),
-          barHintText: 'Search your library',
-          barElevation: WidgetStateProperty.all(0),
-          suggestionsBuilder: (context, controller) {
-            return [
-              ListTile(
-                leading: Icon(Icons.history),
-                title: Text('history 1'),
-              )
-            ];
-          },
-          onSubmitted: (value) {
-            bodyFocusNode.requestFocus();
-            searchController.closeView('');
-            context.push('/search', extra: value);
-          },
-          viewHintText: 'Tracks, albums, artists, and more',
-          viewLeading: BackButton(
-            style: const ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () {
-              context.pop();
+        // https://github.com/flutter/flutter/issues/138099#issuecomment-1992390262
+        title: FocusScope(
+          onFocusChange: (value) {
+            if (value) {
               bodyFocusNode.requestFocus();
+            }
+          },
+          child: SearchAnchor.bar(
+            searchController: searchController,
+            barLeading: const Icon(Icons.search),
+            barHintText: 'Search your library',
+            barElevation: WidgetStateProperty.all(0),
+            suggestionsBuilder: (context, controller) {
+              return [
+                ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text('history 1'),
+                )
+              ];
             },
+            onSubmitted: (value) {
+              searchController.closeView('');
+              context.push('/search', extra: value);
+            },
+            viewHintText: 'Tracks, albums, artists, and more',
           ),
         ),
         bottom: const PreferredSize(
@@ -146,10 +144,10 @@ class MusicPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: hasTrack
-          ? Focus(
-              focusNode: bodyFocusNode,
-              child: const PagePadding(
+      body: Focus(
+        focusNode: bodyFocusNode,
+        child: hasTrack
+            ? const PagePadding(
                 child: CustomScrollView(
                   slivers: [
                     SliverGap.belowTop(),
@@ -159,9 +157,9 @@ class MusicPage extends HookConsumerWidget {
                     NextPlayingQueue(),
                   ],
                 ),
-              ),
-            )
-          : const EmptyMusicPage(),
+              )
+            : const EmptyMusicPage(),
+      ),
     );
   }
 }
