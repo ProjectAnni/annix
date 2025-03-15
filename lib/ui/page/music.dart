@@ -1,6 +1,5 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/ui/widgets/dismissible/dismissible.dart';
 import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/section_title.dart';
 import 'package:annix/ui/widgets/text/text.dart';
