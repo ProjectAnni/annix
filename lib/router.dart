@@ -1,6 +1,7 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/theme.dart';
 import 'package:annix/ui/page/intro.dart';
+import 'package:annix/ui/playground/playground.dart';
 import 'package:annix/ui/page/music.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,10 @@ GoRouter buildRouter(Ref ref) {
       GoRoute(
         path: '/intro',
         builder: (context, state) => const IntroPage(),
+      ),
+      GoRoute(
+        path: '/playground',
+        builder: (context, state) => const PlaygroundPage(),
       ),
       ShellRoute(
         navigatorKey: _mainNavigatorKey,

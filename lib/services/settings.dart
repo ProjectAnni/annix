@@ -50,11 +50,6 @@ class SettingsService {
       ref.read(themeProvider).updateFontFamily();
     });
 
-    blurPlayingPage = ValueNotifier(
-        preferences.getBool('annix_enable_blur_playing_page') ?? false);
-    blurPlayingPage.addListener(
-        saveChangedVariable('annix_enable_blur_playing_page', blurPlayingPage));
-
     searchTrackDisplayType = ValueNotifier(SearchTrackDisplayType.values[
         preferences.getInt('annix_search_track_display_type') ??
             SearchTrackDisplayType.artist.index]);
@@ -91,11 +86,6 @@ class SettingsService {
   ///
   /// Default value: null
   late ValueNotifier<String?> fontPath;
-
-  /// Blur playing page on mobile
-  ///
-  /// Default value: null
-  late ValueNotifier<bool> blurPlayingPage;
 
   /// Control what to display in search result
   ///

@@ -7,7 +7,6 @@ import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/lyric.dart';
-import 'package:annix/ui/widgets/playing_queue.dart';
 import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
@@ -58,20 +57,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.queue_music_rounded),
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  showDragHandle: true,
-                  clipBehavior: Clip.antiAlias,
-                  builder: (final context) {
-                    return DraggableScrollableSheet(
-                      expand: false,
-                      builder: (final context, final scrollController) {
-                        return PlayingQueue(controller: scrollController);
-                      },
-                    );
-                  },
-                );
+                context.go('/music');
               },
             ),
             MenuAnchor(

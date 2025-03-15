@@ -1,7 +1,6 @@
 import 'package:annix/providers.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
-import 'package:annix/ui/page/playing/playing_mobile_blur.dart';
 import 'package:annix/ui/bottom_player/bottom_player.dart';
 import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -18,7 +17,6 @@ class AnnixLayout extends HookConsumerWidget {
   static const pages = <String>[
     '/home',
     '/music',
-    '/server',
   ];
 
   const AnnixLayout({super.key, required this.child});
@@ -50,8 +48,7 @@ class AnnixLayout extends HookConsumerWidget {
               selectedIndex: currentIndex ?? 0,
               destinations: destinations,
               onDestinationSelected: onDestinationSelected,
-              labelBehavior:
-                  NavigationDestinationLabelBehavior.onlyShowSelected,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
               // hide the indicator if the currentIndex is null
               indicatorColor: currentIndex == null ? Colors.transparent : null,
             ),
@@ -71,17 +68,9 @@ class AnnixLayout extends HookConsumerWidget {
     final bottomNavHeight = 80.0 + MediaQuery.of(context).padding.bottom;
     final currentHeight = bottomNavHeight * (1 - positionState.value);
 
-    final panel = ValueListenableBuilder(
-      valueListenable: ref.read(settingsProvider).blurPlayingPage,
-      builder: (final context, final bool blur, final child) {
-        if (context.isDesktopOrLandscape) {
-          return const PlayingDesktopScreen();
-        }
-        return blur
-            ? const PlayingScreenMobileBlur()
-            : const PlayingScreenMobile();
-      },
-    );
+    final panel = context.isDesktopOrLandscape
+        ? const PlayingDesktopScreen()
+        : const PlayingScreenMobile();
 
     final router = GoRouter.of(context);
 
@@ -111,11 +100,6 @@ class AnnixLayout extends HookConsumerWidget {
       NavigationDestination(
         icon: const Icon(Icons.queue_music_outlined),
         label: t.music,
-      ),
-      NavigationDestination(
-        icon: const Icon(Icons.dns_outlined),
-        selectedIcon: const Icon(Icons.dns),
-        label: t.server.server,
       ),
     ];
     final body = Consumer(

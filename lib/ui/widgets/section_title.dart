@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 class SectionTitle extends StatelessWidget {
   final String title;
+  final Widget? leading;
   final Widget? trailing;
   final bool sliver;
 
   const SectionTitle({
     super.key,
     required this.title,
+    this.leading,
     this.trailing,
     this.sliver = true,
   });
@@ -19,6 +21,7 @@ class SectionTitle extends StatelessWidget {
       children: [
         Row(
           children: [
+            if (leading != null) leading!,
             Expanded(
               child: Text(
                 title,

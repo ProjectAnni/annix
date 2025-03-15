@@ -35,7 +35,6 @@
     "settings": "Settings",
     "skip_cert": "Skip SSL Certificate Verification",
     "default_audio_quality": "Default Audio Quality",
-    "blur_playing_page": "Blur playing page",
     "use_mobile_network": "Play under mobile network",
     "view_logs": "Logs",
     "view_logs_desc": "View Logs",

@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 144 (72 per locale)
+/// Strings: 143 (71 per locale)
 ///
-/// Built on 2025-03-11 at 13:25 UTC
+/// Built on 2025-03-15 at 13:17 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -233,7 +233,6 @@ class _StringsSettingsEn {
 	String get settings => 'Settings';
 	String get skip_cert => 'Skip SSL Certificate Verification';
 	String get default_audio_quality => 'Default Audio Quality';
-	String get blur_playing_page => 'Blur playing page';
 	String get use_mobile_network => 'Play under mobile network';
 	String get view_logs => 'Logs';
 	String get view_logs_desc => 'View Logs';
@@ -633,7 +632,6 @@ extension on Translations {
 			case 'settings.settings': return 'Settings';
 			case 'settings.skip_cert': return 'Skip SSL Certificate Verification';
 			case 'settings.default_audio_quality': return 'Default Audio Quality';
-			case 'settings.blur_playing_page': return 'Blur playing page';
 			case 'settings.use_mobile_network': return 'Play under mobile network';
 			case 'settings.view_logs': return 'Logs';
 			case 'settings.view_logs_desc': return 'View Logs';

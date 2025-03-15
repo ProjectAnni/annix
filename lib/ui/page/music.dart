@@ -4,11 +4,44 @@ import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/playback/endless_mode.dart';
 import 'package:annix/ui/widgets/playback/sleep_timer.dart';
 import 'package:annix/ui/widgets/section_title.dart';
+import 'package:annix/ui/widgets/text/text.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class EmptyMusicPage extends StatelessWidget {
+  const EmptyMusicPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.music_off,
+            size: 64,
+            color: context.colorScheme.primary,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No track playing',
+            style: context.textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Select a track to start playing',
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class MusicPage extends HookConsumerWidget {
   const MusicPage({super.key});
@@ -17,6 +50,8 @@ class MusicPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final bodyFocusNode = useFocusNode();
     final searchController = useSearchController();
+
+    final hasTrack = ref.watch(playingProvider.select((s) => s.source != null));
 
     return Scaffold(
       appBar: AppBar(
@@ -51,39 +86,32 @@ class MusicPage extends HookConsumerWidget {
         ),
         elevation: 0,
       ),
-      body: Focus(
-        focusNode: bodyFocusNode,
-        child: PagePadding(
-          child: CustomScrollView(
-            slivers: [
-              const SliverGap.belowTop(),
-              const SliverToBoxAdapter(
-                child: OverflowBar(
-                  spacing: 8.0,
-                  children: [
-                    EndlessModeChip(),
-                    SleepTimerChip(),
+      body: hasTrack
+          ? Focus(
+              focusNode: bodyFocusNode,
+              child: PagePadding(
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverGap.belowTop(),
+                    const SliverToBoxAdapter(
+                      child: OverflowBar(
+                        spacing: 8.0,
+                        children: [
+                          EndlessModeChip(),
+                          SleepTimerChip(),
+                        ],
+                      ),
+                    ),
+                    const SliverGap.belowTop(),
+                    const NowPlayingCard(),
+                    const SliverGap.betweenSections(),
+                    const SectionTitle(title: 'Next songs'),
+                    const NextPlayingQueue(),
                   ],
                 ),
               ),
-              SectionTitle(
-                title: 'Playing',
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.more_horiz),
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ),
-              ),
-              const NowPlayingCard(),
-              const SliverGap.betweenSections(),
-              const SectionTitle(title: 'Next songs'),
-              const NextPlayingQueue(),
-            ],
-          ),
-        ),
-      ),
+            )
+          : const EmptyMusicPage(),
     );
   }
 }
@@ -110,9 +138,9 @@ class NowPlayingCard extends ConsumerWidget {
       child: Card(
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.zero,
-        color: context.colorScheme.tertiaryContainer,
+        color: context.colorScheme.primaryContainer,
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           leading: CoverCard(
             child: MusicCover.fromAlbum(albumId: playing.identifier.albumId),
           ),
@@ -122,16 +150,8 @@ class NowPlayingCard extends ConsumerWidget {
               color: context.colorScheme.onTertiaryContainer,
             ),
           ),
-          subtitle: Text(
-            playing.track.albumTitle,
-            overflow: TextOverflow.ellipsis,
-            style: context.textTheme.labelMedium?.copyWith(
-              color: context.colorScheme.onTertiaryContainer,
-            ),
-          ),
-          onTap: () {
-            delegate.openPanel();
-          },
+          subtitle: AlbumTitleText(title: playing.track.albumTitle),
+          onTap: delegate.openPanel,
         ),
       ),
     );
@@ -208,7 +228,13 @@ class NextPlayingQueue extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: const Padding(
                   padding: EdgeInsets.only(left: 8.0),
-                  child: Icon(Icons.swipe_up_outlined),
+                  child: Row(
+                    spacing: 8.0,
+                    children: [
+                      Icon(Icons.swipe_up_outlined),
+                      Text('Move to top'),
+                    ],
+                  ),
                 ),
               ),
               secondaryBackground: Container(
@@ -219,8 +245,7 @@ class NextPlayingQueue extends ConsumerWidget {
                 ),
               ),
               child: Card(
-                elevation: isDuringDismiss.value ? 8 : 0,
-                color: context.colorScheme.secondaryContainer,
+                elevation: isDuringDismiss.value ? 2 : 0,
                 clipBehavior: Clip.hardEdge,
                 margin: const EdgeInsets.symmetric(vertical: 4),
                 child: ListTile(
@@ -232,12 +257,10 @@ class NextPlayingQueue extends ConsumerWidget {
                   title: Text(
                     song.track.title,
                     style: context.textTheme.titleMedium,
-                  ),
-                  subtitle: Text(
-                    song.track.albumTitle,
-                    style: context.textTheme.labelMedium,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  subtitle: AlbumTitleText(title: song.track.albumTitle),
                   onTap: () async {
                     await player.jump(actualIndex);
                   },

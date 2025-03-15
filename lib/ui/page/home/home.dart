@@ -22,7 +22,7 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final filter = useState(FilterType.all);
+    final filter = useState(FilterType.favorite);
     final isAllPage = filter.value == FilterType.all;
     final isFavoritePage = filter.value == FilterType.favorite;
     final isPlaylistPage = filter.value == FilterType.playlist;
@@ -33,10 +33,22 @@ class HomePage extends HookWidget {
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
+            SliverAppBar.medium(
               floating: true,
-              title: const Text('Annix'),
+              title: Text(
+                'Annix',
+                style: context.textTheme.headlineLarge?.copyWith(
+                  color: context.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               actions: [
+                IconButton(
+                  icon: const Icon(Icons.play_circle_outline),
+                  onPressed: () {
+                    context.push('/playground');
+                  },
+                ),
                 const ThemeButton(),
                 IconButton(
                   icon: const Icon(Icons.settings_outlined),
@@ -48,9 +60,9 @@ class HomePage extends HookWidget {
             ),
 
             SliverToBoxAdapter(
-              child: OverflowBar(
+              child: Row(
                 // scrollDirection: Axis.horizontal,
-                alignment: MainAxisAlignment.start,
+                // alignment: MainAxisAlignment.start,
                 spacing: 8,
                 children: [
                   FilterChip(
@@ -203,6 +215,7 @@ class HomePage extends HookWidget {
             if (isFavoritePage)
               SectionTitle(
                 title: 'Albums',
+                leading: const Icon(Icons.album_outlined),
                 trailing: TextButton(
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
@@ -225,7 +238,7 @@ class HomePage extends HookWidget {
                       return CarouselView.weighted(
                         flexWeights: context.isDesktopOrLandscape
                             ? const [4, 3, 3, 2, 1]
-                            : const [6, 3, 1],
+                            : const [5, 3, 2],
                         padding: const EdgeInsets.only(right: 4),
                         onTap: (index) => context.push(
                           '/album',

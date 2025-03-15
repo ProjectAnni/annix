@@ -8,69 +8,82 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MobileBottomPlayer extends StatelessWidget {
-  /// Height of the mobile player bar
-  static const double height = 60;
+class MobileBottomPlayer extends ConsumerWidget {
+  /// Height of the mobile player
+  static const double height = 64;
 
   const MobileBottomPlayer({super.key});
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
-        ),
-        color: ElevationOverlay.applySurfaceTint(
-          context.colorScheme.surface,
-          context.colorScheme.surfaceTint,
-          4.0,
-        ),
-      ),
       height: height,
-      child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: const PlayingMusicCover(card: true, animated: false),
-              ),
-              const Expanded(
-                flex: 1,
-                child: PlayingTrackSwiper(),
-              ),
-              const FavoriteButton(),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: RepaintBoundary(child: PlayPauseButton.small()),
-              ),
-            ],
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: context.colorScheme.shadow
+                .withValues(alpha: context.isDarkMode ? 0.4 : 0.1),
+            blurRadius: 4,
+            offset: const Offset(0, -1),
           ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return RepaintBoundary(
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final playing = ref.watch(playingProvider);
-                    return ProgressBar(
-                      progress: playing.position,
-                      total: playing.duration == Duration.zero
-                          ? playing.position
-                          : playing.duration,
-                      timeLabelLocation: TimeLabelLocation.none,
-                      thumbCanPaintOutsideBar: false,
-                      thumbRadius: 0,
-                      barHeight: 2,
-                    );
-                  },
-                ),
-              );
-            },
+        ],
+      ),
+      child: Column(
+        children: [
+          // Progress bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: RepaintBoundary(
+              child: Consumer(builder: (context, ref, child) {
+                final playing = ref.watch(playingProvider);
+                return ProgressBar(
+                  progress: playing.position,
+                  total: playing.duration == Duration.zero
+                      ? playing.position
+                      : playing.duration,
+                  timeLabelLocation: TimeLabelLocation.none,
+                  thumbCanPaintOutsideBar: false,
+                  thumbRadius: 0,
+                  barHeight: 2,
+                  progressBarColor: context.colorScheme.primary,
+                  baseBarColor: context.colorScheme.surfaceContainerHighest,
+                );
+              }),
+            ),
+          ),
+
+          // Player controls
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  // Album art with rounded corners
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: const SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: PlayingMusicCover(card: false, animated: false),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  const Expanded(child: PlayingTrackSwiper()),
+
+                  // Control buttons
+                  const FavoriteButton(),
+
+                  PlayPauseButton.small(),
+                ],
+              ),
+            ),
           ),
         ],
       ),

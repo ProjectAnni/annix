@@ -42,7 +42,7 @@ final sleepTimerProvider =
 
 // db
 @Riverpod(keepAlive: true)
-LocalDatabase localDatabase(final LocalDatabaseRef ref) => LocalDatabase();
+LocalDatabase localDatabase(final Ref ref) => LocalDatabase();
 final playlistProvider = StreamProvider((final ref) {
   final info = ref.watch(annivProvider.select((final p) => p.info));
   final db = ref.read(localDatabaseProvider);

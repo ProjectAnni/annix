@@ -95,19 +95,6 @@ class SettingsScreen extends ConsumerWidget {
           SettingsSection(
             title: const Text('UI'),
             tiles: [
-              if (context.isMobileOrPortrait)
-                SettingsTileBuilder<bool>(
-                  value: settings.blurPlayingPage,
-                  builder: (final context, final p, final _) =>
-                      SettingsTile.switchTile(
-                    onToggle: (final value) {
-                      settings.blurPlayingPage.value = value;
-                    },
-                    initialValue: p,
-                    leading: const Icon(Icons.blur_circular),
-                    title: Text(t.settings.blur_playing_page),
-                  ),
-                ),
               SettingsTileBuilder<SearchTrackDisplayType>(
                 value: settings.searchTrackDisplayType,
                 builder: (final context, final p, final child) =>

@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$localDatabaseHash() => r'a180615826e8f73d4e8a5cf6275eb97942ecbc97';
+String _$localDatabaseHash() => r'f254dce1d3ca2c9fd75128aaa1c9153e78717e4f';
 
 /// See also [localDatabase].
 @ProviderFor(localDatabase)
