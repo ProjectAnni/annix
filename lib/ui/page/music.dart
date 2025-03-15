@@ -244,7 +244,7 @@ class NextPlayingQueue extends ConsumerWidget {
           key: ValueKey('$index/${song.id}'),
           child: HookBuilder(builder: (context) {
             final isDuringDismiss = useState(false);
-            return DismissibleFork(
+            return Dismissible(
               key: ValueKey(index),
               direction: DismissDirection.horizontal,
               confirmDismiss: (direction) async {
