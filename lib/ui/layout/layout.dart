@@ -161,7 +161,7 @@ class AnnixLayout extends HookConsumerWidget {
       child: child,
     );
     final root = AdaptiveLayout(
-      internalAnimations: false,
+      transitionDuration: const Duration(milliseconds: 250),
       primaryNavigation: SlotLayout(config: <Breakpoint, SlotLayoutConfig>{
         Breakpoints.mediumAndUp: SlotLayout.from(
           key: const Key('Primary Navigation Medium'),

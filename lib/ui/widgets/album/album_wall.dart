@@ -29,7 +29,9 @@ class AlbumWall extends StatelessWidget {
 
 class LazyAlbumWall extends StatelessWidget {
   final List<String> albumIds;
-  const LazyAlbumWall({super.key, required this.albumIds});
+  final bool showFavorite;
+  const LazyAlbumWall(
+      {super.key, required this.albumIds, this.showFavorite = true});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,7 @@ class LazyAlbumWall extends StatelessWidget {
         return LoadingAlbumGrid(
           albumId: albumId,
           style: AlbumGridStyle.card,
+          showFavorite: showFavorite,
         );
       },
       itemCount: albumIds.length,
@@ -53,7 +56,12 @@ class LazyAlbumWall extends StatelessWidget {
 
 class LazySliverAlbumWall extends StatelessWidget {
   final List<String> albumIds;
-  const LazySliverAlbumWall({super.key, required this.albumIds});
+  final bool showFavorite;
+  const LazySliverAlbumWall({
+    super.key,
+    required this.albumIds,
+    this.showFavorite = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +74,7 @@ class LazySliverAlbumWall extends StatelessWidget {
         return LoadingAlbumGrid(
           albumId: albumId,
           style: AlbumGridStyle.card,
+          showFavorite: showFavorite,
         );
       },
       childCount: albumIds.length,

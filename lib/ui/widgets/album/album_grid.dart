@@ -1,6 +1,7 @@
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_album_grid.dart';
 import 'package:annix/utils/context_extension.dart';
@@ -16,8 +17,14 @@ enum AlbumGridStyle {
 class AlbumGrid extends ConsumerWidget {
   final Album album;
   final AlbumGridStyle style;
+  final bool showFavorite;
 
-  const AlbumGrid({super.key, required this.album, required this.style});
+  const AlbumGrid({
+    super.key,
+    required this.album,
+    required this.style,
+    this.showFavorite = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +37,7 @@ class AlbumGrid extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(
-          alignment: Alignment.bottomLeft,
+          alignment: Alignment.bottomRight,
           children: [
             AspectRatio(
               aspectRatio: 1,
@@ -39,9 +46,17 @@ class AlbumGrid extends ConsumerWidget {
                 fit: BoxFit.fitHeight,
               ),
             ),
-            IconButton.filledTonal(
-              icon: const Icon(Icons.favorite),
-              onPressed: () {},
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Material(
+                color: context.colorScheme.secondaryContainer,
+                elevation: 4,
+                clipBehavior: Clip.hardEdge,
+                borderRadius: BorderRadius.circular(24),
+                child: showFavorite
+                    ? FavoriteAlbumButton(albumId: album.albumId)
+                    : const SizedBox.shrink(),
+              ),
             ),
           ],
         ),
@@ -92,11 +107,13 @@ class AlbumGrid extends ConsumerWidget {
 class LoadingAlbumGrid extends ConsumerWidget {
   final String albumId;
   final AlbumGridStyle style;
+  final bool showFavorite;
 
   const LoadingAlbumGrid({
     super.key,
     required this.albumId,
     this.style = AlbumGridStyle.card,
+    this.showFavorite = true,
   });
 
   @override
@@ -104,7 +121,11 @@ class LoadingAlbumGrid extends ConsumerWidget {
     final album = ref.watch(albumFamily(albumId));
 
     return album.when(
-      data: (album) => AlbumGrid(album: album, style: style),
+      data: (album) => AlbumGrid(
+        album: album,
+        style: style,
+        showFavorite: showFavorite,
+      ),
       error: (error, stacktrace) => const Text('Error'),
       loading: () => ShimmerAlbumGrid(albumId: albumId),
     );

@@ -323,7 +323,9 @@ class HomePage extends HookWidget {
                   visualDensity: VisualDensity.compact,
                 ),
                 child: const Text('View All'),
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/favorite');
+                },
               ),
             ),
           if (isFavoritePage)

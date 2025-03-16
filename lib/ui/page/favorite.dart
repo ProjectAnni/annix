@@ -8,6 +8,7 @@ import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/fade_indexed_stack.dart';
+import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
@@ -19,7 +20,7 @@ class FavoritePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, final WidgetRef ref) {
-    final selectedTab = useState(0);
+    final selectedTab = useState(1);
 
     return Material(
       child: NestedScrollView(
@@ -83,7 +84,14 @@ class FavoritePage extends HookConsumerWidget {
           duration: context.isDesktop
               ? const Duration(milliseconds: 150)
               : const Duration(milliseconds: 300),
-          children: const [FavoriteTracks(), FavoriteAlbumWall()],
+          children: [
+            CustomScrollView(
+              slivers: [
+                FavoriteTracks(),
+              ].map((e) => PagePadding(sliver: true, child: e)).toList(),
+            ),
+            FavoriteAlbumWall()
+          ],
         ),
       ),
     );
@@ -200,7 +208,10 @@ class FavoriteAlbumWall extends ConsumerWidget {
         favorites.reversed.map((final e) => e.albumId).toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: LazyAlbumWall(albumIds: reversedFavorite),
+      child: LazyAlbumWall(
+        albumIds: reversedFavorite,
+        showFavorite: false,
+      ),
     );
   }
 }
