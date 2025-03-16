@@ -222,6 +222,8 @@ class PlayingScreenMobileControl extends ConsumerWidget {
                 timeLabelLocation: TimeLabelLocation.below,
                 thumbCanPaintOutsideBar: false,
                 timeLabelType: TimeLabelType.totalTime,
+                barHeight: 4,
+                thumbRadius: 6,
               ),
             );
           },

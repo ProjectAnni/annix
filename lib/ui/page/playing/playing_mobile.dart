@@ -24,18 +24,20 @@ class PlayingScreenMobile extends HookConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              SizedBox(height: 32),
               MusicCoverOrLyric(showLyric: showLyric),
               const Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: PlayingScreenMobileTrackInfo()),
+                      PlayingScreenMobileTrackInfo(),
                       FavoriteButton(),
                     ],
                   ),
                   SizedBox(height: 32),
                   PlayingScreenMobileControl(),
-                  SizedBox(height: 32),
+                  SizedBox(height: 16),
                 ],
               ),
             ],
