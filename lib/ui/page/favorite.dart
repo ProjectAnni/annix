@@ -2,18 +2,75 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/annil/audio_source.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/local/database.dart';
-import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/gaps.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_track_list_tile.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class LoadingTrackListTile extends ConsumerWidget {
+  final String albumId;
+  final int discId;
+  final int trackId;
+  final GestureTapCallback onTap;
+
+  const LoadingTrackListTile({
+    super.key,
+    required this.albumId,
+    required this.discId,
+    required this.trackId,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final annil = ref.read(annilProvider);
+    final album = ref.watch(albumFamily(albumId));
+
+    final cover = CoverCard(
+      child: MusicCover.fromAlbum(
+        albumId: albumId,
+        fit: BoxFit.cover,
+      ),
+    );
+
+    return album.when(
+      data: (album) {
+        final track = album.discs[discId - 1].tracks[trackId - 1];
+        return ListTile(
+          // contentPadding: EdgeInsets.zero,
+          leading: cover,
+          title: Text(
+            track.title,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: ArtistText(
+            track.artist,
+            overflow: TextOverflow.ellipsis,
+          ),
+          enabled: annil.isTrackAvailable(
+            TrackIdentifier(
+              albumId: albumId,
+              discId: discId,
+              trackId: trackId,
+            ),
+          ),
+          onTap: onTap,
+        );
+      },
+      error: (error, stacktrace) => const Text('Error'),
+      loading: () => ShimmerTrackListTile(cover: cover),
+    );
+  }
+}
 
 class FavoritePage extends HookConsumerWidget {
   const FavoritePage({super.key});
@@ -103,7 +160,6 @@ class FavoriteTracks extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final annil = ref.read(annilProvider);
     final player = ref.read(playbackProvider);
     final favoriteTracks = ref.watch(favoriteTracksProvider);
     final favorites = favoriteTracks.value ?? [];
@@ -125,31 +181,12 @@ class FavoriteTracks extends ConsumerWidget {
           ),
           itemBuilder: (final context, final index) {
             final favorite = reversedFavorite.elementAt(index);
-            return ListTile(
-              // contentPadding: EdgeInsets.zero,
-              leading: CoverCard(
-                child: MusicCover.fromAlbum(
-                  albumId: favorite.albumId,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              title: Text(
-                favorite.title ?? '--',
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: ArtistText(
-                favorite.artist ?? '--',
-                overflow: TextOverflow.ellipsis,
-              ),
-              enabled: annil.isTrackAvailable(
-                TrackIdentifier(
-                  albumId: favorite.albumId,
-                  discId: favorite.discId,
-                  trackId: favorite.trackId,
-                ),
-              ),
+            return LoadingTrackListTile(
+              albumId: favorite.albumId,
+              discId: favorite.discId,
+              trackId: favorite.trackId,
               onTap: () async {
-                final tracks = getTracks(ref, favorites);
+                final tracks = await getTracks(ref, favorites);
                 playFullList(
                   player: player,
                   tracks: tracks,
@@ -163,36 +200,25 @@ class FavoriteTracks extends ConsumerWidget {
     );
   }
 
-  List<AnnilAudioSource> getTracks(
+  Future<List<AnnilAudioSource>> getTracks(
     WidgetRef ref,
     final List<LocalFavoriteTrack> favorites,
-  ) {
-    final annil = ref.read(annilProvider);
-
-    return favorites.reversed
-        .map(
-          (final fav) {
-            final id = TrackIdentifier(
-              albumId: fav.albumId,
-              discId: fav.discId,
-              trackId: fav.trackId,
-            );
-
-            if (annil.isTrackAvailable(id)) {
-              return TrackInfoWithAlbum(
-                id: id,
-                title: fav.title!,
-                artist: fav.artist!,
-                albumTitle: fav.albumTitle!,
-                type: TrackType.fromString(fav.type),
-              );
-            } else {
-              return null;
-            }
-          },
-        )
-        .whereType<TrackInfoWithAlbum>()
-        .map((final track) => AnnilAudioSource(track: track))
+  ) async {
+    final metadata = ref.read(metadataProvider);
+    final futures = await Future.wait(favorites.reversed.map((final fav) {
+      final id = TrackIdentifier(
+        albumId: fav.albumId,
+        discId: fav.discId,
+        trackId: fav.trackId,
+      );
+      return AnnilAudioSource.from(
+        metadata: metadata,
+        id: id,
+      );
+    }).toList());
+    return futures
+        .where((final e) => e != null)
+        .whereType<AnnilAudioSource>()
         .toList();
   }
 }

@@ -8,6 +8,7 @@ class AnnilAudioSource {
 
   TrackIdentifier get identifier => track.id;
 
+  // TODO: AnnilAudioSource should not depend on metadata
   AnnilAudioSource({
     required this.track,
     this.quality,

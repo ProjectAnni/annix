@@ -215,7 +215,7 @@ class AnnivService extends ChangeNotifier {
     await client?.getFavoriteTracks().then(_syncFavoriteTrack);
   }
 
-  Future<void> _syncFavoriteTrack(final List<TrackInfoWithAlbum> list) async {
+  Future<void> _syncFavoriteTrack(final List<TrackIdentifier> list) async {
     final db = ref.read(localDatabaseProvider);
 
     await db.transaction(() async {
@@ -229,13 +229,9 @@ class AnnivService extends ChangeNotifier {
           list.reversed
               .map(
                 (final e) => LocalFavoriteTracksCompanion.insert(
-                  albumId: e.id.albumId,
-                  discId: e.id.discId,
-                  trackId: e.id.trackId,
-                  title: Value(e.title),
-                  artist: Value(e.artist),
-                  albumTitle: Value(e.albumTitle),
-                  type: Value(e.type.toString()),
+                  albumId: e.albumId,
+                  discId: e.discId,
+                  trackId: e.trackId,
                 ),
               )
               .toList(),

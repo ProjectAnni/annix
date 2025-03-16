@@ -6,7 +6,7 @@ import 'package:annix/services/metadata/metadata_source.dart';
 import 'package:uuid/uuid.dart';
 
 // TODO: cache
-class AnnimMetadataSource extends MetadataSource {
+class AnnimMetadataSource extends MetadataSource with CachedMetadataStore {
   late Annim _client;
 
   @override
@@ -15,7 +15,7 @@ class AnnimMetadataSource extends MetadataSource {
   }
 
   @override
-  Future<Map<String, Album>> getAlbums(final List<String> albums) async {
+  Future<Map<String, Album>> getAlbumsDetail(final List<String> albums) async {
     final ids = albums.map((e) => UuidValue.fromString(e)).toList();
     final result = await _client.getAlbums(ids: ids);
     return Map.fromEntries(result.map((e) {

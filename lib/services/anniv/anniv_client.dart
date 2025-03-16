@@ -225,10 +225,10 @@ class AnnivClient {
   }
 
   // https://book.anni.rs/06.anniv/10.favorite.html#%E8%8E%B7%E5%8F%96%E5%96%9C%E6%AC%A2%E5%88%97%E8%A1%A8
-  Future<List<TrackInfoWithAlbum>> getFavoriteTracks() async {
+  Future<List<TrackIdentifier>> getFavoriteTracks() async {
     final response = await _client.get('/api/favorite/music');
     return (response.data as List<dynamic>)
-        .map((final e) => TrackInfoWithAlbum.fromJson(e))
+        .map((final e) => TrackIdentifier.fromJson(e))
         .toList();
   }
 
