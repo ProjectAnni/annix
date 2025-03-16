@@ -1,4 +1,3 @@
-import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
@@ -52,103 +51,104 @@ class MusicPage extends HookConsumerWidget {
 
     final hasTrack = ref.watch(playingProvider.select((s) => s.source != null));
 
-    return Scaffold(
-      appBar: AppBar(
-        // https://github.com/flutter/flutter/issues/138099#issuecomment-1992390262
-        title: FocusScope(
-          onFocusChange: (value) {
-            if (value) {
-              bodyFocusNode.requestFocus();
-            }
-          },
-          child: SearchAnchor.bar(
-            searchController: searchController,
-            barLeading: const Icon(Icons.search),
-            barHintText: 'Search your library',
-            barElevation: WidgetStateProperty.all(0),
-            suggestionsBuilder: (context, controller) {
-              return [
-                ListTile(
-                  leading: const Icon(Icons.label),
-                  title: const Text('By Tags'),
-                  onTap: () {
-                    searchController.closeView('');
-                    context.push('/tags');
-                  },
-                )
-              ];
-            },
-            onSubmitted: (value) {
-              searchController.closeView('');
-              context.push('/search', extra: value);
-            },
-            viewHintText: 'Tracks, albums, artists, and more',
-          ),
-        ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(8.0),
-          child: SizedBox(),
-        ),
-        actions: [
-          Consumer(
-            builder: (context, ref, child) {
-              return PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert),
-                menuPadding: const EdgeInsets.symmetric(horizontal: 0),
-                position: PopupMenuPosition.under,
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: () {
-                      ref.read(sleepTimerProvider.notifier).toggle(context);
-                    },
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final controller = ref.watch(sleepTimerProvider);
-                        return Row(
-                          spacing: 8.0,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            controller.enabled
-                                ? Icon(
-                                    Icons.check_circle,
-                                    color: context.colorScheme.primary,
-                                  )
-                                : const Icon(Icons.timer_outlined),
-                            const Text('Sleep Timer'),
-                          ],
-                        );
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxScrolled) {
+        return [
+          SliverAppBar(
+            pinned: true,
+            // https://github.com/flutter/flutter/issues/138099#issuecomment-1992390262
+            title: FocusScope(
+              onFocusChange: (value) {
+                if (value) {
+                  bodyFocusNode.requestFocus();
+                }
+              },
+              child: SearchAnchor.bar(
+                searchController: searchController,
+                barLeading: const Icon(Icons.search),
+                barHintText: 'Search your library',
+                barElevation: WidgetStateProperty.all(0),
+                suggestionsBuilder: (context, controller) {
+                  return [
+                    ListTile(
+                      leading: const Icon(Icons.label),
+                      title: const Text('By Tags'),
+                      onTap: () {
+                        searchController.closeView('');
+                        context.push('/tags');
                       },
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: () async {
-                      await ref.read(endlessModeProvider).toggle(context);
-                    },
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final controller = ref.watch(endlessModeProvider);
-                        return Row(
-                          spacing: 8.0,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            controller.enabled
-                                ? Icon(
-                                    Icons.check_circle,
-                                    color: context.colorScheme.primary,
-                                  )
-                                : const Icon(Icons.repeat),
-                            const Text('Endless Mode'),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
+                    )
+                  ];
+                },
+                onSubmitted: (value) {
+                  searchController.closeView('');
+                  context.push('/search', extra: value);
+                },
+                viewHintText: 'Tracks, albums, artists, and more',
+              ),
+            ),
+            actions: [
+              Consumer(
+                builder: (context, ref, child) {
+                  return PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert),
+                    menuPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    position: PopupMenuPosition.under,
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        onTap: () {
+                          ref.read(sleepTimerProvider.notifier).toggle(context);
+                        },
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final controller = ref.watch(sleepTimerProvider);
+                            return Row(
+                              spacing: 8.0,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                controller.enabled
+                                    ? Icon(
+                                        Icons.check_circle,
+                                        color: context.colorScheme.primary,
+                                      )
+                                    : const Icon(Icons.timer_outlined),
+                                const Text('Sleep Timer'),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      PopupMenuItem(
+                        onTap: () async {
+                          await ref.read(endlessModeProvider).toggle(context);
+                        },
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final controller = ref.watch(endlessModeProvider);
+                            return Row(
+                              spacing: 8.0,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                controller.enabled
+                                    ? Icon(
+                                        Icons.check_circle,
+                                        color: context.colorScheme.primary,
+                                      )
+                                    : const Icon(Icons.repeat),
+                                const Text('Endless Mode'),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          )
+        ];
+      },
       body: Focus(
         focusNode: bodyFocusNode,
         child: hasTrack

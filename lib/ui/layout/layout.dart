@@ -167,6 +167,7 @@ class AnnixLayout extends HookConsumerWidget {
           key: const Key('Primary Navigation Medium'),
           builder: (context) => AdaptiveScaffold.standardNavigationRail(
             padding: EdgeInsets.zero,
+            backgroundColor: context.colorScheme.surfaceContainer,
             leading: Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: Consumer(builder: (context, ref, child) {
@@ -181,18 +182,16 @@ class AnnixLayout extends HookConsumerWidget {
                 );
               }),
             ),
-            labelType: NavigationRailLabelType.none,
+            labelType: NavigationRailLabelType.all,
             selectedIndex: currentIndex,
             onDestinationSelected: onDestinationSelected,
             destinations: [
-              ...destinations
-                  .map(
-                    (d) => NavigationRailDestination(
-                      icon: d.icon,
-                      label: Text(d.label),
-                    ),
-                  )
-                  .toList(),
+              ...destinations.map(
+                (d) => NavigationRailDestination(
+                  icon: d.icon,
+                  label: Text(d.label),
+                ),
+              ),
               const NavigationRailDestination(
                 icon: Icon(Icons.arrow_back),
                 label: Text('back'),

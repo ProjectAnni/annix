@@ -163,15 +163,13 @@ class CoverCard extends StatelessWidget {
   Widget build(final BuildContext context) {
     return Card(
       clipBehavior: Clip.hardEdge,
-      elevation: 1,
+      elevation: 4,
+      color: context.colorScheme.primaryContainer,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius ?? BorderRadius.circular(8),
       ),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: child,
-      ),
+      child: child,
     );
   }
 }
