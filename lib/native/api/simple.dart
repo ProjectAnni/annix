@@ -17,6 +17,16 @@ abstract class MutexConnection implements RustOpaqueInterface {}
 // Rust type: RustOpaqueMoi<Mutex < RepoDatabaseRead >>
 abstract class MutexRepoDatabaseRead implements RustOpaqueInterface {}
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Annim>>
+abstract class Annim implements RustOpaqueInterface {
+  Future<List<String>> getAlbums({required List<UuidValue> ids});
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<Annim> newInstance({required String endpoint, String? auth}) =>
+      RustLib.instance.api
+          .crateApiSimpleAnnimNew(endpoint: endpoint, auth: auth);
+}
+
 /// Repo
 class LocalDb {
   final MutexRepoDatabaseRead repo;

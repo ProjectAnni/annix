@@ -53,3 +53,5 @@ keystore*
 *.otf
 
 .cxx
+
+frb_generated.web.dart

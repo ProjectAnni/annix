@@ -5,6 +5,7 @@ import 'package:annix/providers.dart';
 import 'package:annix/services/local/database.dart' hide Playlist;
 import 'package:annix/services/logger.dart';
 import 'package:annix/services/metadata/metadata.dart';
+import 'package:annix/services/metadata/metadata_source_annim.dart';
 import 'package:annix/services/metadata/metadata_source_anniv.dart';
 import 'package:annix/services/metadata/metadata_source_anniv_sqlite.dart';
 import 'package:annix/services/anniv/anniv_model.dart';
@@ -544,6 +545,12 @@ class AnnivService extends ChangeNotifier {
       final db = AnnivSqliteMetadataSource(ref);
       await db.prepare();
       metadata.sources.insert(0, db);
+    } catch (_) {}
+
+    try {
+      final annim = AnnimMetadataSource();
+      await annim.prepare();
+      metadata.sources.insert(0, annim);
     } catch (_) {}
   }
 }

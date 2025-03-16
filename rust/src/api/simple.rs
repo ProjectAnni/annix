@@ -1,3 +1,4 @@
+use anni_metadata::annim::AnnimClient;
 pub use anni_repo::{db::RepoDatabaseRead, prelude::JsonAlbum};
 use flutter_rust_bridge::frb;
 use material_colors::image::{FilterType, ImageReader};
@@ -218,4 +219,24 @@ pub fn get_theme_color(path: String) -> u32 {
         | (color.red as u32) << 16
         | (color.green as u32) << 8
         | (color.blue as u32)
+}
+
+pub struct Annim {
+    client: AnnimClient,
+}
+
+impl Annim {
+    pub fn new(endpoint: String, auth: Option<String>) -> Annim {
+        let client = AnnimClient::new(endpoint, auth.as_deref());
+        Self { client }
+    }
+
+    pub async fn get_albums(&self, ids: Vec<Uuid>) -> Vec<String> {
+        let albums = self.client.albums(ids).await.unwrap();
+
+        albums
+            .into_iter()
+            .map(|album| JsonAlbum::from(album).to_string())
+            .collect()
+    }
 }
