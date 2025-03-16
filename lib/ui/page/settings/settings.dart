@@ -48,11 +48,7 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.read(settingsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.settings.settings),
-        centerTitle: true,
-        forceMaterialTransparency: true,
-      ),
+      appBar: AppBar(title: Text(t.settings.settings)),
       body: SettingsList(
         lightTheme: SettingsThemeData(
           settingsListBackground: context.colorScheme.surface,

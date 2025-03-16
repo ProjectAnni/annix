@@ -78,10 +78,7 @@ class TagListView extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.category),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(t.category)),
       body: TagList(
         onSelected: (final ref, final tag) {
           context.push('/tag', extra: tag.name);

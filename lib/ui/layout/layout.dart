@@ -177,9 +177,7 @@ class AnnixLayout extends HookConsumerWidget {
                   child: CircleAvatar(
                     child: Text(info!.user.nickname.substring(0, 1)),
                   ),
-                  onPressed: () {
-                    context.push('/server');
-                  },
+                  onPressed: () {},
                 );
               }),
             ),
@@ -212,10 +210,7 @@ class AnnixLayout extends HookConsumerWidget {
           ),
           Breakpoints.mediumAndUp: SlotLayout.from(
             key: const Key('Body Medium'),
-            builder: (context) => Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: body,
-            ),
+            builder: (context) => body,
           ),
         },
       ),

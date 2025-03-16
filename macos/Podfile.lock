@@ -2,11 +2,6 @@ PODS:
   - FlutterMacOS (1.0.0)
   - rust_lib_annix (0.0.1):
     - FlutterMacOS
-  - share_plus (0.0.1):
-    - FlutterMacOS
-  - sqflite (0.0.3):
-    - Flutter
-    - FlutterMacOS
   - "sqlite3 (3.46.0+1)":
     - "sqlite3/common (= 3.46.0+1)"
   - "sqlite3/common (3.46.0+1)"
@@ -29,8 +24,6 @@ PODS:
 DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - rust_lib_annix (from `Flutter/ephemeral/.symlinks/plugins/rust_lib_annix/macos`)
-  - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
-  - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos`)
 
 SPEC REPOS:
@@ -42,18 +35,12 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   rust_lib_annix:
     :path: Flutter/ephemeral/.symlinks/plugins/rust_lib_annix/macos
-  share_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
-  sqflite:
-    :path: Flutter/ephemeral/.symlinks/plugins/sqflite/darwin
   sqlite3_flutter_libs:
     :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos
 
 SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   rust_lib_annix: 840b558e1522e40fc3f69286ae1ec8d20ac035f8
-  share_plus: 11c7b7fa7020465584eca3ff6392c5bc1e399d6e
-  sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
   sqlite3: 292c3e1bfe89f64e51ea7fc7dab9182a017c8630
   sqlite3_flutter_libs: 03311aede9d32fb2d24e32bebb8cd01c3b2e6239
 

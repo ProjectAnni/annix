@@ -36,57 +36,61 @@ class PersistentHomeHeader extends SliverPersistentHeaderDelegate {
 
     return Material(
       elevation: overlapsContent ? 3.0 : 0.0,
-      child: Container(
-        color: overlapsContent
-            ? context.colorScheme.surfaceContainerHigh
-            : context.colorScheme.surface,
-        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-        child: Row(
-          spacing: 8.0,
-          children: [
-            FilterChip(
-              label: const Text('All'),
-              onSelected: (selected) {
-                if (selected) {
-                  filter.value = FilterType.all;
-                }
-              },
-              selected: isAllPage,
+      child: SizedBox(
+        height: 56.0,
+        child: Container(
+          color: context.colorScheme.surface,
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 8.0,
+              children: [
+                FilterChip(
+                  label: const Text('All'),
+                  onSelected: (selected) {
+                    if (selected) {
+                      filter.value = FilterType.all;
+                    }
+                  },
+                  selected: isAllPage,
+                ),
+                FilterChip(
+                  label: Text(t.my_favorite),
+                  onSelected: (selected) {
+                    if (selected) {
+                      filter.value = FilterType.favorite;
+                    } else {
+                      filter.value = FilterType.all;
+                    }
+                  },
+                  selected: isFavoritePage,
+                ),
+                FilterChip(
+                  label: Text(t.playlists),
+                  onSelected: (selected) {
+                    if (selected) {
+                      filter.value = FilterType.playlist;
+                    } else {
+                      filter.value = FilterType.all;
+                    }
+                  },
+                  selected: isPlaylistPage,
+                ),
+                FilterChip(
+                  label: const Text('History'),
+                  onSelected: (selected) {
+                    if (selected) {
+                      filter.value = FilterType.history;
+                    } else {
+                      filter.value = FilterType.all;
+                    }
+                  },
+                  selected: isHistoryPage,
+                ),
+              ],
             ),
-            FilterChip(
-              label: Text(t.my_favorite),
-              onSelected: (selected) {
-                if (selected) {
-                  filter.value = FilterType.favorite;
-                } else {
-                  filter.value = FilterType.all;
-                }
-              },
-              selected: isFavoritePage,
-            ),
-            FilterChip(
-              label: Text(t.playlists),
-              onSelected: (selected) {
-                if (selected) {
-                  filter.value = FilterType.playlist;
-                } else {
-                  filter.value = FilterType.all;
-                }
-              },
-              selected: isPlaylistPage,
-            ),
-            FilterChip(
-              label: const Text('History'),
-              onSelected: (selected) {
-                if (selected) {
-                  filter.value = FilterType.history;
-                } else {
-                  filter.value = FilterType.all;
-                }
-              },
-              selected: isHistoryPage,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -100,7 +104,7 @@ class PersistentHomeHeader extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }
 
@@ -121,7 +125,9 @@ class HomePage extends HookWidget {
           SliverAppBar.large(
             pinned: true,
             leadingWidth: 0,
+            scrolledUnderElevation: 0,
             flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
               titlePadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 16,

@@ -23,6 +23,7 @@ let package = Package(
         .package(name: "firebase_crashlytics", path: "/Users/yesterday17/.pub-cache/hosted/pub.dev/firebase_crashlytics-4.3.4/ios/firebase_crashlytics"),
         .package(name: "firebase_performance", path: "/Users/yesterday17/.pub-cache/hosted/pub.dev/firebase_performance-0.10.1+4/ios/firebase_performance"),
         .package(name: "path_provider_foundation", path: "/Users/yesterday17/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0/darwin/path_provider_foundation"),
+        .package(name: "share_plus", path: "/Users/yesterday17/.pub-cache/hosted/pub.dev/share_plus-10.1.4/ios/share_plus"),
         .package(name: "url_launcher_ios", path: "/Users/yesterday17/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.1/ios/url_launcher_ios")
     ],
     targets: [
@@ -37,6 +38,7 @@ let package = Package(
                 .product(name: "firebase-crashlytics", package: "firebase_crashlytics"),
                 .product(name: "firebase-performance", package: "firebase_performance"),
                 .product(name: "path-provider-foundation", package: "path_provider_foundation"),
+                .product(name: "share-plus", package: "share_plus"),
                 .product(name: "url-launcher-ios", package: "url_launcher_ios")
             ]
         )

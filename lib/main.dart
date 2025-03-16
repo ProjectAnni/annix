@@ -49,7 +49,7 @@ Future<void> main() async {
     container.read(audioServiceProvider.future),
   ]);
 
-  LocaleSettings.useDeviceLocale();
+  await LocaleSettings.useDeviceLocale();
 
   PlatformDispatcher.instance.onError = (final error, final stack) {
     Logger.error('Root isolate error', exception: error, stacktrace: stack);

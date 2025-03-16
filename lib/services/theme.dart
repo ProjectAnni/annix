@@ -45,6 +45,10 @@ class AnnixTheme extends ChangeNotifier {
         fontFamily: FontService.getFontFamilyName(),
         colorScheme: _temporaryScheme ?? _primaryScheme,
         pageTransitionsTheme: transitions,
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          backgroundColor: _primaryScheme.surface,
+        ),
       );
   ThemeData get darkTheme => ThemeData(
         useMaterial3: true,
@@ -52,6 +56,10 @@ class AnnixTheme extends ChangeNotifier {
         fontFamily: FontService.getFontFamilyName(),
         colorScheme: _temporaryDarkScheme ?? _primaryDarkScheme,
         pageTransitionsTheme: transitions,
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          backgroundColor: _primaryDarkScheme.surface,
+        ),
       );
 
   ThemeMode _themeMode;
