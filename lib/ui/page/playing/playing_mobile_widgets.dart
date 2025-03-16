@@ -55,9 +55,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                     unawaited(showDialog(
                       context: context,
                       builder: (final context) {
-                        return SearchLyricsDialog(
-                          track: TrackInfoWithAlbum.fromTrack(track),
-                        );
+                        return SearchLyricsDialog(track: track);
                       },
                     ));
                   }

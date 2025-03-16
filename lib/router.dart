@@ -58,11 +58,33 @@ GoRouter buildRouter(Ref ref) {
         routes: [
           GoRoute(
             path: '/home',
-            builder: (context, state) => const HomePage(),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              transitionDuration: const Duration(milliseconds: 200),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: HomePage(),
+            ),
           ),
           GoRoute(
             path: '/music',
-            builder: (context, state) => const MusicPage(),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              transitionDuration: const Duration(milliseconds: 200),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: const MusicPage(),
+            ),
           ),
           GoRoute(
             path: '/album',
