@@ -134,7 +134,7 @@ class AnnixAudioHandler extends BaseAudioHandler {
     return player.previous();
   }
 
-  void _updatePlaybackState() {
+  Future<void> _updatePlaybackState() async {
     final isPlaying = player.playerStatus == PlayerStatus.playing;
 
     final controls = [
@@ -186,11 +186,17 @@ class AnnixAudioHandler extends BaseAudioHandler {
         (mediaItem.value?.id != source.id ||
             mediaItem.value?.duration != player.playing.duration)) {
       final proxy = ref.read(proxyProvider);
+      final metadata = ref.read(metadataProvider);
+      final track = await metadata.getTrack(source.identifier);
+      if (track == null) {
+        return;
+      }
+
       mediaItem.add(MediaItem(
         id: source.id,
-        title: source.track.title,
-        album: source.track.albumTitle,
-        artist: source.track.artist,
+        title: track.title,
+        album: track.disc.album.title,
+        artist: track.artist,
         duration: player.playing.duration,
         artUri: proxy.coverUri(
           source.identifier.albumId,

@@ -4,6 +4,7 @@ import 'package:annix/services/logger.dart';
 import 'package:annix/services/lyric/lyric_source.dart';
 import 'package:annix/services/lyric/lyric_source_anniv.dart';
 import 'package:annix/services/lyric/lyric_source_petitlyrics.dart';
+import 'package:annix/services/metadata/metadata.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/utils/debounce.dart';
@@ -12,12 +13,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PlayingTrack extends ChangeNotifier {
   final Ref ref;
+  final MetadataService metadata;
 
   AnnilAudioSource? source;
   bool reported = false;
 
   late Debouncer progressNotifyDebouncer;
-  PlayingTrack(this.ref) {
+  PlayingTrack(this.ref) : metadata = ref.read(metadataProvider) {
     progressNotifyDebouncer = Debouncer<void>(
       milliseconds: 1000,
       action: notifyListeners,
@@ -94,8 +96,13 @@ class PlayingTrack extends ChangeNotifier {
       return null;
     }
 
-    if (source.track.type != TrackType.normal) {
-      return TrackLyric(lyric: LyricResult.empty(), type: source.track.type);
+    final track = await metadata.getTrack(source.identifier);
+    if (track == null) {
+      return null;
+    }
+
+    if (track.type != TrackType.normal) {
+      return TrackLyric(lyric: LyricResult.empty(), type: track.type);
     }
 
     try {
@@ -107,8 +114,8 @@ class PlayingTrack extends ChangeNotifier {
       // 2. anniv
       if (lyric == null) {
         final anniv = LyricSourceAnniv(ref);
-        final result = await anniv.search(
-            track: source.identifier, title: source.track.title);
+        final result =
+            await anniv.search(track: source.identifier, title: track.title);
         if (result.isNotEmpty) {
           lyric = await result[0].lyric;
         }
@@ -119,9 +126,9 @@ class PlayingTrack extends ChangeNotifier {
         final LyricSource provider = LyricSourcePetitLyrics();
         final songs = await provider.search(
           track: source.identifier,
-          title: source.track.title,
-          artist: source.track.artist,
-          album: source.track.albumTitle,
+          title: track.title,
+          artist: track.artist,
+          album: track.disc.album.title,
         );
         if (songs.isNotEmpty) {
           lyric = await songs.first.lyric;
@@ -131,7 +138,7 @@ class PlayingTrack extends ChangeNotifier {
       // 4. save to local cache
       if (lyric != null) {
         await LyricSource.saveLocal(id, lyric);
-        return TrackLyric(lyric: lyric, type: source.track.type);
+        return TrackLyric(lyric: lyric, type: track.type);
       }
 
       return null;

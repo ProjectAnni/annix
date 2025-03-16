@@ -86,7 +86,7 @@ class PlaybackHistoryPage extends ConsumerWidget {
                       final player = ref.read(playbackProvider);
                       final sources = data
                           .map((final track) =>
-                              AnnilAudioSource(track: track.metadata))
+                              AnnilAudioSource(identifier: track.metadata.id))
                           .toList();
 
                       playFullList(

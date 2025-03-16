@@ -1,5 +1,7 @@
 import 'package:annix/providers.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_text.dart';
 import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -56,22 +58,38 @@ class PlayingTrackSwiper extends HookConsumerWidget {
         },
         itemCount: queue.length,
         itemBuilder: (_, index) {
-          final track = queue[index].track;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                track.title,
-                style: context.textTheme.titleSmall,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-              ),
-              ArtistText(
-                track.artist,
-                style: context.textTheme.bodySmall,
-              ),
-            ],
+          return Consumer(
+            builder: (context, ref, child) {
+              final track = ref.watch(trackFamily(queue[index].identifier));
+
+              return track.when(
+                data: (track) => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      track.title,
+                      style: context.textTheme.titleSmall,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                    ),
+                    ArtistText(
+                      track.artist,
+                      style: context.textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                error: (error, stacktrace) => const Text('Error'),
+                loading: () => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ShimmerText(length: 8),
+                    ShimmerText(length: 20),
+                  ],
+                ),
+              );
+            },
           );
         },
       ),

@@ -1,11 +1,13 @@
 import 'package:annix/providers.dart';
 import 'package:annix/services/playback/playback_service.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/route/delegate.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_text.dart';
 import 'package:annix/ui/widgets/volume.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
@@ -70,36 +72,42 @@ class DesktopBottomPlayer extends ConsumerWidget {
     return Consumer(
       builder: (final context, final ref, final child) {
         final playing = ref.watch(playingProvider);
+        final track = ref.watch(trackFamily(playing.source!.identifier));
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              playing.source?.track.title ?? 'Not playing',
-              style: context.textTheme.titleMedium?.apply(fontWeightDelta: 2),
-              overflow: TextOverflow.ellipsis,
-            ),
-            ArtistText(
-              playing.source?.track.artist ?? '',
-              style: context.textTheme.labelSmall,
-              search: true,
-            ),
-            const SizedBox(height: 8),
-            RepaintBoundary(
-              child: ProgressBar(
-                progress: playing.position,
-                total: playing.duration,
-                onSeek: player.seek,
-                barHeight: 3.0,
-                thumbRadius: 6,
-                thumbGlowRadius: 12,
-                thumbCanPaintOutsideBar: false,
-                timeLabelLocation: TimeLabelLocation.sides,
-                timeLabelTextStyle: context.textTheme.labelSmall,
+        return track.when(
+          data: (track) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                track.title,
+                style: context.textTheme.titleMedium?.apply(fontWeightDelta: 2),
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+              ArtistText(
+                track.artist,
+                style: context.textTheme.labelSmall,
+                search: true,
+              ),
+              const SizedBox(height: 8),
+              RepaintBoundary(
+                child: ProgressBar(
+                  progress: playing.position,
+                  total: playing.duration,
+                  onSeek: player.seek,
+                  barHeight: 3.0,
+                  thumbRadius: 6,
+                  thumbGlowRadius: 12,
+                  thumbCanPaintOutsideBar: false,
+                  timeLabelLocation: TimeLabelLocation.sides,
+                  timeLabelTextStyle: context.textTheme.labelSmall,
+                ),
+              ),
+            ],
+          ),
+          error: (error, stacktrace) => const Text('Error'),
+          loading: () =>
+              const ShimmerText(length: 8), // FIXME: use correct shimmer
         );
       },
     );

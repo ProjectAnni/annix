@@ -26,10 +26,9 @@ void shareTrackInfo(TrackInfoWithAlbum track, Rect? sharePositionOrigin,
   );
 }
 
-void shareTrackFile(TrackInfoWithAlbum track, Rect? sharePositionOrigin) {
-  final id = track.id;
+void shareTrackFile(TrackIdentifier track, Rect? sharePositionOrigin) {
   Share.shareXFiles(
-    [XFile(getAudioCachePath(id))],
+    [XFile(getAudioCachePath(track))],
     subject: 'Audio File',
     sharePositionOrigin: sharePositionOrigin,
   );

@@ -73,7 +73,7 @@ class Playlist {
 
     return tracks.mapIndexed((final i, final element) {
       final index = reorder != null ? reorder[i] : i;
-      return AnnilAudioSource(track: tracks[index]);
+      return AnnilAudioSource(identifier: tracks[index].id);
     }).toList();
   }
 }

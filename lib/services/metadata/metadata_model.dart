@@ -104,8 +104,7 @@ class Album {
     final List<AnnilAudioSource> sources = [];
     for (final disc in discs) {
       for (final track in disc.tracks) {
-        sources
-            .add(AnnilAudioSource(track: TrackInfoWithAlbum.fromTrack(track)));
+        sources.add(AnnilAudioSource(identifier: track.id));
       }
     }
     return sources;

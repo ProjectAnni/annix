@@ -96,7 +96,7 @@ class PlaybackService extends ChangeNotifier {
       queue.insert(newIndex - 1, song);
     }
 
-    ref.read(preferencesProvider).set('player.queue',
+    ref.read(preferencesProvider).set('player.queue_v2',
         queue.map((final e) => jsonEncode(e.toJson())).toList());
     notifyListeners();
   }
@@ -137,7 +137,7 @@ class PlaybackService extends ChangeNotifier {
 
   _load() {
     final preferences = ref.read(preferencesProvider);
-    final queue = preferences.getStringList('player.queue') ?? [];
+    final queue = preferences.getStringList('player.queue_v2') ?? [];
     final playingIndex = preferences.getInt('player.playingIndex');
 
     if (playingIndex != null &&
@@ -442,19 +442,13 @@ class PlaybackService extends ChangeNotifier {
       }
     }
 
-    final songs = tracks
-        .map((final id) => AnnilAudioSource.from(id: id, metadata: metadata));
     await setLoopMode(LoopMode.off);
 
-    final queue = await Future.wait(songs);
-    final List<AnnilAudioSource> resultQueue = [];
-    for (final song in queue) {
-      if (song != null) {
-        resultQueue.add(song);
-      }
-    }
-    if (append && this.queue.isNotEmpty) {
-      this.queue.addAll(resultQueue);
+    final List<AnnilAudioSource> resultQueue =
+        tracks.map((final id) => AnnilAudioSource(identifier: id)).toList();
+
+    if (append && queue.isNotEmpty) {
+      queue.addAll(resultQueue);
       notifyListeners();
     } else {
       unawaited(setPlayingQueue(resultQueue));

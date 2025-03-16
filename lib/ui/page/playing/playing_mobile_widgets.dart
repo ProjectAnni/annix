@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:annix/providers.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/loop_mode_button.dart';
 import 'package:annix/ui/widgets/buttons/play_pause_button.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/fade_indexed_stack.dart';
 import 'package:annix/ui/widgets/lyric.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_text.dart';
 import 'package:annix/ui/widgets/slide_up.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
@@ -42,15 +47,20 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                   showLyrics.value = !showLyrics.value;
                 },
               ),
-              onLongPress: () {
-                final playing = player.playing.source?.track;
-                if (playing != null) {
-                  showDialog(
-                    context: context,
-                    builder: (final context) {
-                      return SearchLyricsDialog(track: playing);
-                    },
-                  );
+              onLongPress: () async {
+                final id = player.playing.source?.identifier;
+                if (id != null) {
+                  final track = await ref.read(metadataProvider).getTrack(id);
+                  if (track != null && context.mounted) {
+                    unawaited(showDialog(
+                      context: context,
+                      builder: (final context) {
+                        return SearchLyricsDialog(
+                          track: TrackInfoWithAlbum.fromTrack(track),
+                        );
+                      },
+                    ));
+                  }
                 }
               },
             ),
@@ -108,21 +118,26 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                 MenuItemButton(
                   leadingIcon: const Icon(Icons.share_outlined),
                   child: Text(t.track.share),
-                  onPressed: () {
-                    final track = player.playing.source!.track;
+                  onPressed: () async {
+                    final identifier = player.playing.source!.identifier;
                     final box = context.findRenderObject() as RenderBox?;
-                    shareTrackInfo(
-                      track,
-                      box!.localToGlobal(Offset.zero) & box.size,
-                      nowPlaying: true,
-                    );
+
+                    final track =
+                        await ref.read(metadataProvider).getTrack(identifier);
+                    if (track != null) {
+                      shareTrackInfo(
+                        TrackInfoWithAlbum.fromTrack(track),
+                        box!.localToGlobal(Offset.zero) & box.size,
+                        nowPlaying: true,
+                      );
+                    }
                   },
                 ),
                 MenuItemButton(
                   leadingIcon: const Icon(Icons.file_copy),
                   child: const Text('[DEV] Export file'),
                   onPressed: () {
-                    final track = player.playing.source!.track;
+                    final track = player.playing.source!.identifier;
                     final box = context.findRenderObject() as RenderBox?;
                     shareTrackFile(
                       track,
@@ -145,25 +160,38 @@ class PlayingScreenMobileTrackInfo extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final source = ref.watch(playingProvider.select((p) => p.source));
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          source?.track.title ?? '',
-          style: context.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-            height: 1.5,
+    final identifier =
+        ref.watch(playingProvider.select((final p) => p.source?.identifier));
+    final track = ref.watch(trackFamily(identifier!));
+
+    return track.when(
+      data: (track) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            track.title,
+            style: context.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              height: 1.5,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
-          overflow: TextOverflow.ellipsis,
-        ),
-        ArtistText(
-          source?.track.artist ?? '',
-          style: context.textTheme.bodyLarge,
-          overflow: TextOverflow.ellipsis,
-          search: true,
-        )
-      ],
+          ArtistText(
+            track.artist,
+            style: context.textTheme.bodyLarge,
+            overflow: TextOverflow.ellipsis,
+            search: true,
+          )
+        ],
+      ),
+      error: (error, stacktrace) => const Text('Error'),
+      loading: () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShimmerText(length: 8),
+          ShimmerText(length: 20),
+        ],
+      ),
     );
   }
 }

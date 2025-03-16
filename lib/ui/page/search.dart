@@ -187,14 +187,8 @@ class _SearchResultWidget extends HookConsumerWidget {
                         ),
                         onTap: () async {
                           final player = ref.read(playbackProvider);
-                          final metadata = ref.read(metadataProvider);
-                          final audio = await AnnilAudioSource.from(
-                            id: e.id,
-                            metadata: metadata,
-                          );
-                          if (audio != null) {
-                            await player.setPlayingQueue([audio]);
-                          }
+                          final audio = AnnilAudioSource(identifier: e.id);
+                          await player.setPlayingQueue([audio]);
                         },
                       );
                     },

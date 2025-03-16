@@ -20,7 +20,7 @@ class MaterialYouPlayerPage extends ConsumerWidget {
     final size = MediaQuery.of(context).size;
 
     // Check if a track is currently loaded
-    final hasTrack = playing.source?.track != null;
+    final hasTrack = playing.source != null;
 
     return Scaffold(
       body: SafeArea(
@@ -67,10 +67,9 @@ class MaterialYouPlayerPage extends ConsumerWidget {
     ColorScheme colorScheme,
     Size size,
   ) {
-    final track = playing.source!.track!;
-    final albumTitle = track.albumTitle ?? '';
-    final artistName = track.artist ?? 'Unknown Artist';
-    final trackTitle = track.title ?? 'Unknown Track';
+    final albumTitle = 'Album';
+    final artistName = 'Unknown Artist';
+    final trackTitle = 'Unknown Track';
 
     return Column(
       children: [

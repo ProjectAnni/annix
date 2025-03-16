@@ -1,7 +1,9 @@
 import 'package:annix/providers.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/lyric.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_text.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyric_ui/lyric_ui.dart';
@@ -48,16 +50,26 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                 Spacer(),
                 Consumer(
                   builder: (final context, final ref, final child) {
-                    final track = ref.watch(
-                        playingProvider.select((final p) => p.source?.track));
+                    final identifier = ref.watch(playingProvider
+                        .select((final p) => p.source?.identifier));
+                    if (identifier == null) {
+                      return const SizedBox.shrink();
+                    }
+
+                    final track = ref.watch(trackFamily(identifier));
+
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: SelectableText(
-                        track?.title ?? '',
-                        style: context.textTheme.titleLarge!.copyWith(
-                          color: context.colorScheme.onPrimaryContainer,
+                      child: track.when(
+                        data: (track) => SelectableText(
+                          track.title,
+                          style: context.textTheme.titleLarge!.copyWith(
+                            color: context.colorScheme.onPrimaryContainer,
+                          ),
+                          maxLines: 1,
                         ),
-                        maxLines: 1,
+                        error: (error, stacktrace) => const Text('Error'),
+                        loading: () => const ShimmerText(length: 8),
                       ),
                     );
                   },
@@ -65,69 +77,76 @@ class _PlayingDesktopScreenState extends State<PlayingDesktopScreen> {
                 const SizedBox(height: 4),
                 Consumer(
                   builder: (final context, final ref, final child) {
-                    final track = ref.watch(
-                        playingProvider.select((final p) => p.source?.track));
-                    if (track == null) {
+                    final identifier = ref.watch(playingProvider
+                        .select((final p) => p.source?.identifier));
+                    if (identifier == null) {
                       return const SizedBox.shrink();
                     }
 
-                    return OverflowBar(
-                      spacing: 0,
-                      alignment: MainAxisAlignment.start,
-                      children: [
-                        TextButton.icon(
-                          icon: const Icon(
-                            Icons.person_outline,
-                            size: 20,
+                    final track = ref.watch(trackFamily(identifier));
+
+                    return track.when(
+                      data: (track) => OverflowBar(
+                        spacing: 0,
+                        alignment: MainAxisAlignment.start,
+                        children: [
+                          TextButton.icon(
+                            icon: const Icon(
+                              Icons.person_outline,
+                              size: 20,
+                            ),
+                            label: ArtistText(
+                              track.artist,
+                              expandable: false,
+                              search: true,
+                            ),
+                            onPressed: () {
+                              // FIXME: dialog to show all available tags
+                              context.push('/tag', extra: track.artist);
+                            },
                           ),
-                          label: ArtistText(
-                            track.artist,
-                            expandable: false,
-                            search: true,
+                          TextButton.icon(
+                            icon: const Icon(
+                              Icons.album_outlined,
+                              size: 20,
+                            ),
+                            label: Text(
+                              track.disc.album.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onPressed: () {
+                              context.push(
+                                '/album',
+                                extra: track.id.albumId,
+                              );
+                            },
                           ),
-                          onPressed: () {
-                            // FIXME: dialog to show all available tags
-                            context.push('/tag', extra: track.artist);
-                          },
-                        ),
-                        TextButton.icon(
-                          icon: const Icon(
-                            Icons.album_outlined,
-                            size: 20,
-                          ),
-                          label: Text(
-                            track.albumTitle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          onPressed: () {
-                            context.push(
-                              '/album',
-                              extra: track.id.albumId,
-                            );
-                          },
-                        ),
-                        // FIXME: tags list
-                        // ...<String>{
-                        //   ...(metadata.tags ?? []),
-                        //   ...(metadata.disc.tags ?? []),
-                        //   ...(metadata.disc.album.tags ?? [])
-                        // }.map(
-                        //   (tag) => TextButton.icon(
-                        //     icon: const Icon(
-                        //       Icons.local_offer_outlined,
-                        //       size: 20,
-                        //     ),
-                        //     label: Text(tag),
-                        //     onPressed: () {
-                        //       AnnixRouterDelegate.of(context).to(
-                        //         name: '/tag',
-                        //         arguments: tag,
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
-                      ],
+                          // FIXME: tags list
+                          // ...<String>{
+                          //   ...(metadata.tags ?? []),
+                          //   ...(metadata.disc.tags ?? []),
+                          //   ...(metadata.disc.album.tags ?? [])
+                          // }.map(
+                          //   (tag) => TextButton.icon(
+                          //     icon: const Icon(
+                          //       Icons.local_offer_outlined,
+                          //       size: 20,
+                          //     ),
+                          //     label: Text(tag),
+                          //     onPressed: () {
+                          //       AnnixRouterDelegate.of(context).to(
+                          //         name: '/tag',
+                          //         arguments: tag,
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                      error: (error, stacktrace) => const Text('Error'),
+                      // FIXME: use correct shimmer
+                      loading: () => const ShimmerText(length: 8),
                     );
                   },
                 ),

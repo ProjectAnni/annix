@@ -197,16 +197,16 @@ class AnnivService extends ChangeNotifier {
     }
   }
 
-  Future<bool> toggleFavoriteTrack(final TrackInfoWithAlbum track) async {
+  Future<bool> toggleFavoriteTrack(final TrackIdentifier track) async {
     final db = ref.read(localDatabaseProvider);
 
     if (await db
-        .isTrackFavorite(track.id.albumId, track.id.discId, track.id.trackId)
+        .isTrackFavorite(track.albumId, track.discId, track.trackId)
         .getSingle()) {
-      await removeFavoriteTrack(track.id);
+      await removeFavoriteTrack(track);
       return false;
     } else {
-      await addFavoriteTrack(track.id);
+      await addFavoriteTrack(track);
       return true;
     }
   }

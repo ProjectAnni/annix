@@ -1,5 +1,6 @@
 import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
+import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/dialogs/playlist_dialog.dart';
@@ -22,6 +23,17 @@ final albumFamily =
     (final album) {
       if (album == null) throw 'Album not found';
       return album;
+    },
+  );
+});
+
+final trackFamily =
+    FutureProvider.autoDispose.family<Track, TrackIdentifier>((ref, id) {
+  final metadata = ref.read(metadataProvider);
+  return metadata.getTrack(id).then(
+    (final track) {
+      if (track == null) throw 'Track not found';
+      return track;
     },
   );
 });

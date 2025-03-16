@@ -1,7 +1,9 @@
 import 'package:annix/providers.dart';
+import 'package:annix/ui/page/album.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/section_title.dart';
+import 'package:annix/ui/widgets/shimmer/shimmer_text.dart';
 import 'package:annix/ui/widgets/text/text.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -167,6 +169,63 @@ class MusicPage extends HookConsumerWidget {
   }
 }
 
+class CommonPlayingTrackCard extends ConsumerWidget {
+  final Widget cover;
+  final Widget title;
+  final Widget subtitle;
+  final VoidCallback? onTap;
+  final Color? color;
+
+  final double? elevation;
+  final EdgeInsets margin;
+  final Widget? trailing;
+
+  const CommonPlayingTrackCard({
+    super.key,
+    required this.cover,
+    required this.title,
+    required this.subtitle,
+    this.onTap,
+    this.color,
+    this.elevation,
+    this.margin = EdgeInsets.zero,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context, ref) {
+    return Card(
+      elevation: elevation,
+      clipBehavior: Clip.hardEdge,
+      margin: margin,
+      color: color,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        leading: cover,
+        title: title,
+        subtitle: subtitle,
+        onTap: onTap,
+        trailing: trailing,
+      ),
+    );
+  }
+}
+
+class ShimmerPlayingTrackCard extends StatelessWidget {
+  final Widget cover;
+
+  const ShimmerPlayingTrackCard({super.key, required this.cover});
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonPlayingTrackCard(
+      cover: cover,
+      title: ShimmerText(length: 8),
+      subtitle: ShimmerText(length: 20),
+    );
+  }
+}
+
 class NowPlayingCard extends ConsumerWidget {
   const NowPlayingCard({super.key});
 
@@ -175,7 +234,7 @@ class NowPlayingCard extends ConsumerWidget {
     final delegate = ref.watch(routerProvider);
     final player = ref.watch(playbackProvider);
 
-    if (player.playingIndex == null) {
+    if (player.playing.source == null) {
       return const SliverToBoxAdapter(
         child: Center(
           child: Text('No playing song'),
@@ -184,24 +243,24 @@ class NowPlayingCard extends ConsumerWidget {
     }
 
     final playing = player.queue[player.playingIndex!];
+    final track = ref.watch(trackFamily(playing.identifier));
 
     return SliverToBoxAdapter(
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        margin: EdgeInsets.zero,
-        color: context.colorScheme.primaryContainer,
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          leading: PlayingMusicCover(),
+      child: track.when(
+        data: (track) => CommonPlayingTrackCard(
+          cover: PlayingMusicCover(),
           title: Text(
-            playing.track.title,
+            track.title,
             style: context.textTheme.titleMedium?.copyWith(
               color: context.colorScheme.onPrimaryContainer,
             ),
           ),
-          subtitle: AlbumTitleText(title: playing.track.albumTitle),
+          subtitle: AlbumTitleText(title: track.disc.album.title),
           onTap: delegate.openPanel,
+          color: context.colorScheme.primaryContainer,
         ),
+        error: (error, stacktrace) => const Text('Error'),
+        loading: () => ShimmerPlayingTrackCard(cover: PlayingMusicCover()),
       ),
     );
   }
@@ -287,88 +346,95 @@ class NextPlayingQueue extends ConsumerWidget {
           );
         }
 
-        final child = HookBuilder(builder: (context) {
-          final isDuringDismiss = useState(false);
-          return Dismissible(
-            key: ValueKey(index),
-            direction: DismissDirection.horizontal,
-            confirmDismiss: (direction) async {
-              // do not allow the first song to be moved to the first
-              if (direction == DismissDirection.startToEnd &&
-                  actualIndex == playingIndex + 1) {
-                return false;
-              }
-              return true;
-            },
-            onDismissed: (direction) {
-              switch (direction) {
-                case DismissDirection.endToStart:
-                  // delete
-                  player.remove(actualIndex);
-                  break;
-                case DismissDirection.startToEnd:
-                  // make this track play next
-                  player.reorderQueue(actualIndex, playingIndex + 1);
-                  break;
-                default:
-                  break;
-              }
-            },
-            onUpdate: (details) {
-              if (details.progress > 0) {
-                isDuringDismiss.value = true;
-              } else {
-                isDuringDismiss.value = false;
-              }
-            },
-            background: Container(
-              color: Colors.transparent,
-              alignment: Alignment.centerLeft,
-              child: const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Row(
-                  spacing: 8.0,
-                  children: [
-                    Icon(Icons.swipe_up_outlined),
-                    Text('Move to top'),
-                  ],
+        final child = HookBuilder(
+          builder: (context) {
+            final isDuringDismiss = useState(false);
+            return Dismissible(
+              key: ValueKey(index),
+              direction: DismissDirection.horizontal,
+              confirmDismiss: (direction) async {
+                // do not allow the first song to be moved to the first
+                if (direction == DismissDirection.startToEnd &&
+                    actualIndex == playingIndex + 1) {
+                  return false;
+                }
+                return true;
+              },
+              onDismissed: (direction) {
+                switch (direction) {
+                  case DismissDirection.endToStart:
+                    // delete
+                    player.remove(actualIndex);
+                    break;
+                  case DismissDirection.startToEnd:
+                    // make this track play next
+                    player.reorderQueue(actualIndex, playingIndex + 1);
+                    break;
+                  default:
+                    break;
+                }
+              },
+              onUpdate: (details) {
+                if (details.progress > 0) {
+                  isDuringDismiss.value = true;
+                } else {
+                  isDuringDismiss.value = false;
+                }
+              },
+              background: Container(
+                color: Colors.transparent,
+                alignment: Alignment.centerLeft,
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    spacing: 8.0,
+                    children: [
+                      Icon(Icons.swipe_up_outlined),
+                      Text('Move to top'),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            secondaryBackground: Container(
-              alignment: Alignment.centerRight,
-              child: const Padding(
-                padding: EdgeInsets.only(right: 12.0),
-                child: Icon(Icons.delete_outline),
+              secondaryBackground: Container(
+                alignment: Alignment.centerRight,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Icon(Icons.delete_outline),
+                ),
               ),
-            ),
-            child: Card(
-              elevation: isDuringDismiss.value ? 2 : 0,
-              color: context.colorScheme.surfaceContainer,
-              clipBehavior: Clip.hardEdge,
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                leading: CoverCard(
+              child: Consumer(builder: (context, ref, child) {
+                final track = ref.watch(trackFamily(song.identifier));
+                final cover = CoverCard(
                   child: MusicCover.fromAlbum(albumId: song.identifier.albumId),
-                ),
-                title: Text(
-                  song.track.title,
-                  style: context.textTheme.titleMedium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: AlbumTitleText(title: song.track.albumTitle),
-                onTap: () async {
-                  if (!context.isDesktop) {
-                    await player.jump(actualIndex);
-                  }
-                },
-                trailing: trailing,
-              ),
-            ),
-          );
-        });
+                );
+
+                return track.when(
+                  data: (track) => CommonPlayingTrackCard(
+                    elevation: isDuringDismiss.value ? 2 : 0,
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    color: context.colorScheme.surfaceContainer,
+                    cover: cover,
+                    title: Text(
+                      track.title,
+                      style: context.textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: AlbumTitleText(title: track.disc.album.title),
+                    onTap: () async {
+                      if (!context.isDesktop) {
+                        await player.jump(actualIndex);
+                      }
+                    },
+                    trailing: trailing,
+                  ),
+                  error: (error, stacktrace) => const Text('Error'),
+                  loading: () => ShimmerPlayingTrackCard(cover: cover),
+                );
+              }),
+            );
+          },
+        );
         if (context.isDesktop) {
           return ReorderableDragStartListener(
             index: index,
