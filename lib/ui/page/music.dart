@@ -1,3 +1,4 @@
+import 'package:annix/i18n/strings.g.dart';
 import 'package:annix/providers.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
@@ -60,31 +61,28 @@ class MusicPage extends HookConsumerWidget {
               bodyFocusNode.requestFocus();
             }
           },
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: SearchAnchor.bar(
-              searchController: searchController,
-              barLeading: const Icon(Icons.search),
-              barHintText: 'Search your library',
-              barElevation: WidgetStateProperty.all(0),
-              suggestionsBuilder: (context, controller) {
-                return [
-                  ListTile(
-                    leading: const Icon(Icons.label),
-                    title: const Text('By Tags'),
-                    onTap: () {
-                      searchController.closeView('');
-                      context.push('/tags');
-                    },
-                  )
-                ];
-              },
-              onSubmitted: (value) {
-                searchController.closeView('');
-                context.push('/search', extra: value);
-              },
-              viewHintText: 'Tracks, albums, artists, and more',
-            ),
+          child: SearchAnchor.bar(
+            searchController: searchController,
+            barLeading: const Icon(Icons.search),
+            barHintText: 'Search your library',
+            barElevation: WidgetStateProperty.all(0),
+            suggestionsBuilder: (context, controller) {
+              return [
+                ListTile(
+                  leading: const Icon(Icons.label),
+                  title: const Text('By Tags'),
+                  onTap: () {
+                    searchController.closeView('');
+                    context.push('/tags');
+                  },
+                )
+              ];
+            },
+            onSubmitted: (value) {
+              searchController.closeView('');
+              context.push('/search', extra: value);
+            },
+            viewHintText: 'Tracks, albums, artists, and more',
           ),
         ),
         bottom: const PreferredSize(
@@ -200,7 +198,7 @@ class NowPlayingCard extends ConsumerWidget {
           title: Text(
             playing.track.title,
             style: context.textTheme.titleMedium?.copyWith(
-              color: context.colorScheme.onTertiaryContainer,
+              color: context.colorScheme.onPrimaryContainer,
             ),
           ),
           subtitle: AlbumTitleText(title: playing.track.albumTitle),
@@ -239,96 +237,152 @@ class NextPlayingQueue extends ConsumerWidget {
       itemBuilder: (context, index) {
         final actualIndex = playingIndex + index + 1;
         final song = player.queue[actualIndex];
-        return ReorderableDelayedDragStartListener(
-          index: index,
-          key: ValueKey('$index/${song.id}'),
-          child: HookBuilder(builder: (context) {
-            final isDuringDismiss = useState(false);
-            return Dismissible(
-              key: ValueKey(index),
-              direction: DismissDirection.horizontal,
-              confirmDismiss: (direction) async {
-                // do not allow the first song to be moved to the first
-                if (direction == DismissDirection.startToEnd &&
-                    actualIndex == playingIndex + 1) {
-                  return false;
-                }
-                return true;
-              },
-              onDismissed: (direction) {
-                switch (direction) {
-                  case DismissDirection.endToStart:
-                    // delete
-                    player.remove(actualIndex);
-                    break;
-                  case DismissDirection.startToEnd:
-                    // make this track play next
-                    player.reorderQueue(actualIndex, playingIndex + 1);
-                    break;
-                  default:
-                    break;
-                }
-              },
-              onUpdate: (details) {
-                if (details.progress > 0) {
-                  isDuringDismiss.value = true;
-                } else {
-                  isDuringDismiss.value = false;
-                }
-              },
-              background: Container(
-                color: Colors.transparent,
-                alignment: Alignment.centerLeft,
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Row(
-                    spacing: 8.0,
-                    children: [
-                      Icon(Icons.swipe_up_outlined),
-                      Text('Move to top'),
-                    ],
-                  ),
+        final key = ValueKey('$index/${song.id}');
+
+        late final Widget trailing;
+        if (context.isDesktop) {
+          trailing = MenuAnchor(
+            alignmentOffset: const Offset(-100, -40),
+            builder: (context, controller, child) {
+              return IconButton(
+                icon: Icon(Icons.more_horiz),
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+              );
+            },
+            menuChildren: [
+              MenuItemButton(
+                leadingIcon: const Icon(Icons.play_arrow_outlined),
+                child: Text('Play'),
+                onPressed: () {
+                  player.jump(actualIndex);
+                },
+              ),
+              MenuItemButton(
+                leadingIcon: const Icon(Icons.delete_outline),
+                child: Text('Remove'),
+                onPressed: () {
+                  player.remove(actualIndex);
+                },
+              ),
+              MenuItemButton(
+                leadingIcon: const Icon(Icons.upload),
+                child: Text('Move to top'),
+                onPressed: () {
+                  player.reorderQueue(actualIndex, playingIndex + 1);
+                },
+              ),
+            ],
+          );
+        } else {
+          trailing = ReorderableDragStartListener(
+            index: index,
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Icon(Icons.drag_handle),
+            ),
+          );
+        }
+
+        final child = HookBuilder(builder: (context) {
+          final isDuringDismiss = useState(false);
+          return Dismissible(
+            key: ValueKey(index),
+            direction: DismissDirection.horizontal,
+            confirmDismiss: (direction) async {
+              // do not allow the first song to be moved to the first
+              if (direction == DismissDirection.startToEnd &&
+                  actualIndex == playingIndex + 1) {
+                return false;
+              }
+              return true;
+            },
+            onDismissed: (direction) {
+              switch (direction) {
+                case DismissDirection.endToStart:
+                  // delete
+                  player.remove(actualIndex);
+                  break;
+                case DismissDirection.startToEnd:
+                  // make this track play next
+                  player.reorderQueue(actualIndex, playingIndex + 1);
+                  break;
+                default:
+                  break;
+              }
+            },
+            onUpdate: (details) {
+              if (details.progress > 0) {
+                isDuringDismiss.value = true;
+              } else {
+                isDuringDismiss.value = false;
+              }
+            },
+            background: Container(
+              color: Colors.transparent,
+              alignment: Alignment.centerLeft,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Row(
+                  spacing: 8.0,
+                  children: [
+                    Icon(Icons.swipe_up_outlined),
+                    Text('Move to top'),
+                  ],
                 ),
               ),
-              secondaryBackground: Container(
-                alignment: Alignment.centerRight,
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 12.0),
-                  child: Icon(Icons.delete_outline),
-                ),
+            ),
+            secondaryBackground: Container(
+              alignment: Alignment.centerRight,
+              child: const Padding(
+                padding: EdgeInsets.only(right: 12.0),
+                child: Icon(Icons.delete_outline),
               ),
-              child: Card(
-                elevation: isDuringDismiss.value ? 2 : 0,
-                clipBehavior: Clip.hardEdge,
-                margin: const EdgeInsets.symmetric(vertical: 4),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  leading: CoverCard(
-                    child:
-                        MusicCover.fromAlbum(albumId: song.identifier.albumId),
-                  ),
-                  title: Text(
-                    song.track.title,
-                    style: context.textTheme.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: AlbumTitleText(title: song.track.albumTitle),
-                  onTap: () async {
+            ),
+            child: Card(
+              elevation: isDuringDismiss.value ? 2 : 0,
+              clipBehavior: Clip.hardEdge,
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                leading: CoverCard(
+                  child: MusicCover.fromAlbum(albumId: song.identifier.albumId),
+                ),
+                title: Text(
+                  song.track.title,
+                  style: context.textTheme.titleMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: AlbumTitleText(title: song.track.albumTitle),
+                onTap: () async {
+                  if (!context.isDesktop) {
                     await player.jump(actualIndex);
-                  },
-                  trailing: ReorderableDragStartListener(
-                    index: index,
-                    child: const Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Icon(Icons.drag_handle),
-                    ),
-                  ),
-                ),
+                  }
+                },
+                trailing: trailing,
               ),
-            );
-          }),
-        );
+            ),
+          );
+        });
+        if (context.isDesktop) {
+          return ReorderableDragStartListener(
+            index: index,
+            key: key,
+            child: child,
+          );
+        } else {
+          return ReorderableDelayedDragStartListener(
+            index: index,
+            key: key,
+            child: child,
+          );
+        }
       },
     );
   }
