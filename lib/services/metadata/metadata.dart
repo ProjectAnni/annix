@@ -1,9 +1,12 @@
 import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
 import 'package:annix/services/metadata/metadata_source.dart';
+import 'package:flutter/material.dart';
 
 class MetadataService {
   final List<MetadataSource> sources = [];
+  // ignore: invalid_use_of_visible_for_testing_member
+  final WeakMap<String, Album?> _albumCache = WeakMap();
 
   /// Update metadata source by calling [doUpdate]
   ///
@@ -25,6 +28,10 @@ class MetadataService {
 
   /// Get album information
   Future<Album?> getAlbum({required final String albumId}) async {
+    if (_albumCache[albumId] != null) {
+      return _albumCache[albumId];
+    }
+
     _getAlbumDebounceList.add(albumId);
     _getAlbumDebouncer ??=
         Future.delayed(const Duration(milliseconds: 200)).then((final _) async {
@@ -44,7 +51,9 @@ class MetadataService {
       return result;
     });
     final albums = await _getAlbumDebouncer!;
-    return albums[albumId];
+    final album = albums[albumId];
+    _albumCache[albumId] = album;
+    return album;
   }
 
   Future<Map<String, Album>> getAlbums(final List<String> albums) async {
