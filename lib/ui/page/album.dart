@@ -7,6 +7,7 @@ import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/favorite_button.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
@@ -100,79 +101,78 @@ class AlbumPage extends ConsumerWidget {
           FavoriteAlbumButton(albumId: album.albumId),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: CustomScrollView(
-          slivers: [
-            if (context.isMobileOrPortrait)
-              SliverToBoxAdapter(
-                child: LayoutBuilder(
-                  builder: (final context, final constraints) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: constraints.maxWidth / 6),
-                      child: MusicCover.fromAlbum(albumId: album.albumId),
-                    );
-                  },
-                ),
-              ),
+      body: CustomScrollView(
+        slivers: [
+          if (context.isMobileOrPortrait)
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (context.isMobileOrPortrait)
-                      CircleAvatar(
-                        child: Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              color: context.colorScheme.outline,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(24)),
+              child: LayoutBuilder(
+                builder: (final context, final constraints) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: constraints.maxWidth / 6),
+                    child: MusicCover.fromAlbum(albumId: album.albumId),
+                  );
+                },
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (context.isMobileOrPortrait)
+                    CircleAvatar(
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: context.colorScheme.outline,
                           ),
-                          clipBehavior: Clip.hardEdge,
-                          child: MusicCover.fromAlbum(albumId: album.albumId),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(24)),
                         ),
-                      ),
-                    if (context.isDesktopOrLandscape)
-                      SizedBox(
-                        height: 240,
+                        clipBehavior: Clip.hardEdge,
                         child: MusicCover.fromAlbum(albumId: album.albumId),
                       ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            album.title,
-                            style: context.textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                          ArtistText(
-                            album.artist,
-                            style: context.textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
                     ),
-                  ],
-                ),
+                  if (context.isDesktopOrLandscape)
+                    SizedBox(
+                      height: 240,
+                      child: MusicCover.fromAlbum(albumId: album.albumId),
+                    ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          album.title,
+                          style: context.textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        ArtistText(
+                          album.artist,
+                          style: context.textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: PlayShuffleButtonGroup(
-                stretch: context.isMobileOrPortrait,
-                onPlay: () => _onPlay(ref),
-                onShufflePlay: () => _onPlay(ref, shuffle: true),
-              ),
+          ),
+          SliverToBoxAdapter(
+            child: PlayShuffleButtonGroup(
+              stretch: context.isMobileOrPortrait,
+              onPlay: () => _onPlay(ref),
+              onShufflePlay: () => _onPlay(ref, shuffle: true),
             ),
-            _buildTrackList(context),
-          ],
-        ),
+          ),
+          _buildTrackList(context),
+        ]
+            .map((e) => PagePadding(sliver: true, horizontal: 8, child: e))
+            .toList(),
       ),
     );
   }

@@ -60,28 +60,31 @@ class MusicPage extends HookConsumerWidget {
               bodyFocusNode.requestFocus();
             }
           },
-          child: SearchAnchor.bar(
-            searchController: searchController,
-            barLeading: const Icon(Icons.search),
-            barHintText: 'Search your library',
-            barElevation: WidgetStateProperty.all(0),
-            suggestionsBuilder: (context, controller) {
-              return [
-                ListTile(
-                  leading: const Icon(Icons.label),
-                  title: const Text('By Tags'),
-                  onTap: () {
-                    searchController.closeView('');
-                    context.push('/tags');
-                  },
-                )
-              ];
-            },
-            onSubmitted: (value) {
-              searchController.closeView('');
-              context.push('/search', extra: value);
-            },
-            viewHintText: 'Tracks, albums, artists, and more',
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: SearchAnchor.bar(
+              searchController: searchController,
+              barLeading: const Icon(Icons.search),
+              barHintText: 'Search your library',
+              barElevation: WidgetStateProperty.all(0),
+              suggestionsBuilder: (context, controller) {
+                return [
+                  ListTile(
+                    leading: const Icon(Icons.label),
+                    title: const Text('By Tags'),
+                    onTap: () {
+                      searchController.closeView('');
+                      context.push('/tags');
+                    },
+                  )
+                ];
+              },
+              onSubmitted: (value) {
+                searchController.closeView('');
+                context.push('/search', extra: value);
+              },
+              viewHintText: 'Tracks, albums, artists, and more',
+            ),
           ),
         ),
         bottom: const PreferredSize(
@@ -151,16 +154,14 @@ class MusicPage extends HookConsumerWidget {
       body: Focus(
         focusNode: bodyFocusNode,
         child: hasTrack
-            ? const PagePadding(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverGap.belowTop(),
-                    NowPlayingCard(),
-                    SliverGap.betweenSections(),
-                    SectionTitle(title: 'Next songs'),
-                    NextPlayingQueue(),
-                  ],
-                ),
+            ? CustomScrollView(
+                slivers: [
+                  SliverGap.belowTop(),
+                  NowPlayingCard(),
+                  SliverGap.betweenSections(),
+                  SectionTitle(title: 'Next songs'),
+                  NextPlayingQueue(),
+                ].map((e) => PagePadding(sliver: true, child: e)).toList(),
               )
             : const EmptyMusicPage(),
       ),

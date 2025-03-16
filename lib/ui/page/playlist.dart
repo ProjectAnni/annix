@@ -6,6 +6,7 @@ import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
@@ -393,79 +394,78 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
             ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: CustomScrollView(
-          slivers: [
-            if (context.isMobileOrPortrait && cover != null)
-              SliverToBoxAdapter(
-                child: LayoutBuilder(
-                  builder: (final context, final constraints) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: constraints.maxWidth / 6,
-                      ),
-                      child: cover,
-                    );
-                  },
-                ),
-              ),
+      body: CustomScrollView(
+        slivers: [
+          if (context.isMobileOrPortrait && cover != null)
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (context.isMobileOrPortrait)
-                      CircleAvatar(
-                        // FIXME: use avatar of playlist creator
-                        child: _cover(card: true),
-                      ),
-                    if (context.isDesktopOrLandscape)
-                      SizedBox(
-                        height: 240,
-                        child: cover!,
-                      ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Hero(
-                            tag:
-                                'playlist:name:${widget.playlist.intro.remoteId}',
-                            child: Text(
-                              widget.playlist.intro.name,
-                              style: context.textTheme.headlineSmall
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                            ),
+              child: LayoutBuilder(
+                builder: (final context, final constraints) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: constraints.maxWidth / 6,
+                    ),
+                    child: cover,
+                  );
+                },
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (context.isMobileOrPortrait)
+                    CircleAvatar(
+                      // FIXME: use avatar of playlist creator
+                      child: _cover(card: true),
+                    ),
+                  if (context.isDesktopOrLandscape)
+                    SizedBox(
+                      height: 240,
+                      child: cover!,
+                    ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Hero(
+                          tag:
+                              'playlist:name:${widget.playlist.intro.remoteId}',
+                          child: Text(
+                            widget.playlist.intro.name,
+                            style: context.textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
-                          if (description != null)
-                            Linkify(
-                              text: description,
-                              style: context.textTheme.bodyLarge,
-                              linkStyle: context.textTheme.bodyLarge
-                                  ?.copyWith(color: Colors.blueAccent),
-                              options: const LinkifyOptions(humanize: false),
-                              onOpen: (final link) => launchUrlString(link.url),
-                            ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                        ),
+                        if (description != null)
+                          Linkify(
+                            text: description,
+                            style: context.textTheme.bodyLarge,
+                            linkStyle: context.textTheme.bodyLarge
+                                ?.copyWith(color: Colors.blueAccent),
+                            options: const LinkifyOptions(humanize: false),
+                            onOpen: (final link) => launchUrlString(link.url),
+                          ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: PlayShuffleButtonGroup(
-                stretch: context.isMobileOrPortrait,
-                onPlay: () => _onPlay(),
-                onShufflePlay: () => _onPlay(shuffle: true),
-              ),
+          ),
+          SliverToBoxAdapter(
+            child: PlayShuffleButtonGroup(
+              stretch: context.isMobileOrPortrait,
+              onPlay: () => _onPlay(),
+              onShufflePlay: () => _onPlay(shuffle: true),
             ),
-            _buildTrackList(),
-          ],
-        ),
+          ),
+          _buildTrackList(),
+        ]
+            .map((e) => PagePadding(sliver: true, horizontal: 8, child: e))
+            .toList(),
       ),
     );
   }

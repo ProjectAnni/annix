@@ -47,7 +47,7 @@ class AnnixTheme extends ChangeNotifier {
         pageTransitionsTheme: transitions,
         appBarTheme: AppBarTheme(
           elevation: 0,
-          backgroundColor: _primaryScheme.surface,
+          backgroundColor: _temporaryScheme?.surface ?? _primaryScheme.surface,
         ),
       );
   ThemeData get darkTheme => ThemeData(
@@ -58,7 +58,8 @@ class AnnixTheme extends ChangeNotifier {
         pageTransitionsTheme: transitions,
         appBarTheme: AppBarTheme(
           elevation: 0,
-          backgroundColor: _primaryDarkScheme.surface,
+          backgroundColor:
+              _temporaryDarkScheme?.surface ?? _primaryDarkScheme.surface,
         ),
       );
 

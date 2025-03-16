@@ -32,6 +32,7 @@ class SliverGap extends StatelessWidget {
 class PagePadding extends StatelessWidget {
   final bool sliver;
   final double vertical;
+  final double horizontal;
   final Widget child;
 
   const PagePadding({
@@ -39,11 +40,15 @@ class PagePadding extends StatelessWidget {
     required this.child,
     this.sliver = false,
     this.vertical = 0,
+    this.horizontal = 12.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    final padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: vertical);
+    final padding = EdgeInsets.symmetric(
+      horizontal: horizontal,
+      vertical: vertical,
+    );
 
     if (sliver) {
       return SliverPadding(padding: padding, sliver: child);

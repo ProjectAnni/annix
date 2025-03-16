@@ -119,9 +119,9 @@ class HomePage extends HookWidget {
     final isPlaylistPage = filter.value == FilterType.playlist;
     final isHistoryPage = filter.value == FilterType.history;
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
           SliverAppBar.large(
             pinned: true,
             leadingWidth: 0,
@@ -153,12 +153,14 @@ class HomePage extends HookWidget {
               ),
             ],
           ),
-
           SliverPersistentHeader(
             pinned: true,
             delegate: PersistentHomeHeader(filter: filter),
           ),
-
+        ];
+      },
+      body: CustomScrollView(
+        slivers: [
           ///////////////////////////// ALL /////////////////////////////
           // [BEGIN] Anniv Card
           if (isAllPage) const SliverToBoxAdapter(child: AnnivCard()),
@@ -410,10 +412,6 @@ class HomePage extends HookWidget {
           if (isHistoryPage) const SectionTitle(title: 'Songs played recently'),
           if (isHistoryPage) const SliverPlaybackHistoryList(),
         ].mapIndexed((index, child) {
-          if (index == 0 || index == 1) {
-            return child;
-          }
-
           return PagePadding(sliver: true, child: child);
         }).toList(),
       ),
