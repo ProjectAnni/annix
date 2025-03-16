@@ -386,7 +386,7 @@ class PlaybackService extends ChangeNotifier {
       playing.setSource(null);
     }
 
-    ref.read(preferencesProvider).set('player.queue',
+    ref.read(preferencesProvider).set('player.queue_v2',
         queue.map((final e) => jsonEncode(e.toJson())).toList());
 
     await play(reload: true);
