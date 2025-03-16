@@ -161,15 +161,18 @@ class CoverCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      elevation: 4,
-      color: context.colorScheme.primaryContainer,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: borderRadius ?? BorderRadius.circular(8),
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        elevation: 4,
+        color: context.colorScheme.primaryContainer,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius ?? BorderRadius.circular(8),
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

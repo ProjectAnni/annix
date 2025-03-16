@@ -192,9 +192,7 @@ class NowPlayingCard extends ConsumerWidget {
         color: context.colorScheme.primaryContainer,
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          leading: CoverCard(
-            child: MusicCover.fromAlbum(albumId: playing.identifier.albumId),
-          ),
+          leading: PlayingMusicCover(),
           title: Text(
             playing.track.title,
             style: context.textTheme.titleMedium?.copyWith(
@@ -346,6 +344,7 @@ class NextPlayingQueue extends ConsumerWidget {
             ),
             child: Card(
               elevation: isDuringDismiss.value ? 2 : 0,
+              color: context.colorScheme.surfaceContainer,
               clipBehavior: Clip.hardEdge,
               margin: const EdgeInsets.symmetric(vertical: 4),
               child: ListTile(
