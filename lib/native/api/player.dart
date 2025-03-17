@@ -44,8 +44,7 @@ enum AudioQuality {
   low,
   medium,
   high,
-  lossless,
-  ;
+  lossless;
 }
 
 enum PlayerStateEvent {

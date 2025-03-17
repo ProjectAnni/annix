@@ -393,11 +393,11 @@ class PlaybackService extends ChangeNotifier {
   }
 
   Future<void> setVolume(final double volume) async {
-    this.volume = volume;
+    this.volume = min(1.0, volume);
     notifyListeners();
 
-    await PlaybackService.player.setVolume(volume: volume);
-    ref.read(preferencesProvider).set('player.volume', volume);
+    await PlaybackService.player.setVolume(volume: this.volume);
+    ref.read(preferencesProvider).set('player.volume', this.volume);
   }
 
   Future<void> fullShuffleMode(

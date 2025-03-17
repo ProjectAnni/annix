@@ -53,14 +53,18 @@ class AnnixAudioHandler extends BaseAudioHandler {
       // unplugged
       session.becomingNoisyEventStream.listen((final _) => service.pause());
 
-      bool interrupted = false;
       // interruption
+      bool interrupted = false;
       session.interruptionEventStream.listen((final event) {
         if (event.begin) {
           Logger.info('handling interruption beginning ${event.type}');
           switch (event.type) {
             case AudioInterruptionType.duck:
-              // TODO
+              assert(Platform.isAndroid);
+              final usage = session.androidAudioAttributes?.usage;
+              if (usage != null && usage != AndroidAudioUsage.game) {
+                service.player.setVolume(service.player.volume / 2);
+              }
               break;
             case AudioInterruptionType.pause:
             case AudioInterruptionType.unknown:
@@ -74,17 +78,18 @@ class AnnixAudioHandler extends BaseAudioHandler {
           Logger.info('handling interruption end ${event.type}');
           switch (event.type) {
             case AudioInterruptionType.duck:
-              // TODO
+              assert(Platform.isAndroid);
+              service.player.setVolume(service.player.volume * 2);
               break;
             case AudioInterruptionType.pause:
               if (interrupted) {
-                interrupted = false;
                 service.play();
               }
             // We should not resume unknown interruptions
             case AudioInterruptionType.unknown:
               break;
           }
+          interrupted = false;
         }
       });
     }));

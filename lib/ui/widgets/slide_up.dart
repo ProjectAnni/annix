@@ -78,7 +78,7 @@ class SlidingUpPanel extends StatefulHookConsumerWidget {
   final PanelState defaultPanelState;
 
   const SlidingUpPanel(
-      {Key? key,
+      {super.key,
       required this.collapsed,
       this.minHeight = 100.0,
       this.maxHeight = 500.0,
@@ -92,8 +92,7 @@ class SlidingUpPanel extends StatefulHookConsumerWidget {
       this.isDraggable = true,
       this.defaultPanelState = PanelState.closed,
       required this.panel})
-      : assert(snapPoint == null || 0 < snapPoint && snapPoint < 1.0),
-        super(key: key);
+      : assert(snapPoint == null || 0 < snapPoint && snapPoint < 1.0);
 
   @override
   ConsumerState<SlidingUpPanel> createState() => _SlidingUpPanelState();
