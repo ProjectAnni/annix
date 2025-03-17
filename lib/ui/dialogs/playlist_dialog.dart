@@ -96,7 +96,7 @@ Future<void> showPlaylistDialog(
                     },
                   );
                 },
-              ).toList(),
+              ),
             ],
           );
         },

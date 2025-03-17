@@ -7,7 +7,6 @@ import 'package:annix/services/annil/cache.dart';
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/logger.dart';
 import 'package:annix/services/path.dart';
-import 'package:annix/services/playback/playback_service.dart';
 import 'package:annix/utils/redirect_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -54,6 +53,7 @@ class AnnilService extends ChangeNotifier {
     client.interceptors.add(RedirectInterceptor(client));
 
     final db = ref.read(localDatabaseProvider);
+    final player = ref.read(playbackProvider).player;
     db.localAnnilCaches.select().get().then((final value) {
       etags.addAll(
           Map.fromEntries(value.map((final e) => MapEntry(e.annilId, e.etag))));
@@ -65,9 +65,9 @@ class AnnilService extends ChangeNotifier {
 
         // TODO: move annil logic to rust and remove the workaround
         if (!syncedToRust.isCompleted) {
-          await PlaybackService.player.clearProvider();
+          await player.clearProvider();
           for (final server in servers) {
-            await PlaybackService.player.addProvider(
+            await player.addProvider(
               url: server.url,
               auth: server.token,
               priority: server.priority,
@@ -134,10 +134,11 @@ class AnnilService extends ChangeNotifier {
 
   /// Keep sync with new credential list
   Future<void> sync(final List<AnnilToken> remoteList) async {
+    final player = ref.read(playbackProvider).player;
     // TODO: move annil logic to rust and remove the workaround
-    await PlaybackService.player.clearProvider();
+    await player.clearProvider();
     for (final server in remoteList) {
-      await PlaybackService.player.addProvider(
+      await player.addProvider(
         url: server.url,
         auth: server.token,
         priority: server.priority,

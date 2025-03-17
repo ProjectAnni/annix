@@ -54,7 +54,7 @@ AudioQuality fromQuality(PreferQuality q) {
 }
 
 class PlaybackService extends ChangeNotifier {
-  static final AnnixPlayer player = AnnixPlayer(cachePath: audioCachePath());
+  final AnnixPlayer player = AnnixPlayer(cachePath: audioCachePath());
 
   final Ref ref;
 
@@ -114,7 +114,7 @@ class PlaybackService extends ChangeNotifier {
         playing = PlayingTrack(ref) {
     _load();
 
-    PlaybackService.player.playerStateStream().listen((state) {
+    player.playerStateStream().listen((state) {
       if (state == PlayerStateEvent.stop) {
         next();
       } else {
@@ -126,7 +126,7 @@ class PlaybackService extends ChangeNotifier {
       }
     });
 
-    PlaybackService.player.progressStream().listen((progress) {
+    player.progressStream().listen((progress) {
       final position = Duration(milliseconds: progress.position);
       final duration = Duration(milliseconds: progress.duration);
 
@@ -156,7 +156,7 @@ class PlaybackService extends ChangeNotifier {
     this.shuffleMode = ShuffleMode.values[shuffleMode ?? 0];
 
     volume = preferences.getDouble('player.volume') ?? 1.0;
-    PlaybackService.player.setVolume(volume: volume);
+    player.setVolume(volume: volume);
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) => play(reload: true, setSourceOnly: true));
@@ -174,9 +174,9 @@ class PlaybackService extends ChangeNotifier {
       return;
     }
 
-    if (!reload && !PlaybackService.player.isPlaying()) {
+    if (!reload && !player.isPlaying()) {
       Logger.trace('Resume playing');
-      await PlaybackService.player.play();
+      await player.play();
 
       if (loadedAndPaused) {
         loadedAndPaused = false;
@@ -200,7 +200,7 @@ class PlaybackService extends ChangeNotifier {
     await annil.syncedToRust.future;
 
     final settings = ref.read(settingsProvider);
-    await PlaybackService.player.setTrack(
+    await player.setTrack(
       identifier: source.identifier.toString(),
       quality: fromQuality(settings.defaultAudioQuality.value),
       opus: settings.experimentalOpus.value,
@@ -210,7 +210,7 @@ class PlaybackService extends ChangeNotifier {
       loadedAndPaused = true;
       playerStatus = PlayerStatus.paused;
     } else {
-      await PlaybackService.player.play();
+      await player.play();
       playerStatus = PlayerStatus.playing;
     }
 
@@ -220,7 +220,7 @@ class PlaybackService extends ChangeNotifier {
   Future<void> pause() async {
     Logger.trace('Pause playing');
 
-    await PlaybackService.player.pause();
+    await player.pause();
   }
 
   Future<void> playOrPause() async {
@@ -235,7 +235,7 @@ class PlaybackService extends ChangeNotifier {
     if (setInactive) {
       await Future.wait([
         AudioSession.instance.then((final i) => i.setActive(false)),
-        PlaybackService.player.stop(),
+        player.stop(),
       ]);
     }
   }
@@ -313,7 +313,7 @@ class PlaybackService extends ChangeNotifier {
     playing.updatePosition(position, null);
 
     // then notify player
-    await PlaybackService.player.seek(position: position.inMilliseconds);
+    await player.seek(position: position.inMilliseconds);
   }
 
   Future<void> remove(final int index) async {
@@ -396,7 +396,7 @@ class PlaybackService extends ChangeNotifier {
     this.volume = min(1.0, volume);
     notifyListeners();
 
-    await PlaybackService.player.setVolume(volume: this.volume);
+    await player.setVolume(volume: this.volume);
     ref.read(preferencesProvider).set('player.volume', this.volume);
   }
 
