@@ -4,23 +4,11 @@ import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/cover.dart';
+import 'package:annix/ui/widgets/text/text.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-
-class _SongPlayRecordResultWithMetadata {
-  final SongPlayRecordResult record;
-  final TrackInfoWithAlbum metadata;
-
-  _SongPlayRecordResultWithMetadata({
-    required this.record,
-    required this.metadata,
-  });
-
-  TrackIdentifier get track => record.track;
-  int get count => record.count;
-}
 
 class PlaybackHistoryPage extends ConsumerWidget {
   const PlaybackHistoryPage({super.key});
@@ -29,25 +17,13 @@ class PlaybackHistoryPage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final annil = ref.read(annilProvider);
     final anniv = ref.read(annivProvider);
-    final metadata = ref.read(metadataProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(t.recent_played),
       ),
-      body: FutureBuilder<List<_SongPlayRecordResultWithMetadata>>(
-        future: anniv.client?.getUserPlaybackStats().then((final data) {
-          final tracks = data.map((final t) => t.track).toList();
-          return metadata.getTracks(tracks).then((final meta) {
-            return data.map((final record) {
-              return _SongPlayRecordResultWithMetadata(
-                record: record,
-                metadata:
-                    meta[record.track]!, // FIXME: metadata might not exist
-              );
-            }).toList();
-          });
-        }),
+      body: FutureBuilder<List<SongPlayRecordResult>>(
+        future: anniv.client?.getUserPlaybackStats(),
         builder: (final context, final snapshot) {
           if (snapshot.error != null) {
             return Center(
@@ -66,14 +42,8 @@ class PlaybackHistoryPage extends ConsumerWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    title: Text(
-                      record.metadata.title,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: ArtistText(
-                      record.metadata.artist,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    title: TrackTitleText(identifier: record.track),
+                    subtitle: TrackArtistText(identifier: record.track),
                     trailing: Text('${record.count}'),
                     enabled: annil.isTrackAvailable(
                       TrackIdentifier(
@@ -85,8 +55,8 @@ class PlaybackHistoryPage extends ConsumerWidget {
                     onTap: () async {
                       final player = ref.read(playbackProvider);
                       final sources = data
-                          .map((final track) =>
-                              AnnilAudioSource(identifier: track.metadata.id))
+                          .map((final record) =>
+                              AnnilAudioSource(identifier: record.track))
                           .toList();
 
                       playFullList(
@@ -111,18 +81,6 @@ class PlaybackHistoryPage extends ConsumerWidget {
   }
 }
 
-class _HistoryRecordWithMetadata {
-  final HistoryRecord record;
-  final TrackInfoWithAlbum? metadata;
-
-  _HistoryRecordWithMetadata({
-    required this.record,
-    this.metadata,
-  });
-
-  TrackIdentifier get track => record.track;
-}
-
 class SliverPlaybackHistoryList extends StatefulHookConsumerWidget {
   const SliverPlaybackHistoryList({super.key});
 
@@ -135,7 +93,7 @@ class _SliverPlaybackHistoryListState
     extends ConsumerState<SliverPlaybackHistoryList> {
   static const _pageSize = 20;
 
-  final PagingController<int, _HistoryRecordWithMetadata> _pagingController =
+  final PagingController<int, HistoryRecord> _pagingController =
       PagingController(firstPageKey: 0);
 
   @override
@@ -152,16 +110,7 @@ class _SliverPlaybackHistoryListState
           .read(annivProvider)
           .client!
           .getUserPlaybackHistory(offset: pageKey, limit: _pageSize);
-      final tracks = newItems.map((final t) => t.track).toList();
-      final metadata = await ref.read(metadataProvider).getTracks(tracks);
-      final data = newItems
-          .map(
-            (p) => _HistoryRecordWithMetadata(
-              record: p,
-              metadata: metadata[p.track],
-            ),
-          )
-          .toList();
+      final data = newItems.toList();
 
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
@@ -177,7 +126,7 @@ class _SliverPlaybackHistoryListState
 
   @override
   Widget build(BuildContext context) {
-    return PagedSliverList<int, _HistoryRecordWithMetadata>(
+    return PagedSliverList<int, HistoryRecord>(
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate(
         itemBuilder: (context, item, index) {
@@ -189,9 +138,9 @@ class _SliverPlaybackHistoryListState
                 fit: BoxFit.cover,
               ),
             ),
-            title: Text(item.metadata?.title ?? 'Unknown Track'),
+            title: TrackTitleText(identifier: item.track),
             subtitle: ArtistText(
-              DateTime.fromMillisecondsSinceEpoch(item.record.at * 1000)
+              DateTime.fromMillisecondsSinceEpoch(item.at * 1000)
                   .toLocal()
                   .toString(),
             ),

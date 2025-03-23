@@ -14,7 +14,7 @@ void shareTrack(Track track, Rect? sharePositionOrigin) {
   );
 }
 
-void shareTrackInfo(TrackInfoWithAlbum track, Rect? sharePositionOrigin,
+void shareTrackInfo(Track track, Rect? sharePositionOrigin,
     {required bool nowPlaying}) {
   final id = track.id;
   Share.shareXFiles(

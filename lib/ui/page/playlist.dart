@@ -3,11 +3,11 @@ import 'package:annix/services/anniv/anniv_model.dart' hide Playlist;
 import 'package:annix/services/playback/playback.dart';
 import 'package:annix/ui/dialogs/loading.dart';
 import 'package:annix/ui/dialogs/playlist_dialog.dart';
-import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/buttons/play_shuffle_button_group.dart';
 import 'package:annix/ui/widgets/cover.dart';
 import 'package:annix/ui/widgets/gaps.dart';
 import 'package:annix/ui/widgets/shimmer/shimmer_playlist_page.dart';
+import 'package:annix/ui/widgets/text/text.dart';
 import 'package:annix/utils/context_extension.dart';
 import 'package:annix/utils/share.dart';
 import 'package:collection/collection.dart';
@@ -207,7 +207,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
               const SizedBox(width: 8),
               CoverCard(
                 child: MusicCover.fromAlbum(
-                  albumId: item.info.id.albumId,
+                  albumId: item.info.albumId,
                   fit: BoxFit.cover,
                   width: 100,
                   height: 100,
@@ -215,16 +215,12 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
               ),
             ],
           ),
-          title: Text(
-            item.info.title,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
+          title: TrackTitleText(identifier: item.info),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ArtistText(item.info.artist, search: true),
+              TrackArtistText(identifier: item.info), // TODO: search: true
               if (useThreeLine)
                 Text(
                   item.description!,
@@ -242,7 +238,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                   icon: const Icon(Icons.more_vert),
                   onPressed: () => showMoreMenu(item),
                 ),
-          enabled: annil.isTrackAvailable(item.info.id),
+          enabled: annil.isTrackAvailable(item.info),
           onTap: _editMode ? null : () => _onPlay(index: index),
           onLongPress: _editMode ? null : () => showMoreMenu(item),
         );
@@ -271,7 +267,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     // hide the previous dialog
                     Navigator.of(context, rootNavigator: true).pop();
 
-                    context.push('/album', extra: track.info.id.albumId);
+                    context.push('/album', extra: track.info.albumId);
                   },
                 ),
                 if (widget.playlist.intro.remoteId != null && track.id != null)
@@ -301,19 +297,23 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                   title: Text(t.track.add_to_playlist),
                   leading: const Icon(Icons.playlist_add),
                   onTap: () {
-                    showPlaylistDialog(context, ref, track.info.id);
+                    showPlaylistDialog(context, ref, track.info);
                   },
                 ),
                 ListTile(
                   title: Text(t.track.share),
                   leading: const Icon(Icons.share),
-                  onTap: () {
+                  onTap: () async {
                     final box = context.findRenderObject() as RenderBox?;
-                    shareTrackInfo(
-                      track.info,
-                      box!.localToGlobal(Offset.zero) & box.size,
-                      nowPlaying: false,
-                    );
+                    final trackMetadata =
+                        await ref.read(metadataProvider).getTrack(track.info);
+                    if (trackMetadata != null) {
+                      shareTrackInfo(
+                        trackMetadata,
+                        box!.localToGlobal(Offset.zero) & box.size,
+                        nowPlaying: false,
+                      );
+                    }
                   },
                 )
               ],

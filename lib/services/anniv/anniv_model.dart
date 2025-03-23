@@ -244,51 +244,6 @@ class RequiredTrackInfo {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class TrackInfoWithAlbum {
-  @JsonKey(fromJson: _trackFromJson, readValue: readValueFlatten)
-  TrackIdentifier id;
-
-  String title;
-  String artist;
-  String albumTitle;
-  TrackType type;
-
-  TrackInfoWithAlbum({
-    required this.id,
-    required this.title,
-    required this.artist,
-    required this.albumTitle,
-    required this.type,
-  });
-
-  factory TrackInfoWithAlbum.fromJson(final Map<String, dynamic> json) =>
-      _$TrackInfoWithAlbumFromJson(json);
-
-  static TrackIdentifier _trackFromJson(final Map<String, dynamic> json) =>
-      TrackIdentifier.fromJson(json);
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'album_id': id.albumId,
-        'disc_id': id.discId,
-        'track_id': id.trackId,
-        'title': title,
-        'artist': artist,
-        'album_title': albumTitle,
-        'type': _$TrackTypeEnumMap[type],
-      };
-
-  factory TrackInfoWithAlbum.fromTrack(final Track track) {
-    return TrackInfoWithAlbum(
-      id: track.id,
-      title: track.title,
-      artist: track.artist,
-      type: track.type,
-      albumTitle: track.disc.album.title,
-    );
-  }
-}
-
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class PlaylistInfo {
   String id;
   String name;
@@ -463,13 +418,13 @@ abstract class AnnivPlaylistItem {
 }
 
 class AnnivPlaylistItemTrack extends AnnivPlaylistItem {
-  final TrackInfoWithAlbum info;
+  final TrackIdentifier info;
 
   AnnivPlaylistItemTrack({super.id, super.description, required this.info});
 
   factory AnnivPlaylistItemTrack.fromJson(final Map<String, dynamic> json) =>
       AnnivPlaylistItemTrack(
-        info: TrackInfoWithAlbum.fromJson(json['info']),
+        info: TrackIdentifier.fromJson(json['info']),
         id: json['id'],
         description: json['description'],
       );
@@ -544,7 +499,7 @@ class AnnivPlaylistItemAlbum extends AnnivPlaylistItem {
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class SearchResult {
   List<Album>? albums;
-  List<TrackInfoWithAlbum>? tracks;
+  List<TrackIdentifier>? tracks;
   List<PlaylistInfo>? playlists;
 
   SearchResult({this.albums, this.tracks, this.playlists});

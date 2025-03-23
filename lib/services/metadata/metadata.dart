@@ -80,28 +80,6 @@ class MetadataService {
     return album?.discs[id.discId - 1].tracks[id.trackId - 1];
   }
 
-  Future<Map<TrackIdentifier, TrackInfoWithAlbum?>> getTracks(
-      final List<TrackIdentifier> ids) async {
-    final albumIds = ids.map((final id) => id.albumId).toSet().toList();
-    final albums = await getAlbums(albumIds);
-
-    final result = <TrackIdentifier, TrackInfoWithAlbum?>{};
-    for (final id in ids) {
-      final album = albums[id.albumId];
-      if (album != null) {
-        final track = album.discs[id.discId - 1].tracks[id.trackId - 1];
-        result[id] = TrackInfoWithAlbum(
-          id: id,
-          title: track.title,
-          artist: track.artist,
-          albumTitle: album.title,
-          type: track.type,
-        );
-      }
-    }
-    return result;
-  }
-
   /// Get info of all tags
   Future<Map<String, TagEntry>> getTags() async {
     for (final source in sources) {

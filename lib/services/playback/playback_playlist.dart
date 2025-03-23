@@ -39,7 +39,7 @@ class Playlist {
   String? firstAvailableCover() {
     for (final item in items) {
       if (item is AnnivPlaylistItemTrack) {
-        return item.info.id.albumId;
+        return item.info.albumId;
       } else if (item is AnnivPlaylistItemAlbum) {
         return item.albumId;
       } else {
@@ -59,7 +59,7 @@ class Playlist {
 
   List<AnnilAudioSource> getTracks({final List<int>? reorder}) {
     final tracks = items
-        .map<TrackInfoWithAlbum?>(
+        .map<TrackIdentifier?>(
           (final item) {
             if (item is AnnivPlaylistItemTrack) {
               return item.info;
@@ -68,12 +68,12 @@ class Playlist {
             }
           },
         )
-        .whereType<TrackInfoWithAlbum>()
+        .whereType<TrackIdentifier>()
         .toList();
 
     return tracks.mapIndexed((final i, final element) {
       final index = reorder != null ? reorder[i] : i;
-      return AnnilAudioSource(identifier: tracks[index].id);
+      return AnnilAudioSource(identifier: tracks[index]);
     }).toList();
   }
 }

@@ -449,6 +449,8 @@ class PlaybackService extends ChangeNotifier {
 
     if (append && queue.isNotEmpty) {
       queue.addAll(resultQueue);
+      ref.read(preferencesProvider).set('player.queue_v2',
+          queue.map((final e) => jsonEncode(e.toJson())).toList());
       notifyListeners();
     } else {
       unawaited(setPlayingQueue(resultQueue));

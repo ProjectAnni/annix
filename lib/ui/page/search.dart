@@ -6,8 +6,8 @@ import 'package:annix/services/anniv/anniv_client.dart';
 import 'package:annix/services/settings.dart';
 import 'package:annix/ui/widgets/album/album_wall.dart';
 import 'package:annix/ui/widgets/cover.dart';
-import 'package:annix/ui/widgets/artist_text.dart';
 import 'package:annix/ui/widgets/fade_indexed_stack.dart';
+import 'package:annix/ui/widgets/text/text.dart';
 import 'package:flutter/material.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -158,7 +158,7 @@ class _SearchResultWidget extends HookConsumerWidget {
             children: [
               ListView.builder(
                 itemBuilder: (final context, final index) {
-                  final e = result.value!.tracks![index];
+                  final identifier = result.value!.tracks![index];
 
                   return ValueListenableBuilder<SearchTrackDisplayType>(
                     valueListenable:
@@ -167,27 +167,22 @@ class _SearchResultWidget extends HookConsumerWidget {
                       return ListTile(
                         isThreeLine: type.isThreeLine,
                         leading: CoverCard(
-                            child: MusicCover.fromAlbum(albumId: e.id.albumId)),
-                        title: Text(
-                          e.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                            child: MusicCover.fromAlbum(
+                                albumId: identifier.albumId)),
+                        title: TrackTitleText(identifier: identifier),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (type.showArtist) ArtistText(e.artist),
+                            if (type.showArtist)
+                              TrackArtistText(identifier: identifier),
                             if (type.showAlbumTitle)
-                              Text(
-                                e.albumTitle,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              LazyAlbumTitleText(albumId: identifier.albumId),
                           ],
                         ),
                         onTap: () async {
                           final player = ref.read(playbackProvider);
-                          final audio = AnnilAudioSource(identifier: e.id);
+                          final audio =
+                              AnnilAudioSource(identifier: identifier);
                           await player.setPlayingQueue([audio]);
                         },
                       );

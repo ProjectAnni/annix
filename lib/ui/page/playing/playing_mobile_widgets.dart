@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:annix/providers.dart';
-import 'package:annix/services/anniv/anniv_model.dart';
 import 'package:annix/ui/dialogs/playlist_dialog.dart';
 import 'package:annix/ui/dialogs/search_lyrics.dart';
 import 'package:annix/ui/page/album.dart';
@@ -124,7 +123,7 @@ class PlayingScreenMobileBottomBar extends ConsumerWidget {
                         await ref.read(metadataProvider).getTrack(identifier);
                     if (track != null) {
                       shareTrackInfo(
-                        TrackInfoWithAlbum.fromTrack(track),
+                        track,
                         box!.localToGlobal(Offset.zero) & box.size,
                         nowPlaying: true,
                       );

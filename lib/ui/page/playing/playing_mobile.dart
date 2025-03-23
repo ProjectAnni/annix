@@ -29,9 +29,8 @@ class PlayingScreenMobile extends HookConsumerWidget {
               const Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      PlayingScreenMobileTrackInfo(),
+                      Expanded(child: PlayingScreenMobileTrackInfo()),
                       FavoriteButton(),
                     ],
                   ),

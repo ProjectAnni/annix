@@ -132,16 +132,6 @@ Map<String, dynamic> _$RequiredTrackInfoToJson(RequiredTrackInfo instance) =>
       'type': _$TrackTypeEnumMap[instance.type]!,
     };
 
-TrackInfoWithAlbum _$TrackInfoWithAlbumFromJson(Map<String, dynamic> json) =>
-    TrackInfoWithAlbum(
-      id: TrackInfoWithAlbum._trackFromJson(
-          readValueFlatten(json, 'id') as Map<String, dynamic>),
-      title: json['title'] as String,
-      artist: json['artist'] as String,
-      albumTitle: json['album_title'] as String,
-      type: $enumDecode(_$TrackTypeEnumMap, json['type']),
-    );
-
 PlaylistInfo _$PlaylistInfoFromJson(Map<String, dynamic> json) => PlaylistInfo(
       id: json['id'] as String,
       name: json['name'] as String,
@@ -169,7 +159,7 @@ SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
           ?.map((e) => Album.fromJson(e as Map<String, dynamic>))
           .toList(),
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((e) => TrackInfoWithAlbum.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => TrackIdentifier.fromJson(e as Map<String, dynamic>))
           .toList(),
       playlists: (json['playlists'] as List<dynamic>?)
           ?.map((e) => PlaylistInfo.fromJson(e as Map<String, dynamic>))
