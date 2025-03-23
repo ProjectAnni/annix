@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:annix/providers.dart';
 import 'package:annix/ui/page/playing/playing_desktop.dart';
 import 'package:annix/ui/page/playing/playing_mobile.dart';
@@ -10,6 +12,25 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:annix/i18n/strings.g.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+class LayoutTopSafeArea extends StatelessWidget {
+  final Widget child;
+  const LayoutTopSafeArea({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    if (Platform.isMacOS) {
+      if (context.isMobileOrPortrait) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 24),
+          child: child,
+        );
+      }
+      return child;
+    }
+    return child;
+  }
+}
 
 class AnnixLayout extends HookConsumerWidget {
   final Widget child;
@@ -169,7 +190,10 @@ class AnnixLayout extends HookConsumerWidget {
             padding: EdgeInsets.zero,
             backgroundColor: context.colorScheme.surfaceContainer,
             leading: Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
+              padding: EdgeInsets.only(
+                top: Platform.isMacOS ? 24.0 : 0,
+                bottom: 12.0,
+              ),
               child: Consumer(builder: (context, ref, child) {
                 final info = ref.watch(annivProvider.select((v) => v.info));
 
@@ -205,7 +229,7 @@ class AnnixLayout extends HookConsumerWidget {
         config: <Breakpoint, SlotLayoutConfig>{
           Breakpoints.small: SlotLayout.from(
             key: const Key('Body Small'),
-            builder: (context) => body,
+            builder: (context) => LayoutTopSafeArea(child: body),
           ),
           Breakpoints.mediumAndUp: SlotLayout.from(
             key: const Key('Body Medium'),

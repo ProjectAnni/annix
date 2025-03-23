@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:annix/services/local/database.dart';
 import 'package:annix/services/metadata/metadata_model.dart';
-import 'package:drift/drift.dart' hide JsonKey;
+import 'package:drift/drift.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'anniv_model.g.dart';
@@ -77,62 +77,6 @@ class AnnilToken {
   Map<String, dynamic> toJson() => _$AnnilTokenToJson(this);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class AlbumInfo {
-  String albumId;
-  String title;
-  String? edition;
-  String catalog;
-  String artist;
-  String date;
-  TrackType type;
-  List<DiscInfo> discs;
-
-  AlbumInfo({
-    required this.albumId,
-    required this.title,
-    this.edition,
-    required this.catalog,
-    required this.artist,
-    required this.date,
-    required this.type,
-    required this.discs,
-  });
-
-  factory AlbumInfo.fromJson(final Map<String, dynamic> json) =>
-      _$AlbumInfoFromJson(json);
-}
-
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class DiscInfo {
-  String? title;
-  String? artist;
-  String catalog;
-  TrackType? type;
-  List<TrackInfo> tracks;
-
-  DiscInfo({
-    required this.title,
-    required this.artist,
-    required this.catalog,
-    required this.type,
-    required this.tracks,
-  });
-
-  factory DiscInfo.fromJson(final Map<String, dynamic> json) =>
-      _$DiscInfoFromJson(json);
-
-  Disc toDisc() {
-    return Disc(
-      title: title,
-      artist: artist,
-      catalog: catalog,
-      type: type,
-      tracks: tracks.map((final e) => e.toTrack()).toList(),
-    );
-  }
-}
-
 @JsonSerializable(fieldRename: FieldRename.snake)
 class DiscIdentifier {
   final String albumId;
@@ -199,30 +143,6 @@ class TrackIdentifier {
 
   @override
   int get hashCode => Object.hash(albumId, discId, trackId);
-}
-
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class TrackInfo {
-  String title;
-  String? artist;
-  TrackType? type;
-
-  TrackInfo({
-    required this.title,
-    this.artist,
-    this.type,
-  });
-
-  factory TrackInfo.fromJson(final Map<String, dynamic> json) =>
-      _$TrackInfoFromJson(json);
-
-  Track toTrack() {
-    return Track(
-      title: title,
-      artist: artist,
-      type: type,
-    );
-  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

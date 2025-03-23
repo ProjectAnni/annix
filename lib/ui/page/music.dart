@@ -60,35 +60,43 @@ class MusicPage extends HookConsumerWidget {
             SliverAppBar(
               pinned: true,
               // https://github.com/flutter/flutter/issues/138099#issuecomment-1992390262
-              title: FocusScope(
-                onFocusChange: (value) {
-                  if (value) {
-                    bodyFocusNode.requestFocus();
-                  }
-                },
-                child: SearchAnchor.bar(
-                  searchController: searchController,
-                  barLeading: const Icon(Icons.search),
-                  barHintText: 'Search your library',
-                  barElevation: WidgetStateProperty.all(0),
-                  suggestionsBuilder: (context, controller) {
-                    return [
-                      ListTile(
-                        leading: const Icon(Icons.label),
-                        title: const Text('By Tags'),
-                        onTap: () {
-                          searchController.closeView('');
-                          context.push('/tags');
-                        },
-                      )
-                    ];
-                  },
-                  onSubmitted: (value) {
-                    searchController.closeView('');
-                    context.push('/search', extra: value);
-                  },
-                  viewHintText: 'Tracks, albums, artists, and more',
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                titlePadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
                 ),
+                title: FocusScope(
+                  onFocusChange: (value) {
+                    if (value) {
+                      bodyFocusNode.requestFocus();
+                    }
+                  },
+                  child: SearchAnchor.bar(
+                    searchController: searchController,
+                    barLeading: const Icon(Icons.search),
+                    barHintText: 'Search your library',
+                    barElevation: WidgetStateProperty.all(0),
+                    suggestionsBuilder: (context, controller) {
+                      return [
+                        ListTile(
+                          leading: const Icon(Icons.label),
+                          title: const Text('By Tags'),
+                          onTap: () {
+                            searchController.closeView('');
+                            context.push('/tags');
+                          },
+                        )
+                      ];
+                    },
+                    onSubmitted: (value) {
+                      searchController.closeView('');
+                      context.push('/search', extra: value);
+                    },
+                    viewHintText: 'Tracks, albums, artists, and more',
+                  ),
+                ),
+                expandedTitleScale: 1,
               ),
               actions: [
                 Consumer(
@@ -159,7 +167,7 @@ class MusicPage extends HookConsumerWidget {
           child: hasTrack
               ? CustomScrollView(
                   slivers: [
-                    SliverGap.belowTop(),
+                    SliverGap.betweenSections(),
                     NowPlayingCard(),
                     SliverGap.betweenSections(),
                     SectionTitle(title: 'Next songs'),
